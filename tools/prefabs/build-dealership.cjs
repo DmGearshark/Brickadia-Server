@@ -140,7 +140,7 @@ function build(source,options={}){
  const failedSell=chain(sellCheck,set(feedback,val(S('Not owned'))),'ExecOutB');const ownershipLabel=select(haveVehicle,val(S('Not owned')),val(S('Owned')));const refreshed=chain(sellBranch,set(feedback,[ownershipLabel,'Output']),'ExecOutB');
  // Refresh valuation after a completed transaction so the shared button and
  // price switch together, including any previously saved upgrade values.
- const [success,successPort]=join([[bought,'ExecOut'],[sold,'ExecOut']]);chain(success,successRefresh,successPort);
+ const [success,successPort]=join([[bought,'ExecOut'],[sold,'ExecOut']]);const completionTick=node('BufferTicks',{TicksToWait:1,ZeroTicksToWait:0});wire(success,successPort,completionTick,'Input');wire(completionTick,'Output',successRefresh,'Exec');
  const shownBalance=variable(N(0));
  const [noWrite,noWritePort]=join([[failedBuy,'ExecOut'],[failedSell,'ExecOut'],[refreshed,'ExecOut']]);
  const cacheSelling=chain(noWrite,set(selling,haveVehicle),noWritePort);

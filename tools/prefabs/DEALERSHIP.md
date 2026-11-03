@@ -61,7 +61,7 @@ Bind and press Apply Catalog after editing to refresh immediately. Binding, brow
 
 The rebuild removes the old category selector, part selection, installed-part/replacement-cost logic, runtime cache compiler, all eleven generated caches, unused category/part arrows, and old logic chips. The remaining two chips hold configuration and dealership logic. The physical menu backing and shared price/action displays are retained; Select and redundant action/price text are removed. The debug display reports invalid vehicle settings, unsafe upgrade score keys, and installed nonzero values absent from the resale catalogue. These failures stop all transaction writes.
 
-The initial build contains **316 bricks versus 549** in the source, a reduction of about **42%**. It uses 268 logic gates and 483 wires. Upgrade rows are processed with buffered ticks, so controls are briefly locked during valuation/reset; there is no continuous polling.
+The initial build contains **317 bricks versus 549** in the source, a reduction of about **42%**. It uses 269 logic gates and 484 wires. Upgrade rows are processed with buffered ticks, so controls are briefly locked during valuation/reset; there is no continuous polling.
 
 ## Rebuild and validation
 
@@ -88,3 +88,13 @@ node tools/prefabs/rehouse-dealership.cjs prefabs/vehicle-dealership-unified.brz
 ```
 
 The checks compare every saved connection against its expected endpoints, compare all copied logic/settings component data, preserve every reference brick's geometry, and confirm Held and Character are connected for both external scroll buttons. This adds one player-readout formatter and one wire; the result has 484 wires. Visual and interaction validation in game is pending.
+
+## Stuck-update repair
+
+Use `prefabs/vehicle-dealership-refresh-fixed.brz` for the user's latest saved layout. Its transaction-completion-to-refresh connection was absent in the uploaded in-game save (483 wires rather than the 484 emitted for the compact display). The repair reconnects completion to refresh through a one-tick buffer and clears the saved busy flag and pending transaction mode. It preserves the user's geometry, relocated buttons, and editable settings. Bind yourself again after pasting.
+
+The readback checks compare every original and repaired connection by grid, position, component, and port, confirm the busy flag is false, and verify execution loops cross a buffer. The shared generator and `vehicle-dealership-unified.brz` now also include the buffered completion path, so future display transplants inherit the fix. Offline transaction checks pass; this repaired copy still needs in-game validation.
+
+```sh
+node tools/prefabs/repair-dealership-refresh.cjs '/path/to/Stuck in Update.brz' prefabs/vehicle-dealership-refresh-fixed.brz
+```
