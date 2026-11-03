@@ -158,3 +158,11 @@ node tools/prefabs/wire-dealership-sounds.cjs '/path/to/Wire these sound effects
 ```
 
 Adds two wires and no gates. Saved connections are compared against all original wiring plus the two intended Play connections; sound settings and unique valid wire targets are checked. In-game audio validation is pending.
+
+## Sold vehicle sound
+
+`prefabs/vehicle-dealership-sale-sound.brz` connects the marked sold-vehicle emitter to the sale payout's execution output. It plays after upgrade resets, ownership clearing, and the Scrap credit. Existing purchase sounds and sound settings are preserved. The patch adds one wire and no gates; saved endpoints are compared against all original connections plus the sale Play connection.
+
+```sh
+node tools/prefabs/wire-dealership-sale-sound.cjs '/path/to/Sold sound .brz' prefabs/vehicle-dealership-sale-sound.brz
+```
