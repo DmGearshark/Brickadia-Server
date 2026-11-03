@@ -27,6 +27,7 @@ function value(id,p){const n=defs.get(id),t=n.type,d=n.data,r=results.get(id)||{
  case 'CompareGreater':return get('InputA')>get('InputB');
  case 'CompareGreaterOrEqual':return get('InputA')>=get('InputB');
  case 'CompareEqual':return get('InputA')===get('InputB');
+ case 'CompareNotEqual':return get('InputA')!==get('InputB');
  case 'Floor':return Math.floor(get('Input'));
  case 'Select':return get('bSelectB')?get('InputB'):get('InputA');
  case 'MathAdd':return get('InputA')+get('InputB');

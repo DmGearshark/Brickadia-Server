@@ -1,0 +1,18 @@
+const fs=require('fs'),assert=require('assert/strict'),{WorldReader}=require('brs-js'),{compile}=require('./catalog-data-v2.cjs');
+const data=compile([['CarOwned.Engine.0','Stock Engine|CarEngine|1|25'],['CarOwned.Engine.1','Race Engine|CarEngine|5|250'],['CarOwned.Color.0','Blue|CarColor|3|50'],['CarOwned.Color.1','Purple|CarColor|4|50']]);
+function transact(players,who,group,position){const d=structuredClone(players),key=new Map(data.stats).get(group),value=new Map(data.saved).get(group+position),price=new Map(data.prices).get(group+position);assert(key&&value!==undefined&&price!==undefined);const current=d[who][key];if(current===value)return {status:'installed',players:d};const oldPrice=new Map(data.refunds).get(group+current);if(oldPrice===undefined)return {status:'unknown-current-value',players:d};const cost=price-Math.floor(oldPrice*.75);if(d[who].Scrap<cost)return {status:'insufficient',players:d};d[who].Scrap-=cost;d[who][key]=value;return {status:'bought',cost,players:d};}
+const players={alice:{Scrap:1000,CarEngine:1,CarColor:3},bob:{Scrap:1000,CarEngine:1,CarColor:3}};
+const a=transact(players,'alice','CarEngine',1);assert.equal(a.status,'bought');assert.equal(a.players.alice.CarEngine,5);assert.equal(a.cost,232);assert.equal(a.players.alice.Scrap,768);assert.deepEqual(a.players.bob,players.bob);
+assert.equal(transact(a.players,'alice','CarEngine',1).status,'installed');
+const color=transact(players,'alice','CarColor',1);assert.equal(color.players.alice.CarColor,4);assert.equal(color.players.alice.CarEngine,1);
+assert.equal(transact({...players,alice:{...players.alice,Scrap:10}},'alice','CarEngine',1).status,'insufficient');assert.equal(transact({...players,alice:{...players.alice,CarEngine:99}},'alice','CarEngine',1).status,'unknown-current-value');
+// Verify the actual saved purchase endpoints use the new lookups.
+const r=WorldReader.from(fs.readFileSync(process.argv[2]));const comps=new Map(),edges=[];
+function addr(g,ch,i){return JSON.stringify([g,ch.x,ch.y,ch.z,i]);}
+for(const g of r.gridIds())for(const ch of r.brickChunkIndex(g)){if(ch.numComponents)for(const c of r.componentChunk(g,ch.index).components)comps.set(addr(g,ch.index,c.brickIndex)+'|'+c.typeName,c);if(ch.numWires){const ws=r.wireChunk(g,ch.index);for(const e of [...ws.local,...ws.remote])edges.push({s:addr(e.source.gridId??g,e.source.chunk??ch.index,e.source.brickIndex)+'|'+e.source.componentType,sp:e.source.port,z:addr(g,ch.index,e.target.brickIndex)+'|'+e.target.componentType,zp:e.target.port});}}
+const setters=[...comps].filter(([,c])=>c.typeName==='BrickComponentType_Exec_Gamemode_SetLeaderboardValue');assert.equal(setters.length,1);const id=setters[0][0],incoming=p=>edges.find(e=>e.z===id&&e.zp===p);const keyEdge=incoming('Key'),valueEdge=incoming('Value');assert.equal(comps.get(keyEdge.s).typeName,'BrickComponentType_Exec_MapVar_Get');assert.equal(comps.get(valueEdge.s).typeName,'BrickComponentType_Exec_MapVar_Get');assert.notEqual(keyEdge.s,valueEdge.s);
+function sourceMap(getId){const e=edges.find(e=>e.z===getId&&e.zp==='MapVarRef');assert(e);return comps.get(e.s).data.Value.$map;}
+const statMap=new Map(sourceMap(keyEdge.s)),savedMap=new Map(sourceMap(valueEdge.s));assert.equal(statMap.get('CarEngine'),'CarEngine');assert.equal(statMap.get('CarFuelTank'),'CarFuelTank');assert.equal(savedMap.get('CarEngine3'),3);
+assert(edges.some(e=>e.s===keyEdge.s&&e.zp==='Key'&&comps.get(e.z).typeName==='BrickComponentType_Exec_Gamemode_GetLeaderboardValue'));
+assert(edges.some(e=>e.s===valueEdge.s&&e.zp==='InputA'&&comps.get(e.z).typeName==='BrickComponentType_Expr_CompareEqual'));
+console.log('Purchase-model and saved key/value/installed-check wiring tests passed.');
