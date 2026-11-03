@@ -19,3 +19,9 @@ node test-upgrade-shop.cjs ../../prefabs/vehicle-upgrade-pay-receive.brz
 ```
 
 The generator checks positive, negative, and zero formatting, original geometry and catalog preservation, and unique wire targets. Purchase model and saved key/value wiring checks also pass. In-game validation is pending.
+
+## Full part price display
+
+`prefabs/vehicle-upgrade-part-price.brz` uses the user's subsequent `Modify Me.brz` layout. The new display reads `Part Price: {A} Scrap`, using the selected option's catalog price before subtracting the trade-in refund. The existing Pay/Receive display and Buy behavior are retained.
+
+Rebuild with `node add-part-price.cjs /path/to/Modify-Me.brz ../../prefabs/vehicle-upgrade-part-price.brz` from `tools/prefabs`. This adds one formatter and two wires. Geometry, saved formatter connections, unique wire targets, and purchase wiring were checked; in-game validation is pending.
