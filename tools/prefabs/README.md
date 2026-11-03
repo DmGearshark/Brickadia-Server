@@ -16,8 +16,13 @@ their appearance, external sound/font assets, component settings (except
 placeholder text), and prefab paste metadata. Thirty logic bricks are placed
 behind the display. The original thumbnail still shows the reference labels.
 
-Validation rereads all geometry and original component data, checks all 38
-wires and 42 components, and runs the same 10,125 expression checks. The in-game
+The reference version stores the current index in a numeric variable. Rising
+edges of each scroll button's held signal execute a -1 or +1 increment, so
+releasing a button retains the index. It does not use transient PressCount.
+
+Validation rereads all geometry and original component data, checks all 41
+wires and 45 components, models press/hold/release against the generated scroll
+wiring, and runs the same 10,125 expression checks. The in-game
 acceptance checks below still apply; runtime behavior remains unverified.
 
 Requires Node.js 22.15 or newer. From this directory:

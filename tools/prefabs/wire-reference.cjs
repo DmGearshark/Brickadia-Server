@@ -58,12 +58,18 @@ function wire(a,port,z,input){
  w.addWire({brick:a.brick,component_type:sourceType,port},{brick:z.brick,component_type:targetType,port:input});
  links.push({a:nodes.indexOf(a),port,z:nodes.indexOf(z),input});
 }
-const diff=node('Expr_MathSubtract'); wire(down,'PressCount',diff,'InputA');wire(up,'PressCount',diff,'InputB');
-const center=node('Expr_MathAdd',{InputB:N(2)});wire(diff,'Output',center,'InputA');
+// Persist the index. PressCount is transient in-game; use held rising edges.
+const center=node('Var',{Value:N(2)});
+for(const [button,step] of [[up,-1],[down,1]]){
+ const edge=node('Expr_EdgeDetectorExec');wire(button,'bHeld',edge,'Input');
+ const increment=node('Exec_Var_Increment',{Value:N(step)});
+ wire(edge,'OnRisingEdge',increment,'Exec');
+ wire(center,'VarRef',increment,'VarRef');
+}
 const packed=names.map(n=>n.padEnd(8)).join('');
 const rows=[];
 for(let offset=-2;offset<=2;offset++){
- const add=node('Expr_MathAdd',{InputB:N(offset)});wire(center,'Output',add,'InputA');
+ const add=node('Expr_MathAdd',{InputB:N(offset)});wire(center,'Value',add,'InputA');
  const mod=node('Expr_MathModuloFloored',{InputB:N(20)});wire(add,'Output',mod,'InputA');
  const mul=node('Expr_MathMultiply',{InputB:N(8)});wire(mod,'Output',mul,'InputA');
  const sub=node('Expr_String_Substring',{Input:packed,Length:8});wire(mul,'Output',sub,'Start');
@@ -108,6 +114,7 @@ function value(n,port,upCount,downCount){
  const idx=nodes.indexOf(n);
  function input(p){const l=links.find(l=>l.z===idx&&l.input===p);if(l)return value(nodes[l.a],l.port,upCount,downCount);const v=n.data[p];return v&&typeof v==='object'&&'$variant'in v?v.value:v;}
  if(n===up)return upCount;if(n===down)return downCount;
+ if(n===center)return 2+downCount-upCount;
  switch(n.key){
  case 'Expr_MathSubtract':return input('InputA')-input('InputB');
  case 'Expr_MathAdd':return (input('InputA')||0)+(input('InputB')||0);
@@ -119,6 +126,23 @@ function value(n,port,upCount,downCount){
  }
 }
 for(let u=0;u<45;u++)for(let d=0;d<45;d++)rows.forEach((n,i)=>assert.equal(value(n,'Output',u,d),names[((d-u+i)%20+20)%20]));
+// Exercise press, hold and release against the generated scroll edge wiring.
+let storedIndex=center.data.Value.value;
+const heldLast=new Map([[up,false],[down,false]]);
+function scrollEvent(button,held){
+ const edgeLink=links.find(l=>nodes[l.a]===button&&l.port==='bHeld');
+ const edge=nodes[edgeLink.z];assert.equal(edge.key,'Expr_EdgeDetectorExec');
+ const execLink=links.find(l=>nodes[l.a]===edge&&l.port==='OnRisingEdge');
+ const increment=nodes[execLink.z];assert.equal(increment.key,'Exec_Var_Increment');
+ assert(links.some(l=>nodes[l.a]===center&&l.port==='VarRef'&&nodes[l.z]===increment&&l.input==='VarRef'));
+ if(held&&!heldLast.get(button))storedIndex+=increment.data.Value.value;
+ heldLast.set(button,held);
+}
+scrollEvent(up,true);assert.equal(storedIndex,1);
+scrollEvent(up,true);assert.equal(storedIndex,1);
+scrollEvent(up,false);assert.equal(storedIndex,1);
+scrollEvent(up,true);scrollEvent(up,false);assert.equal(storedIndex,0);
+scrollEvent(down,true);scrollEvent(down,true);scrollEvent(down,false);assert.equal(storedIndex,1);
 const out=process.argv[3];
 fs.writeFileSync(out,bytes);
 console.log(JSON.stringify({output:out,bricks:[...r.bricks()].length,components:nc,wires:nw,expressionChecks:45*45*5,bytes:bytes.length},null,2));
