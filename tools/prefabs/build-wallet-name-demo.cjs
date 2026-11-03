@@ -49,7 +49,7 @@ function build(){
  const local=c.node('Expr_RotateVector');c.connect(inverse,'Output',local,'Rotation');c.connect(delta,'Output',local,'Vector');
  // Own-transform gate is 48 local units along X from the spawner.
  const spawnOffset=c.node('Expr_MathAdd',{InputB:{$variant:'Vector',value:{X:48,Y:0,Z:0}}});c.connect(local,'Output',spawnOffset,'InputA');c.connect(spawnOffset,'Output',spawner,'SpawnOffset');
- const remember=c.set(previous);c.connect(spawner,'Entity',remember,'Value');c.chain(displayName,remember);c.chain(remember,spawner);
+ const remember=c.set(previous);c.connect(spawner,'Entity',remember,'Value');c.chain(displayName,remember);const spawnTick=c.node('BufferTicks',{TicksToWait:1,ZeroTicksToWait:0});c.connect(remember,'ExecOut',spawnTick,'Input');c.connect(spawnTick,'Output',spawner,'Exec');
  const gotNew=c.cmp('Expr_CompareNotEqual',spawner,'Entity');c.connect(previous,'Value',gotNew,'InputB');
  const notNull=c.cmp('Expr_CompareNotEqual',spawner,'Entity',{InputB:O(null)}),valid=c.node('Expr_LogicalAND');c.connect(gotNew,'bOutput',valid,'bInputA');c.connect(notNull,'bOutput',valid,'bInputB');const spawned=c.branch(spawner,valid);
  const saveRoot=c.set(root);c.connect(spawner,'Entity',saveRoot,'Value');c.chain(spawned,saveRoot,'ExecOutA');
@@ -63,7 +63,7 @@ function build(){
  const unlock=c.set(busy,{$variant:'Bool',value:false});c.chain(remove,unlock);const next=c.node('BufferTicks',{TicksToWait:1,ZeroTicksToWait:0});c.connect(unlock,'ExecOut',next,'Input');c.connect(next,'Output',pump,'ExecB');
  w.addBrick({asset:'PB_DefaultMicroBrick',size:[1,18,7],position:[24,-72,0],color:[20,45,65],components:[{type:C.TextDisplay.NAME,data:{...labelStyle,Text:'/wallet\r\nName-object demo',LineHeight:2}}]});
  const bytes=w.toBrz({prefab:prefab({x:60,y:94,z:28}),externalAssets:[{type:'BrickFontDescriptor',name:'GlacialIndifferencePlus'}],bundle:{name:'Wallet Command Name Demo',description:'Paste once and type /wallet. Spawns an object 120 units ahead of the caller aim, then initializes only that instance with their PlayerState and display name. Includes its payload prefab.'}});
- return {bytes,payloadBytes,path,c,p,plates,received,owner,name,spawner,ownTransform,command,queue,busy,current,root,previous,distance,aim,displayName,spawnOffset,send,sendCheck,delay};
+ return {bytes,payloadBytes,path,c,p,plates,received,owner,name,spawner,ownTransform,command,queue,busy,current,root,previous,distance,aim,displayName,spawnOffset,spawnTick,send,sendCheck,delay};
 }
 module.exports=build;
 if(require.main===module){const output=process.argv[2];if(!output)throw Error('Usage: node build-wallet-name-demo.cjs output.brz');const result=build();require('./test-wallet-name-demo.cjs')(result);fs.writeFileSync(output,result.bytes);console.log(JSON.stringify({output,controllerGates:result.c.nodes.length,payloadGates:result.p.nodes.length,embeddedPrefab:result.path},null,2));}

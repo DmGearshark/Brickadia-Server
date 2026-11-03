@@ -58,5 +58,5 @@ module.exports=function model(ctx,options={}){
   return {state,value,event(id,data){results.set(id,data);emit(id,'ExecOut');}};
  }
  const controller=vm(ctx.c,[],true);
- return {players,entities,messages,initializations,controller,command(player){controller.event(ctx.command.id,{PlayerState:player});},drain(){let steps=0;while(scheduled.length){assert(++steps<1000,'Model execution budget');scheduled.sort((a,z)=>a.tick-z.tick);const e=scheduled.shift();tick=e.tick;e.run();}},rotate,resolve};
+ return {players,entities,messages,initializations,controller,command(player){controller.event(ctx.command.id,{PlayerState:player});},advance(){if(!scheduled.length)return;scheduled.sort((a,z)=>a.tick-z.tick);const e=scheduled.shift();tick=e.tick;e.run();},drain(){let steps=0;while(scheduled.length){assert(++steps<1000,'Model execution budget');scheduled.sort((a,z)=>a.tick-z.tick);const e=scheduled.shift();tick=e.tick;e.run();}},rotate,resolve};
 };

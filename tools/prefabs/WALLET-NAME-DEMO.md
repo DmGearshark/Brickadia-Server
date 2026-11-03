@@ -1,6 +1,6 @@
 # /wallet name-object demo
 
-Download `prefabs/wallet-command-name-demo.brz`, paste **one** controller into the world, then enter `/wallet` in chat. The BRZ includes the small object prefab used by its Spawn Prefab gate; there is no separate prefab file to configure.
+Download `prefabs/wallet-command-name-demo-fixed.brz`, paste **one** controller into the world, then enter `/wallet` in chat. The BRZ includes the small object prefab used by its Spawn Prefab gate; there is no separate prefab file to configure.
 
 The command spawns a small teal name box 120 world units ahead of the caller's aim origin. Four sides display `Wallet` and that player's display name. It remains where spawned and expires after 60 seconds. This is an owner/name initialization proof, not a currency wallet or interactive shop.
 
@@ -31,7 +31,11 @@ The target follows the look direction, including vertical aim. This demo does no
 ## Rebuild and checks
 
 ```sh
-node tools/prefabs/build-wallet-name-demo.cjs prefabs/wallet-command-name-demo.brz
+node tools/prefabs/build-wallet-name-demo.cjs prefabs/wallet-command-name-demo-fixed.brz
 ```
 
-The builder includes 51 controller gates and six receiver/owner/name gates in the embedded object. Offline graph tests cover Alice/Bob name and owner isolation, overlapping queued requests, controller positions and cardinal yaw rotations, stale Entity output on failed spawn, destroyed targets, dead players, and queue completion. Tests are repeated using the serialized gate data and wires read back from both BRZ files. The embedded dependency, object-event flag, event names, targeted sender, valid wire endpoints and unique inputs are checked. In-game validation of command registration, spawn placement and event delivery is still required.
+The builder includes 52 controller gates and six receiver/owner/name gates in the embedded object. Offline graph tests cover Alice/Bob name and owner isolation, overlapping queued requests, controller positions and cardinal yaw rotations, stale Entity output on failed spawn, destroyed targets, dead players, and queue completion. Tests are repeated using the serialized gate data and wires read back from both BRZ files. The embedded dependency, object-event flag, event names, targeted sender, valid wire endpoints and unique inputs are checked. In-game validation of command registration, spawn placement and event delivery is still required.
+
+## Spawn wire repair
+
+The uploaded in-game copy was missing the previous-Entity snapshot setter's ExecOut connection to Spawn Prefab.Exec. The rebuilt controller routes that execution through a one-tick buffer before spawning, separating the previous-Entity read from the spawner's next execution. The three-tick object initialization delay remains. Tests replay both buffered stages from the saved gate graph. Replace the old controller rather than keeping two instances registered for `/wallet`. In-game connection validation is pending.
