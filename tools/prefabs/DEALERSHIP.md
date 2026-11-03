@@ -112,3 +112,13 @@ node tools/prefabs/add-dealership-timeout.cjs prefabs/vehicle-dealership-refresh
 ```
 
 Offline checks cover the 180-second boundary, resets, long transactions, a queued timeout followed by fresh activity, the unbound readout, and saved wire endpoints. In-game timing validation is pending.
+
+## Binding indicator decal
+
+`prefabs/vehicle-dealership-binding-indicator.brz` uses the user's latest saved layout. The square `■` text decal is green when the existing bound-player reference is non-null and red when it is null, including after the three-minute inactivity timeout. Only `Component_TextDisplay.Color` is driven; the underlying brick's color and all original geometry are preserved. The patch adds one color-blend gate and two wires and retains the existing shop and timeout logic.
+
+```sh
+node tools/prefabs/add-dealership-indicator.cjs /path/to/latest-save.brz prefabs/vehicle-dealership-binding-indicator.brz
+```
+
+Readback checks verify the saved decal-color connection, red/green endpoints, unique valid wire targets, and preservation of every original brick's geometry/material/color. In-game validation is pending.
