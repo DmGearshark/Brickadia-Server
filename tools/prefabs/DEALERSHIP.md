@@ -122,3 +122,13 @@ node tools/prefabs/add-dealership-indicator.cjs /path/to/latest-save.brz prefabs
 ```
 
 Readback checks verify the saved decal-color connection, red/green endpoints, unique valid wire targets, and preservation of every original brick's geometry/material/color. In-game validation is pending.
+
+## Blank screen when idle
+
+`prefabs/vehicle-dealership-idle-black-screen.brz` connects the six on-screen text displays' `bEnabled` inputs to the existing bound-player signal. The catalogue header, vehicle list, selected vehicle/status, price, action label, and name/balance readout are disabled while unbound and enabled while bound. The three-minute timeout therefore blanks the screen automatically. The separate red/green indicator and external scroll arrows stay visible.
+
+The patch adds six wires and no gates. Initial screen text components are disabled to avoid showing cached text before binding state propagates. The saved file checks all six enabled connections, preserves the indicator/arrows, and retains all brick geometry and colors. In-game validation is pending.
+
+```sh
+node tools/prefabs/blank-idle-dealership.cjs prefabs/vehicle-dealership-binding-indicator.brz prefabs/vehicle-dealership-idle-black-screen.brz
+```
