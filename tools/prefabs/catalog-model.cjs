@@ -4,7 +4,7 @@ const assert=require('assert/strict');
 module.exports=function model(ctx,entries){const defs=new Map();for(const n of ctx.nodes)defs.set(n.id,{...n,data:structuredClone(n.data||{})});for(const e of ctx.edges)for(const n of [e.a,e.z])if(!defs.has(n.id))defs.set(n.id,{...n,data:structuredClone(n.data||{})});
 const incoming=new Map(ctx.edges.map(e=>[e.z.id+':'+e.q,e])),outgoing=new Map();for(const e of ctx.edges){const k=e.a.id+':'+e.p;if(!outgoing.has(k))outgoing.set(k,[]);outgoing.get(k).push(e.z.id);}
 const state=new Map(),results=new Map();for(const [id,n]of defs){if(n.type.endsWith('_MapVar'))state.set(id,new Map(n.data.Value.$map));if(n.type.endsWith('_ArrayVar'))state.set(id,[...n.data.Value.$array]);if(n.type==='BrickComponentType_Var')state.set(id,n.data.Value.value);}
-state.set(ctx.catalog.id,new Map(entries));let currentKey,steps=0;
+state.set(ctx.catalog.id,new Map(entries));if(ctx.diagnostic&&ctx.initialDiagnostic!==undefined)state.set(ctx.diagnostic.id,ctx.initialDiagnostic);let currentKey,steps=0;
 const unbox=v=>v&&typeof v==='object'&&'$variant'in v?v.value:v;
 function input(id,p){const edge=incoming.get(id+':'+p);return edge?value(edge.a.id,edge.p):unbox(defs.get(id).data[p]);}
 function value(id,p){const n=defs.get(id),t=n.type,d=n.data,r=results.get(id)||{};
@@ -51,4 +51,4 @@ function run(id){assert(++steps<100000,'Execution model exceeded budget');const 
  else if(t==='BrickComponentType_Exec_Union')emit(id,'ExecOut');
  else throw Error('Unsupported model instruction '+t);
 }
-run(ctx.start.id);return {maps:Object.fromEntries(Object.entries(ctx.cache).map(([k,n])=>[k,[...state.get(n.id)]])),valid:state.get(ctx.valid.id),vehicles:state.get(ctx.allVehicles.id),steps};};
+run(ctx.start.id);return {maps:Object.fromEntries(Object.entries(ctx.cache).map(([k,n])=>[k,[...state.get(n.id)]])),valid:state.get(ctx.valid.id),diagnostic:ctx.diagnostic?state.get(ctx.diagnostic.id):undefined,vehicles:state.get(ctx.allVehicles.id),steps};};
