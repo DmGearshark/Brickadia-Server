@@ -16,7 +16,6 @@ function build(source,options={}){
    if(src.some(c=>c.typeName===C.Microchip.NAME)){chipPositions.push({key,position:br.position});continue;}
    if(part==='right'&&[2,3,5,6].includes(i))continue; // former part/category arrows
    const comps=src.map(c=>({type:c.typeName,data:Object.fromEntries(Object.entries(structuredClone(c.data)).filter(([k])=>schema.structs.get(b.COMPONENT_TYPE_STRUCTS.get(c.typeName)).has(k)&&!['VarRef','MapVarRef','ArrayVarRef'].includes(k)))}));
-   if(key==='left:6'){comps.splice(comps.findIndex(c=>c.type===C.Button.NAME),1);comps.find(c=>c.type===C.TextDisplay.NAME).data.Text='DEALERSHIP';}
    if(key==='right:4'){comps.find(c=>c.type===C.TextDisplay.NAME).data.Text='Sell';comps.push({type:C.Button.NAME,data:{PromptCustomLabel:'Sell vehicle'}});}
    const initial={'right:12':'Buy','right:13':'Sell Price: —','right:14':'Vehicle Price: —','left:17':'Bind player','left:18':'Scrap\r\n0','left:19':'User','left:20':''};
    if(key in initial)comps.find(c=>c.type===C.TextDisplay.NAME).data.Text=initial[key];
@@ -49,7 +48,7 @@ function build(source,options={}){
  assert.equal(originals.length,1,'Source parts catalog');
  const upgradeGroups=new Map();for(const [key,row]of originals[0]){const [vehicle]=key.split('.'),[,stat,saved,price]=row.split('|'),k=vehicle+'.'+stat;if(!upgradeGroups.has(k))upgradeGroups.set(k,[]);upgradeGroups.get(k).push(saved+':'+(Number(saved)===0?0:price));}
  const upgradeCatalog=map([...upgradeGroups].map(([k,rows])=>[k,rows.join('|')])),percent=node('Var',{Value:N(.75)},true);
- const bound=variable(O(null)),busy=variable(B(false)),mode=variable(N(0)),index=variable(N(0)),total=variable(N(0)),diagnostic=variable(S('')),feedback=variable(S('Bind player')),scanIndex=variable(N(0)),resetIndex=variable(N(0));
+ const bound=variable(O(null)),busy=variable(B(false)),mode=variable(N(0)),index=variable(N(0)),activeIndex=variable(N(0)),total=variable(N(0)),diagnostic=variable(S('')),feedback=variable(S('Bind player')),scanIndex=variable(N(0)),resetIndex=variable(N(0));
  const arr=()=>node('ArrayVar',{Value:{$elementType:'str',$array:[]}}),vehicles=arr(),upgradeKeys=arr(),resetKeys=arr();
  const notBusy=not(ref(busy)),present=[cmp('Expr_CompareNotEqual',ref(bound),val(O(null))),'bOutput'];
  function arrayOp(k,array,inputs={}){const n=node(k);wire(array,'ArrayVarRef',n,'ArrayVarRef');for(const [p,v]of Object.entries(inputs))input(n,p,v);return n;}
@@ -61,14 +60,19 @@ function build(source,options={}){
  function nonempty(v){return [cmp('Expr_CompareGreater',[unary('Expr_String_Length',v),'Output'],val(N(0))),'bOutput'];}
  // All actions enter one locked refresh, including transaction-time ownership/balance rereads.
  const requests=[];
- function button(key,k,action,bind=false){const button=u(key,k),edge=expr('Expr_EdgeDetectorExec',{Input:[button,'bHeld']});
+ function button(key,k,action,bind=false){const button=u(key,k);
   const same=[cmp('Expr_CompareEqual',[button,'Character'],ref(bound)),'bOutput'],nonNull=[cmp('Expr_CompareNotEqual',[button,'Character'],val(O(null))),'bOutput'];
-  const allowed=branch(edge,and(notBusy,nonNull,...(bind?[]:[present,same])),'OnRisingEdge');let tail=chain(allowed,set(busy,val(B(true))),'ExecOutA');
-  if(bind){tail=chain(tail,set(bound,[button,'Character']));tail=chain(tail,set(index,val(N(0))));}
-  if(action==='next'||action==='prev'){const add=expr('Expr_MathAdd',{InputA:ref(index),InputB:val(N(action==='next'?1:-1))});tail=chain(tail,set(index,[add,'Output']));}
-  tail=chain(tail,set(mode,val(N(action==='buy'?1:action==='sell'?2:0))));requests.push([tail,'ExecOut']);return {edge,allowed};
+  // Form a complete click before converting it to execution. Character and
+  // Held need not propagate in the same order through the live circuit.
+  const validPress=and([button,'bHeld'],nonNull,...(bind?[]:[present,same]));
+  const edge=expr('Expr_EdgeDetectorExec',{Input:validPress});
+  const allowed=branch(edge,notBusy,'OnRisingEdge');let tail=chain(allowed,set(busy,val(B(true))),'ExecOutA');
+  if(bind){tail=chain(tail,set(bound,[button,'Character']));tail=chain(tail,set(index,val(N(0))));tail=chain(tail,set(activeIndex,val(N(0))));}
+  if(action==='next'||action==='prev'){const inc=node('Exec_Var_Increment',{Value:N(action==='next'?1:-1)});wire(index,'VarRef',inc,'VarRef');tail=chain(tail,inc);}
+  if(action==='select'){const snapshot=node('Exec_Var_Get');wire(index,'VarRef',snapshot,'VarRef');tail=chain(tail,snapshot);tail=chain(tail,set(activeIndex,[snapshot,'Value']));}
+  tail=chain(tail,set(mode,val(N(action==='buy'?1:action==='sell'?2:0))));requests.push([tail,'ExecOut']);return {edge,allowed,button};
  }
- const actions={bind:button('left:0','AnimatedButton','refresh',true),previous:button('left:13','Button','prev'),next:button('left:12','Button','next'),buy:button('right:12','Button','buy'),sell:button('right:4','Button','sell')};
+ const actions={bind:button('left:0','AnimatedButton','refresh',true),previous:button('left:13','Button','prev'),next:button('left:12','Button','next'),select:button('left:6','Button','select'),buy:button('right:12','Button','buy'),sell:button('right:4','Button','sell')};
  // Settings labels, Apply, and maintenance display are inside the configuration chip.
  const template=structuredClone(u('right:14','TextDisplay').data);
  function label(text,pos,size=[90,10,1]){w.addBrick({asset:'PB_DefaultMicroBrick',size,position:pos,color:[25,55,35],components:[{type:C.TextDisplay.NAME,data:{...template,Face:4,Rotation:0,Text:text,LineHeight:3}}]},settings.grid);}
@@ -77,15 +81,19 @@ function build(source,options={}){
  label('UPGRADE RESALE % →\r\n0.75 = 75%; stock value 0 has no refund',[-180,96,2]);
  // Use a labeled microbrick button; only the bound player may refresh the public menu.
  const applyButton={id:'apply',position:[0,160,2],type:C.Button.NAME,data:{PromptCustomLabel:'Apply Dealership Catalog'}};applyButton.handle=w.addBrick({asset:'PB_DefaultMicroBrick',size:[20,8,2],position:[0,160,2],color:[40,155,95],components:[{type:C.Button.NAME,data:applyButton.data},{type:C.TextDisplay.NAME,data:{...template,Text:'APPLY CATALOG',Face:4,Rotation:0,LineHeight:3}}]},settings.grid);nodes.push(applyButton);
- const applyEdge=expr('Expr_EdgeDetectorExec',{Input:[applyButton,'bHeld']}),applyGuard=branch(applyEdge,and(notBusy,present,[cmp('Expr_CompareEqual',[applyButton,'Character'],ref(bound)),'bOutput']),'OnRisingEdge');let applyTail=chain(applyGuard,set(busy,val(B(true))),'ExecOutA');applyTail=chain(applyTail,set(mode,val(N(0))));requests.push([applyTail,'ExecOut']);actions.apply={edge:applyEdge};
+ const applyPress=and([applyButton,'bHeld'],present,[cmp('Expr_CompareEqual',[applyButton,'Character'],ref(bound)),'bOutput']);
+ const applyEdge=expr('Expr_EdgeDetectorExec',{Input:applyPress}),applyGuard=branch(applyEdge,notBusy,'OnRisingEdge');let applyTail=chain(applyGuard,set(busy,val(B(true))),'ExecOutA');applyTail=chain(applyTail,set(mode,val(N(0))));requests.push([applyTail,'ExecOut']);actions.apply={edge:applyEdge,button:applyButton};
+
  const [entry,entryPort]=join(requests);let tail=chain(entry,set(diagnostic,val(S(''))),entryPort);tail=chain(tail,set(feedback,val(S('Updating…'))));
  const getVehicleKeys=node('Exec_MapVar_GetKeys');wire(catalog,'MapVarRef',getVehicleKeys,'MapVarRef');wire(vehicles,'ArrayVarRef',getVehicleKeys,'ArrayVarRef');tail=chain(tail,getVehicleKeys);
  tail=chain(tail,arrayOp('Exec_ArrayVar_Sort',vehicles));const length=arrayOp('Exec_ArrayVar_GetLength',vehicles);tail=chain(tail,length);
  const countOkay=[cmp('Expr_CompareGreater',[length,'Length'],val(N(0))),'bOutput'];const countBranch=branch(tail,countOkay);
  // Clamp browsing at either end; no wrapping or momentary button-dependent selection.
- const max=expr('Expr_MathSubtract',{InputA:[length,'Length'],InputB:val(N(1))}),lower=expr('Expr_MathMax',{InputA:ref(index),InputB:val(N(0))}),clamp=expr('Expr_MathMin',{InputA:[lower,'Output'],InputB:[max,'Output']});
- tail=chain(countBranch,set(index,[clamp,'Output']),'ExecOutA');
- const vehicle= arrayOp('Exec_ArrayVar_Get',vehicles,{Index:ref(index)});tail=chain(tail,vehicle);
+ const max=expr('Expr_MathSubtract',{InputA:[length,'Length'],InputB:val(N(1))});
+ function clampIndex(start,port,variable){const snapshot=node('Exec_Var_Get');wire(variable,'VarRef',snapshot,'VarRef');chain(start,snapshot,port);const lower=expr('Expr_MathMax',{InputA:[snapshot,'Value'],InputB:val(N(0))}),clamp=expr('Expr_MathMin',{InputA:[lower,'Output'],InputB:[max,'Output']});return chain(snapshot,set(variable,[clamp,'Output']));}
+ tail=clampIndex(countBranch,'ExecOutA',index);tail=clampIndex(tail,'ExecOut',activeIndex);
+ const vehicle=arrayOp('Exec_ArrayVar_Get',vehicles,{Index:ref(activeIndex)});tail=chain(tail,vehicle);
+
  const row=mapGet(catalog,[vehicle,'Value']);tail=chain(tail,row);
  const name=split([row,'Value'],'|'),ownedField=split([name,'Right'],'|'),buyField=split([ownedField,'Right'],'|'),ownedValue=num([ownedField,'Left']),buyPrice=num([buyField,'Left']),baseSell=num([buyField,'Right']);
  const percentOkay=and([cmp('Expr_CompareGreaterOrEqual',ref(percent),val(N(0))),'bOutput'],[cmp('Expr_CompareLessOrEqual',ref(percent),val(N(1))),'bOutput']);
@@ -143,7 +151,7 @@ function build(source,options={}){
  // Live UI: full vehicle price and total sale payout, with fixed Buy/Sell labels.
  wire(format('Vehicle Price: {A} Scrap',ref(buyPrice)),'Output',u('right:14','TextDisplay'),'Text');
  wire(format('Sell Price: {A} Scrap',ref(total)),'Output',u('right:13','TextDisplay'),'Text');
- wire(format('Scrap\r\n{A}',ref(shownBalance)),'Output',u('left:18','TextDisplay'),'Text');wire(displayName,'DisplayName',u('left:19','TextDisplay'),'Text');wire(feedback,'Value',u('left:17','TextDisplay'),'Text');
+ wire(format('Scrap\r\n{A}',ref(shownBalance)),'Output',u('left:18','TextDisplay'),'Text');wire(displayName,'DisplayName',u('left:19','TextDisplay'),'Text');wire(format('{A}\r\n{B}',[name,'Left'],ref(feedback)),'Output',u('left:17','TextDisplay'),'Text');
  // Five-row catalogue window. Refreshing this window never changes the selected index.
  const windowReads=[];for(const delta of [-2,-1,0,1,2]){const at=expr('Expr_MathAdd',{InputA:ref(index),InputB:val(N(delta))}),key=arrayOp('Exec_ArrayVar_Get',vehicles,{Index:[at,'Output']}),read=mapGet(catalog,[key,'Value']);chain(key,read);const splitName=split([read,'Value'],'|'),shown=select([key,'bOutOfBounds'],[splitName,'Left'],val(S('')));windowReads.push({key,read,shown});}
  const afterWindow=node('Exec_Union');wire(unlock,'ExecOut',afterWindow,'ExecA');wire(errorUnlock,'ExecOut',afterWindow,'ExecB');let winTail=afterWindow;for(const row of windowReads){chain(winTail,row.key);winTail=row.read;}
@@ -152,7 +160,7 @@ function build(source,options={}){
  for(const n of nodes){const fields=schema.structs.get(b.COMPONENT_TYPE_STRUCTS.get(n.type));for(const [key,value]of Object.entries(n.data)){if(value&&typeof value==='object'&&'$variant'in value&&fields.get(key)?.type!=='WireValue')n.data[key]=value.value;}}
  for(const e of edges)w.addWire({brick:e.a.handle,component_type:e.a.type,port:e.p},{brick:e.z.handle,component_type:e.z.type,port:e.q});
  const bytes=w.toBrz({prefab:r.prefabJson(),externalAssets:r.externalAssets(),bundle:{name:'Vehicle Dealership',description:'Buy/sell vehicles with installed upgrade resale and zeroed configuration. Editable catalogue settings in green chip.'}});
- const ctx={nodes,edges,actions,catalog,upgradeCatalog,percent,bound,busy,index,total,diagnostic,feedback,shownBalance,vehicles,resetKeys,mode,ui};
+ const ctx={nodes,edges,actions,catalog,upgradeCatalog,percent,bound,busy,index,activeIndex,total,diagnostic,feedback,shownBalance,vehicles,resetKeys,mode,ui};
  return {bytes,ctx,r,counts:{originalBricks:r.gridIds().reduce((a,g)=>a+[...r.bricks(g)].length,0),newBricks:WorldReader.from(bytes).gridIds().reduce((a,g)=>a+[...WorldReader.from(bytes).bricks(g)].length,0),logicGates:li,wires:edges.length}};
 }
 module.exports=build;

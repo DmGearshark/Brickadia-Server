@@ -2,7 +2,7 @@
 // Offline execution of the generated graph; buffered ticks are queued so tests
 // can exercise a second player's input while a transaction is in progress.
 const assert=require('assert/strict');
-module.exports=function model(ctx,players){
+module.exports=function model(ctx,players,options={}){
  const defs=new Map(ctx.nodes.map(n=>[n.id,n])),incoming=new Map(),outgoing=new Map(),state=new Map(),results=new Map(),buttons=new Map(),queue=[];let steps=0;
  for(const e of ctx.edges){incoming.set(e.z.id+':'+e.q,e);const key=e.a.id+':'+e.p;if(!outgoing.has(key))outgoing.set(key,[]);outgoing.get(key).push(e.z.id);}
  for(const n of ctx.nodes){if(n.type==='BrickComponentType_Var')state.set(n.id,n.data.Value.value);if(n.type==='BrickComponentType_MapVar')state.set(n.id,new Map(n.data.Value.$map));if(n.type==='BrickComponentType_ArrayVar')state.set(n.id,[...n.data.Value.$array]);}
@@ -38,6 +38,7 @@ module.exports=function model(ctx,players){
   switch(t.replace('BrickComponentType_','')){
    case 'Exec_Union':break;
    case 'Exec_Branch':out=get('bCond')?'ExecOutA':'ExecOutB';break;
+   case 'Exec_Var_Get':results.set(id,{Value:state.get(get('VarRef'))});break;
    case 'Exec_Var_Set':state.set(get('VarRef'),get('Value'));break;
    case 'Exec_Var_Increment':{const ref=get('VarRef');state.set(ref,state.get(ref)+get('Value'));break;}
    case 'Exec_MapVar_GetKeys':state.set(get('ArrayVarRef'),[...state.get(get('MapVarRef')).keys()]);break;
@@ -57,6 +58,11 @@ module.exports=function model(ctx,players){
   emit(id,out);
  }
  function drain(){while(queue.length)queue.shift()();}
- function press(action,player,flush=true){const a=ctx.actions[action],e=incoming.get(a.edge.id+':Input');buttons.set(e.a.id,{Character:player,bHeld:true});emit(a.edge.id,'OnRisingEdge');buttons.set(e.a.id,{Character:null,bHeld:false});if(flush)drain();}
+ function press(action,player,flush=true){const a=ctx.actions[action],button=a.button||incoming.get(a.edge.id+':Input').a;
+  let last=false;function update(values){buttons.set(button.id,values);const current=Boolean(input(a.edge.id,'Input'));if(current&&!last)emit(a.edge.id,'OnRisingEdge');last=current;}
+  // Brickadia can propagate Held before Character. The click signal must wait
+  // until both are available rather than dropping the early rising edge.
+  update({Character:null,bHeld:false});if(options.characterFirst)update({Character:player,bHeld:false});else update({Character:null,bHeld:true});update({Character:player,bHeld:true});update({Character:null,bHeld:false});if(flush)drain();}
+
  return {state,players,results,value,input,press,drain,queue,steps:()=>steps};
 };

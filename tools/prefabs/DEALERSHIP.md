@@ -1,11 +1,11 @@
 # Vehicle dealership
 
-Download `prefabs/vehicle-dealership.brz`. This is a replacement dealership menu built from the user's supplied physical layout, with new logic rather than the mechanic's category/replacement system.
+Download `prefabs/vehicle-dealership-fixed.brz`. This is a replacement dealership menu built from the user's supplied physical layout, with new logic rather than the mechanic's category/replacement system.
 
 ## Use
 
 1. Bind yourself with the original blue button.
-2. Browse the vehicle list with its up/down buttons. All catalogued vehicles appear, including ones you do not own.
+2. Browse the vehicle list with its up/down buttons. All catalogued vehicles appear, including ones you do not own. Press **Select** to choose the middle vehicle. Browsing alone does not change the vehicle shown beside the transaction details.
 3. **Buy** purchases the selected vehicle if you do not own it and can afford it.
 4. **Sell** sells the selected vehicle, credits its base sale price plus installed upgrade resale, clears ownership, and resets its configured upgrade scores to zero.
 
@@ -57,12 +57,18 @@ Bind and press Apply Catalog after editing to refresh immediately. Binding, brow
 
 The rebuild removes the old category selector, part selection, installed-part/replacement-cost logic, runtime cache compiler, all eleven generated caches, unused category/part arrows, and old logic chips. The remaining two chips hold configuration and dealership logic. The physical menu and designated price/action displays are retained. The debug display reports invalid vehicle settings, unsafe upgrade score keys, and installed nonzero values absent from the resale catalogue. These failures stop all transaction writes.
 
-The initial build contains **316 bricks versus 549** in the source, a reduction of about **42%**. It uses 268 logic gates and 485 wires. Upgrade rows are processed with buffered ticks, so controls are briefly locked during valuation/reset; there is no continuous polling.
+The initial build contains **334 bricks versus 549** in the source, a reduction of about **39%**. It uses 286 logic gates and 518 wires. Upgrade rows are processed with buffered ticks, so controls are briefly locked during valuation/reset; there is no continuous polling.
 
 ## Rebuild and validation
 
 ```sh
-node tools/prefabs/build-dealership.cjs /path/to/source.brz prefabs/vehicle-dealership.brz
+node tools/prefabs/build-dealership.cjs /path/to/source.brz prefabs/vehicle-dealership-fixed.brz
 ```
 
 The builder runs an offline evaluator of the generated circuit and repeats its behavior checks using components and wires read back from the serialized prefab. Tests cover buy/sell, upgrade payouts and resets, repeat transactions, binding and blocked controls during processing, current balance checks, configurable prices/percentages/sparse IDs, malformed data, and preservation of spawned-state scores and the other player's data. Every saved wire endpoint is checked, and input targets must be unique. Prefab pivot metadata is retained. In-game testing is still required.
+
+## Control repair
+
+The first dealership version incorrectly removed the original Select button. This version restores it and keeps browsing and transaction selection separate. The selected vehicle's name appears above the transaction status.
+
+The uploaded in-game save retained all 485 original wires. The first circuit converted Held directly into an execution edge before checking Character; the offline model reproduces a rejected click when Held propagates first. The revised click signal combines Held and the valid player identity before producing its edge. Busy remains a separate execution guard so releasing the transaction lock cannot retrigger a held button. Tests cover both Character-first and Held-first propagation, including the saved circuit. Scrolling also uses increment instructions and snapshot reads rather than feeding a live index calculation back into its own setter. In-game verification remains pending.
