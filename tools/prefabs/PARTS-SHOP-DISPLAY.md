@@ -62,3 +62,16 @@ node tools/prefabs/test-upgrade-shop.cjs prefabs/parts-shop-bind-edge.brz
 ```
 
 The patch adds one gate and one wire. Offline input-sequence checks cover both Held/Character update orders, a long hold, release and second click, and missing character. All 808 saved connections are compared with their expected endpoints. Purchase regression checks pass; in-game validation is pending.
+
+## Protected rebinding
+
+`prefabs/parts-shop-protected-bind.brz` adds the missing busy check to the parts shop's Bind control. Another player can take over while the shop is idle, but a purchase or catalogue rebuild blocks rebinding. The guard is sampled on the rising edge: a press rejected while busy stays rejected even if processing finishes while the button is still held. Release and press again to bind once idle.
+
+An execution branch checks the existing processing/idle signal, then emits an accepted one-tick boolean pulse to the three legacy bind routes. This preserves their boolean inputs, the held text animation, the inactivity timer and compact captions. The patch adds five gates and seven wires.
+
+```sh
+node tools/prefabs/guard-parts-shop-bind.cjs prefabs/parts-shop-bind-edge.brz prefabs/parts-shop-protected-bind.brz
+node tools/prefabs/test-upgrade-shop.cjs prefabs/parts-shop-protected-bind.brz
+```
+
+Checks cover idle takeover, rejected purchase/rebuild presses held through completion, release/repress acceptance, and exact saved endpoint remapping for all 815 wires. Purchase regression checks pass; in-game validation is pending. The dealership already has its own busy guard and requires no change for this request.
