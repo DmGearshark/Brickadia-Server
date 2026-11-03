@@ -37,7 +37,10 @@ function value(id,p){const n=defs.get(id),t=n.type,d=n.data,r=results.get(id)||{
  }}
 function emit(id,p){for(const z of outgoing.get(id+':'+p)||[])run(z);}
 function run(id){assert(++steps<100000,'Execution model exceeded budget');const n=defs.get(id),get=p=>input(id,p),t=n.type;let result={};
- if(t==='BrickComponentType_Exec_Var_Set'){state.set(get('VarRef'),get('Value'));emit(id,'ExecOut');}
+ if(t==='BrickComponentType_Exec_ArrayVar_Get'){const a=state.get(get('ArrayVarRef')),i=get('Index');results.set(id,{Value:a[i]??'',bOutOfBounds:i<0||i>=a.length});emit(id,'ExecOut');}
+ else if(t==='BrickComponentType_Exec_Var_Increment'){const ref=get('VarRef');state.set(ref,state.get(ref)+get('Value'));emit(id,'ExecOut');}
+ else if(t==='BrickComponentType_BufferTicks'){emit(id,'Output');}
+ else if(t==='BrickComponentType_Exec_Var_Set'){state.set(get('VarRef'),get('Value'));emit(id,'ExecOut');}
  else if(t==='BrickComponentType_Exec_MapVar_Clear'){state.get(get('MapVarRef')).clear();emit(id,'ExecOut');}
  else if(t==='BrickComponentType_Exec_MapVar_GetKeys'){state.set(get('ArrayVarRef'),[...state.get(get('MapVarRef')).keys()]);if(id!==ctx.stopAt.id)emit(id,'ExecOut');}
  else if(t==='BrickComponentType_Exec_ArrayVar_Sort'){state.get(get('ArrayVarRef')).sort();emit(id,'ExecOut');}
