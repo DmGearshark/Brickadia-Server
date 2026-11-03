@@ -148,3 +148,13 @@ Checks compare every saved connection with the intended remapping (520 wires), r
 ## Compact button busy label
 
 `prefabs/vehicle-dealership-compact-button.brz` replaces only the temporary Buy/Sell button label `Updating…` with `…` to fit the smaller physical button. Buy and Sell labels, other status readouts, and all 520 connections are retained. Rebuild with `node tools/prefabs/compact-dealership-button.cjs prefabs/vehicle-dealership-new-buttons.brz prefabs/vehicle-dealership-compact-button.brz`.
+
+## Purchase sound effects
+
+`prefabs/vehicle-dealership-purchase-sounds.brz` uses the latest sound-effects upload. The marked successful-buy emitter plays from the purchase debit's execution output, after ownership is written and Scrap is deducted. The failed-buy emitter plays from the rejected-purchase branch (insufficient funds or an ownership mismatch). Selling, browsing, and binding do not trigger these purchase effects. The selected descriptors, pitch, volume, range, and repeat settings are preserved.
+
+```sh
+node tools/prefabs/wire-dealership-sounds.cjs '/path/to/Wire these sound effects.brz' prefabs/vehicle-dealership-purchase-sounds.brz
+```
+
+Adds two wires and no gates. Saved connections are compared against all original wiring plus the two intended Play connections; sound settings and unique valid wire targets are checked. In-game audio validation is pending.
