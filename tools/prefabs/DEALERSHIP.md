@@ -166,3 +166,7 @@ Adds two wires and no gates. Saved connections are compared against all original
 ```sh
 node tools/prefabs/wire-dealership-sale-sound.cjs '/path/to/Sold sound .brz' prefabs/vehicle-dealership-sale-sound.brz
 ```
+
+## Completed dealership
+
+`prefabs/completed-dealership.brz` is the user's completed in-game dealership, uploaded as `Completed Dealership.brz`. This is the final user-provided version, archived byte-for-byte without regeneration or modifications. Prefer it over the intermediate generated prefabs above for normal use.
