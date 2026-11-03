@@ -1,5 +1,25 @@
 # Prefab generator
 
+## User's labeled display
+
+To generate the selector inside the supplied nine-brick layout:
+
+```sh
+npm ci
+node wire-reference.cjs references/display-reference.brz ../../prefabs/display-reference-wired.brz
+```
+
+This version uses the existing Scroll Up, Scroll Down, and Select buttons,
+replaces Name 1–5 with the five live names, and feeds the selected-name display
+from the latched string variable. It preserves the original nine bricks and
+their appearance, external sound/font assets, component settings (except
+placeholder text), and prefab paste metadata. Thirty logic bricks are placed
+behind the display. The original thumbnail still shows the reference labels.
+
+Validation rereads all geometry and original component data, checks all 38
+wires and 42 components, and runs the same 10,125 expression checks. The in-game
+acceptance checks below still apply; runtime behavior remains unverified.
+
 Requires Node.js 22.15 or newer. From this directory:
 
 ```sh
