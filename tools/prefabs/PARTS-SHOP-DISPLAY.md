@@ -30,3 +30,18 @@ node tools/prefabs/test-upgrade-shop.cjs prefabs/parts-shop-new-display.brz
 ```
 
 The builder checks automatic centre-row selection, all eight held blends, the saved per-player purchase key/value lookup connections, catalogue/cache retention, all 743 saved wire endpoints and unique input targets, new-layout geometry, and the unconnected sale sound. The purchase-model and installed-check regression tests also pass. In-game validation is pending.
+
+## Three-minute timeout and idle blanking
+
+Use `prefabs/parts-shop-3-minute-timeout.brz` for the version with automatic shutdown. After **180 seconds of inactivity**, it clears the bound player and disables the screen readouts and non-bind keyboard text. The bind symbol and red/green indicator remain visible, so the PC can be activated again. Binding restores the display.
+
+Each of the eight accepted controls independently resets the timer. Navigation/purchase activity uses the shop's existing bound-player guards; rejected input from another player does not reset it. Purchases and catalogue rebuilding prevent expiry and restart the countdown when processing finishes. A queued expiry rechecks current activity and processing state before unbinding. No ownership, part configuration, or Scrap is changed by expiry.
+
+This patch adds 31 gates inside the existing logic chip. Catalogue settings, keyboard blends, sounds, and the existing purchasing backend are retained.
+
+```sh
+node tools/prefabs/add-parts-shop-timeout.cjs prefabs/parts-shop-new-display.brz prefabs/parts-shop-3-minute-timeout.brz
+node tools/prefabs/test-upgrade-shop.cjs prefabs/parts-shop-3-minute-timeout.brz
+```
+
+Checks cover the 180-second boundary, all eight activity reset paths, long purchases and catalogue rebuilds, queued-expiry cancellation, fourteen display-enable connections, and valid unique saved wire endpoints. The purchase-model and saved key/value/installed-check regression checks pass. In-game validation is pending.
