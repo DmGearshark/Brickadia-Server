@@ -1,10 +1,25 @@
 # Viva La Vida — six-voice array sequencer
 
+## Array player v2: feedback-wire fix
+
+The user's re-export retained all arrays and components, but omitted exactly
+the six `Exec_Var_Set.ExecOut -> Exec_Var_Increment.Exec` wires used to advance
+voices at note-off. These immediate feedback paths are now deferred through
+one-tick buffers, a pattern supported by the supplied world's existing logic.
+Before buffering, an explicit setter clears the loaded flag so the old note
+cannot retrigger during the delay. Each emitter still has one Play and one
+Stop source. The corrected build has 220 bricks, 222 components and 343 wires.
+
+Checks confirm six buffers and six buffered increment inputs. A scheduling
+model including the extra tick dispatched all notes before auto-stop at both
+30 and 60 Hz (maximum modeled onset lateness 50 ms / 16.7 ms). These are model
+results; the new wiring still needs an actual in-game connection test.
+
 Rebuild after `npm ci` from this directory:
 
 ```sh
 python3 inspect-midi.py /path/to/song.mid /tmp/midi-score
-node build-array-music.cjs /tmp/midi-score/notes.json '/path/to/Default Pitch.brz' ../../prefabs/viva-la-vida-array-player.brz
+node build-array-music.cjs /tmp/midi-score/notes.json '/path/to/Default Pitch.brz' ../../prefabs/viva-la-vida-array-player-v2.brz
 ```
 
 The exported prefab is standalone. Source MIDI and preset files are not

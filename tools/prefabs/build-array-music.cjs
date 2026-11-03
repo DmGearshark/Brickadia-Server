@@ -36,7 +36,11 @@ for(let v=0;v<voices.length;v++){
  const inactive=op('Expr_LogicalNOT',active,'Value',null,'bInput');
  const canPlay=binary('Expr_LogicalAND',running,'Value',loaded,'Value');const due=binary('Expr_LogicalAND',begin,'bOutput',canPlay,'bOutput');const fire=binary('Expr_LogicalAND',due,'bOutput',inactive,'bOutput');
  const on=op('Expr_EdgeDetectorExec',fire,'bOutput',null,'Input');const setOn=setter(active,B(true));wire(on,'OnRisingEdge',setOn,'Exec');
- const endOrStop=binary('Expr_LogicalOR',end,'bOutput',idle,'bOutput');const ending=binary('Expr_LogicalAND',endOrStop,'bOutput',active,'Value');const off=op('Expr_EdgeDetectorExec',ending,'bOutput',null,'Input');const setOff=setter(active,B(false));wire(off,'OnRisingEdge',setOff,'Exec');wire(setOff,'ExecOut',advance,'Exec');
+ const endOrStop=binary('Expr_LogicalOR',end,'bOutput',idle,'bOutput');const ending=binary('Expr_LogicalAND',endOrStop,'bOutput',active,'Value');const off=op('Expr_EdgeDetectorExec',ending,'bOutput',null,'Input');const setOff=setter(active,B(false));wire(off,'OnRisingEdge',setOff,'Exec');
+ // Break the immediate feedback path and disarm the voice while advancing.
+ const invalidate=setter(loaded,B(false));wire(setOff,'ExecOut',invalidate,'Exec');
+ const deferred=node('BufferTicks',{TicksToWait:1,ZeroTicksToWait:0});
+ wire(invalidate,'ExecOut',deferred,'Input');wire(deferred,'Output',advance,'Exec');
  const emitter=node('OneShotAudioEmitter',{...presetComponent.data,bSpatialization:false,bEnableRepeat:false,VolumeMultiplier:.15},true,[v*4-10,12,1]);wire(setOn,'ExecOut',emitter,'Play');wire(setOff,'ExecOut',emitter,'Stop');
  const pitch=node('Expr_MathMultiply');wire(getters[2],'Value',pitch,'InputA');wire(tune,'Value',pitch,'InputB');wire(pitch,'Output',emitter,'PitchMultiplier');
  const gain=node('Expr_MathMultiply');wire(getters[3],'Value',gain,'InputA');wire(volume,'Value',gain,'InputB');wire(gain,'Output',emitter,'VolumeMultiplier');
