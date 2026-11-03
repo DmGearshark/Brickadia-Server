@@ -132,3 +132,15 @@ The patch adds six wires and no gates. Initial screen text components are disabl
 ```sh
 node tools/prefabs/blank-idle-dealership.cjs prefabs/vehicle-dealership-binding-indicator.brz prefabs/vehicle-dealership-idle-black-screen.brz
 ```
+
+## Replacement controls
+
+`prefabs/vehicle-dealership-new-buttons.brz` uses the latest `Update these Buttons.brz` layout and its four marked button prompts. Scroll Down, Scroll Up, Buy/Sell, and Bind Player are rewired to their new physical buttons, including Character and Held signals. The old animated bind button and two standalone scroll buttons are deleted. The former on-screen Buy/Sell button's interaction and text components are removed; its black panel backing remains.
+
+The dynamic Buy/Sell label, prompt, and enabled state now follow the new Buy/Sell button. Existing enabled-state connections for the scroll labels follow the replacement arrows. The indicator, black idle screen, three-minute timeout, catalogue and transaction logic are retained. Instructional Rewire prompts are replaced with normal action labels.
+
+```sh
+node tools/prefabs/rewire-dealership-buttons.cjs '/path/to/Update these Buttons.brz' prefabs/vehicle-dealership-new-buttons.brz
+```
+
+Checks compare every saved connection with the intended remapping (520 wires), require exactly four public buttons, verify both input signals on each, and preserve the geometry of all retained bricks. In-game validation is pending.
