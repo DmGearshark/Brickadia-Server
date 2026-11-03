@@ -8,7 +8,7 @@ steering and hinged rear-deck mechanism as its mechanical base.
 Rebuild from this directory after `npm ci`:
 
 ```sh
-node build-roadster.cjs references/car.brz ../../prefabs/tide-r20-roadster-v3.brz
+node build-roadster.cjs references/car.brz ../../prefabs/tide-r20-roadster-v4.brz
 ```
 
 The generator replaces 63 exterior bricks without reordering the chunk's brick
@@ -28,7 +28,17 @@ a plane without occupying the same volume. It checks all body pairs for strict
 positive-volume overlap, checks approximate mechanical clearance envelopes,
 and requires every new body box to reach the chassis by contact. Mechanical
 envelopes approximate native asset geometry; they are not exact mesh checks.
-The in-game result for v3 is still pending.
+The v3 in-game re-export retained 67 of 74 main-grid bricks: only body indices
+0, 1, 2, 4, 5 and both seats were lost. It retained the lamps and engine, which
+v2 had lost. The remaining rejects surround the cockpit, indicating that the
+previous seat envelope was too small.
+
+V4 changes only those five body bricks. Lower side supports use space below
+Z=-8 alongside the original chassis; outer walls start at |X|=21. The center
+floor becomes a forward crossmember, clear of the engine. The seat clearance
+envelope is expanded to half-extents [10,15,11]. These are conservative bounds,
+not measured seat mesh dimensions. All other main-grid bricks remain identical
+to v3. The in-game result for v4 is pending.
 
 To reproduce the comparison (the in-game export is not published):
 

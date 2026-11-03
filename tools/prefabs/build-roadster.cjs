@@ -12,9 +12,9 @@ const TEAL=[15,145,150],SILVER=[205,217,220],BLACK=[19,24,30],RED=[240,35,40],WH
 const body=[];
 function box(x,y,z,sx,sy,sz,color=TEAL,material=0){body.push({position:[x,y,z],size:[sx,sy,sz],color,material});}
 // Face-connected panels: never intersect another brick's occupied volume.
-for(const x of [-10,10])box(x,0,-7,5,60,1,BLACK);
-box(0,-15,-7,5,45,1,BLACK);box(0,55,-7,5,5,1,BLACK);
-for(const x of [-20,20])box(x,0,-4,5,22,4);
+for(const x of [-18,18])box(x,0,-14,3,22,6,BLACK);
+box(0,48,-10,5,3,2,BLACK);box(0,55,-7,5,5,1,BLACK);
+for(const x of [-23,23])box(x,0,-8,2,22,8);
 for(const x of [-23,23]){
  box(x,0,2,2,22,2);
  for(const y of [-47,47])box(x,y,2,2,25,2);
@@ -55,7 +55,7 @@ for(let i=0;i<body.length;i++)for(let j=0;j<i;j++)assert(!overlaps(body[i],body[
 const reserved=[
  {position:[0,-5,-14],size:[15,50,6]},
  {position:[0,40,-6],size:[5,5,2]},
- ...[-10,10].map(x=>({position:[x,0,3],size:[5,10,8]})),
+ ...[-10,10].map(x=>({position:[x,0,3],size:[10,15,11]})),
  ...[-20,20].map(x=>({position:[x,77,-1],size:[5,2,5]})),
 ];
 for(let i=0;i<body.length;i++)for(let j=0;j<reserved.length;j++)assert(!overlaps(body[i],reserved[j]),`Mechanical clearance ${i}/${j}`);
