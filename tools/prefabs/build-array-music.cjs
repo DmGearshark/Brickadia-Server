@@ -14,13 +14,13 @@ function setter(ref,value){const n=node('Exec_Var_Set',{Value:value});wire(ref,'
 function button(label,x,color){const brick=w.addBrick({asset:'PB_DefaultMicroBrick',size:[12,8,2],position:[x,-18,2],color,components:[{type:C.Button.NAME,data:{PromptCustomLabel:label}},{type:C.TextDisplay.NAME,data:{Text:label,Face:4,LineHeight:6}}]});const n={brick,k:'Button',id:nodes.length};nodes.push(n);return n;}
 function label(t,x,y){w.addBrick({asset:'PB_DefaultMicroBrick',size:[20,5,1],position:[x,y,1],color:[25,30,40],components:[{type:C.TextDisplay.NAME,data:{Text:t,Face:4,LineHeight:3}}]});}
 const play=button('PLAY',-17,[30,150,70]),stop=button('STOP',17,[180,45,40]);
-const tune=node('Var',{Value:N(1)},true,[-17,-38,2]),volume=node('Var',{Value:N(.15)},true,[17,-38,2]);label('MASTER PITCH',-24,-50);label('MASTER VOLUME',24,-50);label('VIVA LA VIDA / 6 VOICES',0,-62);
+const tune=node('Var',{Value:N(1)},true,[-17,-38,2]),volume=node('Var',{Value:N(.15)},true,[17,-38,2]);label('MASTER PITCH',-24,-50);label('MASTER VOLUME',24,-50);label('VIVA LA VIDA / 6 VOICES',0,-62);const tempo=node('Var',{Value:N(1.15)},true,[0,-78,2]);label('SPEED x1.15',0,-90);
 const running=node('Var',{Value:B(false)}),start=node('Var',{Value:N(0)}),clock=node('Stopwatch',{Time:0,Limit:1e9,bRunning:true});
-const elapsed=node('Expr_MathSubtract');wire(clock,'Time',elapsed,'InputA');wire(start,'Value',elapsed,'InputB');
+const elapsed=node('Expr_MathSubtract');wire(clock,'Time',elapsed,'InputA');wire(start,'Value',elapsed,'InputB');const musicalTime=node('Expr_MathMultiply');wire(elapsed,'Output',musicalTime,'InputA');wire(tempo,'Value',musicalTime,'InputB');
 const idle=op('Expr_LogicalNOT',running,'Value',null,'bInput'),allowed=binary('Expr_LogicalAND',play,'bHeld',idle,'bOutput');const playEdge=op('Expr_EdgeDetectorExec',allowed,'bOutput',null,'Input');
 const capture=node('Exec_Var_Set');wire(start,'VarRef',capture,'VarRef');wire(clock,'Time',capture,'Value');wire(playEdge,'OnRisingEdge',capture,'Exec');
 const go=setter(running,B(true));wire(capture,'ExecOut',go,'Exec');
-const finish=node('Expr_CompareGreaterOrEqual',{InputB:N(duration+.25)});wire(elapsed,'Output',finish,'InputA');const finishPlaying=binary('Expr_LogicalAND',finish,'bOutput',running,'Value');const stopSignal=binary('Expr_LogicalOR',stop,'bHeld',finishPlaying,'bOutput');const stopEdge=op('Expr_EdgeDetectorExec',stopSignal,'bOutput',null,'Input');const halt=setter(running,B(false));wire(stopEdge,'OnRisingEdge',halt,'Exec');
+const finish=node('Expr_CompareGreaterOrEqual',{InputB:N(duration+.25)});wire(musicalTime,'Output',finish,'InputA');const finishPlaying=binary('Expr_LogicalAND',finish,'bOutput',running,'Value');const stopSignal=binary('Expr_LogicalOR',stop,'bHeld',finishPlaying,'bOutput');const stopEdge=op('Expr_EdgeDetectorExec',stopSignal,'bOutput',null,'Input');const halt=setter(running,B(false));wire(stopEdge,'OnRisingEdge',halt,'Exec');
 for(let v=0;v<voices.length;v++){
  const list=voices[v],sentinel=duration+10000;
  const columns=[list.map(n=>n.time).concat(sentinel),list.map(n=>n.time+n.duration).concat(sentinel+1),list.map(n=>2**((n.pitch-69)/12)).concat(1),list.map(n=>n.velocity/127).concat(0)];
@@ -31,8 +31,8 @@ for(let v=0;v<voices.length;v++){
  const getters=[];let previous=unload;
  for(const column of columns){const a=node('ArrayVar',{Value:{$elementType:'f64',$array:column}});arrays.push(column);const get=node('Exec_ArrayVar_Get');wire(a,'ArrayVarRef',get,'ArrayVarRef');wire(index,'Value',get,'Index');wire(previous,'ExecOut',get,'Exec');previous=get;getters.push(get);}
  const ready=setter(loaded,B(true));wire(previous,'ExecOut',ready,'Exec');
- const begin=node('Expr_CompareGreaterOrEqual');wire(elapsed,'Output',begin,'InputA');wire(getters[0],'Value',begin,'InputB');
- const end=node('Expr_CompareGreaterOrEqual');wire(elapsed,'Output',end,'InputA');wire(getters[1],'Value',end,'InputB');
+ const begin=node('Expr_CompareGreaterOrEqual');wire(musicalTime,'Output',begin,'InputA');wire(getters[0],'Value',begin,'InputB');
+ const end=node('Expr_CompareGreaterOrEqual');wire(musicalTime,'Output',end,'InputA');wire(getters[1],'Value',end,'InputB');
  const inactive=op('Expr_LogicalNOT',active,'Value',null,'bInput');
  const canPlay=binary('Expr_LogicalAND',running,'Value',loaded,'Value');const due=binary('Expr_LogicalAND',begin,'bOutput',canPlay,'bOutput');const fire=binary('Expr_LogicalAND',due,'bOutput',inactive,'bOutput');
  const on=op('Expr_EdgeDetectorExec',fire,'bOutput',null,'Input');const setOn=setter(active,B(true));wire(on,'OnRisingEdge',setOn,'Exec');
@@ -45,7 +45,7 @@ for(let v=0;v<voices.length;v++){
  const pitch=node('Expr_MathMultiply');wire(getters[2],'Value',pitch,'InputA');wire(tune,'Value',pitch,'InputB');wire(pitch,'Output',emitter,'PitchMultiplier');
  const gain=node('Expr_MathMultiply');wire(getters[3],'Value',gain,'InputA');wire(volume,'Value',gain,'InputB');wire(gain,'Output',emitter,'VolumeMultiplier');
 }
-w.makePrefab({snap:10});const bytes=w.toBrz({bundle:{name:'Viva La Vida - Array Sequencer',description:'Full supplied MIDI stored in 24 arrays, six reusable polyphonic voices. Play/Stop. OBA_Beep_1; absolute pitch uncalibrated.'},externalAssets:preset.externalAssets()});
+w.makePrefab({snap:10});const bytes=w.toBrz({bundle:{name:'Viva La Vida - Array Sequencer (Speed Control)',description:'Full supplied MIDI stored in 24 arrays, six reusable polyphonic voices. Play/Stop, adjustable speed default x1.15. OBA_Beep_1; absolute pitch uncalibrated.'},externalAssets:preset.externalAssets()});
 const r=WorldReader.from(bytes);let components=0,emitters=0,arrayCount=0,wireCount=0;const decodedInputs=new Set();for(const g of r.gridIds())for(const ch of r.brickChunkIndex(g)){if(ch.numComponents)for(const c of r.componentChunk(g,ch.index).components){components++;if(c.typeName===C.OneShotAudioEmitter.NAME)emitters++;if(c.typeName===C.ArrayVar.NAME){assert.deepEqual(c.data.Value.$elementType,'f64');arrayCount++;assert(arrays.some(a=>JSON.stringify(a)===JSON.stringify(c.data.Value.$array)));}}if(ch.numWires){const ws=r.wireChunk(g,ch.index);for(const e of [...ws.local,...ws.remote]){const key=JSON.stringify([g,ch.index,e.target]);assert(!decodedInputs.has(key),'Duplicate saved input');decodedInputs.add(key);wireCount++;}}}
 assert.equal(emitters,6);assert.equal(arrayCount,24);assert.equal(wireCount,links.length);
 // Reconstruct every real note from stored columns, not just a note count.

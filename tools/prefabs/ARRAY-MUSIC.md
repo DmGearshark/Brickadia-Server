@@ -1,5 +1,19 @@
 # Viva La Vida — six-voice array sequencer
 
+## Array player v3: adjustable tempo
+
+The source MIDI specifies 120 BPM. At the user's report that playback felt
+slow, v3 adds an exposed SPEED variable, default 1.15 (138 BPM equivalent).
+Elapsed clock time is multiplied by this value before all twelve note-time
+comparisons and the auto-stop comparison. Pitch and velocity are unchanged.
+Set speed to 1.0 for source tempo; stop playback before changing the value,
+then Play again. It scales elapsed time, not the remaining interval, so changing
+it during playback can skip forward/backward in the score.
+
+V3 has 223 bricks, 225 components and 345 wires. Checks verify the saved speed
+value and all thirteen scaled timing connections. Live perceived tempo still
+depends on the game's evaluation rate and the one-tick voice advance buffers.
+
 ## Array player v2: feedback-wire fix
 
 The user's re-export retained all arrays and components, but omitted exactly
@@ -19,7 +33,7 @@ Rebuild after `npm ci` from this directory:
 
 ```sh
 python3 inspect-midi.py /path/to/song.mid /tmp/midi-score
-node build-array-music.cjs /tmp/midi-score/notes.json '/path/to/Default Pitch.brz' ../../prefabs/viva-la-vida-array-player-v2.brz
+node build-array-music.cjs /tmp/midi-score/notes.json '/path/to/Default Pitch.brz' ../../prefabs/viva-la-vida-array-player-v3.brz
 ```
 
 The exported prefab is standalone. Source MIDI and preset files are not
