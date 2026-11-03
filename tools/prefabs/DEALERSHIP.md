@@ -74,3 +74,17 @@ The builder runs an offline evaluator of the generated circuit and repeats its b
 ## Button input handling
 
 The click signal combines Held and the valid player identity before producing an execution edge, supporting either propagation order. Busy remains a separate execution guard so releasing the transaction lock cannot retrigger a held button. Tests cover both input orders and repeat the behavior checks on the saved circuit. Scrolling uses increment instructions and snapshot reads rather than feeding a live index calculation back into its own setter. A single index drives the highlight and the transaction target.
+
+## Compact display version
+
+`prefabs/vehicle-dealership-new-display.brz` moves the confirmed working unified dealership into the user's labeled `New Display ref.brz` case. The five-row list, selected vehicle/status, shared Buy/Sell price, and shared action use their marked display bricks. Name and Scrap are combined into the top readout. The original blue square button binds the player.
+
+Two wired scroll buttons sit outside the left side of the case; move them wherever desired. The configuration and logic chips sit outside the right side for access. Settings and business logic are retained from `vehicle-dealership-unified.brz`; only display routing and the balance text format change. The static Vehicle Catalog header and all original case geometry remain. Font/sound asset indices are remapped so the reference's font is retained.
+
+Rebuild and run the transplant checks with:
+
+```sh
+node tools/prefabs/rehouse-dealership.cjs prefabs/vehicle-dealership-unified.brz '/path/to/New Display ref.brz' prefabs/vehicle-dealership-new-display.brz
+```
+
+The checks compare every saved connection against its expected endpoints, compare all copied logic/settings component data, preserve every reference brick's geometry, and confirm Held and Character are connected for both external scroll buttons. This adds one player-readout formatter and one wire; the result has 484 wires. Visual and interaction validation in game is pending.
