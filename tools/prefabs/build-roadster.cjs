@@ -11,48 +11,54 @@ assert.equal(bricks.length,74);
 const TEAL=[15,145,150],SILVER=[205,217,220],BLACK=[19,24,30],RED=[240,35,40],WHITE=[225,245,255];
 const body=[];
 function box(x,y,z,sx,sy,sz,color=TEAL,material=0){body.push({position:[x,y,z],size:[sx,sy,sz],color,material});}
-// Narrow lower sills and raised fender rails keep the reference wheel clearance.
-for(const x of [-24,24]){
- box(x,0,-7,3,21,5,BLACK);box(x,0,0,3,21,2);
- box(x,45,4,3,25,3);box(x,-45,4,3,25,3);
- box(x,0,5,3,20,3); // low, open cockpit side
- box(x,66,-3,3,5,4);box(x,-66,-3,3,5,4);
+// Face-connected panels: never intersect another brick's occupied volume.
+for(const x of [-10,10])box(x,0,-7,5,60,1,BLACK);
+box(0,-15,-7,5,45,1,BLACK);box(0,55,-7,5,5,1,BLACK);
+for(const x of [-20,20])box(x,0,-4,5,22,4);
+for(const x of [-23,23]){
+ box(x,0,2,2,22,2);
+ for(const y of [-47,47])box(x,y,2,2,25,2);
 }
-// Long bonnet with a continuous silver center stripe.
-box(0,45,5,21,25,3);
-box(0,45,8,4,25,1,SILVER);
-box(0,72,-1,24,4,6);box(0,76,-9,26,2,2,BLACK);
-box(0,76,-2,12,1,3,BLACK);
-for(const x of [-9,-6,-3,0,3,6,9])box(x,77,-2,1,1,2,SILVER);
-// Rear body surrounds the reference hinged rear deck.
-box(0,-72,0,24,3,7);box(0,-76,-9,26,2,2,BLACK);
-box(0,-76,2,18,1,2,RED);
-box(0,-77,-4,6,1,2,SILVER);
-for(const x of [-22,22])box(x,-65,9,3,6,2);
-// Frameless low windshield and slim pillars; seats remain fully accessible.
-box(0,19,18,20,1,10,[85,160,175],1);
-box(0,19,28,22,2,1,BLACK);
-for(const x of [-22,22])box(x,19,18,1,2,10,BLACK);
-// Rear roll hoop, with no roof over the two seats.
-for(const x of [-21,21])box(x,-21,19,2,2,13,BLACK);
-box(0,-21,32,23,2,2,SILVER);
-box(0,-23,8,21,3,2,TEAL);
-// Dashboard, instrument pods, mirrors and rear exhausts.
-box(0,15,6,21,4,3,BLACK);
-for(const x of [-10,10])box(x,12,9,3,1,2,SILVER);
-for(const x of [-29,29]){box(x,14,8,3,3,4,BLACK);box(x,11,8,2,1,1,SILVER);}
-for(const x of [-17,17])box(x,-77,-10,3,2,2,SILVER);
-// A splitter stripe, two hood vents and rear-deck silver accent.
-box(0,74,-12,23,2,1,SILVER);
-for(const x of [-13,13]){box(x,52,9,4,8,1,BLACK);box(x,35,9,4,3,1,BLACK);}
-box(0,-72,8,4,3,1,SILVER);
-// Small amber side markers.
-for(const x of [-27,27])box(x,63,4,1,3,1,[255,150,25]);
-for(const x of [-27,27])box(x,0,-2,1,18,1,SILVER);
-// Bond the bonnet to the retained chassis, not only to decorative rails.
-box(0,45,-2,15,25,6,TEAL);
-for(const x of [-6,0,6])box(x,-76,-5,2,1,1,BLACK);
+// Bonnet and stripe tile the same plane, rather than layering through it.
+for(const x of [-15,15])box(x,48,5,10,26,1);
+box(0,48,5,5,26,1,SILVER);
+box(0,61,-1,14,11,5); // chassis/bonnet bridge, clear of engine at Y=40
+box(0,75,-2,14,3,6);
+box(0,80,-7,26,2,1,BLACK);
+box(0,-75,-4,25,3,4);
+box(0,-75,2,25,3,2);
+box(0,-79,-2,18,1,1,RED);
+box(0,-80,-7,26,2,1,BLACK);
+for(const x of [-17,17])box(x,-82,-10,3,2,2,SILVER);
+box(0,22,16,20,1,10,[85,160,175],1);
+for(const x of [-22,22])box(x,22,16,2,1,10,BLACK);
+box(0,22,27,24,1,1,BLACK);
+for(const x of [-23,23])box(x,20,5,2,2,1);
+box(0,18,5,21,2,1,BLACK);
+for(const x of [-22,22])box(x,-22,18,2,2,14,BLACK);
+box(0,-22,34,24,2,2,SILVER);
+for(const x of [-28,28]){box(x,18,4,3,3,2,BLACK);box(x,14,4,2,1,1,SILVER);}
+for(const x of [-14,14])box(x,50,7,3,8,1,BLACK);
+for(const x of [-26,26])box(x,0,-3,1,18,1,SILVER);
+box(0,-79,-5,6,1,1,SILVER);
+for(const x of [-12,-10,-8,-6,-4,-2,0,4,8,12])box(x,79,-2,1,1,2,SILVER);
+for(const x of [-26,26])box(x,66,2,1,3,1,[255,150,25]);
+for(const x of [-10,10])box(x,18,7,3,1,1,SILVER);
+for(const x of [-14,14])box(x,36,7,3,3,1,BLACK);
+for(const x of [-23,23])box(x,68,7,2,4,1,SILVER);
+for(const x of [-22,22])box(x,-79,1,2,1,1,SILVER);
 assert.equal(body.length,63);
+// Face contact is allowed; strict positive-volume intersections are rejected.
+function overlaps(a,z){return a.position.every((v,i)=>Math.abs(v-z.position[i])<a.size[i]+z.size[i]);}
+for(let i=0;i<body.length;i++)for(let j=0;j<i;j++)assert(!overlaps(body[i],body[j]),`Body overlap ${i}/${j}`);
+// Keep the new boxes clear of the retained chassis and mechanical envelopes.
+const reserved=[
+ {position:[0,-5,-14],size:[15,50,6]},
+ {position:[0,40,-6],size:[5,5,2]},
+ ...[-10,10].map(x=>({position:[x,0,3],size:[5,10,8]})),
+ ...[-20,20].map(x=>({position:[x,77,-1],size:[5,2,5]})),
+];
+for(let i=0;i<body.length;i++)for(let j=0;j<reserved.length;j++)assert(!overlaps(body[i],reserved[j]),`Mechanical clearance ${i}/${j}`);
 // Conservative axis-aligned structural check: every new body box must reach
 // the retained weight/chassis brick by face contact or overlap.
 const chassis={position:[0,-5,-14],size:[15,50,6]};
@@ -62,7 +68,7 @@ let grew=true;while(grew){grew=false;for(let i=0;i<63;i++)if(!connected.has(i)&&
 assert.equal(connected.size,64,'Disconnected body pieces: '+body.map((_,i)=>i).filter(i=>!connected.has(i)).join(','));
 // Rebuild the size table without reordering any brick: components and joint
 // references use chunk-local brick indices and must continue to point at 63–73.
-const all=bricks.map((br,i)=>i<63?{...br,size:body[i].size,asset_name_index:(body[i].size[0]>=10&&body[i].size[1]>=10?14:9)}:br);
+const all=bricks.map((br,i)=>i<63?{...br,size:body[i].size,asset_name_index:9}:br);
 const sizes=[],counters=[],indices=new Array(74);
 for(let asset=7;asset<r.brickAssets().length;asset++){
  const matches=all.map((br,i)=>({br,i})).filter(x=>x.br.asset_name_index===asset);
@@ -91,6 +97,7 @@ files.set('Meta/Bundle.json',Buffer.from(JSON.stringify(bundle)));
 // Keep native pivot centers; widen their bounds to include the new mirrors.
 const prefab=structuredClone(r.prefabJson());
 for(const pivot of ['bottomStudsPivot','studsExpandedPivot','topStudsPivot','boundsPivot'])prefab.pivots[pivot].halfExtent.x=32;
+for(const pivot of ['bottomStudsPivot','studsExpandedPivot','topStudsPivot','boundsPivot']){prefab.pivots[pivot].halfExtent.y=84;prefab.pivots[pivot].halfExtent.z=37;}
 files.set('Meta/Prefab.json',Buffer.from(JSON.stringify(prefab)));
 // Omit the reference thumbnail rather than showing a different car.
 files.delete('Meta/Thumbnail.png');
