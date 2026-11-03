@@ -1,5 +1,14 @@
 # Viva La Vida — MIDI logic player
 
+Version 1 failed to paste: the generator selected the native full-size sound
+emitter asset while packing it on a two-unit microbrick grid. Version 2 uses
+the reference preset's one-unit-half-size microbricks for all 2,658 emitters,
+and explicit microbrick assets for the buttons and labels. The outer layout
+contains 2,666 bricks and passes a positive-volume-overlap check. The original
+pairwise diagnostic checked all 3,552,445 outer pairs; the generator now uses
+a sweep to perform the same check faster. Native variable/chip bounds are
+modeled as their 1x1 envelopes. V2 still needs in-game paste/playback testing.
+
 Standalone prefab derived from the user's supplied MIDI and `Default Pitch.brz`.
 It uses the preset's real `OBA_Beep_1` one-shot asset. No MIDI/audio file or
 original preset is included in this repository. This is a beep arrangement,
