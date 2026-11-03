@@ -51,3 +51,14 @@ Checks cover the 180-second boundary, all eight activity reset paths, long purch
 `prefabs/parts-shop-compact-button.brz` limits the Buy/Installed button's text and interaction prompt to nine characters, the length of Installed. Known labels are Buy, Installed, … (updating), Error (catalogue error), and Bind (select a vehicle). Longer status messages are retained on the separate status display. A final nine-character substring cap protects against future longer labels. The timeout, screen blanking and held-size blends are retained.
 
 Rebuild with `node tools/prefabs/compact-parts-shop-button.cjs prefabs/parts-shop-3-minute-timeout.brz prefabs/parts-shop-compact-button.brz`. Label cases and the saved length cap are checked.
+
+## Bind-button edge detection
+
+`prefabs/parts-shop-bind-edge.brz` adds a boolean rising-edge detector after the bind button's existing Held-and-non-null-Character filter. Its rising pulse replaces the continuous held value on the three legacy bind/reset routes, preventing a long hold from keeping refresh/reset signals asserted. The detector's boolean output matches those existing boolean inputs. Text animation continues to use raw Held, and the separate inactivity-tracking edge detector is retained.
+
+```sh
+node tools/prefabs/edge-parts-shop-bind.cjs prefabs/parts-shop-compact-button.brz prefabs/parts-shop-bind-edge.brz
+node tools/prefabs/test-upgrade-shop.cjs prefabs/parts-shop-bind-edge.brz
+```
+
+The patch adds one gate and one wire. Offline input-sequence checks cover both Held/Character update orders, a long hold, release and second click, and missing character. All 808 saved connections are compared with their expected endpoints. Purchase regression checks pass; in-game validation is pending.
