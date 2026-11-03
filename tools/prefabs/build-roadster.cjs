@@ -21,39 +21,48 @@ for(const x of [-24,24]){
 // Long bonnet with a continuous silver center stripe.
 box(0,45,5,21,25,3);
 box(0,45,8,4,25,1,SILVER);
-box(0,72,0,24,3,5);box(0,76,-9,26,2,2,BLACK);
+box(0,72,-1,24,4,6);box(0,76,-9,26,2,2,BLACK);
 box(0,76,-2,12,1,3,BLACK);
 for(const x of [-9,-6,-3,0,3,6,9])box(x,77,-2,1,1,2,SILVER);
 // Rear body surrounds the reference hinged rear deck.
-box(0,-72,0,24,3,6);box(0,-76,-9,26,2,2,BLACK);
+box(0,-72,0,24,3,7);box(0,-76,-9,26,2,2,BLACK);
 box(0,-76,2,18,1,2,RED);
 box(0,-77,-4,6,1,2,SILVER);
-for(const x of [-22,22])box(x,-65,10,3,6,2);
+for(const x of [-22,22])box(x,-65,9,3,6,2);
 // Frameless low windshield and slim pillars; seats remain fully accessible.
-box(0,19,18,20,1,9,[85,160,175],1);
+box(0,19,18,20,1,10,[85,160,175],1);
 box(0,19,28,22,2,1,BLACK);
 for(const x of [-22,22])box(x,19,18,1,2,10,BLACK);
 // Rear roll hoop, with no roof over the two seats.
-for(const x of [-21,21])box(x,-23,19,2,2,13,BLACK);
-box(0,-23,32,23,2,2,SILVER);
-box(0,-25,8,20,2,2,TEAL);
+for(const x of [-21,21])box(x,-21,19,2,2,13,BLACK);
+box(0,-21,32,23,2,2,SILVER);
+box(0,-23,8,21,3,2,TEAL);
 // Dashboard, instrument pods, mirrors and rear exhausts.
-box(0,15,6,20,2,3,BLACK);
+box(0,15,6,21,4,3,BLACK);
 for(const x of [-10,10])box(x,12,9,3,1,2,SILVER);
-for(const x of [-29,29]){box(x,14,12,3,3,2,BLACK);box(x,11,12,2,1,1,SILVER);}
+for(const x of [-29,29]){box(x,14,8,3,3,4,BLACK);box(x,11,8,2,1,1,SILVER);}
 for(const x of [-17,17])box(x,-77,-10,3,2,2,SILVER);
 // A splitter stripe, two hood vents and rear-deck silver accent.
 box(0,74,-12,23,2,1,SILVER);
 for(const x of [-13,13]){box(x,52,9,4,8,1,BLACK);box(x,35,9,4,3,1,BLACK);}
-box(0,-67,10,4,4,1,SILVER);
+box(0,-72,8,4,3,1,SILVER);
 // Small amber side markers.
 for(const x of [-27,27])box(x,63,4,1,3,1,[255,150,25]);
 for(const x of [-27,27])box(x,0,-2,1,18,1,SILVER);
-for(const x of [-9,-3,3,9])box(x,-76,-5,2,1,1,BLACK);
+// Bond the bonnet to the retained chassis, not only to decorative rails.
+box(0,45,-2,15,25,6,TEAL);
+for(const x of [-6,0,6])box(x,-76,-5,2,1,1,BLACK);
 assert.equal(body.length,63);
+// Conservative axis-aligned structural check: every new body box must reach
+// the retained weight/chassis brick by face contact or overlap.
+const chassis={position:[0,-5,-14],size:[15,50,6]};
+const connected=new Set([63]),boxes=[...body,chassis];
+function touches(a,z){return a.position.every((v,i)=>Math.abs(v-z.position[i])<=a.size[i]+z.size[i]);}
+let grew=true;while(grew){grew=false;for(let i=0;i<63;i++)if(!connected.has(i)&&[...connected].some(j=>touches(boxes[i],boxes[j]))){connected.add(i);grew=true;}}
+assert.equal(connected.size,64,'Disconnected body pieces: '+body.map((_,i)=>i).filter(i=>!connected.has(i)).join(','));
 // Rebuild the size table without reordering any brick: components and joint
 // references use chunk-local brick indices and must continue to point at 63–73.
-const all=bricks.map((br,i)=>i<63?{...br,size:body[i].size,asset_name_index:9}:br);
+const all=bricks.map((br,i)=>i<63?{...br,size:body[i].size,asset_name_index:(body[i].size[0]>=10&&body[i].size[1]>=10?14:9)}:br);
 const sizes=[],counters=[],indices=new Array(74);
 for(let asset=7;asset<r.brickAssets().length;asset++){
  const matches=all.map((br,i)=>({br,i})).filter(x=>x.br.asset_name_index===asset);
