@@ -45,3 +45,9 @@ node tools/prefabs/test-upgrade-shop.cjs prefabs/parts-shop-3-minute-timeout.brz
 ```
 
 Checks cover the 180-second boundary, all eight activity reset paths, long purchases and catalogue rebuilds, queued-expiry cancellation, fourteen display-enable connections, and valid unique saved wire endpoints. The purchase-model and saved key/value/installed-check regression checks pass. In-game validation is pending.
+
+## Button label length
+
+`prefabs/parts-shop-compact-button.brz` limits the Buy/Installed button's text and interaction prompt to nine characters, the length of Installed. Known labels are Buy, Installed, … (updating), Error (catalogue error), and Bind (select a vehicle). Longer status messages are retained on the separate status display. A final nine-character substring cap protects against future longer labels. The timeout, screen blanking and held-size blends are retained.
+
+Rebuild with `node tools/prefabs/compact-parts-shop-button.cjs prefabs/parts-shop-3-minute-timeout.brz prefabs/parts-shop-compact-button.brz`. Label cases and the saved length cap are checked.
