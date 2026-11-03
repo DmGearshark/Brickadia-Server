@@ -144,3 +144,7 @@ node tools/prefabs/rewire-dealership-buttons.cjs '/path/to/Update these Buttons.
 ```
 
 Checks compare every saved connection with the intended remapping (520 wires), require exactly four public buttons, verify both input signals on each, and preserve the geometry of all retained bricks. In-game validation is pending.
+
+## Compact button busy label
+
+`prefabs/vehicle-dealership-compact-button.brz` replaces only the temporary Buy/Sell button label `Updating…` with `…` to fit the smaller physical button. Buy and Sell labels, other status readouts, and all 520 connections are retained. Rebuild with `node tools/prefabs/compact-dealership-button.cjs prefabs/vehicle-dealership-new-buttons.brz prefabs/vehicle-dealership-compact-button.brz`.
