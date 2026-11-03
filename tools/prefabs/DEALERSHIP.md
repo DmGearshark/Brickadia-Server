@@ -98,3 +98,17 @@ The readback checks compare every original and repaired connection by grid, posi
 ```sh
 node tools/prefabs/repair-dealership-refresh.cjs '/path/to/Stuck in Update.brz' prefabs/vehicle-dealership-refresh-fixed.brz
 ```
+
+## Three-minute inactivity timeout
+
+`prefabs/vehicle-dealership-3-minute-timeout.brz` adds automatic unbinding to the repaired current display. The timeout is **180 seconds**. Accepted binding, scrolling, Buy/Sell, and Apply actions restart the countdown; other players' rejected inputs do not. Transaction processing is excluded: the countdown restarts when processing finishes, giving the player a full three minutes after completion.
+
+Expiry clears only the menu's bound player and shows Session expired. The shared price/action return to the bind prompts, and the top player readout becomes `Name: Unbound` with no displayed balance. Ownership, upgrades, and Scrap are not changed. The original binding and transaction guards are retained.
+
+The circuit uses a running stopwatch and the timestamp of the last accepted processing transition. The expiration condition is rechecked after a one-tick buffer, so a queued timeout cannot unbind a player who just interacted or interrupt a transaction. Seventeen gates are added inside the logic chip; the layout and editable catalogue remain as in the repaired save.
+
+```sh
+node tools/prefabs/add-dealership-timeout.cjs prefabs/vehicle-dealership-refresh-fixed.brz prefabs/vehicle-dealership-3-minute-timeout.brz
+```
+
+Offline checks cover the 180-second boundary, resets, long transactions, a queued timeout followed by fresh activity, the unbound readout, and saved wire endpoints. In-game timing validation is pending.
