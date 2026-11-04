@@ -1,5 +1,7 @@
 # Delivery owner ID test
 
+> **Withdrawn from testing:** the user reports the game crashes when pressing green Assign. Cause unconfirmed. Do not use this combined rig; use `delivery-pickup-isolation.brz` to identify the failing pickup stage.
+
 Download `prefabs/delivery-owner-id-test.brz`. This is a single-contract test rig for cargo identity, not the load board. It includes its own frozen physics cargo prefab. It writes no leaderboard scores or currency and does not alter the existing shops.
 
 ## In-game procedure
