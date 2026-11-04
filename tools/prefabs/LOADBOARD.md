@@ -2,7 +2,7 @@
 
 > **Updated build:** the portable client now uses the separated chip placement that the user confirmed could spawn and initialize without crashing. String Split gates now use occurrence **1**, matching the working shops; the previous occurrence 0 caused raw packed records to spill across the screen. Replace the old system with this build and retest the normal `/loadboard` path. The exact engine-level cause of the earlier graph assertion remains unconfirmed.
 
-`prefabs/loadboard-system.brz` is the implementation built from the supplied **Loadboard v5.brz**. Paste **one** copy of the central system. It embeds the portable display and both cargo prefabs; there is no separate file installation.
+`prefabs/loadboard-system.brz` now uses the display from **Loadboard needs updating.brz**, preserving that uploaded assembly’s existing server and station logic. See [LOADBOARD-DISPLAY-UPDATE.md](LOADBOARD-DISPLAY-UPDATE.md). Paste **one** copy of the central system. It embeds the portable display and both cargo prefabs; there is no separate file installation.
 
 ## First in-game run
 
@@ -104,10 +104,12 @@ The server's timed inbox drains snapshot queues one request at a time. It uses n
 ## Rebuild and checks
 
 ```sh
-node tools/prefabs/build-loadboard.cjs 'Loadboard v5.brz' prefabs/loadboard-system.brz
+node tools/prefabs/reskin-loadboard.cjs 'Loadboard needs updating.brz' prefabs/loadboard-system.brz
 ```
 
-`test-loadboard.cjs` validates exact serialized nodes/wire endpoints for the main assembly, client and both embedded cargo assets. It executes the actual generated graph with immediate and one-tick-delayed native-query/variable publication. Cases cover eligibility, simultaneous exclusive acceptance, one active load, authorization/stamping, wrong destinations, replacement, abandonment, stale listings, failed spawning, duplicate pickup/delivery requests, one payout/chat receipt, catalogue edits, saved fields, actual client/station event communication, caller-only controls, first-entry pickup binding, owner handoff, confirmation, reconnect registration, command replacement and non-destructive vehicle UI expiry.
+The original v5 baseline can be generated separately with `build-loadboard.cjs`. The current customized assembly uses `test-reskin-loadboard.cjs` preservation checks; details are in LOADBOARD-DISPLAY-UPDATE.md.
+
+`test-loadboard.cjs` validates the baseline’s exact serialized nodes/wire endpoints for the main assembly, client and both embedded cargo assets. It executes the actual generated graph with immediate and one-tick-delayed native-query/variable publication. Cases cover eligibility, simultaneous exclusive acceptance, one active load, authorization/stamping, wrong destinations, replacement, abandonment, stale listings, failed spawning, duplicate pickup/delivery requests, one payout/chat receipt, catalogue edits, saved fields, actual client/station event communication, caller-only controls, first-entry pickup binding, owner handoff, confirmation, reconnect registration, command replacement and non-destructive vehicle UI expiry.
 
 The model supplies native player/property/spawn results. It does not emulate Brickadia physics, actual cargo placement/orientation, transport handling, rendering, native timer implementation or real world persistence. Those remain in-game checks; no geometry preview is used.
 
