@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('fs'),assert=require('assert/strict'),{World,WorldReader,brdb:b}=require('brs-js');
 const C=b.COMPONENTS,O=value=>({$variant:'weak_object',value}),B=value=>({$variant:'Bool',value});
-function build(source){
+function build(source,instrument){
  const r=WorldReader.from(fs.readFileSync(source)),schema=b.embeddedSchema('BRSavedComponentChunkSoA_max'),nodes=[],byKey=new Map();let edges=[],id=0;
  const address=(g,ch,i)=>JSON.stringify([g,ch.x,ch.y,ch.z,i]);
  for(const g of r.gridIds()){const all=[...r.bricks(g)];let off=0;for(const ch of r.brickChunkIndex(g)){const bs=all.slice(off,off+ch.numBricks);off+=ch.numBricks;const cc=r.componentChunk(g,ch.index);for(let i=0;i<bs.length;i++){const br=bs[i],n={id:'old'+id++,g,i,ch:ch.index,position:br.position.map((v,k)=>v+(g===1?0:[ch.offset.x,ch.offset.y,ch.offset.z][k])),brick:br,comps:cc.components.filter(c=>c.brickIndex===i).map(c=>({type:c.typeName,data:Object.fromEntries(Object.entries(structuredClone(c.data)).filter(([k])=>schema.structs.get(b.COMPONENT_TYPE_STRUCTS.get(c.typeName)).has(k)&&!['VarRef','ArrayVarRef','MapVarRef'].includes(k)))}))};nodes.push(n);byKey.set(address(g,ch.index,i),n);}if(ch.numWires){const ws=r.wireChunk(g,ch.index);for(const e of [...ws.local,...ws.remote])edges.push({aKey:address(e.source.gridId??g,e.source.chunk??ch.index,e.source.brickIndex),at:e.source.componentType,p:e.source.port,zKey:address(g,ch.index,e.target.brickIndex),zt:e.target.componentType,q:e.target.port});}}}
@@ -72,7 +72,9 @@ function build(source){
  const buttons=nodes.filter(n=>n.g===1&&n.comps.some(c=>c.type===C.Button.NAME));assert.equal(buttons.length,7);
  for(const button of buttons){const source=one(edges.filter(e=>e.a===button&&e.p==='bHeld'&&e.zt===C.Expr_LogicalAND.NAME),'Character-ready control').z;const routes=edges.filter(e=>e.a===source&&e.p==='bOutput');const gate=node('Expr_LogicalAND');connect(source,C.Expr_LogicalAND.NAME,'bOutput',gate,gate.type,'bInputA');nn(within,'Value',gate,'bInputB');for(const e of routes){edges=edges.filter(old=>old!==e);connect(gate,gate.type,'bOutput',e.z,e.zt,e.q);}}
  for(const e of edges)if(e.z.g===1&&e.zt===C.TextDisplay.NAME&&e.q==='bEnabled')e.z.comps.find(c=>c.type===C.TextDisplay.NAME).data.bEnabled=false;
- const kept=nodes.filter(n=>!removed.has(n)),w=new World(),grids=new Map([[1,undefined]]);for(const e of r.entities())grids.set(e.persistentIndex,w.addBrickGrid({type:e.typeName,location:e.location,rotation:e.rotation,frozen:e.frozen,sleeping:e.sleeping,data:{bCollapsed:e.data.bCollapsed,PlaneCenter:e.data.PlaneCenter,PlaneExtent:e.data.PlaneExtent}}));
+ const kept=nodes.filter(n=>!removed.has(n));
+ if(instrument)instrument({nodes:kept,edges,r,logic,zone,bound,busy,building,oldOwnerSet,lock,queue,within,entered,left,pump,processing});
+ const w=new World(),grids=new Map([[1,undefined]]);for(const e of r.entities())grids.set(e.persistentIndex,w.addBrickGrid({type:e.typeName,location:e.location,rotation:e.rotation,frozen:e.frozen,sleeping:e.sleeping,data:{bCollapsed:e.data.bCollapsed,PlaneCenter:e.data.PlaneCenter,PlaneExtent:e.data.PlaneExtent}}));
  for(const n of kept){const data={...(n.brick||{}),asset:n.asset||r.brickAssets()[n.brick.asset_name_index],position:n.position,owner_index:0,components:n.comps};if(n.brick){data.material=r.materials()[n.brick.material_index];delete data.asset_name_index;delete data.material_index;}else data.color=[60,110,150];n.handle=w.addBrick(data,grids.get(n.g));}
  // Recreate the original microchip links after global component reordering.
  for(const g of r.gridIds())for(const ch of r.brickChunkIndex(g)){const cc=r.componentChunk(g,ch.index);for(let i=0;i<cc.soa.MicrochipBrickIndices.length;i++)w.registerMicrochipLink(byKey.get(address(g,ch.index,cc.soa.MicrochipBrickIndices[i])).handle,grids.get(cc.soa.MicrochipBrickGridReferences[i]));}
