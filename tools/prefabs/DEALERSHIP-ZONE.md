@@ -36,3 +36,11 @@ node tools/prefabs/slow-zone-dealership-test.cjs prefabs/vehicle-dealership-zone
 ```
 
 The patch adds one stopwatch and one net wire. Checks verify its saved 2-second, initially stopped settings, that the busy lock precedes it, all 583 connections against the intended graph, and unchanged catalogue maps. In-game timing and transaction-exit behavior are the purpose of this test copy.
+
+## First-entry binding buffers
+
+Applied the mechanic shop's in-game-confirmed startup fix to the dealership. The uploaded `vehicle-dealership-zone-based.brz` matched the previous repository artifact byte-for-byte (SHA-256 `637f36e8b16353652b52760fb63b498af0cdc093953857b64c5ca9308dd98809`), so it was regenerated from its existing source without losing user changes.
+
+The controller buffers the first queue read, candidate variable publication and final membership check by one tick each, serializes deferred checks, and requires the candidate still to be queued and the dealership idle before binding. No diagnostic panel is included. Purchase/sale configuration and transaction logic are retained.
+
+Validation passes for first-entry binding with simulated one-tick candidate publication, entry/exit, simultaneous entrants, first-owner retention, waiting-player handoff, transaction deferral, immediate control blocking on exit, re-entry, stale/null candidates, catalogue preservation, geometry preservation and all 607 serialized wire endpoints. The dealership has 56 zone gates. The new dealership artifact still requires in-game confirmation; the corresponding mechanic fix was confirmed by the user.
