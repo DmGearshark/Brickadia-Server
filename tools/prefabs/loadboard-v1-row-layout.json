@@ -1,0 +1,215 @@
+{
+  "version": 1,
+  "rows": [
+    {
+      "kind": {
+        "pos": [
+          192,
+          240,
+          2
+        ],
+        "type": "BrickComponentType_Var"
+      },
+      "available": {
+        "pos": [
+          240,
+          240,
+          2
+        ],
+        "type": "BrickComponentType_Var"
+      },
+      "rev": {
+        "pos": [
+          288,
+          240,
+          2
+        ],
+        "type": "BrickComponentType_Var"
+      },
+      "interval": {
+        "pos": [
+          336,
+          240,
+          2
+        ],
+        "type": "BrickComponentType_Var"
+      },
+      "timer": {
+        "pos": [
+          384,
+          288,
+          2
+        ],
+        "type": "BrickComponentType_Stopwatch"
+      }
+    },
+    {
+      "kind": {
+        "pos": [
+          384,
+          240,
+          2
+        ],
+        "type": "BrickComponentType_Var"
+      },
+      "available": {
+        "pos": [
+          432,
+          240,
+          2
+        ],
+        "type": "BrickComponentType_Var"
+      },
+      "rev": {
+        "pos": [
+          480,
+          240,
+          2
+        ],
+        "type": "BrickComponentType_Var"
+      },
+      "interval": {
+        "pos": [
+          528,
+          240,
+          2
+        ],
+        "type": "BrickComponentType_Var"
+      },
+      "timer": {
+        "pos": [
+          480,
+          288,
+          2
+        ],
+        "type": "BrickComponentType_Stopwatch"
+      }
+    },
+    {
+      "kind": {
+        "pos": [
+          576,
+          240,
+          2
+        ],
+        "type": "BrickComponentType_Var"
+      },
+      "available": {
+        "pos": [
+          624,
+          240,
+          2
+        ],
+        "type": "BrickComponentType_Var"
+      },
+      "rev": {
+        "pos": [
+          672,
+          240,
+          2
+        ],
+        "type": "BrickComponentType_Var"
+      },
+      "interval": {
+        "pos": [
+          720,
+          240,
+          2
+        ],
+        "type": "BrickComponentType_Var"
+      },
+      "timer": {
+        "pos": [
+          576,
+          288,
+          2
+        ],
+        "type": "BrickComponentType_Stopwatch"
+      }
+    },
+    {
+      "kind": {
+        "pos": [
+          0,
+          288,
+          2
+        ],
+        "type": "BrickComponentType_Var"
+      },
+      "available": {
+        "pos": [
+          48,
+          288,
+          2
+        ],
+        "type": "BrickComponentType_Var"
+      },
+      "rev": {
+        "pos": [
+          96,
+          288,
+          2
+        ],
+        "type": "BrickComponentType_Var"
+      },
+      "interval": {
+        "pos": [
+          144,
+          288,
+          2
+        ],
+        "type": "BrickComponentType_Var"
+      },
+      "timer": {
+        "pos": [
+          672,
+          288,
+          2
+        ],
+        "type": "BrickComponentType_Stopwatch"
+      }
+    },
+    {
+      "kind": {
+        "pos": [
+          192,
+          288,
+          2
+        ],
+        "type": "BrickComponentType_Var"
+      },
+      "available": {
+        "pos": [
+          240,
+          288,
+          2
+        ],
+        "type": "BrickComponentType_Var"
+      },
+      "rev": {
+        "pos": [
+          288,
+          288,
+          2
+        ],
+        "type": "BrickComponentType_Var"
+      },
+      "interval": {
+        "pos": [
+          336,
+          288,
+          2
+        ],
+        "type": "BrickComponentType_Var"
+      },
+      "timer": {
+        "pos": [
+          0,
+          336,
+          2
+        ],
+        "type": "BrickComponentType_Stopwatch"
+      }
+    }
+  ]
+}

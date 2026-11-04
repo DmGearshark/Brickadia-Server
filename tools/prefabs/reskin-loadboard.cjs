@@ -24,5 +24,5 @@ function build(input){
  command[0].comp.data.Prefab=newPath;const retained=main.r.prefabPaths().filter(p=>p!==oldPath).map(p=>main.r.readPrefab(p)),out=write(main,{embedded:[...retained,clientOut.bytes],name:'Load Board System - Updated Display'});assert(out.paths.includes(newPath),'New client embedded path');
  return {bytes:out.bytes,clientBytes:clientOut.bytes,main,newClient,oldClient:client,oldPath,newPath,commandKey:command[0].br.key,geometry,origin,roleMappings,assets,input};
 }
-module.exports=build;module.exports.read=read;module.exports.write=write;
+module.exports=build;module.exports.read=read;module.exports.write=write;module.exports.yaw180=yaw180;
 if(require.main===module){const [input,output]=process.argv.slice(2);if(!output)throw Error('Usage: node reskin-loadboard.cjs provided.brz output.brz');try{const ctx=build(input);require('./test-reskin-loadboard.cjs')(ctx);fs.writeFileSync(output,ctx.bytes);console.log(JSON.stringify({output,displayBricks:ctx.geometry.length,newClientPath:ctx.newPath,oldClientPath:ctx.oldPath,logicPreserved:true},null,2));}catch(e){console.error(e.message);console.error(e.stack.split('\n').filter(x=>x.includes('/tools/prefabs/')&&!x.includes('/node_modules/')).join('\n'));process.exitCode=1;}}

@@ -2,7 +2,7 @@
 
 > **Updated build:** the portable client now uses the separated chip placement that the user confirmed could spawn and initialize without crashing. String Split gates now use occurrence **1**, matching the working shops; the previous occurrence 0 caused raw packed records to spill across the screen. Replace the old system with this build and retest the normal `/loadboard` path. The exact engine-level cause of the earlier graph assertion remains unconfirmed.
 
-`prefabs/loadboard-system.brz` now uses the display from **Loadboard needs updating.brz**, preserving that uploaded assembly’s existing server and station logic. See [LOADBOARD-DISPLAY-UPDATE.md](LOADBOARD-DISPLAY-UPDATE.md). Paste **one** copy of the central system. It embeds the portable display and both cargo prefabs; there is no separate file installation.
+`prefabs/loadboard-system.brz` now uses the five-row display from **Update Needed..brz**, with immediate re-listing of abandoned offers. See [LOADBOARD-V2.md](LOADBOARD-V2.md). Paste **one** copy of the central system. It embeds the portable display and both cargo prefabs; there is no separate file installation.
 
 ## First in-game run
 
@@ -15,7 +15,7 @@ The separated-chip diagnostic was tested in game, but this updated complete asse
 
 ## Behavior
 
-- Five shared, exclusive listings. Initial jobs alternate Cheap Crate/Fuel. Each initial listing expires after 10, 15, 20, 25 or 30 minutes. Subsequent lifetimes are randomly chosen from the configurable 10–60 minute range, and cargo type is randomized independently per listing. Accepting removes that listing until its next rotation. Other boards refresh on opening, after actions and every 15 seconds.
+- Five shared, exclusive listings. Initial jobs alternate Cheap Crate/Fuel. Each initial listing expires after 10, 15, 20, 25 or 30 minutes. Subsequent lifetimes are randomly chosen from the configurable 10–60 minute range, and cargo type is randomized independently per listing. Accepting reserves that listing. Abandoning immediately returns the original offer to its original slot and restarts that slot’s lifetime; completing delivery leaves it taken until rotation. Other boards refresh on opening, after actions and every 15 seconds.
 - Each player has at most one active contract. Payment, cargo type, pickup ID and destination ID are stored at acceptance; listing rotation and later price changes cannot change that accepted reward or route. There is no delivery deadline.
 - The centered row is selected automatically. Scroll wraps across the five listings. Taken jobs are marked **Taken**. While a player has a contract, the center shows their cargo and the action becomes **Abandon**; the first click asks **Confirm?**, the second abandons. Confirmation expires after five seconds.
 - Spare display fields show **Unused**. Live pickup screens disable their text when unbound. Board controls require the caller's character; pickup controls require the bound character still inside the zone.
@@ -73,6 +73,8 @@ The server uses numeric leaderboard stats:
 | LoadboardPay | Accepted reward snapshot |
 | LoadboardPickup | Accepted pickup ID |
 | LoadboardDestination | Accepted destination ID |
+| LoadboardListing | Original listing slot plus one; zero for older contracts |
+| LoadboardRule | Accepted qualifying-vehicle rule |
 
 Ensure your gamemode persists these stats: enable **Persist All Player Stats** or include the keys in its persistent-stat list. No existing vehicle configuration fields are reset or changed. Native cargo properties are `LB.Owner`, `LB.Id`, and `LB.Destination`; payment comes from the server's saved contract, never from the crate.
 
@@ -128,6 +130,6 @@ The user confirmed the normal `/loadboard` command no longer crashes. They then 
 - Payment, Car / Truck versus Truck requirements, Pickup Depot and Delivery Depot display correctly.
 - Pickup terminal UI appears to work correctly.
 - Delivering cargo from pickup to receiver produces the private Delivery Complete +250 Scrap message.
-- Previously accepted/abandoned listings show Taken when browsing again. This is the implemented availability policy: acceptance consumes the listing until its timed rotation; abandonment clears the player's contract without immediately re-listing it.
+- The previous build kept abandoned listings Taken until rotation. The current build returns the original abandoned offer immediately; completed deliveries still wait for normal listing rotation.
 
 The report confirms a delivery receipt, not an independently measured Scrap balance delta. Actual balance change, active-contract clearing after delivery, native timer rotation over 10–60 minutes, and multiplayer contention still need explicit in-game confirmation. Offline models cover those logic paths but are not substitutes for the native checks.

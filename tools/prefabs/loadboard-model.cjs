@@ -48,7 +48,7 @@ module.exports=function model(ctx,options={}){
  default:throw Error('Model exec '+t);
  }emit(n,port);}
  function inject(event,args){results.set(event.id,Object.fromEntries(args.map((v,i)=>['DataOut'+(i+1),v])));emit(event,'ExecOut');}
- const boxes=options.network?[central.inbox,ctx.cmd.inbox,ctx.pick.box,ctx.pick.binding.box]:[central.inbox];
+ const boxes=options.network?[central.inbox,ctx.cmd?.inbox,ctx.pick?.box,ctx.pick?.binding?.box].filter(Boolean):[central.inbox];
  function drain(){let limit=0;while(tasks.length||boxes.some(box=>state.get(box.arrays[0].id).length||state.get(box.busy.id))){assert(++limit<10000,'Queue failed to drain');tick++;let ready;do{ready=tasks.filter(t=>t.at<=tick);for(const t of ready)tasks.splice(tasks.indexOf(t),1);for(const t of ready)t.fn();}while(tasks.some(t=>t.at<=tick));if(tick%4===0)for(const box of boxes)emit(box.clock,'Expired');}}
  return {players,entities,responses,chats,payments,state,published,results,invoke:inject,joined(p){results.set(ctx.central.joined.id,{PlayerState:p});emit(ctx.central.joined,'ExecOut');},command(p){results.set(ctx.cmd.chat.id,{PlayerState:p,Arguments:''});emit(ctx.cmd.chat,'ExecOut');},fire:emit,read:(n,p)=>input(n,p),zone(event,entity){results.set(event.id,{Character:entity,Entity:entity});emit(event,'Exec');},press(button,character){results.set(button.id,{Character:character,bHeld:true});const edges=outgoing.get(button.id+':bHeld')||[];for(const edge of edges)emit(edge,'OnRisingEdge');},request(args){inject(central.event,args);},drain,stats(p){return players.get(p).stats;},addPlayer(p,stats={}){players.set(p,{id:'uid-'+p,name:p,stats:{Scrap:0,...stats}});},addCargo(id){entities.set(id,{props:{}});},get tick(){return tick;},get steps(){return steps;}};
 };
