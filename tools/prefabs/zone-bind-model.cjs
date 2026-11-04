@@ -12,11 +12,11 @@ module.exports=function model(c){
  function value(n,p){if(['VarRef','ArrayVarRef'].includes(p))return n.id;const type=n.type||n.comps[0].type;
   if(type===C.Var.NAME)return state.get(n.id);
   if(type.startsWith('BrickComponentType_Exec_')||type.startsWith('BrickComponentType_Internal_CharacterZoneEvent_'))return (results.get(n.id)||{})[p];
-  const get=p=>input(n,p);switch(type){case C.Expr_CompareEqual.NAME:return get('InputA')===get('InputB');case C.Expr_CompareNotEqual.NAME:return get('InputA')!==get('InputB');case C.Expr_LogicalNOT.NAME:return !get('bInput');case C.Expr_LogicalAND.NAME:return get('bInputA')&&get('bInputB');default:throw Error(type);}
+  const get=p=>input(n,p);switch(type){case C.Expr_CompareEqual.NAME:return get('InputA')===get('InputB');case C.Expr_CompareNotEqual.NAME:return get('InputA')!==get('InputB');case C.Expr_LogicalNOT.NAME:return !get('bInput');case C.Expr_LogicalOR.NAME:return get('bInputA')||get('bInputB');case C.Expr_LogicalAND.NAME:return get('bInputA')&&get('bInputB');default:throw Error(type);}
  }
  function emit(n,p){for(const z of outgoing.get(n.id+':'+p)||[])run(z);}
- function finish(){state.set(c.busy.id,false);emit(c.busyEdge,'OnFallingEdge');}
- function run(n){if(n===c.lock){assert.equal(state.get(c.busy.id),false,'Rebind must not interrupt processing');state.set(c.busy.id,true);const who=input(c.oldOwnerSet,'Value');state.set(c.bound.id,who);bindings.push(who);scheduled.push({at:ticks+2,run:finish});return;}
+ function finish(){state.set(c.busy.id,false);if(!c.building||!state.get(c.building.id))emit(c.busyEdge,'OnFallingEdge');}
+ function run(n){if(n.id===c.lock.id){assert.equal(state.get(c.busy.id),false,'Rebind must not interrupt processing');state.set(c.busy.id,true);const who=c.bindingValue?value(c.bindingValue,'Value'):input(c.oldOwnerSet,'Value');state.set(c.bound.id,who);bindings.push(who);scheduled.push({at:ticks+2,run:finish});return;}
   if(n===c.oldClear){state.set(c.bound.id,null);emit(n,'ExecOut');return;}
   const type=n.type,get=p=>input(n,p);let p='ExecOut';
   switch(type){case C.Exec_Union.NAME:break;case C.Exec_Branch.NAME:p=get('bCond')?'ExecOutA':'ExecOutB';break;
@@ -29,5 +29,5 @@ module.exports=function model(c){
    default:throw Error('Unexpected instruction '+type);
   }emit(n,p);
  }
- return {state,bindings,enter(who){results.set(c.entered.id,{Character:who});emit(c.entered,'Exec');},leave(who){results.set(c.left.id,{Character:who});emit(c.left,'Exec');},startPurchase(){state.set(c.busy.id,true);},finishPurchase:finish,drain(){let steps=0;while(scheduled.length){assert(++steps<1000,'Zone controller loop');scheduled.sort((a,z)=>a.at-z.at);const e=scheduled.shift();ticks=e.at;e.run();}},wait(n){ticks+=n;},queue:()=>state.get(c.queue.id),owner:()=>state.get(c.bound.id),enabled:()=>state.get(c.within.id)};
+ return {state,bindings,enter(who){results.set(c.entered.id,{Character:who});emit(c.entered,'Exec');},leave(who){results.set(c.left.id,{Character:who});emit(c.left,'Exec');},startPurchase(){state.set(c.busy.id,true);},startRebuild(){assert(c.building);state.set(c.building.id,true);},finishRebuild(){assert(c.building);state.set(c.building.id,false);if(!state.get(c.busy.id))emit(c.busyEdge,'OnFallingEdge');},finishPurchase:finish,drain(){let steps=0;while(scheduled.length){assert(++steps<1000,'Zone controller loop');scheduled.sort((a,z)=>a.at-z.at);const e=scheduled.shift();ticks=e.at;e.run();}},wait(n){ticks+=n;},queue:()=>state.get(c.queue.id),owner:()=>state.get(c.bound.id),enabled:()=>state.get(c.within.id)};
 };

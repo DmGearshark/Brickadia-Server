@@ -75,3 +75,18 @@ node tools/prefabs/test-upgrade-shop.cjs prefabs/parts-shop-protected-bind.brz
 ```
 
 Checks cover idle takeover, rejected purchase/rebuild presses held through completion, release/repress acceptance, and exact saved endpoint remapping for all 815 wires. Purchase regression checks pass; in-game validation is pending. The dealership already has its own busy guard and requires no change for this request.
+
+## Zone-based mechanic shop
+
+`prefabs/mechanic-shop-zone-based.brz` uses the latest user upload, `Mechanic shop add this zone into it..brz`, including its existing zone projector. No additional projector is created or moved.
+
+It follows the dealership's tested occupancy behavior: the first entrant binds, later entrants wait, and leaving releases or hands the PC to someone still inside. A departing owner's controls are blocked immediately. Their bound character is preserved until an active purchase or catalogue rebuild finishes. Re-entering before completion retains that player without a redundant bind. Stale/null occupants are discarded. Zone presence replaces manual binding and the inactivity timer, so remaining inside does not time out.
+
+The mechanic's original accepted-bind pulse and all three native bind/refresh routes are reused. A binding pass acquires the existing purchase lock, and the original price/refund-loading completion releases it. Zone reconciliation also checks the catalogue-rebuilding flag. This preserves the mechanic's ownership scan, automatic highlighted selection, per-player part configuration, refund pricing, catalogue/cache rebuild, sounds, held text blends and compact button captions. The former bind key is noninteractive backing. Idle-display behavior and the red/green indicator continue to follow the bound reference.
+
+```sh
+node tools/prefabs/zone-bind-mechanic.cjs '/path/to/Mechanic shop add this zone into it..brz' prefabs/mechanic-shop-zone-based.brz
+node tools/prefabs/test-upgrade-shop.cjs prefabs/mechanic-shop-zone-based.brz
+```
+
+Zone controller checks cover entry/exit, retained ownership, waiting-player handoff, transaction/rebuild deferral, immediate control blocking, re-entry, simultaneous arrival, stale occupants, timer removal, catalogue/geometry preservation and exact saved endpoints (885 wires). The purchase-model and saved key/value/installed-check regression checks also pass. The shared zone-controller tests were rerun against the dealership after adding rebuild coverage. In-game mechanic-specific event and loading behavior still need validation.

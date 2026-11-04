@@ -10,6 +10,7 @@ module.exports=function test(c,fromSaved=false){
  m=model(c);m.enter('alice');m.drain();m.startPurchase();m.leave('alice');m.drain();m.finishPurchase();m.drain();assert.equal(m.owner(),null);assert.equal(m.enabled(),false);
  m=model(c);m.enter('alice');m.enter('bob');m.drain();assert.equal(m.owner(),'alice');assert.deepEqual(m.bindings,['alice']);
  m=model(c);m.enter(null);m.enter('alice');m.drain();assert.equal(m.owner(),'alice','Discard stale/null occupants');assert.deepEqual(m.queue(),['alice']);
+ if(c.building){m=model(c);m.enter('alice');m.drain();m.startRebuild();m.leave('alice');m.enter('bob');m.drain();assert.equal(m.owner(),'alice');assert.equal(m.enabled(),false);m.finishRebuild();m.drain();assert.equal(m.owner(),'bob');}
  if(fromSaved)return;
  assert(!c.nodes.some(n=>n.comps.some(d=>d.type===C.Stopwatch.NAME)));assert(!c.bind.comps.some(d=>d.type===C.Button.NAME));
  const out=WorldReader.from(c.bytes),mapping=new Map([[1,1]]);[...c.r.entities()].forEach((e,i)=>mapping.set(e.persistentIndex,i+2));const defs=new Map(),actual=[],savedEdges=[],targets=new Set(),savedNodes=[];
