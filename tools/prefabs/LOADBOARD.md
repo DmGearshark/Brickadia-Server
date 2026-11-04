@@ -116,3 +116,16 @@ The model supplies native player/property/spawn results. It does not emulate Bri
 The screenshot after `/lbclearinit` shows packed `|`/`~` records rendered as long strings. Inspection found every load-board String Split explicitly configured with Occurrence 0, while the working mechanic/dealership gates use Occurrence 1. The helper now uses 1 for both catalogue parsing and client response parsing. The previous model incorrectly ignored Occurrence; it now models one-based selection and a regression confirms 0 breaks catalogue decoding. Serialized occurrence settings and rendered client row/requirement values are asserted. Main server logic, eligibility and payouts are otherwise retained.
 
 The full-system builder defaults to client chip position (40,0,0), with containing bounds expanded. This matches the diagnostic that no longer crashed. The rendering fix still needs in-game validation. Existing gates/diagnostics are not retroactively updated by rebuilding the package: remove the old server and use one updated copy.
+
+## In-game results after parsing/placement fixes
+
+The user confirmed the normal `/loadboard` command no longer crashes. They then reported:
+
+- Scrolling works.
+- Accepting assigns the load to the player; abandonment works.
+- Payment, Car / Truck versus Truck requirements, Pickup Depot and Delivery Depot display correctly.
+- Pickup terminal UI appears to work correctly.
+- Delivering cargo from pickup to receiver produces the private Delivery Complete +250 Scrap message.
+- Previously accepted/abandoned listings show Taken when browsing again. This is the implemented availability policy: acceptance consumes the listing until its timed rotation; abandonment clears the player's contract without immediately re-listing it.
+
+The report confirms a delivery receipt, not an independently measured Scrap balance delta. Actual balance change, active-contract clearing after delivery, native timer rotation over 10–60 minutes, and multiplayer contention still need explicit in-game confirmation. Offline models cover those logic paths but are not substitutes for the native checks.
