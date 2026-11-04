@@ -1,0 +1,14 @@
+'use strict';
+const assert=require('assert/strict'),{WorldReader,brdb:b}=require('brs-js'),graph=require('./test-loadboard-client-isolation.cjs').graph,C=b.COMPONENTS;
+module.exports=function test(ctx){
+ const original=graph(ctx.original.bytes),clear=graph(ctx.clear.bytes),outer=WorldReader.from(ctx.bytes);assert.deepEqual(outer.readPrefab(ctx.path),ctx.clear.bytes);
+ const chip=n=>n.type==='Component_Internal_Microchip';assert.equal(original.nodes.filter(chip).length,1);assert.equal(clear.nodes.filter(chip).length,1);assert.deepEqual(original.nodes.find(chip).pos,[0,0,-14]);assert.deepEqual(clear.nodes.find(chip).pos,[40,0,0]);
+ const point=n=>JSON.stringify([n.g,n.pos,n.type]),edge=e=>[point(e.a),e.p,point(e.z),e.q].join(':');assert.deepEqual(clear.nodes.filter(n=>!chip(n)).map(point).sort(),original.nodes.filter(n=>!chip(n)).map(point).sort());assert.deepEqual(clear.edges.map(edge).sort(),original.edges.map(edge).sort());assert.deepEqual([...clear.r.entities()],[...original.r.entities()]);
+ const cleaned=data=>Object.fromEntries(Object.entries(data).filter(([key])=>!['VarRef','ArrayVarRef','MapVarRef'].includes(key)));for(const n of original.nodes.filter(n=>!chip(n))){const target=clear.nodes.find(x=>point(x)===point(n));assert.deepEqual(cleaned(target.data),cleaned(n.data),'Component data preserved');}
+ // Conservative axis-aligned bound: native brick orientations are axis
+ // permutations, so max(size) bounds each procedural brick's half extent.
+ const body=[...clear.r.bricks(1)],chipBrick=body.find(n=>clear.r.brickAssets()[n.asset_name_index]==='B_1x1_Microchip');assert(chipBrick);const maxOtherX=Math.max(...body.filter(n=>n!==chipBrick).map(n=>n.position[0]+Math.max(...n.size)));assert(chipBrick.position[0]-14>maxOtherX,'Separated from all screen geometry with conservative chip extent');assert(clear.r.prefabJson().pivots.boundsPivot.halfExtent.x>=54);
+ assert(!ctx.c.nodes.some(n=>[C.QueueTicks.NAME,C.MapVar.NAME,C.Exec_Entity_SetRotation.NAME].includes(n.type)));assert.equal(ctx.open.event.data.CommandName,'lbclear');assert.equal(ctx.init.event.data.CommandName,'lbclearinit');assert.equal(ctx.send.data.EventName,'LB1.BoardInit');
+ const reachable=start=>{const seen=new Set(),todo=[start];while(todo.length){const n=todo.pop();if(seen.has(n.id))continue;seen.add(n.id);for(const e of ctx.c.edges)if(e.a===n&&/^(Exec|Output)/.test(e.p)&&/^(Exec|Input)/.test(e.q))todo.push(e.z);}return seen;};assert(!reachable(ctx.open.event).has(ctx.send.id),'Spawning cannot initialize automatically');assert(!reachable(ctx.init.event).has(ctx.spawn.id),'Initialization cannot spawn again');
+ console.log('Clear-chip test passed: same full client logic/data/endpoints, one moved physical chip, extended bounds, conservative separation, independent spawn/init commands.');
+};

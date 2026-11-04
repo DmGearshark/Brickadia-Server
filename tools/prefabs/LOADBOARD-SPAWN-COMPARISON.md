@@ -21,3 +21,7 @@ Compared the embedded payload from the previously working `prefabs/wallet-comman
 Next baseline: test that exact saved wallet artifact in the current game environment, with one wallet controller and the new load-board/test rigs absent. Invoke `/wallet` once. If it works, optionally restore one load-board server and invoke `/wallet` again. Stop on a crash and preserve the assertion. The comparison distinguishes current engine/world-state interaction from a failure confined to the new display payload; it does not itself fix either.
 
 No production logic or prefab bytes were changed for this comparison. Further Buffer Ticks alone are not established as a solution: delayed pulses may still execute under the wire-graph execution scope.
+
+## Reported wallet results
+
+The user reports `/wallet` succeeds with the new load-board rigs absent, and also succeeds after adding one load-board server. The next controlled candidate changes only the screen's chip placement; see [LOADBOARD-CLEAR-CHIP-TEST.md](LOADBOARD-CLEAR-CHIP-TEST.md). The server's presence alone is not sufficient to reproduce the assertion.

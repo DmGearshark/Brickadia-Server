@@ -9,3 +9,5 @@ module.exports=function test(ctx){const original=graph(ctx.original.bytes),outer
  assert(!ctx.c.nodes.some(n=>[C.QueueTicks.NAME,C.MapVar.NAME,C.Exec_SendCustomEventGlobal.NAME,C.Exec_Entity_SetRotation.NAME].includes(n.type)));assert.equal(ctx.spawns.length,3);assert(ctx.spawns.every(n=>n.command.type===C.Event_ChatCommand.NAME));assert(!ctx.c.nodes.some(n=>/Leaderboard/.test(n.type)));
  console.log('Client construction isolation passed: microchip baseline, exact full component set with no wires, exact QueueTicks-only removal and retained endpoints, independent noninitializing command spawners.');
 };
+
+module.exports.graph=graph;

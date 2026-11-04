@@ -1,10 +1,10 @@
 'use strict';
 const {C,N,S,B,O,R,Build,copy}=require('./loadboard-lib.cjs');const {REQUEST,REPLY}=require('./loadboard-server.cjs');
-module.exports=function terminal(src){
+module.exports=function terminal(src,{chipPosition=[0,0,-14]}={}){
  const b=new Build('Portable Load Board',src.assets),origin=[68,180,27],items=src.bricks.filter(x=>x.brick.position[0]>=60&&x.brick.position[1]>160&&x.brick.position[1]<200);
  for(const item of items){const text=item.comps.find(x=>x.type===C.TextDisplay.NAME)?.data.Text;if(['Accept/Abbandon','Scroll Up','Scroll Down'].includes(text))item.comps.push({type:C.Button.NAME,data:{bAllowNearbyInteraction:true,bHiddenInteraction:false,PromptCustomLabel:text}});}
  const spare=items.find(x=>x.brick.position.join()==='68,173,25');if(spare&&!spare.comps.some(x=>x.type===C.TextDisplay.NAME)){const style=structuredClone(items.find(x=>x.comps.some(c=>c.type===C.TextDisplay.NAME&&c.data.Text==='Destination')).comps.find(c=>c.type===C.TextDisplay.NAME));style.data.Text='Unused';spare.comps.push(style);}
- const ui=copy(b,items,'board',origin),chip=b.w.addMicrochip({position:[0,0,-14],color:[40,110,160]}),c=b.circuit(chip.grid,'terminal');
+ const ui=copy(b,items,'board',origin),chip=b.w.addMicrochip({position:chipPosition,color:[40,110,160]}),c=b.circuit(chip.grid,'terminal');
  const named=t=>ui.find(n=>n.type===C.TextDisplay.NAME&&n.data.Text===t),buttonFor=text=>ui.find(n=>n.type===C.Button.NAME&&n.pos.join()===named(text).pos.join());
  const root=c.v(O(null)),player=c.v(O(null)),character=c.v(O(null)),busy=c.v(false),serial=c.v(0),index=c.v(0),op=c.v(0),active=c.v(0),rev=c.v(0),confirm=c.v(false),destroyOnIdle=c.v(true);
  const init=c.event('LB1.BoardInit',[O(null),O(null),B(true)],true),reply=c.event(REPLY,[O(null),O(null),S(''),N(0),S(''),S(''),S(''),N(0)],true);
@@ -30,6 +30,6 @@ module.exports=function terminal(src){
  const action=named('Accept/Abbandon');c.bind(action,'Text',c.sel(R(busy),c.sel(R(confirm),c.sel(c.cmp('Greater',R(active),0),'Accept','Abandon'),'Confirm?'),'Wait'));action.data.WidthScale=.8;
  const header=named('Spawnable Loadboard');if(header){c.bind(header,'Text',R(headers));header.data.LineHeight=.85;header.data.WidthScale=.65;}
  const enabled=c.cmp('NotEqual',R(root),O(null));for(const n of ui.filter(n=>n.type===C.TextDisplay.NAME)){n.data.bEnabled=false;c.bind(n,'bEnabled',enabled);}
- const bytes=b.finish({x:15,y:22,z:24},'Caller-bound load-board client. No catalogue or contract authority. Requests and object-scoped replies communicate with one central server; expires after three minutes without player input.');
+ const bytes=b.finish({x:Math.max(15,Math.abs(chipPosition[0])+14),y:Math.max(22,Math.abs(chipPosition[1])+14),z:Math.max(24,Math.abs(chipPosition[2])+10)},'Caller-bound load-board client. No catalogue or contract authority. Requests and object-scoped replies communicate with one central server; expires after three minutes without player input.');
  return {b,c,bytes,init,reply,root,player,serial,request,send,ui};
 };
