@@ -1,6 +1,6 @@
 # Central load-board system
 
-> **Known runtime issue:** the user reports an immediate game crash when invoking `/loadboard`. The cause is unconfirmed. Do not use that command while testing; see [LOADBOARD-COMMAND-ISOLATION.md](LOADBOARD-COMMAND-ISOLATION.md). The combined artifact is retained so one existing central server can answer diagnostic client requests. Offline checks did not establish runtime safety.
+> **Known runtime issue:** the user reports an immediate game crash when invoking `/loadboard`. The command isolation subsequently also crashes at uninitialized `/lbclient` spawning. The exact cause is unconfirmed. Do not use those commands while testing; see [LOADBOARD-COMMAND-ISOLATION.md](LOADBOARD-COMMAND-ISOLATION.md). The combined artifact is retained so one existing central server can answer diagnostic client requests. Offline checks did not establish runtime safety.
 
 `prefabs/loadboard-system.brz` is the implementation built from the supplied **Loadboard v5.brz**. Paste **one** copy of the central system. It embeds the portable display and both cargo prefabs; there is no separate file installation.
 

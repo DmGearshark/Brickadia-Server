@@ -33,3 +33,7 @@ node tools/prefabs/build-loadboard-command-isolation.cjs 'Loadboard v5.brz' pref
 ```
 
 Offline checks verify exact serialized endpoints, shell contents, embedded client preservation, and independent execution reachability of the stages. They do not determine the native crash cause or establish that another command cannot crash.
+
+## Reported result
+
+The user reports `/lbclient` crashes. Continue with [LOADBOARD-CLIENT-ISOLATION.md](LOADBOARD-CLIENT-ISOLATION.md) to separate client construction/components from its wires and Queue Ticks gates. Do not repeat the known crashing command.

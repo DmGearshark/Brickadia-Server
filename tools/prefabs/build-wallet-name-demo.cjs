@@ -67,4 +67,5 @@ function build(){
  return {bytes,payloadBytes,path,c,p,plates,received,owner,name,spawner,ownTransform,command,queue,busy,current,root,previous,distance,height,transform,forward,displayName,spawnOffset,spawnTick,send,sendCheck,delay};
 }
 module.exports=build;
+module.exports.helpers={prefab,circuit};
 if(require.main===module){const output=process.argv[2];if(!output)throw Error('Usage: node build-wallet-name-demo.cjs output.brz');const result=build();require('./test-wallet-name-demo.cjs')(result);fs.writeFileSync(output,result.bytes);console.log(JSON.stringify({output,controllerGates:result.c.nodes.length,payloadGates:result.p.nodes.length,embeddedPrefab:result.path},null,2));}
