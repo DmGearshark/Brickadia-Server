@@ -40,3 +40,9 @@ Screenshots from v2 show first-entry Push 1, First read 2, Null removed 1, Entry
 `prefabs/mechanic-shop-zone-startup-buffer-test.brz` waits one tick after the first queue read and candidate assignment, and after the final membership read. A preflight flag serializes those deferred checks. The final check requires both current queue membership and no transaction/rebuild in progress. It retains the v2 diagnostic panel. The production prefab file remains unchanged pending an in-game first-entry test.
 
 Validation: all 964 serialized wire endpoints match the intended graph; existing zone behavior and purchase checks pass. The model additionally delays candidate variable publication by one tick and confirms first-entry binding succeeds. That model represents the suspected timing issue, not a complete emulation of Brickadia scheduling.
+
+## Confirmed first-entry fix
+
+User tested the buffered version in game and confirmed proper first-entry binding. Their screenshot shows Enter 1, Queued 1, Bind request 1, Owner write 1, First read 1, Null removed 0, Owner present/Inside true and Processing false. The buffered approach resolves the observed failure; the precise engine scheduling behavior remains inferred.
+
+Regenerated `prefabs/mechanic-shop-zone-based.brz` with the same binding changes and without diagnostic instrumentation or the panel. Production has 62 zone gates and 910 wires. Zone model, delayed candidate publication, serialized endpoint, and purchase/key/value wiring checks pass. Clean version itself has not been separately tested in game.
