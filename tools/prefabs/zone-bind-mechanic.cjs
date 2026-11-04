@@ -55,19 +55,27 @@ function build(source,instrument){
  const busyEdge=node('Expr_EdgeDetectorExec');nn(processing,'bOutput',busyEdge,'Input');
  const [request,requestPort]=join([[push,'ExecOut'],[already,'ExecOutA'],[hideOwner,'ExecOut'],[leavingOwner,'ExecOutB'],[busyEdge,'OnFallingEdge']]);
  const tick=node('BufferTicks',{TicksToWait:1,ZeroTicksToWait:0});connect(request,request.type,requestPort,tick,tick.type,'Input');
- const pump=node('Exec_Union');nn(tick,'Output',pump,'ExecA');const idle=node('Expr_LogicalNOT');nn(processing,'bOutput',idle,'bInput');const idleCheck=branch(pump,idle);
- const currentFind=arrayOp('Exec_ArrayVar_Find');connect(bound,C.Var.NAME,'Value',currentFind,currentFind.type,'Value');chain(idleCheck,currentFind,'ExecOutA');
+ const pump=node('Exec_Union');nn(tick,'Output',pump,'ExecA');const idle=node('Expr_LogicalNOT');nn(processing,'bOutput',idle,'bInput');const checking=variable(B(false)),notChecking=node('Expr_LogicalNOT');nn(checking,'Value',notChecking,'bInput');const mayStart=node('Expr_LogicalAND');nn(idle,'bOutput',mayStart,'bInputA');nn(notChecking,'bOutput',mayStart,'bInputB');const idleCheck=branch(pump,mayStart);const startCheck=set(checking,B(true));chain(idleCheck,startCheck,'ExecOutA');
+ const currentFind=arrayOp('Exec_ArrayVar_Find');connect(bound,C.Var.NAME,'Value',currentFind,currentFind.type,'Value');chain(startCheck,currentFind);
  const hasOwner=node('Expr_CompareNotEqual',{InputB:O(null)});connect(bound,C.Var.NAME,'Value',hasOwner,hasOwner.type,'InputA');
  const retain=node('Expr_LogicalAND');nn(currentFind,'bFound',retain,'bInputA');nn(hasOwner,'bOutput',retain,'bInputB');const retained=branch(currentFind,retain);
  const showOwner=set(within,B(true));chain(retained,showOwner,'ExecOutA');
  const clearWithin=set(within,B(false));chain(retained,clearWithin,'ExecOutB');
  // Preserve the existing clear/notice behavior, but invoke it from zone reconciliation.
  connect(clearWithin,clearWithin.type,'ExecOut',oldClear,C.Exec_Var_Set.NAME,'Exec');
- const first=arrayOp('Exec_ArrayVar_Get',{Index:0});connect(oldClear,C.Exec_Var_Set.NAME,'ExecOut',first,first.type,'Exec');const available=node('Exec_Branch');chain(first,available);nn(first,'bOutOfBounds',available,'bCond');
+ const first=arrayOp('Exec_ArrayVar_Get',{Index:0});connect(oldClear,C.Exec_Var_Set.NAME,'ExecOut',first,first.type,'Exec');// Execution outputs can arrive before reactive data/Var outputs settle on first use.
+ const readReady=node('BufferTicks',{TicksToWait:1,ZeroTicksToWait:0});nn(first,'ExecOut',readReady,'Input');
+ const available=node('Exec_Branch');chain(readReady,available,'Output');nn(first,'bOutOfBounds',available,'bCond');
  const saveCandidate=set(candidate);nn(first,'Value',saveCandidate,'Value');chain(available,saveCandidate,'ExecOutB');
- const candidateValid=node('Expr_CompareNotEqual',{InputB:O(null)});nn(candidate,'Value',candidateValid,'InputA');const validCandidate=branch(saveCandidate,candidateValid);
- const enableCandidate=set(within,B(true));chain(validCandidate,enableCandidate,'ExecOutA');connect(enableCandidate,enableCandidate.type,'ExecOut',lock,C.Exec_Var_Set.NAME,'Exec');connect(candidate,C.Var.NAME,'Value',bindingData,C.MicrochipInput.NAME,'RER_Input');
+ const candidateValid=node('Expr_CompareNotEqual',{InputB:O(null)});nn(candidate,'Value',candidateValid,'InputA');const candidateReady=node('BufferTicks',{TicksToWait:1,ZeroTicksToWait:0});nn(saveCandidate,'ExecOut',candidateReady,'Input');const validCandidate=branch(candidateReady,candidateValid,'Output');
+ // Recheck occupancy and processing after the deferred candidate read.
+ const stillQueued=arrayOp('Exec_ArrayVar_Find');nn(candidate,'Value',stillQueued,'Value');chain(validCandidate,stillQueued,'ExecOutA');
+ const canBind=node('Expr_LogicalAND');nn(stillQueued,'bFound',canBind,'bInputA');nn(idle,'bOutput',canBind,'bInputB');const membershipReady=node('BufferTicks',{TicksToWait:1,ZeroTicksToWait:0});nn(stillQueued,'ExecOut',membershipReady,'Input');const finalCheck=branch(membershipReady,canBind,'Output');
+ const enableCandidate=set(within,B(true));chain(finalCheck,enableCandidate,'ExecOutA');connect(enableCandidate,enableCandidate.type,'ExecOut',lock,C.Exec_Var_Set.NAME,'Exec');connect(candidate,C.Var.NAME,'Value',bindingData,C.MicrochipInput.NAME,'RER_Input');
  const dropDead=arrayOp('Exec_ArrayVar_RemoveAtIndex',{Index:0});chain(validCandidate,dropDead,'ExecOutB');const retry=node('BufferTicks',{TicksToWait:1,ZeroTicksToWait:0});nn(dropDead,'ExecOut',retry,'Input');nn(retry,'Output',pump,'ExecB');
+ // Serialize deferred reads, including simultaneous entrants and null pruning.
+ const done=set(checking,B(false));
+ const [doneSource,donePort]=join([[showOwner,'ExecOut'],[available,'ExecOutA'],[enableCandidate,'ExecOut'],[finalCheck,'ExecOutB'],[validCandidate,'ExecOutB']]);connect(doneSource,doneSource.type,donePort,done,done.type,'Exec');
  // Keep departed owners from using a control while an in-flight transaction finishes.
  const buttons=nodes.filter(n=>n.g===1&&n.comps.some(c=>c.type===C.Button.NAME));assert.equal(buttons.length,7);
  for(const button of buttons){const source=one(edges.filter(e=>e.a===button&&e.p==='bHeld'&&e.zt===C.Expr_LogicalAND.NAME),'Character-ready control').z;const routes=edges.filter(e=>e.a===source&&e.p==='bOutput');const gate=node('Expr_LogicalAND');connect(source,C.Expr_LogicalAND.NAME,'bOutput',gate,gate.type,'bInputA');nn(within,'Value',gate,'bInputB');for(const e of routes){edges=edges.filter(old=>old!==e);connect(gate,gate.type,'bOutput',e.z,e.zt,e.q);}}
@@ -80,7 +88,7 @@ function build(source,instrument){
  for(const g of r.gridIds())for(const ch of r.brickChunkIndex(g)){const cc=r.componentChunk(g,ch.index);for(let i=0;i<cc.soa.MicrochipBrickIndices.length;i++)w.registerMicrochipLink(byKey.get(address(g,ch.index,cc.soa.MicrochipBrickIndices[i])).handle,grids.get(cc.soa.MicrochipBrickGridReferences[i]));}
  const targets=new Set();for(const e of edges){assert(!removed.has(e.a)&&!removed.has(e.z));const target=e.z.id+e.zt+e.q;assert(!targets.has(target),'Duplicate '+target);targets.add(target);w.addWire({brick:e.a.handle,component_type:e.at,port:e.p},{brick:e.z.handle,component_type:e.zt,port:e.q});}
  const bytes=w.toBrz({prefab:r.prefabJson(),externalAssets:r.externalAssets(),bundle:{name:'Mechanic Shop - Zone Binding',description:'Existing zone automatically binds the first present player, retains that owner, and unbinds or hands off when they leave. Transaction-safe; no inactivity timeout or manual bind control.'}});
- return {r,bytes,nodes:kept,edges,originals,originalEdges,removed,logic,zone,bind,bound,busy,building,feedback,oldOwnerSet,lock,oldClear,queue,candidate,within,entered,left,busyEdge,pump,showOwner,clearWithin,enableCandidate,bindingValue:candidate,bindingData,bindingExec,acceptedTrue,processing};
+ return {deferredCandidate:true,r,bytes,nodes:kept,edges,originals,originalEdges,removed,logic,zone,bind,bound,busy,building,feedback,oldOwnerSet,lock,oldClear,queue,candidate,within,entered,left,busyEdge,pump,showOwner,clearWithin,enableCandidate,bindingValue:candidate,bindingData,bindingExec,acceptedTrue,processing};
 }
 module.exports=build;
 if(require.main===module){const [source,output]=process.argv.slice(2);if(!output)throw Error('Usage: node zone-bind-mechanic.cjs source.brz output.brz');const result=build(source);require('./test-zone-bind-dealership.cjs')(result);fs.writeFileSync(output,result.bytes);console.log(JSON.stringify({output,newGates:result.nodes.filter(n=>n.id.startsWith('zone')).length,removedOldTimerGates:result.removed.size,wires:result.edges.length},null,2));}

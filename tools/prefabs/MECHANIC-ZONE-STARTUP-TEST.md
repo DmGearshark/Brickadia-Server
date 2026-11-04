@@ -32,3 +32,11 @@ User observed first entry: Occupants 1, Enter 1, Reconcile 2, remaining readings
 `prefabs/mechanic-shop-zone-startup-test-v2.brz` adds execution counters for entry Find, Push, duplicate branch, first-item read, and null-candidate removal. It also captures whether the entry character is non-null at the entry execution and displays Find's current found flag. Existing graph still unchanged. This revision has 32 diagnostic gates and one panel; all 939 serialized endpoints and the purchase/zone offline checks pass.
 
 Use a fresh copy and capture **all rows while still inside after the first failed entry**. Push zero plus Duplicate nonzero implicates entry Find/branch evaluation. Push nonzero plus Null removed nonzero implicates character/reference timing. Push nonzero with First read zero implicates the processing/retention path. These are hypotheses to test, not confirmed causes.
+
+## Buffered binding test
+
+Screenshots from v2 show first-entry Push 1, First read 2, Null removed 1, Entry character valid true, and no bind request. The second entry has Push 2, Null removed still 1, and a successful binding. The failing stage is candidate extraction/validation; execution versus reactive data propagation is the working explanation, not a proven engine-level cause.
+
+`prefabs/mechanic-shop-zone-startup-buffer-test.brz` waits one tick after the first queue read and candidate assignment, and after the final membership read. A preflight flag serializes those deferred checks. The final check requires both current queue membership and no transaction/rebuild in progress. It retains the v2 diagnostic panel. The production prefab file remains unchanged pending an in-game first-entry test.
+
+Validation: all 964 serialized wire endpoints match the intended graph; existing zone behavior and purchase checks pass. The model additionally delays candidate variable publication by one tick and confirms first-entry binding succeeds. That model represents the suspected timing issue, not a complete emulation of Brickadia scheduling.

@@ -2,7 +2,8 @@
 const assert=require('assert/strict'),{brdb:b}=require('brs-js'),C=b.COMPONENTS;
 // Execute the new zone controller. The existing shop binding pipeline is a
 // tested interface: acquiring its lock sets the owner then finishes loading.
-module.exports=function model(c){
+module.exports=function model(c,options={}){
+ let publishedCandidate=null;
  const fresh=c.nodes.filter(n=>n.id.startsWith('zone')),defs=new Map(),state=new Map(),results=new Map(),outgoing=new Map(),incoming=new Map(),scheduled=[],bindings=[];let ticks=0;
  for(const n of c.nodes){defs.set(n.id,n);for(const comp of n.comps){if(comp.type===C.Var.NAME)state.set(n.id,comp.data.Value.value);if(comp.type===C.ArrayVar.NAME)state.set(n.id,[...comp.data.Value.$array]);}}
  const relevant=c.edges.filter(e=>e.a.id.startsWith('zone')||e.z.id.startsWith('zone'));
@@ -10,7 +11,7 @@ module.exports=function model(c){
  const unbox=v=>v&&typeof v==='object'&&'$variant'in v?v.value:v;
  const input=(n,p)=>{const e=incoming.get(n.id+':'+p);return e?value(e.a,e.p):unbox(n.comps[0].data[p]);};
  function value(n,p){if(['VarRef','ArrayVarRef'].includes(p))return n.id;const type=n.type||n.comps[0].type;
-  if(type===C.Var.NAME)return state.get(n.id);
+  if(type===C.Var.NAME)return options.deferCandidate&&n.id===c.candidate.id?publishedCandidate:state.get(n.id);
   if(type.startsWith('BrickComponentType_Exec_')||type.startsWith('BrickComponentType_Internal_CharacterZoneEvent_'))return (results.get(n.id)||{})[p];
   const get=p=>input(n,p);switch(type){case C.Expr_CompareEqual.NAME:return get('InputA')===get('InputB');case C.Expr_CompareNotEqual.NAME:return get('InputA')!==get('InputB');case C.Expr_LogicalNOT.NAME:return !get('bInput');case C.Expr_LogicalOR.NAME:return get('bInputA')||get('bInputB');case C.Expr_LogicalAND.NAME:return get('bInputA')&&get('bInputB');default:throw Error(type);}
  }
@@ -20,7 +21,7 @@ module.exports=function model(c){
   if(n===c.oldClear){state.set(c.bound.id,null);emit(n,'ExecOut');return;}
   const type=n.type,get=p=>input(n,p);let p='ExecOut';
   switch(type){case C.Exec_Union.NAME:break;case C.Exec_Branch.NAME:p=get('bCond')?'ExecOutA':'ExecOutB';break;
-   case C.Exec_Var_Set.NAME:state.set(get('VarRef'),get('Value'));break;
+   case C.Exec_Var_Set.NAME:{const ref=get('VarRef'),v=get('Value');state.set(ref,v);if(options.deferCandidate&&ref===c.candidate.id)scheduled.push({at:ticks+1,run:()=>{publishedCandidate=v;}});break;}
    case C.Exec_ArrayVar_Find.NAME:{const a=state.get(get('ArrayVarRef')),index=a.indexOf(get('Value'));results.set(n.id,{Index:index,bFound:index>=0});break;}
    case C.Exec_ArrayVar_Push.NAME:state.get(get('ArrayVarRef')).push(get('Value'));break;
    case C.Exec_ArrayVar_RemoveAtIndex.NAME:state.get(get('ArrayVarRef')).splice(get('Index'),1);break;
