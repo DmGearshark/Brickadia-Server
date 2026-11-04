@@ -20,3 +20,5 @@ node tools/prefabs/build-delivery-pickup-isolation.cjs prefabs/delivery-pickup-i
 ```
 
 Offline checks verify every serialized endpoint, payload embedding, ordinary nonphysics cargo flags, and execution reachability proving the four stages remain separate. Native user lookup, spawn, property write and property read still require in-game validation.
+
+User subsequently confirmed none of the four stages crashed and red reported PASS. Continue with `delivery-receiver-zone-test.brz` to test reading that property from a zone's detected entity rather than the stored spawner reference. This does not establish the cause of the original combined rig's crash.

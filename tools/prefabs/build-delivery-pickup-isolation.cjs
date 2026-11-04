@@ -14,7 +14,7 @@ function circuit(w,grid){const nodes=[],edges=[];let index=0;
  return {w,nodes,edges,node,connect,chain,variable,set,branch,cmp,join};
 }
 const B=value=>({$variant:'Bool',value});
-function build(){
+function build({withZone=false}={}){
  const w=new World(),chip=w.addMicrochip({position:[80,0,0],color:[50,100,140]}),c=circuit(w,chip.grid);
  const cargo=new World();cargo.addBrick({asset:'PB_DefaultMicroBrick',position:[0,0,0],size:[12,12,12],color:[130,85,45]});
  // Deliberately use the ordinary prefab mode from the working wallet demo:
@@ -47,13 +47,33 @@ function build(){
  const valid=c.node('Expr_LogicalAND');c.connect(match,'bOutput',valid,'bInputA');c.connect(read,'bFound',valid,'bInputB');const checked=c.branch(wait(readDone),valid,'Output');
  const success=c.set(status,S('PASS: native owner ID property matches.'));c.chain(checked,success,'ExecOutA');done.push([success,'ExecOut']);const fail=c.set(status,S('FAIL: owner property missing or different.'));c.chain(checked,fail,'ExecOutB');done.push([fail,'ExecOut']);
  const noEntity=c.set(status,S('No entity. Run BLUE once, or paste a fresh test copy.'));c.chain(readCheck,noEntity,'ExecOutB');done.push([noEntity,'ExecOut']);
+ const zoneCtx={};
+ if(withZone){
+  const fifth=button('5 ZONE TEST',[170,80,230],150);
+  const projector=w.addBrick({asset:C.AttachedZone.BRICK,size:[35,35,2],position:[70,110,0],direction:4,rotation:2,color:[60,150,210],components:[{type:C.AttachedZone.NAME,data:{ZoneStartDistance:0,ZoneEndDistance:90,bDetectEntities:true,bDetectPlayers:false,bDetectPlayers1:false,bDetectPlayers2:false,bDetectPlayers3:false,TagFilter:''}}]});
+  const zone={id:'receiverZone',type:C.AttachedZone.NAME,handle:projector,position:[70,110,0]},entered=c.node('EntityZoneEvent_Entered',{TagFilter:''});c.connect(zone,'ZoneRef',entered,'Zone');
+  const marker=c.node('Exec_GetOwnTransform',{},[70,110,35],'main'),move=c.node('Exec_Entity_SetLocation');c.connect(marker,'Location',move,'Vector');c.connect(root,'Value',move,'Entity');
+  const moveCheck=c.branch(fifth.start,exists,'Output');c.chain(moveCheck,marker,'ExecOutA');after(marker,move,2);const moveDone=c.set(step,S('5: moved cube into receiving zone'));after(move,moveDone,30);const movedStatus=save(moveDone,status,S('Movement finished. Check RECEIVING ZONE below.'));done.push([movedStatus,'ExecOut']);
+  const noCube=c.set(status,S('Run steps 1-4 first, then purple.'));c.chain(moveCheck,noCube,'ExecOutB');done.push([noCube,'ExecOut']);
+  const arriving=c.variable(O(null)),receiveStatus=c.variable(S('Not tested: finish steps 1-4, then PURPLE.')),entries=c.variable(N(0));
+  const captureIncoming=c.set(arriving);c.connect(entered,'Entity',captureIncoming,'Value');c.chain(entered,captureIncoming,'Exec');
+  const increment=c.node('Exec_Var_Increment',{Value:N(1)});c.connect(entries,'VarRef',increment,'VarRef');c.chain(captureIncoming,increment);
+  const zoneRead=c.node('Exec_Entity_GetCustomProperty',{Key:'LoadProbe.OwnerId',Value:S(''),bFound:false});c.connect(arriving,'Value',zoneRead,'Entity');after(increment,zoneRead,2);
+  const same=c.cmp('Expr_CompareEqual',arriving,'Value');c.connect(root,'Value',same,'InputB');const ownerMatch=c.cmp('Expr_CompareEqual',zoneRead,'Value');c.connect(owner,'Value',ownerMatch,'InputB');
+  const propertiesMatch=c.node('Expr_LogicalAND');c.connect(ownerMatch,'bOutput',propertiesMatch,'bInputA');c.connect(zoneRead,'bFound',propertiesMatch,'bInputB');const knownCube=c.node('Expr_LogicalAND');c.connect(same,'bOutput',knownCube,'bInputA');c.connect(exists,'bOutput',knownCube,'bInputB');const zoneValid=c.node('Expr_LogicalAND');c.connect(propertiesMatch,'bOutput',zoneValid,'bInputA');c.connect(knownCube,'bOutput',zoneValid,'bInputB');
+  const check=c.branch(wait(zoneRead,2),zoneValid,'Output');const pass=c.set(receiveStatus,S('PASS: zone detected the stamped cube and its owner.'));c.chain(check,pass,'ExecOutA');const reject=c.set(receiveStatus,S('FAIL: detected entity or owner property differs.'));c.chain(check,reject,'ExecOutB');
+  const zoneText=c.node('Expr_String_FormatText',{FormatString:'RECEIVING ZONE\r\n{A}\r\nZone entries: {B} | Same cube: {C}\r\nZone-read owner ID: {D}\r\nProperty found: {E} | Owner matches: {F}'});
+  for(const [n,p,q]of [[receiveStatus,'Value','A'],[entries,'Value','B'],[same,'bOutput','C'],[zoneRead,'Value','D'],[zoneRead,'bFound','E'],[ownerMatch,'bOutput','F']])c.connect(n,p,zoneText,'Input'+q);
+  Object.assign(zoneCtx,{fifth,entered,arriving,zoneRead,same,ownerMatch,zoneValid,zoneText});
+ }
  const [last,lastPort]=c.join(done);c.chain(last,release,lastPort);
  const text=c.node('Expr_String_FormatText',{FormatString:'PICKUP CRASH ISOLATION\r\n{A}\r\nLast completed: {B}\r\nPlayer: {C}\r\nUser ID: {D}\r\nEntity present: {E}\r\nRead ID: {F}\r\nProperty found: {G}'});
  for(const [n,p,q]of [[status,'Value','A'],[step,'Value','B'],[displayName,'Value','C'],[owner,'Value','D'],[exists,'bOutput','E'],[read,'Value','F'],[read,'bFound','G']])c.connect(n,p,text,'Input'+q);
- const h=w.addBrick({asset:'PB_DefaultMicroBrick',size:[1,125,65],position:[-60,0,110],direction:4,rotation:2,color:[8,12,18],components:[{type:C.TextDisplay.NAME,data:{...style,Text:'PICKUP CRASH ISOLATION'}}]});c.connect(text,'Output',{id:'screen',type:C.TextDisplay.NAME,handle:h,position:[-60,0,110]},'Text');
- w.addBrick({asset:'PB_DefaultMicroBrick',size:[100,130,2],position:[0,0,-4],color:[40,45,52]});
- const bytes=w.toBrz({prefab:prefab({x:105,y:135,z:180}),externalAssets:[{type:'BrickFontDescriptor',name:'GlacialIndifferencePlus'}],bundle:{name:'Pickup Crash Isolation - Manual Steps',description:'Four independent buttons isolate UserId lookup, plain nonphysics prefab spawn, entity custom property write and read. No zones, physics payload, events or scores. Blue is intended for one spawn per fresh test copy.'}});
- return {bytes,payload,path,c,green,blue,yellow,red,spawner,write,read};
+ let screenText=text;if(withZone){screenText=c.node('Expr_String_FormatText',{FormatString:'{A}\r\n{B}'});c.connect(text,'Output',screenText,'InputA');c.connect(zoneCtx.zoneText,'Output',screenText,'InputB');}
+ const h=w.addBrick({asset:'PB_DefaultMicroBrick',size:[1,180,100],position:[-60,0,130],direction:4,rotation:2,color:[8,12,18],components:[{type:C.TextDisplay.NAME,data:{...style,Text:'PICKUP CRASH ISOLATION'}}]});c.connect(screenText,'Output',{id:'screen',type:C.TextDisplay.NAME,handle:h,position:[-60,0,130]},'Text');
+ w.addBrick({asset:'PB_DefaultMicroBrick',size:[130,210,2],position:[0,0,-4],color:[40,45,52]});
+ const bytes=w.toBrz({prefab:prefab({x:135,y:215,z:235}),externalAssets:[{type:'BrickFontDescriptor',name:'GlacialIndifferencePlus'}],bundle:{name:withZone?'Delivery Receiver Zone Test':'Pickup Crash Isolation - Manual Steps',description:withZone?'Repeat the four proven pickup steps, then press purple to move the plain cube into a receiving zone. Zone reads OwnerId from its detected entity. No physics payload flags, object events or scores.':'Four independent buttons isolate UserId lookup, plain nonphysics prefab spawn, entity custom property write and read. No zones, physics payload, events or scores. Blue is intended for one spawn per fresh test copy.'}});
+ return {bytes,payload,path,c,green,blue,yellow,red,spawner,write,read,root,owner,withZone,zoneCtx};
 }
 module.exports=build;
-if(require.main===module){const output=process.argv[2];if(!output)throw Error('Usage: node build-delivery-pickup-isolation.cjs output.brz');const ctx=build();require('./test-delivery-pickup-isolation.cjs')(ctx);fs.writeFileSync(output,ctx.bytes);console.log(JSON.stringify({output,gates:ctx.c.nodes.length},null,2));}
+if(require.main===module){const output=process.argv[2];if(!output)throw Error('Usage: node build-delivery-pickup-isolation.cjs output.brz');const ctx=build({withZone:process.argv.includes('--zone')});require(ctx.withZone?'./test-delivery-receiver-zone.cjs':'./test-delivery-pickup-isolation.cjs')(ctx);fs.writeFileSync(output,ctx.bytes);console.log(JSON.stringify({output,gates:ctx.c.nodes.length},null,2));}
