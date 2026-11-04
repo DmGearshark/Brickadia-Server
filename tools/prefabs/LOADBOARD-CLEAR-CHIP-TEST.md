@@ -26,3 +26,7 @@ node tools/prefabs/build-loadboard-clear-chip-test.cjs 'Loadboard v5.brz' prefab
 Checks compare the original and relocated client's serialized component data, positions and all wire endpoints, allowing only the physical chip position and containing bounds to differ. A conservative bounding check confirms separation from the screen's geometry. The direct command rig does not use a map/queue dispatcher or rotation gate, and spawning cannot trigger initialization automatically.
 
 The default production builder still generates bytes identical to the existing artifact; its configuration/logic has not been changed to an unconfirmed workaround. The normal graph/model regression checks pass. No actual engine collision or graph mutation behavior is emulated by these checks.
+
+## Reported result and follow-up
+
+User reports neither spawn nor initialization crashed and confirms the text appeared on the newly spawned diagnostic object. Their subsequent screenshot establishes that it is the load-board client receiving data, but packed catalogue/list/detail strings were not decoded. This led to the separate Occurrence 0 versus 1 parsing fix documented in LOADBOARD.md. Both placement and parsing changes are now included in the full system; normal-command and corrected-rendering validation remain pending.

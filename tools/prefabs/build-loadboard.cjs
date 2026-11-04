@@ -1,9 +1,9 @@
 'use strict';
 const fs=require('fs'),assert=require('assert/strict'),{Build,C,N,S,B,O,R,source,copy}=require('./loadboard-lib.cjs');
 const server=require('./loadboard-server.cjs'),terminal=require('./loadboard-terminal.cjs'),command=require('./loadboard-command.cjs'),pickup=require('./loadboard-pickup.cjs');
-function build(path){
+function build(path,{clientChipPosition=[40,0,0]}={}){
  const src=source(path),main=new Build('Load Board System - Central Server and Stations',src.assets);
- const portable=terminal(src),portablePath=main.w.addPrefab(portable.bytes);
+ const portable=terminal(src,clientChipPosition?{chipPosition:clientChipPosition}:undefined),portablePath=main.w.addPrefab(portable.bytes);
  const cargo=[];for(const [i,y]of [[0,169],[1,289]]){const b=new Build(i?'Fuel Cargo':'Cheap Crate Cargo',src.assets),items=src.bricks.filter(x=>{const p=x.brick.position;return p[0]>=-76&&p[0]<=-26&&Math.abs(p[1]-y)<=31&&p[2]<=3;});assert(items.length>20);copy(b,items,'cargo'+i,[-51,y,-18]);const bytes=b.finish({x:30,y:33,z:20},'Cargo geometry from the supplied load-board reference, using the tested ordinary prefab mode. Identity is imprinted by the central server after spawning.');cargo.push({b,bytes,path:main.w.addPrefab(bytes)});}
  // The supplied chip bodies and casing remain where the user placed them.
  const grids=new Map();for(const e of src.r.entities())grids.set(e.persistentIndex,main.w.addBrickGrid({type:e.typeName,location:e.location,rotation:e.rotation,frozen:e.frozen,sleeping:e.sleeping,data:{bCollapsed:e.data.bCollapsed,PlaneCenter:e.data.PlaneCenter,PlaneExtent:e.data.PlaneExtent}}));
@@ -27,4 +27,4 @@ function build(path){
  return {bytes,main,src,portable,cargo,central,cmd,pick,delivery:{entered,submit,deliveryZone,deliveryId},config,portablePath};
 }
 module.exports=build;
-if(require.main===module){const [input,out]=process.argv.slice(2);if(!out)throw Error('Usage: node build-loadboard.cjs reference.brz output.brz');try{const ctx=build(input);require('./test-loadboard.cjs')(ctx);fs.writeFileSync(out,ctx.bytes);console.log(JSON.stringify({output:out,mainComponents:ctx.main.nodes.length,clientComponents:ctx.portable.b.nodes.length,cargo:ctx.cargo.map(x=>x.path)},null,2));}catch(e){console.error(e.message);console.error(e.stack.split('\n').filter(x=>x.includes('/tools/prefabs/')&&!x.includes('/node_modules/')).join('\n'));process.exitCode=1;}}
+if(require.main===module){const [input,out]=process.argv.slice(2);if(!out)throw Error('Usage: node build-loadboard.cjs reference.brz output.brz');try{const ctx=build(input,process.argv.includes('--clear-chip')?{clientChipPosition:[40,0,0]}:{});require('./test-loadboard.cjs')(ctx);fs.writeFileSync(out,ctx.bytes);console.log(JSON.stringify({output:out,mainComponents:ctx.main.nodes.length,clientComponents:ctx.portable.b.nodes.length,cargo:ctx.cargo.map(x=>x.path)},null,2));}catch(e){console.error(e.message);console.error(e.stack.split('\n').filter(x=>x.includes('/tools/prefabs/')&&!x.includes('/node_modules/')).join('\n'));process.exitCode=1;}}

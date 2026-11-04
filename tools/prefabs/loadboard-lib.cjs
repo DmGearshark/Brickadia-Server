@@ -30,7 +30,7 @@ class Circuit{
  math(k,a,z){return R(this.n('Expr_Math'+k,{InputA:a,InputB:z}),'Output');}
  sel(cond,a,z){return R(this.n('Expr_Select',{InputA:a,InputB:z,bSelectB:cond}),'Output');}
  fmt(str,...args){return R(this.n('Expr_String_FormatText',{FormatString:str,...Object.fromEntries(args.map((v,i)=>['Input'+String.fromCharCode(65+i),v]))}),'Output');}
- split(input,count,delimiter='|'){let rest=input;const fields=[];for(let i=0;i<count-1;i++){const n=this.n('Expr_String_Split',{Input:rest,Delimiter:delimiter,Occurrence:0,bCaseSensitive:true});fields.push(R(n,'Left'));rest=R(n,'Right');}fields.push(rest);return fields;}
+ split(input,count,delimiter='|'){let rest=input;const fields=[];for(let i=0;i<count-1;i++){const n=this.n('Expr_String_Split',{Input:rest,Delimiter:delimiter,Occurrence:1,bCaseSensitive:true});fields.push(R(n,'Left'));rest=R(n,'Right');}fields.push(rest);return fields;}
  num(x){return R(this.n('Expr_String_ParseNumber',{Input:x}),'Value');}
  join(terms){while(terms.length>1){const [a,p]=terms.shift(),[z,q]=terms.shift(),u=this.n('Exec_Union');this.b.wire(a,p,u,'ExecA');this.b.wire(z,q,u,'ExecB');terms.push([u,'ExecOut']);}return terms[0];}
  to(terms,node,q='Exec'){const old=this.b.edges.find(e=>e.z===node&&e.q===q);if(old){this.b.edges=this.b.edges.filter(e=>e!==old);terms=[...terms,[old.a,old.p]];}const [a,p]=this.join(terms);this.link(a,node,p,q);}

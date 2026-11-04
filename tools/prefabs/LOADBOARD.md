@@ -1,6 +1,6 @@
 # Central load-board system
 
-> **Known runtime issue:** the user reports an immediate game crash when invoking `/loadboard`. The command isolation subsequently also crashes at uninitialized `/lbclient` spawning. The exact cause is unconfirmed. Do not use those commands while testing; see [LOADBOARD-COMMAND-ISOLATION.md](LOADBOARD-COMMAND-ISOLATION.md). The combined artifact is retained so one existing central server can answer diagnostic client requests. Offline checks did not establish runtime safety.
+> **Updated build:** the portable client now uses the separated chip placement that the user confirmed could spawn and initialize without crashing. String Split gates now use occurrence **1**, matching the working shops; the previous occurrence 0 caused raw packed records to spill across the screen. Replace the old system with this build and retest the normal `/loadboard` path. The exact engine-level cause of the earlier graph assertion remains unconfirmed.
 
 `prefabs/loadboard-system.brz` is the implementation built from the supplied **Loadboard v5.brz**. Paste **one** copy of the central system. It embeds the portable display and both cargo prefabs; there is no separate file installation.
 
@@ -11,7 +11,7 @@
 3. Walk into the pickup terminal's small zone. Its screen binds to the first player and shows that player's active load. Press **Collect**. Cargo should spawn above the marked pad, stamped by the central server.
 4. Transport the cargo into the large receiving zone. The server validates its owner UUID, delivery number and destination, clears the active job, credits Scrap and sends **Delivery complete! Received +250 Scrap.** (or the configured amount) privately to the assigned driver. The delivered cargo is removed.
 
-This complete assembly has passed offline graph/simulation checks, not an in-game test. First confirm the command screen, pickup binding and cargo placement before testing payout. The earlier isolated ordinary-prefab ID-write/read and receiving-zone ID tests were confirmed in game; the original frozen-physics combined probe remains withdrawn.
+The separated-chip diagnostic was tested in game, but this updated complete assembly and its normal command path still require a new in-game check. First confirm clean load names, pickup binding and cargo placement before testing payout. The earlier isolated ordinary-prefab ID-write/read and receiving-zone ID tests were confirmed in game; the original frozen-physics combined probe remains withdrawn.
 
 ## Behavior
 
@@ -110,3 +110,9 @@ node tools/prefabs/build-loadboard.cjs 'Loadboard v5.brz' prefabs/loadboard-syst
 `test-loadboard.cjs` validates exact serialized nodes/wire endpoints for the main assembly, client and both embedded cargo assets. It executes the actual generated graph with immediate and one-tick-delayed native-query/variable publication. Cases cover eligibility, simultaneous exclusive acceptance, one active load, authorization/stamping, wrong destinations, replacement, abandonment, stale listings, failed spawning, duplicate pickup/delivery requests, one payout/chat receipt, catalogue edits, saved fields, actual client/station event communication, caller-only controls, first-entry pickup binding, owner handoff, confirmation, reconnect registration, command replacement and non-destructive vehicle UI expiry.
 
 The model supplies native player/property/spawn results. It does not emulate Brickadia physics, actual cargo placement/orientation, transport handling, rendering, native timer implementation or real world persistence. Those remain in-game checks; no geometry preview is used.
+
+## Parsing regression and placement update
+
+The screenshot after `/lbclearinit` shows packed `|`/`~` records rendered as long strings. Inspection found every load-board String Split explicitly configured with Occurrence 0, while the working mechanic/dealership gates use Occurrence 1. The helper now uses 1 for both catalogue parsing and client response parsing. The previous model incorrectly ignored Occurrence; it now models one-based selection and a regression confirms 0 breaks catalogue decoding. Serialized occurrence settings and rendered client row/requirement values are asserted. Main server logic, eligibility and payouts are otherwise retained.
+
+The full-system builder defaults to client chip position (40,0,0), with containing bounds expanded. This matches the diagnostic that no longer crashed. The rendering fix still needs in-game validation. Existing gates/diagnostics are not retroactively updated by rebuilding the package: remove the old server and use one updated copy.
