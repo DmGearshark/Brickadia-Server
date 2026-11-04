@@ -1,0 +1,54 @@
+'use strict';
+const assert=require('assert/strict'),{C}=require('./loadboard-lib.cjs');
+// Execute the generated native server graph. Queries and Var publications can
+// lag ExecOut by one tick, reproducing the class of timing issue seen in game.
+module.exports=function model(ctx,options={}){
+ const graph=options.network?{nodes:[...ctx.main.nodes,...ctx.portable.b.nodes],edges:[...ctx.main.edges,...ctx.portable.b.edges]}:ctx.main,central=ctx.central,nodes=new Map(graph.nodes.map(n=>[n.id,n])),incoming=new Map(graph.edges.map(e=>[e.z.id+':'+e.q,e])),outgoing=new Map();for(const e of graph.edges){const key=e.a.id+':'+e.p;if(!outgoing.has(key))outgoing.set(key,[]);outgoing.get(key).push(e.z);}
+ const state=new Map(),published=new Map(),results=new Map(),tasks=[],players=new Map(),entities=new Map(),responses=[],chats=[],payments=[];let tick=0,steps=0;
+ for(const n of graph.nodes){let v;if(n.type===C.Var.NAME)v=n.data.Value.value;else if(n.type===C.ArrayVar.NAME)v=[...n.data.Value.$array];else if(n.type===C.MapVar.NAME)v=new Map(n.data.Value.$map);else continue;state.set(n.id,v);published.set(n.id,v);}
+ const unbox=v=>v&&typeof v==='object'&&'$variant'in v?v.value:v,delay=options.reactiveDelay??1;
+ function later(fn,t=1){tasks.push({at:tick+t,fn});}
+ function input(n,p){const e=incoming.get(n.id+':'+p);return e?value(e.a,e.p):unbox(n.data[p]);}
+ function value(n,p){if(['VarRef','MapVarRef','ArrayVarRef'].includes(p))return n.id;if(n.type===C.Var.NAME)return published.get(n.id);if(n.type.startsWith('BrickComponentType_Exec_')||n.type===C.QueueTicks.NAME||n.type.startsWith('BrickComponentType_Event_')||n.type.includes('_ZoneEvent_')){const r=results.get(n.id)||{};return Object.hasOwn(r,p)?r[p]:unbox(n.data[p]);}if(results.has(n.id)&&Object.hasOwn(results.get(n.id),p))return results.get(n.id)[p];const get=q=>input(n,q);switch(n.type){
+ case C.Expr_CompareEqual.NAME:return get('InputA')===get('InputB');case C.Expr_CompareNotEqual.NAME:return get('InputA')!==get('InputB');case C.Expr_CompareGreater.NAME:return get('InputA')>get('InputB');case C.Expr_CompareGreaterOrEqual.NAME:return get('InputA')>=get('InputB');case C.Expr_CompareLess.NAME:return get('InputA')<get('InputB');case C.Expr_CompareLessOrEqual.NAME:return get('InputA')<=get('InputB');case C.Expr_LogicalAND.NAME:return !!get('bInputA')&&!!get('bInputB');case C.Expr_LogicalOR.NAME:return !!get('bInputA')||!!get('bInputB');case C.Expr_LogicalNOT.NAME:return !get('bInput');case C.Expr_Select.NAME:return get('bSelectB')?get('InputB'):get('InputA');case C.Expr_MathAdd.NAME:return get('InputA')+get('InputB');case C.Expr_MathSubtract.NAME:return get('InputA')-get('InputB');case C.Expr_MathMultiply.NAME:return get('InputA')*get('InputB');case C.Expr_MathMax.NAME:return Math.max(get('InputA'),get('InputB'));case C.Expr_MathModuloFloored.NAME:{const x=get('InputA'),m=get('InputB');return ((x%m)+m)%m;}case C.Expr_Floor.NAME:return Math.floor(get('Input'));case C.Expr_String_Split.NAME:{const s=String(get('Input')??''),d=get('Delimiter'),i=s.indexOf(d);return p==='bFound'?i>=0:p==='Left'?(i<0?s:s.slice(0,i)):(i<0?'':s.slice(i+d.length));}case C.Expr_String_ParseNumber.NAME:{const s=String(get('Input')??'').trim(),v=Number(s),ok=s!==''&&Number.isFinite(v);return p==='bSuccess'?ok:ok?v:0;}case C.Expr_String_FormatText.NAME:return get('FormatString').replace(/\{([A-G])\}/g,(_,x)=>String(get('Input'+x)??''));default:throw Error('Model value '+n.type+'.'+p);}}
+ function emit(n,p){for(const z of outgoing.get(n.id+':'+p)||[])run(z);}
+ function setResult(n,r){if(delay)later(()=>results.set(n.id,r),delay);else results.set(n.id,r);}
+ function run(n){assert(++steps<500000,'Execution budget');const get=p=>input(n,p),t=n.type;let port='ExecOut';
+ switch(t){case C.Exec_Union.NAME:break;case C.Exec_Branch.NAME:port=get('bCond')?'ExecOutA':'ExecOutB';break;
+ case C.BufferTicks.NAME:later(()=>emit(n,'Output'),Math.max(1,get('TicksToWait')));return;
+ case C.QueueTicks.NAME:{const r=Object.fromEntries(Array.from({length:8},(_,i)=>['DataOut'+(i+1),get('DataIn'+(i+1))]));later(()=>{results.set(n.id,r);emit(n,'ExecOut');},Math.max(1,get('TicksToWait')||1));return;}
+ case C.Exec_Var_Set.NAME:{const ref=get('VarRef'),v=get('Value');state.set(ref,v);if(delay)later(()=>published.set(ref,v),delay);else published.set(ref,v);break;}
+ case C.Exec_Var_Increment.NAME:{const ref=get('VarRef'),v=state.get(ref)+get('Value');state.set(ref,v);if(delay)later(()=>published.set(ref,v),delay);else published.set(ref,v);break;}
+ case C.Exec_ArrayVar_Push.NAME:state.get(get('ArrayVarRef')).push(get('Value'));break;
+ case C.Exec_ArrayVar_GetLength.NAME:setResult(n,{Length:state.get(get('ArrayVarRef')).length});break;
+ case C.Exec_ArrayVar_Get.NAME:{const arr=state.get(get('ArrayVarRef')),i=get('Index');setResult(n,{Value:arr[i]??null,bOutOfBounds:i<0||i>=arr.length});break;}
+ case C.Exec_ArrayVar_Find.NAME:{const arr=state.get(get('ArrayVarRef')),i=arr.indexOf(get('Value'));setResult(n,{Index:i,bFound:i>=0});break;}
+ case C.Exec_ArrayVar_RemoveAtIndex.NAME:state.get(get('ArrayVarRef')).splice(get('Index'),1);break;
+ case C.Exec_MapVar_Get.NAME:{const m=state.get(get('MapVarRef')),k=get('Key'),def=nodes.get(get('MapVarRef')).data.Value.$valueType;setResult(n,{bFound:m.has(k),Value:m.get(k)??(def==='weak_object'?null:def==='str'?'':0)});break;}
+ case C.Exec_MapVar_Set.NAME:state.get(get('MapVarRef')).set(get('Key'),get('Value'));break;
+ case C.Exec_MapVar_Remove.NAME:{const found=state.get(get('MapVarRef')).delete(get('Key'));setResult(n,{bFound:found});break;}
+ case C.Exec_PlayerState_GetUserId.NAME:{const p=players.get(get('PlayerState'));assert(p,'Querying missing player');setResult(n,{UserId:p.id});break;}
+ case C.Exec_Character_GetFromController.NAME:setResult(n,{Character:players.has(get('PlayerState'))?'char-'+get('PlayerState'):null});break;
+ case C.Exec_PlayerState_GetFromEntity.NAME:setResult(n,{PlayerState:String(get('Entity')||'').startsWith('char-')?String(get('Entity')).slice(5):null});break;
+ case C.Exec_Entity_SetRotation.NAME:assert(entities.has(get('Entity')));break;
+ case C.Exec_Entity_GetLocationRotation.NAME:setResult(n,{Vector:{X:0,Y:0,Z:20},Rotation:{Pitch:0,Yaw:0,Roll:0}});break;
+ case C.Exec_GetOwnTransform.NAME:setResult(n,{Location:{X:0,Y:0,Z:0},Rotation:{X:0,Y:0,Z:0,W:1}});break;
+ case C.Exec_PrefabSpawner.NAME:{const id='spawn-'+(entities.size+1)+'-'+tick;entities.set(id,{props:{}});setResult(n,{Entity:id});break;}
+ case C.Exec_PlayerState_GetDisplayName.NAME:setResult(n,{DisplayName:players.get(get('PlayerState')).name});break;
+ case C.Exec_Gamemode_GetLeaderboardValue.NAME:setResult(n,{Value:players.get(get('PlayerState')).stats[get('Key')]||0});break;
+ case C.Exec_Gamemode_SetLeaderboardValue.NAME:players.get(get('PlayerState')).stats[get('Key')]=get('Value');break;
+ case C.Exec_Gamemode_IncrementLeaderboardValue.NAME:{const p=players.get(get('PlayerState')),k=get('Key'),v=get('Value');assert(Number.isFinite(v));p.stats[k]=(p.stats[k]||0)+v;payments.push({player:get('PlayerState'),amount:v});break;}
+ case C.Exec_PlayerState_ShowChatMessage.NAME:chats.push({player:get('PlayerState'),message:get('Message')});break;
+ case C.Exec_Entity_SetCustomProperty.NAME:{const ent=entities.get(get('Entity'));assert(ent,'Writing missing cargo '+get('Entity')+' at '+n.id+' tick '+tick+' recent '+JSON.stringify(responses.slice(-2).map(x=>x.args))); ent.props[get('Key')]=get('Value');break;}
+ case C.Exec_Entity_GetCustomProperty.NAME:{const ent=entities.get(get('Entity')),props=ent?.props||{},key=get('Key');setResult(n,{Value:key in props?props[key]:unbox(n.data.Value),bFound:key in props});break;}
+ case C.Exec_Entity_DestroySpawnedPrefab.NAME:entities.delete(get('Entity'));break;
+ case C.Exec_Random.NAME:setResult(n,{Output:(get('Min')+get('Max'))/2+.01});break;
+ case C.Stopwatch.NAME:return;
+ case C.Exec_SendCustomEventGlobal.NAME:{const args=Array.from({length:8},(_,i)=>get('DataIn'+(i+1)));const target=get('Target');responses.push({name:n.data.EventName,target,args});if(options.network)for(const receiver of graph.nodes.filter(x=>x.type===C.Event_CustomGlobal.NAME&&x.data.EventName===n.data.EventName)){const scoped=receiver.data.bIsObjectEvent;if(scoped&&target!=='board-alice')continue;if(!scoped&&target!=null)continue;inject(receiver,args);}break;}
+ default:throw Error('Model exec '+t);
+ }emit(n,port);}
+ function inject(event,args){results.set(event.id,Object.fromEntries(args.map((v,i)=>['DataOut'+(i+1),v])));emit(event,'ExecOut');}
+ const boxes=options.network?[central.inbox,ctx.cmd.inbox,ctx.pick.box,ctx.pick.binding.box]:[central.inbox];
+ function drain(){let limit=0;while(tasks.length||boxes.some(box=>state.get(box.arrays[0].id).length||state.get(box.busy.id))){assert(++limit<10000,'Queue failed to drain');tick++;let ready;do{ready=tasks.filter(t=>t.at<=tick);for(const t of ready)tasks.splice(tasks.indexOf(t),1);for(const t of ready)t.fn();}while(tasks.some(t=>t.at<=tick));if(tick%4===0)for(const box of boxes)emit(box.clock,'Expired');}}
+ return {players,entities,responses,chats,payments,state,published,results,invoke:inject,joined(p){results.set(ctx.central.joined.id,{PlayerState:p});emit(ctx.central.joined,'ExecOut');},command(p){results.set(ctx.cmd.chat.id,{PlayerState:p,Arguments:''});emit(ctx.cmd.chat,'ExecOut');},fire:emit,read:(n,p)=>input(n,p),zone(event,entity){results.set(event.id,{Character:entity,Entity:entity});emit(event,'Exec');},press(button,character){results.set(button.id,{Character:character,bHeld:true});const edges=outgoing.get(button.id+':bHeld')||[];for(const edge of edges)emit(edge,'OnRisingEdge');},request(args){inject(central.event,args);},drain,stats(p){return players.get(p).stats;},addPlayer(p,stats={}){players.set(p,{id:'uid-'+p,name:p,stats:{Scrap:0,...stats}});},addCargo(id){entities.set(id,{props:{}});},get tick(){return tick;},get steps(){return steps;}};
+};

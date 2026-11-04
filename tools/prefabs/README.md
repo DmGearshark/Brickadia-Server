@@ -61,3 +61,7 @@ checks component/wire counts, and evaluates its expression graph against
 Text face, font sizing, native press-count behavior, string wire conversion,
 and the execution edge still require confirmation in the game. Report the
 first step that differs, ideally with a screenshot of the panel and wiring.
+
+## Central load-board system
+
+[LOADBOARD.md](LOADBOARD.md) documents `prefabs/loadboard-system.brz`, built from the supplied v5 layout. It includes the authoritative load server, event-driven `/loadboard` client, zone-bound pickup station, delivery station, editable catalogue and embedded cargo prefabs. Rebuild with `build-loadboard.cjs`; generation runs the graph, serialization and event-integration checks.

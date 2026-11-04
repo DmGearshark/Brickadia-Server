@@ -1,0 +1,82 @@
+'use strict';
+const {C,N,S,B,O,R}=require('./loadboard-lib.cjs');
+const REQUEST='LB1.Request',REPLY='LB1.Reply',TYPES=[O(null),O(null),N(0),N(0),N(0),S(''),O(null),N(0)];
+const KEYS={state:'LoadboardState',id:'LoadboardId',serial:'LoadboardSerial',kind:'LoadboardType',pay:'LoadboardPay',pickup:'LoadboardPickup',dest:'LoadboardDestination'};
+module.exports=function server(c,config){
+ const event=c.event(REQUEST,TYPES),inbox=c.inbox(event,TYPES),[player,reply,op,slot,revision,station,cargo,nonce]=inbox.vars;
+ const uid=c.v(''),message=c.v('Ready'),replyCode=c.v(0),players=c.map('str','weak_object'),entities=c.map('str','weak_object');
+ const stats=Object.fromEntries(Object.keys(KEYS).map(k=>[k,c.v(0)]));
+ const isOp=n=>c.cmp('Equal',R(op),n),nonnull=x=>c.cmp('NotEqual',x,O(null));
+ const finish=[],toFinish=(a,p='ExecOut')=>finish.push([a,p]);
+ const row=Array.from({length:5},(_,i)=>({kind:c.v(i%2),available:c.v(true),rev:c.v(1),interval:c.v(600+i*300)}));
+ // Each expiry is itself a queued server request, so it cannot race acceptance.
+ row.forEach((r,i)=>{const timer=c.n('Stopwatch',{Limit:600+i*300,Time:0,bRunning:true});c.bind(timer,'Limit',R(r.interval));const send=c.send(REQUEST,[O(null),O(null),6,i,0,'',O(null),0]);c.link(timer,send,'Expired','ExecIn');r.timer=timer;});
+ function choose(index,values,fallback=values[0]){let value=fallback;for(let i=values.length-1;i>=0;i--)value=c.sel(c.cmp('Equal',index,i),value,values[i]);return value;}
+ function write(a,key,val,p='ExecOut'){const gate=c.n('Exec_Gamemode_SetLeaderboardValue',{Key:KEYS[key],PlayerState:R(player),Value:val});c.link(a,gate,p);const save=c.set(stats[key],val);c.link(gate,save);return save;}
+ function writeMany(a,fields,p='ExecOut'){for(const [key,val]of Object.entries(fields)){a=write(a,key,val,p);p='ExecOut';}return c.wait(a,2);}
+ function msg(a,text,p='ExecOut',code=0){const m=c.set(message,text);c.link(a,m,p);const codeSet=c.set(replyCode,code);c.link(m,codeSet);toFinish(codeSet);return codeSet;}
+ const reset=c.set(message,'Ready');c.link(inbox.start,reset,'Output');const resetCode=c.set(replyCode,0);c.link(reset,resetCode);
+ const rotate=c.branch(resetCode,isOp(6));let fall=rotate;
+ row.forEach((r,i)=>{const match=c.branch(fall,c.cmp('Equal',R(slot),i),fall===rotate?'ExecOutA':'ExecOutB');const rand=c.n('Exec_Random',{Min:0,Max:1});c.link(match,rand,'ExecOutA');const setKind=c.set(r.kind,c.sel(c.cmp('Greater',R(rand,'Output'),.5),0,1));c.later(rand,setKind);const available=c.set(r.available,true);c.link(setKind,available);const rev=c.n('Exec_Var_Increment',{VarRef:R(r.rev,'VarRef'),Value:1});c.link(available,rev);const timing=c.n('Exec_Random',{Min:c.math('Max',1,R(config.min)),Max:c.math('Max',c.math('Max',1,R(config.min)),R(config.max))});c.link(rev,timing);const setInterval=c.set(r.interval,R(timing,'Output'));c.later(timing,setInterval);c.later(setInterval,r.timer,2,'ExecOut','Restart');toFinish(c.wait(setInterval,3),'Output');fall=match;});toFinish(fall,'ExecOutB');
+ // Delivery identifies the owner from the cargo, not the person at the station.
+ const deliveryRequest=c.branch(rotate,isOp(5),'ExecOutB'),hasCargo=c.branch(deliveryRequest,nonnull(R(cargo)),'ExecOutA');
+ const prop={};let a=hasCargo;
+ for(const [key,type]of [['Owner',S('')],['Id',N(0)],['Destination',N(0)]]){const get=c.n('Exec_Entity_GetCustomProperty',{Entity:R(cargo),Key:'LB.'+key,Value:type,bFound:false});c.link(a,get,a===hasCargo?'ExecOutA':'Output');prop[key]=get;a=c.wait(get);}
+ const stamped=c.branch(a,c.and(...['Owner','Id','Destination'].map(k=>R(prop[k],'bFound'))),'Output');
+ const mapped=c.mo('Get',players,{Key:R(prop.Owner,'Value')});c.link(stamped,mapped,'ExecOutA');const ownerPlayer=c.set(player,c.sel(c.and(R(mapped,'bFound'),nonnull(R(mapped,'Value'))),O(null),R(mapped,'Value')));c.later(mapped,ownerPlayer);const ownUid=c.set(uid,R(prop.Owner,'Value'));c.link(ownerPlayer,ownUid);
+ const playerReady=c.n('Exec_Union');c.later(ownUid,playerReady,2,'ExecOut','ExecA');
+ const direct=c.set(uid,'');c.link(deliveryRequest,direct,'ExecOutB');c.later(direct,playerReady,1,'ExecOut','ExecB');
+ toFinish(hasCargo,'ExecOutB');toFinish(stamped,'ExecOutB');
+ const hasPlayer=c.branch(playerReady,nonnull(R(player)));toFinish(hasPlayer,'ExecOutB');
+ const getUid=c.n('Exec_PlayerState_GetUserId',{PlayerState:R(player)});c.link(hasPlayer,getUid,'ExecOutA');
+ const correctOwner=c.branch(c.wait(getUid),c.or(c.not(isOp(5)),c.cmp('Equal',R(uid),R(getUid,'UserId'))),'Output');toFinish(correctOwner,'ExecOutB');const saveUid=c.set(uid,R(getUid,'UserId'));c.link(correctOwner,saveUid,'ExecOutA');
+ const rememberPlayer=c.mo('Set',players,{Key:R(uid),Value:R(player)});c.later(saveUid,rememberPlayer);
+ // Refresh persisted fields on every request. Reopening a board restores a job.
+ a=rememberPlayer;for(const [key,stat]of Object.entries(KEYS)){const get=c.n('Exec_Gamemode_GetLeaderboardValue',{PlayerState:R(player),Key:stat});c.link(a,get);const save=c.set(stats[key],R(get,'Value'));c.later(get,save);a=save;}
+ const getCar=c.n('Exec_Gamemode_GetLeaderboardValue',{PlayerState:R(player),Key:R(config.car)});c.link(a,getCar);const getTruck=c.n('Exec_Gamemode_GetLeaderboardValue',{PlayerState:R(player),Key:R(config.truck)});c.link(getCar,getTruck);
+ const cfgGet=[0,1].map(i=>c.mo('Get',config.catalog,{Key:String(i)}));c.link(getTruck,cfgGet[0]);c.link(cfgGet[0],cfgGet[1]);const loaded=c.wait(cfgGet[1],2);
+ const cfg=cfgGet.map(n=>{const f=c.split(R(n,'Value'),7);return {name:f[0],pay:c.num(f[1]),require:c.num(f[2]),pickup:c.num(f[3]),dest:c.num(f[4]),pickupName:f[5],destName:f[6]};});
+ const selectedKind=choose(R(slot),row.map(r=>R(r.kind))),selectedAvailable=choose(R(slot),row.map(r=>R(r.available))),selectedRev=choose(R(slot),row.map(r=>R(r.rev)));
+ const field=(kind,key)=>c.sel(c.cmp('Equal',kind,1),cfg[0][key],cfg[1][key]);
+ const active=c.cmp('Greater',R(stats.state),0),jobKind=R(stats.kind),showKind=c.sel(active,selectedKind,jobKind);
+ const validSlot=c.and(c.cmp('GreaterOrEqual',R(slot),0),c.cmp('Less',R(slot),5),c.cmp('Equal',R(slot),R(c.n('Expr_Floor',{Input:R(slot)}),'Output')));
+ const owns=c.or(c.cmp('Greater',R(getTruck,'Value'),0),c.and(c.cmp('Equal',field(selectedKind,'require'),1),c.cmp('Greater',R(getCar,'Value'),0)));
+ const cfgValid=c.and(R(cfgGet[0],'bFound'),R(cfgGet[1],'bFound'),...cfg.map(x=>c.and(...[x.pay,x.require,x.pickup,x.dest].map(v=>R(v[0],'bSuccess')),c.cmp('NotEqual',x.name,''),c.cmp('GreaterOrEqual',x.pay,0),c.or(c.cmp('Equal',x.require,1),c.cmp('Equal',x.require,2)),c.cmp('Greater',x.pickup,0),c.cmp('Greater',x.dest,0))));
+ const configured=c.branch(loaded,c.or(cfgValid,c.and(active,c.not(isOp(1)))),'Output');msg(configured,'Catalogue unavailable','ExecOutB');
+ const boardReceipts=c.map('weak_object','f64'),stationReceipts=c.map('str','f64'),stationReceiptKey=c.fmt('{A}|{B}',R(uid),R(station));
+ const lastBoard=c.mo('Get',boardReceipts,{Key:R(reply)}),lastStation=c.mo('Get',stationReceipts,{Key:stationReceiptKey});c.link(configured,lastBoard,'ExecOutA');c.link(lastBoard,lastStation);
+ const mutation=c.and(c.cmp('GreaterOrEqual',R(op),1),c.cmp('Less',R(op),5)),boardRequest=nonnull(R(reply));
+ const duplicate=c.and(mutation,c.sel(boardRequest,R(lastStation,'bFound'),R(lastBoard,'bFound')),c.cmp('LessOrEqual',R(nonce),c.sel(boardRequest,R(lastStation,'Value'),R(lastBoard,'Value'))));
+ const unique=c.branch(c.wait(lastStation,2),c.not(duplicate),'Output');msg(unique,'Already processed','ExecOutB');
+ const needsReceipt=c.branch(unique,mutation,'ExecOutA'),receiptKind=c.branch(needsReceipt,boardRequest,'ExecOutA');
+ const setBoard=c.mo('Set',boardReceipts,{Key:R(reply),Value:R(nonce)}),setStation=c.mo('Set',stationReceipts,{Key:stationReceiptKey,Value:R(nonce)});c.link(receiptKind,setBoard,'ExecOutA');c.link(receiptKind,setStation,'ExecOutB');
+ const routed=c.n('Exec_Union');c.to([[needsReceipt,'ExecOutB'],[setBoard,'ExecOut'],[setStation,'ExecOut']],routed,'ExecA');
+ const browse=c.branch(routed,isOp(0));msg(browse,'Ready','ExecOutA');
+ const accept=c.branch(browse,isOp(1),'ExecOutB');const acceptCheck=c.branch(accept,c.and(c.not(active),validSlot,selectedAvailable,c.cmp('Equal',selectedRev,R(revision)),owns),'ExecOutA');msg(acceptCheck,'Unavailable / vehicle needed','ExecOutB');
+ const nextId=c.v(0),idSet=c.set(nextId,c.math('Add',R(stats.serial),1));c.link(acceptCheck,idSet,'ExecOutA');
+ a=writeMany(c.wait(idSet),{serial:R(nextId),id:R(nextId),kind:selectedKind,pay:field(selectedKind,'pay'),pickup:field(selectedKind,'pickup'),dest:field(selectedKind,'dest'),state:1},'Output');
+ const reserved=c.n('Exec_Union');c.link(a,reserved,'Output','ExecA');let reserveFall=reserved;row.forEach((r,i)=>{const b=c.branch(reserveFall,c.cmp('Equal',R(slot),i),reserveFall===reserved?'ExecOut':'ExecOutB');const set=c.set(r.available,false);c.link(b,set,'ExecOutA');msg(set,'Load accepted');reserveFall=b;});msg(reserveFall,'Invalid listing','ExecOutB');
+ const abandon=c.branch(accept,isOp(2),'ExecOutB');const abandonCheck=c.branch(abandon,active,'ExecOutA');msg(abandonCheck,'No active load','ExecOutB');
+ a=writeMany(abandonCheck,{state:0,id:0},'ExecOutA');const oldCargo=c.mo('Get',entities,{Key:R(uid)});c.link(a,oldCargo,'Output');const oldExists=c.branch(c.wait(oldCargo),nonnull(R(oldCargo,'Value')),'Output'),destroy=c.n('Exec_Entity_DestroySpawnedPrefab',{Entity:R(oldCargo,'Value')});c.link(oldExists,destroy,'ExecOutA');const remove=c.mo('Remove',entities,{Key:R(uid)});c.to([[oldExists,'ExecOutB'],[destroy,'ExecOut']],remove);msg(remove,'Load abandoned');
+ const collect=c.branch(abandon,isOp(3),'ExecOutB');const collectCheck=c.branch(collect,c.and(active,c.cmp('Equal',R(stats.pickup),R(slot))),'ExecOutA');msg(collectCheck,'No load for this depot','ExecOutB');
+ const renewal=c.set(nextId,c.math('Add',R(stats.serial),1));c.link(collectCheck,renewal,'ExecOutA');a=writeMany(c.wait(renewal),{serial:R(nextId),id:R(nextId),state:3},'Output');
+ const prevCargo=c.mo('Get',entities,{Key:R(uid)});c.link(a,prevCargo,'Output');const hasPrev=c.branch(c.wait(prevCargo),nonnull(R(prevCargo,'Value')),'Output');const drop=c.n('Exec_Entity_DestroySpawnedPrefab',{Entity:R(prevCargo,'Value')});c.link(hasPrev,drop,'ExecOutA');const untrack=c.mo('Remove',entities,{Key:R(uid)});c.to([[hasPrev,'ExecOutB'],[drop,'ExecOut']],untrack);msg(c.wait(untrack,3),'Preparing cargo','Output',3);
+ const spawnResult=c.branch(collect,isOp(4),'ExecOutB');const spawnCheck=c.branch(spawnResult,c.and(c.cmp('Equal',R(stats.state),3),c.cmp('Equal',R(stats.id),R(revision)),c.cmp('Equal',R(stats.pickup),R(slot))),'ExecOutA');msg(spawnCheck,'Pickup changed - retry','ExecOutB');
+ const spawnExists=c.branch(spawnCheck,nonnull(R(cargo)),'ExecOutA');a=writeMany(spawnExists,{state:1},'ExecOutB');msg(a,'Spawn failed; retry','Output',4);
+ a=spawnExists;for(const [key,val]of [['Owner',R(uid)],['Id',R(stats.id)],['Destination',R(stats.dest)]]){const set=c.n('Exec_Entity_SetCustomProperty',{Entity:R(cargo),Key:'LB.'+key,Value:val});c.link(a,set,a===spawnExists?'ExecOutA':'ExecOut');a=set;}
+ const track=c.mo('Set',entities,{Key:R(uid),Value:R(cargo)});c.link(a,track);a=writeMany(track,{state:2});msg(a,'Cargo issued','Output',4);
+ const deliver=c.branch(spawnResult,isOp(5),'ExecOutB');const deliveryCheck=c.branch(deliver,c.and(c.cmp('Equal',R(stats.state),2),c.cmp('Equal',R(stats.id),R(prop.Id,'Value')),c.cmp('Equal',R(stats.dest),R(slot)),c.cmp('Equal',R(stats.dest),R(prop.Destination,'Value')),c.cmp('GreaterOrEqual',R(stats.pay),0)),'ExecOutA');msg(deliveryCheck,'Delivery rejected','ExecOutB',5);
+ const payout=c.v(0),reward=c.set(payout,R(stats.pay));c.link(deliveryCheck,reward,'ExecOutA');a=writeMany(c.wait(reward),{state:0,id:0},'Output');
+ const pay=c.n('Exec_Gamemode_IncrementLeaderboardValue',{PlayerState:R(player),Key:R(config.scrap),Value:R(payout)});c.link(a,pay,'Output');const chat=c.n('Exec_PlayerState_ShowChatMessage',{PlayerState:R(player),Message:c.fmt('Delivery complete! Received +{A} Scrap.',R(payout))});c.link(pay,chat);const consume=c.n('Exec_Entity_DestroySpawnedPrefab',{Entity:R(cargo)});c.link(chat,consume);const clearCargo=c.mo('Remove',entities,{Key:R(uid)});c.link(consume,clearCargo);msg(clearCargo,'Delivered','ExecOut',5);msg(deliver,'Please refresh','ExecOutB');
+ // A single response builder returns snapshots to the requesting screen/station.
+ const respond=c.n('Exec_Union');c.to(finish,respond,'ExecA');const finishDelay=c.wait(respond,2);
+ const visible=Array.from({length:5},(_,i)=>{const idx=c.math('ModuloFloored',c.math('Add',R(slot),i+3),5);const name=choose(idx,row.map(r=>c.sel(R(r.available),'Taken',field(R(r.kind),'name'))));return c.sel(active,i===2?name:name,i===2?field(jobKind,'name'):'Unused');});
+ const rows=c.fmt('{A}~{B}~{C}~{D}~{E}',...visible);
+ const requirement=c.sel(c.cmp('Equal',field(showKind,'require'),2),'Car / Truck','Truck'),requirementText=c.sel(c.and(c.not(active),c.not(owns)),requirement,c.fmt('{A} (not owned)',requirement));
+ const info=c.fmt('{A}|{B}|{C}|{D}|{E}|{F}|{G}',c.sel(active,field(selectedKind,'pay'),R(stats.pay)),requirementText,c.sel(c.and(active,c.cmp('NotEqual',R(stats.pickup),field(showKind,'pickup'))),field(showKind,'pickupName'),c.fmt('Pickup #{A}',R(stats.pickup))),c.sel(c.and(active,c.cmp('NotEqual',R(stats.dest),field(showKind,'dest'))),field(showKind,'destName'),c.fmt('Depot #{A}',R(stats.dest))),c.sel(active,'Accept','Abandon'),selectedRev,R(stats.state));
+ const extra=c.fmt('{A}|{B}|{C}|{D}',showKind,R(stats.id),R(stats.pickup),R(stats.dest));
+ const args=[R(reply),R(player),R(station),R(nonce),R(message),rows,c.fmt('{A}|{B}',info,extra),R(replyCode)];const replyKind=c.branch(finishDelay,nonnull(R(reply)),'Output');const send=c.send(REPLY,args,R(reply)),stationSend=c.send('LB1.StationReply',args);c.link(replyKind,send,'ExecOutA','ExecIn');c.link(replyKind,stationSend,'ExecOutB','ExecIn');c.to([[send,'ExecOut'],[stationSend,'ExecOut']],inbox.done,'ExecA');
+ const joined=c.n('Event_Gamemode_ControllerJoined'),joinDelay=c.n('QueueTicks',{TicksToWait:2,DataIn1:R(joined,'PlayerState')});c.link(joined,joinDelay,'ExecOut','ExecIn');const refreshOwner=c.send(REQUEST,[R(joinDelay,'DataOut1'),O(null),0,0,0,'Join',O(null),0]);c.link(joinDelay,refreshOwner,'ExecOut','ExecIn');
+ return {event,inbox,stats,row,players,entities,config,send,prop,pay,chat,joined};
+};
+module.exports.REQUEST=REQUEST;module.exports.REPLY=REPLY;module.exports.TYPES=TYPES;module.exports.KEYS=KEYS;

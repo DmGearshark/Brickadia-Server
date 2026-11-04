@@ -1,0 +1,35 @@
+'use strict';
+const {C,N,S,B,O,R,Build,copy}=require('./loadboard-lib.cjs');const {REQUEST,REPLY}=require('./loadboard-server.cjs');
+module.exports=function terminal(src){
+ const b=new Build('Portable Load Board',src.assets),origin=[68,180,27],items=src.bricks.filter(x=>x.brick.position[0]>=60&&x.brick.position[1]>160&&x.brick.position[1]<200);
+ for(const item of items){const text=item.comps.find(x=>x.type===C.TextDisplay.NAME)?.data.Text;if(['Accept/Abbandon','Scroll Up','Scroll Down'].includes(text))item.comps.push({type:C.Button.NAME,data:{bAllowNearbyInteraction:true,bHiddenInteraction:false,PromptCustomLabel:text}});}
+ const spare=items.find(x=>x.brick.position.join()==='68,173,25');if(spare&&!spare.comps.some(x=>x.type===C.TextDisplay.NAME)){const style=structuredClone(items.find(x=>x.comps.some(c=>c.type===C.TextDisplay.NAME&&c.data.Text==='Destination')).comps.find(c=>c.type===C.TextDisplay.NAME));style.data.Text='Unused';spare.comps.push(style);}
+ const ui=copy(b,items,'board',origin),chip=b.w.addMicrochip({position:[0,0,-14],color:[40,110,160]}),c=b.circuit(chip.grid,'terminal');
+ const named=t=>ui.find(n=>n.type===C.TextDisplay.NAME&&n.data.Text===t),buttonFor=text=>ui.find(n=>n.type===C.Button.NAME&&n.pos.join()===named(text).pos.join());
+ const root=c.v(O(null)),player=c.v(O(null)),character=c.v(O(null)),busy=c.v(false),serial=c.v(0),index=c.v(0),op=c.v(0),active=c.v(0),rev=c.v(0),confirm=c.v(false),destroyOnIdle=c.v(true);
+ const init=c.event('LB1.BoardInit',[O(null),O(null),B(true)],true),reply=c.event(REPLY,[O(null),O(null),S(''),N(0),S(''),S(''),S(''),N(0)],true);
+ let a=init;for(const [ref,port]of [[player,'DataOut1'],[root,'DataOut2'],[destroyOnIdle,'DataOut3']]){const set=c.set(ref,R(init,port));c.link(a,set);a=set;}
+ const getChar=c.n('Exec_Character_GetFromController',{PlayerState:R(player)});c.later(a,getChar,2);const saveChar=c.set(character,R(getChar,'Character'));c.later(getChar,saveChar);
+ const request=c.n('Exec_Union'),period=c.n('Stopwatch',{Limit:15,Time:0,bRunning:false}),idle=c.n('Stopwatch',{Limit:180,Time:0,bRunning:false}),timeout=c.n('Stopwatch',{Limit:30,Time:0,bRunning:false}),confirmation=c.n('Stopwatch',{Limit:5,Time:0,bRunning:false});
+ const requestTerms=[],activityTerms=[[saveChar,'ExecOut']];const read=c.set(op,0);c.to([[saveChar,'ExecOut'],[period,'Expired']],read);requestTerms.push([read,'ExecOut']);
+ function control(text){const button=buttonFor(text),edge=c.edge(R(button,'bHeld')),snap=c.n('QueueTicks',{TicksToWait:1,DataIn1:R(button,'Character')});c.link(edge,snap,'OnRisingEdge','ExecIn');const actor=c.v(O(null)),save=c.set(actor,R(snap,'DataOut1'));c.link(snap,save);const ok=c.branch(c.wait(save,2),c.and(c.cmp('Equal',R(actor),R(character)),c.cmp('NotEqual',R(character),O(null)),c.not(R(busy))),'Output');activityTerms.push([ok,'ExecOutA']);return ok;}
+ for(const [name,delta]of [['Scroll Up',-1],['Scroll Down',1]]){const source=control(name),set=c.set(index,c.math('ModuloFloored',c.math('Add',R(index),delta+5),5));c.link(source,set,'ExecOutA');const clear=c.set(confirm,false);c.link(set,clear);const read=c.set(op,0);c.later(clear,read);requestTerms.push([read,'ExecOut']);}
+ const press=control('Accept/Abbandon'),hasJob=c.branch(press,c.cmp('Greater',R(active),0),'ExecOutA');const accept=c.set(op,1);c.link(hasJob,accept,'ExecOutB');requestTerms.push([accept,'ExecOut']);
+ const sure=c.branch(hasJob,R(confirm),'ExecOutA'),preview=c.set(confirm,true);c.link(sure,preview,'ExecOutB');c.link(preview,confirmation,'ExecOut','Restart');const abandon=c.set(op,2);c.link(sure,abandon,'ExecOutA');const clear=c.set(confirm,false);c.link(abandon,clear);requestTerms.push([clear,'ExecOut']);const cancel=c.set(confirm,false);c.link(confirmation,cancel,'Expired');
+ c.to(activityTerms,idle,'Restart');c.to(requestTerms,request,'ExecA');const canRequest=c.branch(request,c.and(c.not(R(busy)),c.cmp('NotEqual',R(root),O(null))));const lock=c.set(busy,true);c.link(canRequest,lock,'ExecOutA');const increment=c.n('Exec_Var_Increment',{VarRef:R(serial,'VarRef'),Value:1});c.link(lock,increment);
+ const send=c.send(REQUEST,[R(player),R(root),R(op),R(index),R(rev),'',O(null),R(serial)]);c.later(increment,send,2,'ExecOut','ExecIn');c.link(send,timeout,'ExecOut','Restart');
+ const receive=c.queue(reply,[O(null),O(null),S(''),N(0),S(''),S(''),S(''),N(0)]),match=c.branch(receive,c.and(c.cmp('Equal',R(receive,'DataOut1'),R(root)),c.cmp('Equal',R(receive,'DataOut2'),R(player)),c.cmp('Equal',R(receive,'DataOut4'),R(serial))));
+ const rows=c.split(R(receive,'DataOut6'),5,'~'),details=c.split(R(receive,'DataOut7'),11),headers=c.v('Load board'),rowVars=rows.map(()=>c.v('Unused')),fields=Array.from({length:4},()=>c.v('Unused'));
+ a=match;const assignments=[[headers,R(receive,'DataOut5')],...rowVars.map((v,i)=>[v,rows[i]]),...fields.map((v,i)=>[v,details[i]]),[rev,c.num(details[5])],[active,c.num(details[6])]];for(const [v,value]of assignments){const set=c.set(v,value);c.link(a,set,a===match?'ExecOutA':'ExecOut');a=set;}
+ const unlock=c.set(busy,false);c.later(a,unlock,2);c.link(unlock,period,'ExecOut','Restart');c.link(unlock,timeout,'ExecOut','Pause');
+ const timedOut=c.set(busy,false);c.link(timeout,timedOut,'Expired');const timeoutText=c.set(headers,'Server busy - retry');c.link(timedOut,timeoutText);
+ const expiry=c.branch(idle,R(destroyOnIdle),'Expired'),destroy=c.n('Exec_Entity_DestroySpawnedPrefab',{Entity:R(root)});c.link(expiry,destroy,'ExecOutA');const clearRoot=c.set(root,O(null));c.to([[expiry,'ExecOutB'],[destroy,'ExecOut']],clearRoot);const clearPlayer=c.set(player,O(null));c.link(clearRoot,clearPlayer);c.to([[clearPlayer,'ExecOut']],period,'Pause');
+ const rowNodes=ui.filter(n=>n.type===C.TextDisplay.NAME&&/Load [1-5]/.test(n.data.Text)).sort((a,z)=>z.pos[2]-a.pos[2]);rowNodes.forEach((n,i)=>{c.bind(n,'Text',i===2?c.fmt('>{A}<',R(rowVars[i])):R(rowVars[i]));n.data.WidthScale=.7;});
+ ['Payment','Vehicle Requirement','Pickup','Destination'].forEach((t,i)=>{const n=named(t);c.bind(n,'Text',R(fields[i]));n.data.WidthScale=.65;});
+ const unused=ui.find(n=>n.type===C.TextDisplay.NAME&&n.data.Text==='Unused');if(unused)unused.data.Text='Unused';
+ const action=named('Accept/Abbandon');c.bind(action,'Text',c.sel(R(busy),c.sel(R(confirm),c.sel(c.cmp('Greater',R(active),0),'Accept','Abandon'),'Confirm?'),'Wait'));action.data.WidthScale=.8;
+ const header=named('Spawnable Loadboard');if(header){c.bind(header,'Text',R(headers));header.data.LineHeight=.85;header.data.WidthScale=.65;}
+ const enabled=c.cmp('NotEqual',R(root),O(null));for(const n of ui.filter(n=>n.type===C.TextDisplay.NAME)){n.data.bEnabled=false;c.bind(n,'bEnabled',enabled);}
+ const bytes=b.finish({x:15,y:22,z:24},'Caller-bound load-board client. No catalogue or contract authority. Requests and object-scoped replies communicate with one central server; expires after three minutes without player input.');
+ return {b,c,bytes,init,reply,root,player,serial,request,send,ui};
+};

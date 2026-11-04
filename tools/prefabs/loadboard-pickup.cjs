@@ -1,0 +1,36 @@
+'use strict';
+const {C,N,S,B,O,R}=require('./loadboard-lib.cjs'),bindZone=require('./loadboard-zone.cjs');const {REQUEST}=require('./loadboard-server.cjs');
+const RESPONSE=[O(null),O(null),S(''),N(0),S(''),S(''),S(''),N(0)];
+module.exports=function pickup(c,spawnCircuit,ui,zone,paths,settings){
+ const text=t=>ui.find(n=>n.type===C.TextDisplay.NAME&&n.data.Text===t),button=ui.find(n=>n.type===C.Button.NAME),busy=c.v(false),player=c.v(O(null)),name=c.v(''),nonce=c.v(0),op=c.v(0),kind=c.v(0),jobId=c.v(0),state=c.v(0),root=c.v(O(null)),previous=c.v(O(null)),confirm=c.v(false),header=c.v('Pickup'),cargoName=c.v('No load'),info=Array.from({length:7},()=>c.v('Unused'));
+ const binding=bindZone(c,zone,busy),hasOwner=c.branch(binding.notify,c.cmp('NotEqual',R(binding.owner),O(null)),'Output'),getPS=c.n('Exec_PlayerState_GetFromEntity',{Entity:R(binding.owner)});c.link(hasOwner,getPS,'ExecOutA');const savePS=c.set(player,R(getPS,'PlayerState'));c.later(getPS,savePS);const getName=c.n('Exec_PlayerState_GetDisplayName',{PlayerState:R(player)});c.later(savePS,getName);const saveName=c.set(name,R(getName,'DisplayName'));c.later(getName,saveName);
+ const read=c.set(op,0);c.link(saveName,read);const clearPS=c.set(player,O(null));c.link(hasOwner,clearPS,'ExecOutB');c.to([[read,'ExecOut'],[clearPS,'ExecOut']],binding.done,'ExecA');
+ const request=c.n('Exec_Union'),terms=[[read,'ExecOut']],period=c.n('Stopwatch',{Limit:15,Time:0,bRunning:false}),timeout=c.n('Stopwatch',{Limit:30,Time:0,bRunning:false}),confirmation=c.n('Stopwatch',{Limit:5,Time:0,bRunning:false});
+ const periodic=c.set(op,0);c.link(period,periodic,'Expired');terms.push([periodic,'ExecOut']);
+ const edge=c.edge(R(button,'bHeld')),snap=c.n('QueueTicks',{TicksToWait:1,DataIn1:R(button,'Character')});c.link(edge,snap,'OnRisingEdge','ExecIn');const actor=c.v(O(null)),saveActor=c.set(actor,R(snap,'DataOut1'));c.link(snap,saveActor);const controls=c.branch(c.wait(saveActor,2),c.and(c.not(R(busy)),R(binding.within),c.cmp('Equal',R(actor),R(binding.owner))),'Output');
+ const replacing=c.branch(controls,c.cmp('Equal',R(state),2),'ExecOutA'),sure=c.branch(replacing,R(confirm),'ExecOutA'),preview=c.set(confirm,true);c.link(sure,preview,'ExecOutB');c.link(preview,confirmation,'ExecOut','Restart');const collect=c.set(op,3);c.to([[replacing,'ExecOutB'],[sure,'ExecOutA']],collect);const clearConfirm=c.set(confirm,false);c.link(collect,clearConfirm);terms.push([clearConfirm,'ExecOut']);const expires=c.set(confirm,false);c.link(confirmation,expires,'Expired');
+ c.to(terms,request,'ExecA');const allowed=c.branch(request,c.and(c.not(R(busy)),c.cmp('NotEqual',R(player),O(null))));const lock=c.set(busy,true);c.link(allowed,lock,'ExecOutA');const count=c.n('Exec_Var_Increment',{VarRef:R(nonce,'VarRef'),Value:1});c.link(lock,count);const send=c.send(REQUEST,[R(player),O(null),R(op),R(settings.id),R(jobId),R(settings.key),O(null),R(nonce)]);c.later(count,send,2,'ExecOut','ExecIn');c.link(send,timeout,'ExecOut','Restart');
+ const response=c.event('LB1.StationReply',RESPONSE),box=c.inbox(response,RESPONSE),v=box.vars;
+ const mine=c.branch(box.start,c.and(c.cmp('Equal',R(v[1]),R(player)),c.cmp('Equal',R(v[2]),R(settings.key)),c.cmp('Equal',R(v[3]),R(nonce))),'Output');
+ const details=c.split(R(v[6]),11);let a=mine;const active=c.cmp('Greater',c.num(details[6]),0),pay=c.fmt('{A} Scrap',details[0]);
+ const fields=[[header,R(v[4])],[kind,c.num(details[7])],[jobId,c.num(details[8])],[state,c.num(details[6])],[cargoName,c.sel(active,'No load',c.sel(c.cmp('Equal',c.num(details[7]),1),'Cheap Crate','Fuel'))],...info.map((ref,i)=>[ref,i===6?pay:i===5?details[1]:i===4?details[2]:i===3?details[3]:i===2?R(v[4]):'Unused'])];
+ fields.forEach(([ref,value])=>{const set=c.set(ref,value);c.link(a,set,a===mine?'ExecOutA':'ExecOut');a=set;});
+ const authorized=c.branch(c.wait(a,2),c.cmp('Equal',R(v[7]),3),'Output');
+ const spawners=paths.map((path,i)=>spawnCircuit.n('Exec_PrefabSpawner',{Prefab:path,Lifetime:0,Limit:128,SpawnOffset:{X:0,Y:0,Z:0},SpawnOffsetRotation:{Pitch:0,Yaw:0,Roll:0},SpawnVelocity:{X:0,Y:0,Z:0}},[i*96,0,2]));
+ const pad=spawnCircuit.n('Exec_GetOwnTransform',{},[0,40,-25],'main');
+ const self=spawners.map((n,i)=>spawnCircuit.n('Exec_GetOwnTransform',{},[i*96+48,0,2]));
+ const lift=spawnCircuit.n('Expr_MakeVector',{X:0,Y:0,Z:35}),up=spawnCircuit.n('Expr_RotateVector',{Rotation:R(pad,'Rotation'),Vector:R(lift,'Output')}),desired=spawnCircuit.math('Add',R(pad,'Location'),R(up,'Output'));
+ spawners.forEach((n,i)=>{const inverse=spawnCircuit.n('Expr_InvertRotation',{Input:R(self[i],'Rotation')}),local=spawnCircuit.n('Expr_RotateVector',{Rotation:R(inverse,'Output'),Vector:spawnCircuit.math('Subtract',desired,R(self[i],'Location'))});spawnCircuit.bind(n,'SpawnOffset',spawnCircuit.math('Add',R(local,'Output'),{$variant:'Vector',value:{X:48,Y:0,Z:0}}));});
+ const remember=c.set(previous,c.sel(c.cmp('Equal',R(kind),1),R(spawners[0],'Entity'),R(spawners[1],'Entity')));c.link(authorized,remember,'ExecOutA');c.later(remember,pad,2);const spawnChoice=c.branch(c.wait(pad,2),c.cmp('Equal',R(kind),1),'Output');c.link(spawnChoice,self[0],'ExecOutB');c.link(spawnChoice,self[1],'ExecOutA');self.forEach((node,i)=>c.later(node,spawners[i],2));
+ const afterSpawn=c.n('Exec_Union');c.to(spawners.map(n=>[n,'ExecOut']),afterSpawn,'ExecA');const chosen=c.sel(c.cmp('Equal',R(kind),1),R(spawners[0],'Entity'),R(spawners[1],'Entity'));
+ const saveRoot=c.set(root,c.sel(c.and(c.cmp('NotEqual',chosen,O(null)),c.cmp('NotEqual',chosen,R(previous))),O(null),chosen));c.later(afterSpawn,saveRoot,3);const increment=c.n('Exec_Var_Increment',{VarRef:R(nonce,'VarRef'),Value:1});c.link(saveRoot,increment);
+ const result=c.send(REQUEST,[R(player),O(null),4,R(settings.id),R(jobId),R(settings.key),R(root),R(nonce)]);c.later(increment,result,2,'ExecOut','ExecIn');c.to([[result,'ExecOut']],timeout,'Restart');
+ const unlock=c.set(busy,false);c.link(authorized,unlock,'ExecOutB');c.link(unlock,period,'ExecOut','Restart');c.link(unlock,timeout,'ExecOut','Pause');
+ c.to([[mine,'ExecOutB'],[result,'ExecOut'],[unlock,'ExecOut']],box.done,'ExecA');
+ const timedOut=c.set(busy,false);c.link(timeout,timedOut,'Expired');const error=c.set(header,'Server busy - retry');c.link(timedOut,error);
+ c.bind(text('Player Name'),'Text',R(name));c.bind(text('Assigned Cargo'),'Text',R(cargoName));const labels=ui.filter(n=>n.type===C.TextDisplay.NAME&&n.data.Text==='Information for Pickup').sort((a,z)=>a.pos[2]-z.pos[2]);labels.forEach((n,i)=>c.bind(n,'Text',R(info[i])));
+ c.bind(text('Spawn Cargo'),'Text',c.sel(R(busy),c.sel(R(confirm),c.sel(c.cmp('Equal',R(state),2),'Collect','Replace'),'Confirm?'),'Wait'));
+ const title=text('Spawnable Loadboard');if(title){c.bind(title,'Text',R(header));title.data.LineHeight=.8;title.data.WidthScale=.65;}
+ for(const n of ui.filter(n=>n.type===C.TextDisplay.NAME)){n.data.bEnabled=false;c.bind(n,'bEnabled',c.and(R(binding.within),c.cmp('NotEqual',R(player),O(null))));n.data.WidthScale=Math.min(n.data.WidthScale||1,.8);}
+ return {binding,player,busy,send,response,box,spawners,result};
+};
