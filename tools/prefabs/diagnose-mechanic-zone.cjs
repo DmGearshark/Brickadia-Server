@@ -23,10 +23,23 @@ const result=build(source,c=>{
  wire(c.zone,C.AttachedZone.NAME,'OccupantCount',counts,counts.type,'InputA');
  for(const [n,p,q] of [[enters,'Value','B'],[exits,'Value','C'],[length,'Length','D'],[pumps,'Value','E'],[requests,'Value','F'],[assignments,'Value','G']])nn(n,p,counts,'Input'+q);
  const state=node('Expr_String_FormatText',{FormatString:'Owner present: {A} | Inside: {B} | Processing: {C}'});nn(owner,'bOutput',state,'InputA');wire(c.within,C.Var.NAME,'Value',state,state.type,'InputB');wire(c.processing,C.Expr_LogicalOR.NAME,'bOutput',state,state.type,'InputC');
- const combined=node('Expr_String_FormatText',{FormatString:'{A}\r\n{B}'});nn(counts,'Output',combined,'InputA');nn(state,'Output',combined,'InputB');
+ // Observe each decision in the first-entry queue path. Do not repair it yet:
+ // a zero queue can mean no push, a null candidate removed, or an early read.
+ const one=(xs,label)=>{assert.equal(xs.length,1,label);return xs[0];};
+ const entryFind=one(edges.filter(e=>e.a===c.entered&&e.p==='Exec'&&e.zt===C.Exec_ArrayVar_Find.NAME),'Entry find').z;
+ const entryBranch=one(edges.filter(e=>e.a===entryFind&&e.p==='ExecOut'&&e.zt===C.Exec_Branch.NAME),'Entry branch').z;
+ const push=one(writers.filter(n=>n.type===C.Exec_ArrayVar_Push.NAME),'Queue push');
+ const get=one(edges.filter(e=>e.a===c.queue&&e.zt===C.Exec_ArrayVar_Get.NAME),'Queue first read').z;
+ const drops=one(writers.filter(n=>n.type===C.Exec_ArrayVar_RemoveAtIndex.NAME&&n.comps[0].data.Index===0),'Invalid candidate removal');
+ const finds=counter(entryFind,entryFind.type,'ExecOut'),pushes=counter(push,push.type,'ExecOut'),duplicates=counter(entryBranch,entryBranch.type,'ExecOutA'),reads=counter(get,get.type,'ExecOut'),pruned=counter(drops,drops.type,'ExecOut');
+ const charValid=node('Expr_CompareNotEqual',{InputB:{$variant:'weak_object',value:null}});wire(c.entered,c.entered.type,'Character',charValid,charValid.type,'InputA');
+ const snapshot=node('Var',{Value:{$variant:'Bool',value:false}}),save=node('Exec_Var_Set');nn(snapshot,'VarRef',save,'VarRef');nn(charValid,'bOutput',save,'Value');wire(c.entered,c.entered.type,'Exec',save,save.type,'Exec');
+ const detail=node('Expr_String_FormatText',{FormatString:'Find: {A} | Push: {B} | Duplicate: {C}\r\nFirst read: {D} | Null removed: {E}\r\nEntry character valid: {F} | Find found: {G}'});
+ for(const [n,p,q] of [[finds,'Value','A'],[pushes,'Value','B'],[duplicates,'Value','C'],[reads,'Value','D'],[pruned,'Value','E'],[snapshot,'Value','F'],[entryFind,'bFound','G']])nn(n,p,detail,'Input'+q);
+ const combined=node('Expr_String_FormatText',{FormatString:'{A}\r\n{B}\r\n{C}'});nn(counts,'Output',combined,'InputA');nn(state,'Output',combined,'InputB');nn(detail,'Output',combined,'InputC');
  const template=nodes.find(n=>n.g===1&&n.comps.some(x=>x.type===C.TextDisplay.NAME&&x.data.Text.startsWith('Part Price')));assert(template);
  const text=structuredClone(template.comps.find(x=>x.type===C.TextDisplay.NAME));Object.assign(text.data,{Text:'ZONE STARTUP TEST',bEnabled:true,LineHeight:2,Color:{R:255,G:255,B:255,A:255},OutlineWidth:0});
- const panel={id:'debugPanel',g:1,position:template.position.map((v,i)=>v+(i===1?100:i===2?12:0)),brick:{...structuredClone(template.brick),size:[1,80,28]},comps:[text]};nodes.push(panel);wire(combined,combined.type,'Output',panel,C.TextDisplay.NAME,'Text');
+ const panel={id:'debugPanel',g:1,position:template.position.map((v,i)=>v+(i===1?100:i===2?12:0)),brick:{...structuredClone(template.brick),size:[1,80,40]},comps:[text]};nodes.push(panel);wire(combined,combined.type,'Output',panel,C.TextDisplay.NAME,'Text');
  // Instrumentation must only append. Every original component and edge is identical.
  assert.deepEqual(edges.slice(0,originalEdges.length),originalEdges);assert.deepEqual(nodes.slice(0,originalNodes.length),originalNodes);
 });

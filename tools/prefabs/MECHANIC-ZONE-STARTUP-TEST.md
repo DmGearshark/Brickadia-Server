@@ -24,3 +24,11 @@ node tools/prefabs/test-upgrade-shop.cjs prefabs/mechanic-shop-zone-startup-test
 ```
 
 The generator appends 18 diagnostic gates and one panel, retaining all baseline components and edges. It validates every serialized wire endpoint and runs the existing zone model checks. Purchase-model and saved leaderboard wiring checks also pass. No in-game validation has been performed. Production prefabs are unchanged.
+
+## Follow-up: first diagnostic result
+
+User observed first entry: Occupants 1, Enter 1, Reconcile 2, remaining readings zero, no binding. On exit: Enter 1, Exit 1, Reconcile 3, remaining readings zero. Second entry successfully bound: Enter 2, Exit 1, Reconcile 5, Bind request 1, Owner write 5, Owner present/Inside true, Processing false. This establishes event delivery and reconciliation on first entry, but does not establish whether the queue failed to receive the player or received and removed a null reference. Owner write is an execution count, not a distinct-owner count.
+
+`prefabs/mechanic-shop-zone-startup-test-v2.brz` adds execution counters for entry Find, Push, duplicate branch, first-item read, and null-candidate removal. It also captures whether the entry character is non-null at the entry execution and displays Find's current found flag. Existing graph still unchanged. This revision has 32 diagnostic gates and one panel; all 939 serialized endpoints and the purchase/zone offline checks pass.
+
+Use a fresh copy and capture **all rows while still inside after the first failed entry**. Push zero plus Duplicate nonzero implicates entry Find/branch evaluation. Push nonzero plus Null removed nonzero implicates character/reference timing. Push nonzero with First read zero implicates the processing/retention path. These are hypotheses to test, not confirmed causes.
