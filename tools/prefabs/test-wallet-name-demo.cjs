@@ -3,12 +3,14 @@ const assert=require('assert/strict'),{WorldReader,brdb:b}=require('brs-js'),mod
 module.exports=function test(ctx,fromSaved=false){
  for(const moduleYaw of [0,90,180,270]){
   const m=model(ctx,{moduleYaw,moduleOrigin:[1700,-320,100]});m.command('alice');m.command('bob');assert.equal(m.entities.size,0,'Buffered previous-entity snapshot precedes the first spawn');m.drain();assert.equal(m.entities.size,2);assert.deepEqual(m.initializations.map(e=>[e.owner,e.name]),[['alice','Alice'],['bob','Bob']]);
-  const entries=[...m.entities.values()];for(const [i,id]of ['alice','bob'].entries()){const expected=m.players[id].origin.map((v,k)=>v+m.players[id].direction[k]*120);for(let k=0;k<3;k++)assert(Math.abs(entries[i].position[k]-expected[k])<1e-8,'World-to-spawner-local positioning');assert.equal(entries[i].owner,id);assert.equal(entries[i].name,m.players[id].name);}
+  const entries=[...m.entities.values()];for(const [i,id]of ['alice','bob'].entries()){const player=m.players[id],yaw=player.facingYaw*Math.PI/180,expected=[player.position[0]+120*Math.cos(yaw),player.position[1]+120*Math.sin(yaw),player.position[2]+20];for(let k=0;k<3;k++)assert(Math.abs(entries[i].position[k]-expected[k])<1e-8,'World-to-spawner-local positioning');assert.equal(entries[i].owner,id);assert.equal(entries[i].name,m.players[id].name);}
   assert.equal(m.controller.state.get(ctx.busy.id),false);assert.deepEqual(m.controller.state.get(ctx.queue.id),[]);
  }
  let m=model(ctx,{maxSpawns:1});m.command('alice');m.command('bob');m.drain();assert.equal(m.initializations.length,1);assert.equal([...m.entities.values()][0].owner,'alice','Failed spawn must not rename previous object');assert.equal(m.messages[0].player,'bob');
  m=model(ctx);m.command('alice');m.advance();m.entities.clear();m.drain();assert.equal(m.initializations.length,0,'Destroyed target must not become an untargeted global event');assert.equal(m.controller.state.get(ctx.busy.id),false);
  m=model(ctx);m.players.alice.dead=true;m.command('alice');m.drain();assert.equal(m.entities.size,0);assert(m.messages[0].message.includes('Respawn'));
+ for(const lookPitch of [-90,-60,0,60,90]){const m=model(ctx);m.players.alice.lookPitch=lookPitch;m.players.alice.direction=[0,0,lookPitch<0?-1:1];m.players.alice.facingYaw=90;m.command('alice');m.drain();const p=[...m.entities.values()][0].position;assert(Math.abs(p[0]-100)<1e-8);assert(Math.abs(p[1]-320)<1e-8);assert(Math.abs(p[2]-60)<1e-8,'Vertical aim cannot lower spawn height');}
+ assert(!ctx.c.nodes.some(n=>n.type===b.COMPONENTS.Exec_Character_GetAim.NAME),'Mouse aim is not used');
  if(fromSaved)return;
  const root=WorldReader.from(ctx.bytes);assert.deepEqual(root.prefabPaths(),[ctx.path]);const payload=WorldReader.from(root.readPrefab(ctx.path));assert.deepEqual([...root.readPrefab(ctx.path)],[...ctx.payloadBytes]);
  function roundtrip(reader,c,extra=[]){
@@ -23,5 +25,5 @@ module.exports=function test(ctx,fromSaved=false){
  assert(cc.edges.some(e=>e.z.id===ctx.spawner.id&&e.q==='Exec'&&e.a.id===ctx.spawnTick.id&&e.p==='Output'),'Spawn execution crosses a tick buffer');assert.equal(cc.nodes.find(n=>n.id===ctx.spawnTick.id).data.TicksToWait,1);
  assert(cc.edges.some(e=>e.z.id===ctx.send.id&&e.q==='Target'&&e.a.id===ctx.root.id));assert.equal(cc.nodes.find(n=>n.id===ctx.delay.id).data.TicksToWait,3);assert.equal(ctx.spawner.handle.grid,0);assert.equal(ctx.ownTransform.handle.grid,0);
  test({...ctx,c:cc,p:pc},true);
- console.log('Wallet demo checks passed: embedded payload, object-event scope, owner/name isolation, simultaneous requests, rotated controller placement, failed/destroyed spawns, dead players, and saved-graph replay.');
+ console.log('Wallet demo checks passed: embedded payload, object-event scope, owner/name isolation, simultaneous requests, rotated controller placement, vertical-aim independence, failed/destroyed spawns, dead players, and saved-graph replay.');
 };

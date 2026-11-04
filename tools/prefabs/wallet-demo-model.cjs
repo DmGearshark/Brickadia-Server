@@ -1,7 +1,7 @@
 'use strict';
 const assert=require('assert/strict');
 module.exports=function model(ctx,options={}){
- const players=structuredClone(options.players||{alice:{name:'Alice',origin:[100,200,80],direction:[1,0,0]},bob:{name:'Bob',origin:[-50,400,70],direction:[0,1,0]}}),entities=new Map(),messages=[],initializations=[],scheduled=[];
+ const players=structuredClone(options.players||{alice:{name:'Alice',position:[100,200,40],facingYaw:0,origin:[100,200,80],direction:[1,0,0]},bob:{name:'Bob',position:[-50,400,40],facingYaw:90,origin:[-50,400,70],direction:[0,1,0]}}),entities=new Map(),messages=[],initializations=[],scheduled=[];
  const moduleOrigin=options.moduleOrigin||[500,-900,20],yaw=(options.moduleYaw||0)*Math.PI/180;let tick=0,spawnCount=0;
  const rotate=(v,inverse=false)=>{const a=inverse?-yaw:yaw;return [v[0]*Math.cos(a)-v[1]*Math.sin(a),v[0]*Math.sin(a)+v[1]*Math.cos(a),v[2]];};
  const vec=v=>Array.isArray(v)?v:[v.X,v.Y,v.Z],add=(a,z)=>a.map((v,i)=>v+z[i]);
@@ -23,6 +23,10 @@ module.exports=function model(ctx,options={}){
     case 'MathAdd':return add(vec(get('InputA')),vec(get('InputB')));
     case 'MathSubtract':return vec(get('InputA')).map((v,i)=>v-vec(get('InputB'))[i]);
     case 'MathMultiply':return vec(get('InputA')).map(v=>v*get('InputB'));
+    case 'SplitRotation':return get('Input')[p];
+    case 'MakeRotation':return {Yaw:get('Yaw'),Pitch:get('Pitch'),Roll:get('Roll')};
+    case 'RotationToDirection':{const rot=get('Rotation'),a=rot.Yaw*Math.PI/180,pitch=(rot.Pitch||0)*Math.PI/180;return [Math.cos(a)*Math.cos(pitch),Math.sin(a)*Math.cos(pitch),Math.sin(pitch)];}
+    case 'MakeVector':return [get('X'),get('Y'),get('Z')];
     case 'InvertRotation':return {inverse:true};
     case 'RotateVector':return rotate(vec(get('Vector')),get('Rotation').inverse);
     case 'String_FormatText':return n.data.FormatString.replace(/\{([A-G])\}/g,(_,p)=>String(get('Input'+p)));
@@ -40,6 +44,7 @@ module.exports=function model(ctx,options={}){
     case 'Exec_ArrayVar_Get':{const a=state.get(get('ArrayVarRef')),i=get('Index');results.set(id,{Value:a[i]??null,bOutOfBounds:i<0||i>=a.length});break;}
     case 'Exec_ArrayVar_RemoveAtIndex':state.get(get('ArrayVarRef')).splice(get('Index'),1);break;
     case 'Exec_Character_GetFromController':{const who=get('PlayerState');results.set(id,{Character:players[who]&&!players[who].dead?who+':char':null});break;}
+    case 'Exec_Entity_GetLocationRotation':{const who=get('Entity').replace(':char','');results.set(id,{Vector:players[who].position,Rotation:{Yaw:players[who].facingYaw,Pitch:players[who].lookPitch||0,Roll:0}});break;}
     case 'Exec_Character_GetAim':{const who=get('Character').replace(':char','');results.set(id,{Origin:players[who].origin,Direction:players[who].direction});break;}
     case 'Exec_GetOwnTransform':results.set(id,{Location:add(moduleOrigin,rotate(ctx.ownTransform.position)),Rotation:{inverse:false}});break;
     case 'Exec_PlayerState_GetDisplayName':results.set(id,{DisplayName:players[get('PlayerState')].name});break;

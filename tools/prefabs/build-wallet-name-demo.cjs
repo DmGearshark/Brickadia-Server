@@ -40,10 +40,11 @@ function build(){
  const present=c.cmp('Expr_CompareNotEqual',current,'Value',{InputB:O(null)}),presentBranch=c.branch(player,present);
  const character=c.node('Exec_Character_GetFromController');c.connect(current,'Value',character,'PlayerState');c.chain(presentBranch,character,'ExecOutA');
  const alive=c.cmp('Expr_CompareNotEqual',character,'Character',{InputB:O(null)}),aliveBranch=c.branch(character,alive);
- const aim=c.node('Exec_Character_GetAim',{bLocalAim:false});c.connect(character,'Character',aim,'Character');c.chain(aliveBranch,aim,'ExecOutA');c.chain(aim,ownTransform);
+ const transform=c.node('Exec_Entity_GetLocationRotation');c.connect(character,'Character',transform,'Entity');c.chain(aliveBranch,transform,'ExecOutA');c.chain(transform,ownTransform);
+ const yaw=c.node('Expr_SplitRotation');c.connect(transform,'Rotation',yaw,'Input');const flatRotation=c.node('Expr_MakeRotation',{Pitch:0,Roll:0});c.connect(yaw,'Yaw',flatRotation,'Yaw');const forward=c.node('Expr_RotationToDirection');c.connect(flatRotation,'Output',forward,'Rotation');const height=c.variable(N(20));const lift=c.node('Expr_MakeVector',{X:0,Y:0});c.connect(height,'Value',lift,'Z');
  const displayName=c.node('Exec_PlayerState_GetDisplayName');c.connect(current,'Value',displayName,'PlayerState');c.chain(ownTransform,displayName);
- const offset=c.node('Expr_MathMultiply');c.connect(aim,'Direction',offset,'InputA');c.connect(distance,'Value',offset,'InputB');
- const desired=c.node('Expr_MathAdd');c.connect(aim,'Origin',desired,'InputA');c.connect(offset,'Output',desired,'InputB');
+ const offset=c.node('Expr_MathMultiply');c.connect(forward,'Output',offset,'InputA');c.connect(distance,'Value',offset,'InputB');
+ const ahead=c.node('Expr_MathAdd');c.connect(transform,'Vector',ahead,'InputA');c.connect(offset,'Output',ahead,'InputB');const desired=c.node('Expr_MathAdd');c.connect(ahead,'Output',desired,'InputA');c.connect(lift,'Output',desired,'InputB');
  const delta=c.node('Expr_MathSubtract');c.connect(desired,'Output',delta,'InputA');c.connect(ownTransform,'Location',delta,'InputB');
  const inverse=c.node('Expr_InvertRotation');c.connect(ownTransform,'Rotation',inverse,'Input');
  const local=c.node('Expr_RotateVector');c.connect(inverse,'Output',local,'Rotation');c.connect(delta,'Output',local,'Vector');
@@ -62,8 +63,8 @@ function build(){
  const remove=c.node('Exec_ArrayVar_RemoveAtIndex',{Index:0});c.connect(queue,'ArrayVarRef',remove,'ArrayVarRef');c.chain(done,remove,donePort);
  const unlock=c.set(busy,{$variant:'Bool',value:false});c.chain(remove,unlock);const next=c.node('BufferTicks',{TicksToWait:1,ZeroTicksToWait:0});c.connect(unlock,'ExecOut',next,'Input');c.connect(next,'Output',pump,'ExecB');
  w.addBrick({asset:'PB_DefaultMicroBrick',size:[1,18,7],position:[24,-72,0],color:[20,45,65],components:[{type:C.TextDisplay.NAME,data:{...labelStyle,Text:'/wallet\r\nName-object demo',LineHeight:2}}]});
- const bytes=w.toBrz({prefab:prefab({x:60,y:94,z:28}),externalAssets:[{type:'BrickFontDescriptor',name:'GlacialIndifferencePlus'}],bundle:{name:'Wallet Command Name Demo',description:'Paste once and type /wallet. Spawns an object 120 units ahead of the caller aim, then initializes only that instance with their PlayerState and display name. Includes its payload prefab.'}});
- return {bytes,payloadBytes,path,c,p,plates,received,owner,name,spawner,ownTransform,command,queue,busy,current,root,previous,distance,aim,displayName,spawnOffset,spawnTick,send,sendCheck,delay};
+ const bytes=w.toBrz({prefab:prefab({x:60,y:94,z:28}),externalAssets:[{type:'BrickFontDescriptor',name:'GlacialIndifferencePlus'}],bundle:{name:'Wallet Command Name Demo',description:'Paste once and type /wallet. Spawns an object 120 units horizontally ahead of the caller facing direction, then initializes only that instance with their PlayerState and display name. Includes its payload prefab.'}});
+ return {bytes,payloadBytes,path,c,p,plates,received,owner,name,spawner,ownTransform,command,queue,busy,current,root,previous,distance,height,transform,forward,displayName,spawnOffset,spawnTick,send,sendCheck,delay};
 }
 module.exports=build;
 if(require.main===module){const output=process.argv[2];if(!output)throw Error('Usage: node build-wallet-name-demo.cjs output.brz');const result=build();require('./test-wallet-name-demo.cjs')(result);fs.writeFileSync(output,result.bytes);console.log(JSON.stringify({output,controllerGates:result.c.nodes.length,payloadGates:result.p.nodes.length,embeddedPrefab:result.path},null,2));}
