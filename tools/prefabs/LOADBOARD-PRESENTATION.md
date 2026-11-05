@@ -19,7 +19,7 @@ These are spatial one-shot emitters on existing display/depot bricks, with repet
 
 ## Chip layout
 
-Thirty-nine section records describe the current main/client layout in [loadboard-compact-sections.json](loadboard-compact-sections.json). Ordinary chips have compact flow/data columns on shaded backing tiles with side labels. Wide procedural gates occupy multiple ten-unit cells, rather than overlapping adjacent gates. Sections cover:
+Thirty-nine section records describe the current main/client layout in [loadboard-compact-sections.json](loadboard-compact-sections.json). Ordinary chips have compact flow/data columns on shaded backing tiles with side labels. Wide procedural gates occupy multiple ten-unit cells. Format Text gates reserve three cells as a conservative clearance allowance; their intrinsic asset name does not imply a one-cell footprint. Backing and label tiles use sizes and centers aligned to the five-unit coarse tile grid. Sections cover:
 
 - Catalogue/settings; queued commands; player/old-board lookup; spawning/binding.
 - Authority request queue, player fields/caches, cargo identity, offer state/rotation, browsing, acceptance, abandonment/re-listing, pickup authorization, stamping, delivery/payment, shared checks and reply formatting.
@@ -30,7 +30,7 @@ The nested Function's existing gates are arranged into input, parsing, eligibili
 
 Cargo's two spawner gates and two Get Own Transform gates retain their exact positions, orientation and data. Its entity transform and plane data also remain unchanged. The outside world-position anchor remains untouched. Those positions participate in the working offset calculation and are not arbitrary layout slots. Other private-chip planes are fitted to their new contents, while their entity locations/rotations remain unchanged. The visible world setup and portable display are not relocated.
 
-The authority gate/label-center span is about **525 × 1080** versus **1264 × 2736** before, roughly 84% smaller in area. Command and pickup spans also shrink. These figures describe arrangement, not a new runtime performance claim. No transaction timing or gameplay path was intentionally changed; the event-driven queues and required spawn buffer remain intact.
+The organized sections retain compact ten-unit cells for ordinary gates and extra room for wider gates. No transaction timing or gameplay path was changed; the event-driven queues and required spawn buffer remain intact.
 
 ## Validation
 
@@ -50,3 +50,7 @@ node --max-old-space-size=512 tools/prefabs/polish-loadboard.cjs /tmp/loadboard-
 ```
 
 The updater targets this known version/layout and the supplied reference. It preserves functional connections as it relocates existing gates, rather than regenerating an unrelated older display or replacing the working transaction logic.
+
+## Native placement correction
+
+The first presentation export rejected 83 bricks: 32 backing/label tiles and 51 gates. All 31 label tiles had an invalid half-width of 14; the remaining cargo backing tile had an off-grid X center of 72. Overlap checks using a wider Format Text footprint identify exactly 51 affected gates, matching the returned missing-gate count. The correction uses half-width 15 for labels, grid-aligned cargo panel centers, and three reserved cells per Format Text gate. The exact mesh bounds have not been extracted; this is a conservative spacing allowance. Both embedded and main chip layouts receive the correction. Added checks reject off-grid panel sizes/centers and overlapping wider formatting gates. The corrected file is rebuilt from the intact working source, restoring every gate and wire rather than reusing the incomplete game export. Native placement acceptance still requires an in-game check.

@@ -759,7 +759,7 @@
         "node": true,
         "type": "BrickComponentType_FunctionOutput",
         "pos": [
-          265,
+          305,
           85,
           6
         ],
@@ -1010,7 +1010,7 @@
           "node": true,
           "type": "BrickComponentType_Expr_String_FormatText",
           "pos": [
-            245,
+            255,
             85,
             6
           ],
@@ -1050,7 +1050,7 @@
           "node": true,
           "type": "BrickComponentType_Expr_String_FormatText",
           "pos": [
-            255,
+            285,
             85,
             6
           ],
@@ -1060,7 +1060,7 @@
           "node": true,
           "type": "BrickComponentType_FunctionOutput",
           "pos": [
-            265,
+            305,
             85,
             6
           ],
