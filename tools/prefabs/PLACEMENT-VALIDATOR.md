@@ -18,6 +18,13 @@ accepted; positive-volume intersection is reported. Connected overlap groups
 are included because Brickadia removes the complete connected group during
 clipboard placement.
 
+Procedural ramps have additional native construction-grid rules measured from
+the user's accepted reference trees: X/Y half-extents use 5-unit increments,
+Z half-extents and Z centers are even, and the confirmed tree assemblies use
+upright/inverted directions 4 and 5. Violations are reported in
+`invalidBricks`; they can make a connected ramp assembly disappear even when
+its bounding boxes do not overlap.
+
 This is a preflight model rather than Brickadia engine code. Shaped assets are
 reported separately because their solid volume can occupy less than their
 oriented bounding envelope.

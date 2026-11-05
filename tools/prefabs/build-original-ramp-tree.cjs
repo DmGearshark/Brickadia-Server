@@ -3,29 +3,33 @@ const fs=require('fs'),{World}=require('brs-js'),{metadata}=require('./loadboard
 const w=new World(),bark=[[64,34,27],[82,43,29],[101,55,34],[71,37,31]],leaf=[[28,67,43],[36,82,47],[48,99,52],[64,116,58],[42,91,61]];let count=0,ramps=0,inverted=0,poles=0;
 function add(asset,size,position,color,direction=4,rotation=0){w.addBrick({asset,size,position,direction,rotation,color,material:'BMC_Plastic'});count++;if(asset==='PB_DefaultRamp')ramps++;if(asset==='PB_DefaultRampInverted')inverted++;if(asset==='PB_DefaultPole')poles++;}
 const wood=(i,p)=>bark[Math.abs(i+p[0]+p[1]+p[2])%bark.length],green=(i,p)=>leaf[Math.abs(i*3+p[0]+p[1]*2+p[2])%leaf.length];
-// Three four-sided ramp tiers create a genuinely tapered trunk. Each ramp
-// owns a quadrant and meets its neighbors only at faces.
-for(const [tier,z,s,asset]of [[0,14,5,'PB_DefaultRamp'],[1,42,4,'PB_DefaultRampInverted'],[2,67,3,'PB_DefaultRamp']])for(const [i,[x,y]]of [[0,[-s,-s]],[1,[s,-s]],[2,[s,s]],[3,[-s,s]]])add(asset,[s,s,tier===2?11:14],[x,y,z],wood(i+tier,[x,y,z]),4,i);
-add('PB_DefaultMicroBrick',[2,2,5],[0,0,83],bark[3]);
-// Four long roots and four offset secondary roots use horizontal ramps. Their
-// bounding volumes touch the trunk and one another without intersecting.
-for(const [i,[dir,p,size]]of [
- [0,[0,[30,0,4],[4,4,20]]],[1,[1,[-30,0,4],[4,4,20]]],[2,[2,[0,30,4],[4,4,20]]],[3,[3,[0,-30,4],[4,4,20]]],
- [4,[0,[58,0,4],[4,3,8]]],[5,[1,[-58,0,4],[4,3,8]]],[6,[2,[0,58,4],[4,3,8]]],[7,[3,[0,-58,4],[4,3,8]]]
-])add(i%2?'PB_DefaultRampInverted':'PB_DefaultRamp',size,p,wood(i,p),dir,i%4);
-// Four primary branches at different heights. Secondary ramps fork sideways
-// at their ends, leaving the branch network visible below the canopy.
+// Original trunk built only from the ramp grid observed in accepted trees:
+// X/Y half-extents are multiples of 5, Z is even, and directions stay 4/5.
+for(const [i,[asset,size,p,rot]]of [
+ ['PB_DefaultRamp',[10,5,20],[-10,0,20],0],['PB_DefaultRamp',[10,5,20],[10,0,20],2],
+ ['PB_DefaultRampInverted',[5,5,18],[-5,0,58],0],['PB_DefaultRampInverted',[5,5,18],[5,0,58],2],
+ ['PB_DefaultRamp',[5,5,6],[-5,0,82],0],['PB_DefaultRamp',[5,5,6],[5,0,82],2]
+].entries())add(asset,size,p,wood(i,p),4,rot);
+// Four radial roots and four narrower terminal pieces.
+for(const [i,[asset,size,p,rot]]of [
+ ['PB_DefaultRamp',[30,5,6],[50,0,6],0],['PB_DefaultRampInverted',[30,5,6],[-50,0,6],2],
+ ['PB_DefaultRamp',[30,5,6],[0,35,6],1],['PB_DefaultRampInverted',[30,5,6],[0,-35,6],3],
+ ['PB_DefaultRampInverted',[15,5,4],[95,0,4],0],['PB_DefaultRamp',[15,5,4],[-95,0,4],2],
+ ['PB_DefaultRampInverted',[15,5,4],[0,80,4],1],['PB_DefaultRamp',[15,5,4],[0,-80,4],3]
+].entries())add(asset,size,p,wood(i+10,p),4,rot);
+// Four staggered primary branches and eight perpendicular forks. All ramp
+// dimensions and centers obey the measured native ramp grid.
 const branchSets=[
- {dir:0,p:[31,0,63],size:[4,3,25],end:[56,0],z:63},
- {dir:1,p:[-30,0,70],size:[4,3,24],end:[-54,0],z:70},
- {dir:2,p:[0,31,54],size:[4,3,23],end:[0,54],z:54},
- {dir:3,p:[0,-28,76],size:[4,3,22],end:[0,-50],z:76},
+ {p:[35,0,62],end:[60,0],z:62,rot:0,axis:'x',asset:'PB_DefaultRamp'},
+ {p:[-35,0,74],end:[-60,0],z:74,rot:2,axis:'x',asset:'PB_DefaultRampInverted'},
+ {p:[0,30,50],end:[0,55],z:50,rot:1,axis:'y',asset:'PB_DefaultRamp'},
+ {p:[0,-30,38],end:[0,-55],z:38,rot:3,axis:'y',asset:'PB_DefaultRampInverted'},
 ];
 for(const [i,b]of branchSets.entries()){
- add(i%2?'PB_DefaultRampInverted':'PB_DefaultRamp',b.size,b.p,wood(i+8,b.p),b.dir,0);
- if(i<2){const x=b.end[0];add('PB_DefaultRamp',[4,3,14],[x,17,b.z],wood(i+12,[x,17,b.z]),2,1);add('PB_DefaultRampInverted',[4,3,14],[x,-17,b.z],wood(i+13,[x,-17,b.z]),3,3);}
- else{const y=b.end[1];add('PB_DefaultRamp',[4,3,14],[17,y,b.z],wood(i+12,[17,y,b.z]),0,2);add('PB_DefaultRampInverted',[4,3,14],[-17,y,b.z],wood(i+13,[-17,y,b.z]),1,0);}
- const tipZ=[72,78,64,81][i],tipHalf=[5,4,6,1][i];add('PB_DefaultMicroBrick',[3,3,tipHalf],[b.end[0],b.end[1],tipZ],wood(i+20,b.end));
+ add(b.asset,[25,5,6],b.p,wood(i+20,b.p),4,b.rot);
+ if(b.axis==='x')for(const s of [-1,1])add(s>0?'PB_DefaultRamp':'PB_DefaultRampInverted',[15,5,4],[b.end[0],s*20,b.z],wood(i+s+30,[b.end[0],s*20,b.z]),4,1);
+ else for(const s of [-1,1])add(s>0?'PB_DefaultRampInverted':'PB_DefaultRamp',[15,5,4],[s*20,b.end[1],b.z],wood(i+s+40,[s*20,b.end[1],b.z]),4,0);
+ const half=[7,1,13,19][i],center=[75,81,69,63][i];add('PB_DefaultMicroBrick',[4,4,half],[b.end[0],b.end[1],center],wood(i+50,b.end));
 }
 // Original canopy plan. Cells occupy a 24-unit lattice while their varied
 // half-extents never exceed 12, preventing same-layer overlap.
