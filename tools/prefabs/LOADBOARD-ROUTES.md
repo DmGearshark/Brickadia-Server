@@ -91,6 +91,8 @@ No payout, route, cargo-name or vehicle rules are stored in station copies. Pick
 
 The authority queue remains event-driven while idle. Request snapshots, publication buffers, duplicate suppression, cargo ownership stamping, private payment chat, local confirmation sounds and wireless delivery audio are retained.
 
+The Load Settings chip uses coarse `PB_DefaultTile` rows for its catalogue labels, live diagnostic readout, validation button and editing notes. This follows the supplied customizable diagnostic-menu layout while using the same native-safe tile construction as the other logic chips. Press **Validate Catalogues** after editing to scan every configured route.
+
 ## Rebuild and validation
 
 ```sh
