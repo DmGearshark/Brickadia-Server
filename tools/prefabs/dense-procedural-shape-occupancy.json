@@ -1,0 +1,219 @@
+{
+  "source": "Four returned Brickadia 5x5x5 placement calibration prefabs",
+  "order": "x outer, y middle, z inner; each axis uses levels in listed order",
+  "levels": [
+    -0.8,
+    -0.4,
+    0,
+    0.4,
+    0.8
+  ],
+  "totals": {
+    "cases": 2500,
+    "solid": 1772,
+    "empty": 728,
+    "partial": 0
+  },
+  "assets": {
+    "PB_DefaultRampCorner": {
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "solid": 91,
+      "empty": 34,
+      "pattern": "SSSSSSSSSSSSSSSSSSSESSEEESSSSSSSSSSSSSSSSSSSESSEEESSSSSSSSSSSSSSSSSSSESSEEESSSSESSSSESSSSESSSSESSEEESSEEESSEEESSEEESSEEESSEEE"
+    },
+    "PB_DefaultRampCornerInverted": {
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "solid": 91,
+      "empty": 34,
+      "pattern": "SSSSSSSSSSSSSSSESSSSEEESSSSSSSSSSSSSSSSSESSSSEEESSSSSSSSSSSSSSSSSESSSSEEESSESSSSESSSSESSSSESSSSEEESSEEESSEEESSEEESSEEESSEEESS"
+    },
+    "PB_DefaultRampInnerCorner": {
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "solid": 119,
+      "empty": 6,
+      "pattern": "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSESSSSESSSSSSSSSSSSSSSSSSSESSEEE"
+    },
+    "PB_DefaultRampInnerCornerInverted": {
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "solid": 119,
+      "empty": 6,
+      "pattern": "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSESSSSESSSSSSSSSSSSSSSSSSSESSSSEEESS"
+    },
+    "PB_DefaultRampCrest": {
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "solid": 85,
+      "empty": 40,
+      "pattern": "SSEEESSEEESSEEESSEEESSEEESSSSESSSSESSSSESSSSESSSSESSSSSSSSSSSSSSSSSSSSSSSSSSSSSESSSSESSSSESSSSESSSSESSEEESSEEESSEEESSEEESSEEE"
+    },
+    "PB_DefaultRampCrestEnd": {
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "solid": 72,
+      "empty": 53,
+      "pattern": "SSEEESSEEESSEEESSEEESSEEESSEEESSSEESSSSESSSSESSSSESSEEESSSEESSSSESSSSESSSSSSSEEESSSEESSSSESSSSESSSSESSEEESSEEESSEEESSEEESSEEE"
+    },
+    "PB_DefaultRampCrestCorner": {
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "solid": 85,
+      "empty": 40,
+      "pattern": "SSEEESSEEESSEEESSEEESSEEESSSSESSSSESSSSESSSSESSEEESSSSSSSSSSSSSSSSSSSESSEEESSSSESSSSESSSSSSSSSESSEEESSEEESSSSESSSSSSSSSESSEEE"
+    },
+    "PB_DefaultArch": {
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "solid": 100,
+      "empty": 25,
+      "pattern": "SSSSSSSSSSEEEEESSSSSSSSSSSSSSSSSSSSEEEEESSSSSSSSSSSSSSSSSSSSEEEEESSSSSSSSSSSSSSSSSSSSEEEEESSSSSSSSSSSSSSSSSSSSEEEEESSSSSSSSSS"
+    },
+    "PB_DefaultArchInverted": {
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "solid": 100,
+      "empty": 25,
+      "pattern": "SSSSSSSSSSEEEEESSSSSSSSSSSSSSSSSSSSEEEEESSSSSSSSSSSSSSSSSSSSEEEEESSSSSSSSSSSSSSSSSSSSEEEEESSSSSSSSSSSSSSSSSSSSEEEEESSSSSSSSSS"
+    },
+    "PB_DefaultMicroWedgeCorner": {
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "solid": 55,
+      "empty": 70,
+      "pattern": "SSSSSSSSSESSSEESSEEESEEEESSSSESSSSESSSEESSEEESEEEESSSEESSSEESSSEESSEEESEEEESSEEESSEEESSEEESSEEESEEEESEEEESEEEESEEEESEEEESEEEE"
+    },
+    "PB_DefaultMicroWedgeTriangleCorner": {
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "solid": 35,
+      "empty": 90,
+      "pattern": "SSSSSSSSSESSSEESSEEESEEEESSSSESSSEESSEEESEEEEEEEEESSSEESSEEESEEEEEEEEEEEEEESSEEESEEEEEEEEEEEEEEEEEEESEEEEEEEEEEEEEEEEEEEEEEEE"
+    },
+    "PB_DefaultMicroWedgeInnerCorner": {
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "solid": 95,
+      "empty": 30,
+      "pattern": "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSESSSSESSSSESSSSESSSSSSSSSESSSEESSSEESSSEESSSSSSSSSESSSEESSEEESSEEESSSSSSSSSESSSEESSEEESEEEE"
+    },
+    "PB_DefaultMicroWedgeOuterCorner": {
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "solid": 115,
+      "empty": 10,
+      "pattern": "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSESSSSSSSSSSSSSSSSSSSESSSEESSSSSSSSSSSSSSESSSEESSEEE"
+    },
+    "PB_DefaultMicroWedgeHalfInnerCorner": {
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "solid": 35,
+      "empty": 90,
+      "pattern": "SEEEESSEEESSSEESSSSESSSSSSEEEESSEEESSSEESSSSEEEEEESEEEESSEEESSSEEEEEEEEEEEESEEEESSEEEEEEEEEEEEEEEEEESEEEEEEEEEEEEEEEEEEEEEEEE"
+    },
+    "PB_DefaultMicroWedgeHalfInnerCornerInverted": {
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "solid": 35,
+      "empty": 90,
+      "pattern": "SEEEESEEEESEEEESEEEESEEEESSEEESSEEESSEEESSEEEEEEEESSSEESSSEESSSEEEEEEEEEEEESSSSESSSSEEEEEEEEEEEEEEEESSSSSEEEEEEEEEEEEEEEEEEEE"
+    },
+    "PB_DefaultMicroWedgeHalfOuterCorner": {
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "solid": 65,
+      "empty": 60,
+      "pattern": "SSEEESSSEESSSSESSSSSSSSSSSSSEESSSSESSSSSSSSSSEEEEESSSSESSSSSSSSSSEEEEEEEEEESSSSSSSSSSEEEEEEEEEEEEEEESSSSSEEEEEEEEEEEEEEEEEEEE"
+    },
+    "PB_DefaultMicroRoundCorner": {
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "solid": 110,
+      "empty": 15,
+      "pattern": "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSEEEEESSSSSSSSSSSSSSSEEEEEEEEEE"
+    },
+    "PB_DefaultMicroRoundHalf": {
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "solid": 115,
+      "empty": 10,
+      "pattern": "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSEEEEESSSSSSSSSSSSSSSEEEEE"
+    },
+    "PB_DefaultPole": {
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "solid": 125,
+      "empty": 0,
+      "pattern": "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
+    },
+    "PB_DefaultStudded": {
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "solid": 125,
+      "empty": 0,
+      "pattern": "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
+    }
+  }
+}

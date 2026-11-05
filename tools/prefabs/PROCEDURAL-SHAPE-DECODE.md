@@ -31,3 +31,11 @@ The measured patterns support exact convex triangular-prism models for normal
 and inverted ramps, default wedges, micro-ramps, side wedges, side-wedge tiles,
 and micro-wedges. Complex corners, crests, arches, and round shapes retain their
 measured occupancy but remain conservative envelopes pending denser sampling.
+
+Four subsequent 5x5x5 probes measured 2,500 isolated cases: 1,772 solid, 728
+empty, and no partial failures. The complete normalized grids are stored in
+`dense-procedural-shape-occupancy.json`. The grids show that the complex corner
+and crest surfaces do not reduce to the simple planes suggested by nine broad
+samples. They remain conservative envelopes; the measured grids are retained
+as evidence rather than promoted to approximate models that would introduce
+false collision failures.
