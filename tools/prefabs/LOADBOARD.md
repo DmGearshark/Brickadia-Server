@@ -1,5 +1,7 @@
 # Central load-board system
 
+**Current artifact:** optimized after GP1–GP3, with batched request/stat reads and a reusable listing Function. Current display, Fine/collider settings, spawn placement and gameplay safeguards are preserved. See [LOADBOARD-OPTIMIZED.md](LOADBOARD-OPTIMIZED.md) for validation, modeled timings and reproduction.
+
 Latest placement update: the artifact uses the edited collision-free portable display from **needs updating.brz** unchanged. `/loadboard` applies a direct world position 60 units ahead and 16 above the character, facing back toward them, before initialization. See [LOADBOARD-PLACEMENT.md](LOADBOARD-PLACEMENT.md).
 
 > **Updated build:** the portable client now uses the separated chip placement that the user confirmed could spawn and initialize without crashing. String Split gates now use occurrence **1**, matching the working shops; the previous occurrence 0 caused raw packed records to spill across the screen. Replace the old system with this build and retest the normal `/loadboard` path. The exact engine-level cause of the earlier graph assertion remains unconfirmed.

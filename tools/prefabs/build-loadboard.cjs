@@ -1,9 +1,9 @@
 'use strict';
 const fs=require('fs'),assert=require('assert/strict'),{Build,C,N,S,B,O,R,source,copy}=require('./loadboard-lib.cjs');
 const server=require('./loadboard-server.cjs'),terminal=require('./loadboard-terminal.cjs'),command=require('./loadboard-command.cjs'),pickup=require('./loadboard-pickup.cjs');
-function build(path,{clientChipPosition=[40,0,0]}={}){
+function build(path,{clientChipPosition=[40,0,0],fast=false}={}){
  const src=source(path),main=new Build('Load Board System - Central Server and Stations',src.assets);
- const portable=terminal(src,clientChipPosition?{chipPosition:clientChipPosition}:undefined),portablePath=main.w.addPrefab(portable.bytes);
+ const portable=terminal(src,clientChipPosition?{chipPosition:clientChipPosition,fast}:undefined),portablePath=main.w.addPrefab(portable.bytes);
  const cargo=[];for(const [i,y]of [[0,169],[1,289]]){const b=new Build(i?'Fuel Cargo':'Cheap Crate Cargo',src.assets),items=src.bricks.filter(x=>{const p=x.brick.position;return p[0]>=-76&&p[0]<=-26&&Math.abs(p[1]-y)<=31&&p[2]<=3;});assert(items.length>20);copy(b,items,'cargo'+i,[-51,y,-18]);const bytes=b.finish({x:30,y:33,z:20},'Cargo geometry from the supplied load-board reference, using the tested ordinary prefab mode. Identity is imprinted by the central server after spawning.');cargo.push({b,bytes,path:main.w.addPrefab(bytes)});}
  // The supplied chip bodies and casing remain where the user placed them.
  const grids=new Map();for(const e of src.r.entities())grids.set(e.persistentIndex,main.w.addBrickGrid({type:e.typeName,location:e.location,rotation:e.rotation,frozen:e.frozen,sleeping:e.sleeping,data:{bCollapsed:e.data.bCollapsed,PlaneCenter:e.data.PlaneCenter,PlaneExtent:e.data.PlaneExtent}}));
@@ -14,8 +14,8 @@ function build(path,{clientChipPosition=[40,0,0]}={}){
  const configChip=main.w.addMicrochip({position:[110,260,0],color:[220,160,40]}),configCircuit=main.circuit(configChip.grid,'config');
  const config={catalog:configCircuit.map('str','str',[['0','Cheap Crate|250|1|1|1|Pickup Depot|Delivery Depot'],['1','Fuel|400|2|1|1|Pickup Depot|Delivery Depot']]),car:configCircuit.v('CarOwned'),truck:configCircuit.v('TruckOwned'),scrap:configCircuit.v('Scrap'),min:configCircuit.v(600),max:configCircuit.v(3600)};
  const label={id:'configLabel',type:C.TextDisplay.NAME,pos:[110,260,12],data:{Text:'Load settings',Font:0,Face:0,LineHeight:1.5,WidthScale:1,bEnabled:true,Color:{R:255,G:205,B:60,A:255},bOverrideColor:true}};main.add(label,{asset:'PB_DefaultMicroBrick',size:[1,20,4],position:label.pos,direction:4,rotation:2,color:[25,25,25],components:[{type:label.type,data:label.data}]});
- const sc=main.circuit(chipFor(260),'server'),central=server(sc,config);
- const cc=main.circuit(chipFor(320),'command'),cmd=command(cc,portablePath);
+ const sc=main.circuit(chipFor(260),'server'),central=server(sc,config,{fast});
+ const cc=main.circuit(chipFor(320),'command'),cmd=command(cc,portablePath,{fast});
  const pc=main.circuit(chipFor(100),'pickup'),spc=main.circuit(chipFor(40),'cargoSpawns');
  const pickupId=pc.v(1),pickupKey=pc.v('Pickup:1'),pickupUI=nodes.filter(n=>n.pos[0]<-50&&n.pos[1]>70&&n.pos[1]<90&&[C.TextDisplay.NAME,C.Button.NAME].includes(n.type)),pickupZone=nodes.find(n=>n.type===C.AttachedZone.NAME&&n.pos[1]>0);
  const pick=pickup(pc,spc,pickupUI,pickupZone,cargo.map(x=>x.path),{id:pickupId,key:pickupKey});
@@ -24,7 +24,7 @@ function build(path,{clientChipPosition=[40,0,0]}={}){
  // Original portable board is a visual template; /loadboard spawns the live client.
  for(const n of nodes.filter(n=>n.type===C.TextDisplay.NAME&&n.pos[0]>60&&n.pos[1]>160&&n.pos[1]<200)){n.data.Text=n.data.Text==='Spawnable Loadboard'?'Use /loadboard':'Unused';n.data.WidthScale=.8;}
  const bytes=main.finish({x:180,y:355,z:65},'One authoritative load server, /loadboard command, caller-bound portable client, zone-bound pickup terminal, cargo spawners and delivery zone. Editable catalogue/configuration chip. Real Scrap payouts and owner-only chat receipts after validated delivery. Paste only one central server.');
- return {bytes,main,src,portable,cargo,central,cmd,pick,delivery:{entered,submit,deliveryZone,deliveryId},config,portablePath};
+ return {bytes,main,src,optimized:fast,portable,cargo,central,cmd,pick,delivery:{entered,submit,deliveryZone,deliveryId},config,portablePath};
 }
 module.exports=build;
 if(require.main===module){const [input,out]=process.argv.slice(2);if(!out)throw Error('Usage: node build-loadboard.cjs reference.brz output.brz');try{const ctx=build(input,process.argv.includes('--clear-chip')?{clientChipPosition:[40,0,0]}:{});require('./test-loadboard.cjs')(ctx);fs.writeFileSync(out,ctx.bytes);console.log(JSON.stringify({output:out,mainComponents:ctx.main.nodes.length,clientComponents:ctx.portable.b.nodes.length,cargo:ctx.cargo.map(x=>x.path)},null,2));}catch(e){console.error(e.message);console.error(e.stack.split('\n').filter(x=>x.includes('/tools/prefabs/')&&!x.includes('/node_modules/')).join('\n'));process.exitCode=1;}}

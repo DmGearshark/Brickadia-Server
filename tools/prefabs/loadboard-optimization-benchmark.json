@@ -1,0 +1,19 @@
+{
+  "method": "Same uploaded display/config and normalized initial listings. Native query publication delayed one modeled tick; ordinary Var writes visible immediately, matching GP2 observations. These are graph-model ticks, not measured game milliseconds.",
+  "baseline": {
+    "initialReplyTicks": 37,
+    "scrollReplyTicks": 39,
+    "acceptReplyTicks": 38,
+    "commandInitializationTicks": 26
+  },
+  "optimized": {
+    "initialReplyTicks": 17,
+    "scrollReplyTicks": 15,
+    "acceptReplyTicks": 18,
+    "commandInitializationTicks": 22
+  },
+  "components": {
+    "baseline": 1806,
+    "optimized": 1615
+  }
+}

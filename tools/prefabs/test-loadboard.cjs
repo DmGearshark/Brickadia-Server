@@ -6,7 +6,7 @@ function roundtrip(bytes,build){const r=WorldReader.from(bytes),addr=new Map(),s
  for(const g of r.gridIds())for(const ch of r.brickChunkIndex(g)){if(!ch.numWires)continue;const ws=r.wireChunk(g,ch.index);for(const e of [...ws.local,...ws.remote]){const a=addr.get(key(e.source.gridId??g,e.source.chunk??ch.index,e.source.brickIndex,e.source.componentType)),z=addr.get(key(g,ch.index,e.target.brickIndex,e.target.componentType));assert(a&&z,'Missing wire endpoint');const target=z.id+':'+e.target.port;assert(!targets.has(target),'Multiple drivers');targets.add(target);actual.push([a.id,e.source.port,z.id,e.target.port].join(':'));actualEdges.push({a,p:e.source.port,z,q:e.target.port});}}
  assert.deepEqual(actual.sort(),build.edges.map(e=>[e.a.id,e.p,e.z.id,e.q].join(':')).sort());return {...build,nodes:saved,edges:actualEdges};}
 function scenarios(ctx,reactiveDelay){
- const fresh=()=>{const m=model(ctx,{reactiveDelay});m.addPlayer('alice',{CarOwned:1});m.addPlayer('bob',{TruckOwned:1});m.addPlayer('none');return m;};
+ const fresh=()=>{const m=model(ctx,{reactiveDelay});if(ctx.testResetRows)ctx.central.row.forEach((r,i)=>{for(const [n,value]of [[r.kind,i%2],[r.available,true],[r.rev,1],[r.record,'']]){m.state.set(n.id,value);m.published.set(n.id,value);}});m.addPlayer('alice',{CarOwned:1});m.addPlayer('bob',{TruckOwned:1});m.addPlayer('none');return m;};
  const req=(m,p,op,slot=0,rev=1,cargo=null,nonce=1,station='')=>{m.request([p,op<3?'board-'+p:null,op,slot,rev,station,cargo,nonce]);m.drain();return m.responses.at(-1);};
  let m=fresh();req(m,'alice',0);assert.equal(m.responses.at(-1).target,'board-alice');assert(m.responses.at(-1).args[6].startsWith('250|Car / Truck|'));
  req(m,'alice',1);assert.equal(m.stats('alice').LoadboardState,1);req(m,'alice',1,2,1,null,2);assert.equal(m.stats('alice').LoadboardId,1,'One active load');
@@ -55,3 +55,6 @@ module.exports=function test(ctx){const main=roundtrip(ctx.bytes,ctx.main);round
  scenarios(ctx,0);scenarios(ctx,1);scenarios({...ctx,main},1);integration(ctx);
  console.log('Load-board checks passed: exact main/client/cargo serialization, delayed native data, exclusive simultaneous acceptance, eligibility, one active job, pickup authorization/stamping, destination checks, replacement/abandonment, duplicate delivery/payment/chat protection, stale listings, failed spawning, saved-contract restoration, end-to-end event clients/stations, owner controls/handoff, abandonment confirmation, and command-screen replacement.');
 };
+
+module.exports.scenarios=scenarios;
+module.exports.integration=integration;

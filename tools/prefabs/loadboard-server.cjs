@@ -2,8 +2,8 @@
 const {C,N,S,B,O,R}=require('./loadboard-lib.cjs');
 const REQUEST='LB1.Request',REPLY='LB1.Reply',TYPES=[O(null),O(null),N(0),N(0),N(0),S(''),O(null),N(0)];
 const KEYS={state:'LoadboardState',id:'LoadboardId',serial:'LoadboardSerial',kind:'LoadboardType',pay:'LoadboardPay',pickup:'LoadboardPickup',dest:'LoadboardDestination',listing:'LoadboardListing',rule:'LoadboardRule'};
-module.exports=function server(c,config){
- const event=c.event(REQUEST,TYPES),inbox=c.inbox(event,TYPES),[player,reply,op,slot,revision,station,cargo,nonce]=inbox.vars;
+module.exports=function server(c,config,{fast=false}={}){
+ const event=c.event(REQUEST,TYPES),inbox=fast?c.inboxBatch(event,TYPES):c.inbox(event,TYPES),[player,reply,op,slot,revision,station,cargo,nonce]=inbox.vars;
  const uid=c.v(''),message=c.v('Ready'),replyCode=c.v(0),players=c.map('str','weak_object'),entities=c.map('str','weak_object'),snapshots=c.map('str','str');
  const stats=Object.fromEntries(Object.keys(KEYS).map(k=>[k,c.v(0)]));
  const isOp=n=>c.cmp('Equal',R(op),n),nonnull=x=>c.cmp('NotEqual',x,O(null));
@@ -32,14 +32,14 @@ module.exports=function server(c,config){
  const correctOwner=c.branch(c.wait(getUid),c.or(c.not(isOp(5)),c.cmp('Equal',R(uid),R(getUid,'UserId'))),'Output');toFinish(correctOwner,'ExecOutB');const saveUid=c.set(uid,R(getUid,'UserId'));c.link(correctOwner,saveUid,'ExecOutA');
  const rememberPlayer=c.mo('Set',players,{Key:R(uid),Value:R(player)});c.later(saveUid,rememberPlayer);
  // Refresh persisted fields on every request. Reopening a board restores a job.
- a=rememberPlayer;for(const [key,stat]of Object.entries(KEYS)){const get=c.n('Exec_Gamemode_GetLeaderboardValue',{PlayerState:R(player),Key:stat});c.link(a,get);const save=c.set(stats[key],R(get,'Value'));c.later(get,save);a=save;}
+ a=rememberPlayer;const statQueries=[];for(const [key,stat]of Object.entries(KEYS)){const get=c.n('Exec_Gamemode_GetLeaderboardValue',{PlayerState:R(player),Key:stat});c.link(a,get);if(fast){statQueries.push([key,get]);a=get;}else{const save=c.set(stats[key],R(get,'Value'));c.later(get,save);a=save;}}
  const getCar=c.n('Exec_Gamemode_GetLeaderboardValue',{PlayerState:R(player),Key:R(config.car)});c.link(a,getCar);const getTruck=c.n('Exec_Gamemode_GetLeaderboardValue',{PlayerState:R(player),Key:R(config.truck)});c.link(getCar,getTruck);
- const cfgGet=[0,1].map(i=>c.mo('Get',config.catalog,{Key:String(i)}));c.link(getTruck,cfgGet[0]);c.link(cfgGet[0],cfgGet[1]);const loaded=c.wait(cfgGet[1],2);
+ const cfgGet=[0,1].map(i=>c.mo('Get',config.catalog,{Key:String(i)}));c.link(getTruck,cfgGet[0]);c.link(cfgGet[0],cfgGet[1]);let loaded=c.wait(cfgGet[1],2);if(fast){let tail=loaded;for(const [key,get]of statQueries){const save=c.set(stats[key],R(get,'Value'));c.link(tail,save,tail===loaded?'Output':'ExecOut');tail=save;}loaded=c.wait(tail);}
  function parseRecord(record){const f=c.split(record,7);return {name:f[0],pay:c.num(f[1]),require:c.num(f[2]),pickup:c.num(f[3]),dest:c.num(f[4]),pickupName:f[5],destName:f[6]};}
  const cfg=cfgGet.map(n=>parseRecord(R(n,'Value'))),baseRecord=kind=>c.sel(c.cmp('Equal',kind,1),R(cfgGet[0],'Value'),R(cfgGet[1],'Value'));
- const definitions=row.map(r=>c.sel(c.cmp('NotEqual',R(r.record),''),baseRecord(R(r.kind)),R(r.record))),rowFields=definitions.map(parseRecord);
+ const definitions=row.map(r=>c.sel(c.cmp('NotEqual',R(r.record),''),baseRecord(R(r.kind)),R(r.record))),rowFields=fast?null:definitions.map(parseRecord);
  const selectedKind=choose(R(slot),row.map(r=>R(r.kind))),selectedAvailable=choose(R(slot),row.map(r=>R(r.available))),selectedRev=choose(R(slot),row.map(r=>R(r.rev))),selectedDefinition=choose(R(slot),definitions);
- const field=(kind,key)=>c.sel(c.cmp('Equal',kind,1),cfg[0][key],cfg[1][key]),selected=key=>choose(R(slot),rowFields.map(r=>r[key]));
+ const field=(kind,key)=>c.sel(c.cmp('Equal',kind,1),cfg[0][key],cfg[1][key]),selectedFields=fast?parseRecord(selectedDefinition):null,selected=key=>fast?selectedFields[key]:choose(R(slot),rowFields.map(r=>r[key]));
  const active=c.cmp('Greater',R(stats.state),0),jobKind=R(stats.kind),showKind=c.sel(active,selectedKind,jobKind);
  const validSlot=c.and(c.cmp('GreaterOrEqual',R(slot),0),c.cmp('Less',R(slot),5),c.cmp('Equal',R(slot),R(c.n('Expr_Floor',{Input:R(slot)}),'Output')));
  const owns=c.or(c.cmp('Greater',R(getTruck,'Value'),0),c.and(c.cmp('Equal',selected('require'),1),c.cmp('Greater',R(getCar,'Value'),0)));
@@ -83,14 +83,16 @@ module.exports=function server(c,config){
  const requirementLabel=rule=>c.sel(c.cmp('Equal',rule,2),'Car / Truck','Truck');
  const activeRule=c.sel(c.cmp('Greater',R(stats.rule),0),field(jobKind,'require'),R(stats.rule));
  const activePickup=c.sel(c.cmp('Equal',R(stats.pickup),field(jobKind,'pickup')),c.fmt('Pickup #{A}',R(stats.pickup)),field(jobKind,'pickupName')),activeDest=c.sel(c.cmp('Equal',R(stats.dest),field(jobKind,'dest')),c.fmt('Depot #{A}',R(stats.dest)),field(jobKind,'destName'));
- const records=rowFields.map((f,i)=>c.fmt('{A}^{B}^{C}^{D}^{E}',c.sel(R(row[i].available),'Taken',f.name),f.pay,c.sel(ownsRule(f.require),c.fmt('{A} (not owned)',requirementLabel(f.require)),requirementLabel(f.require)),f.pickupName,f.destName));
+ const formatter=fast?require('./loadboard-listing-function.cjs')(c):null,listingCalls=formatter?definitions.map((record,i)=>{const argument=c.fmt('{A}|{B}|{C}|{D}',record,c.sel(R(row[i].available),0,1),R(getCar,'Value'),R(getTruck,'Value')),call=c.n('FunctionCall',{Definition:R(formatter.def,'Definition'),Input0:S(''),Output0:S('Unused'),InputSources:[1,0,0,0,0,0,0,0]});c.bind(call,'Input0',argument);return call;}):[];
+ let replyReady=finishDelay;for(const call of listingCalls){c.link(replyReady,call,replyReady===finishDelay?'Output':'Completed');replyReady=call;}
+ const records=formatter?listingCalls.map(call=>R(call,'Output0')):rowFields.map((f,i)=>c.fmt('{A}^{B}^{C}^{D}^{E}',c.sel(R(row[i].available),'Taken',f.name),f.pay,c.sel(ownsRule(f.require),c.fmt('{A} (not owned)',requirementLabel(f.require)),requirementLabel(f.require)),f.pickupName,f.destName));
  const activeRecord=c.fmt('{A}^{B}^{C}^{D}^{E}',field(jobKind,'name'),R(stats.pay),requirementLabel(activeRule),activePickup,activeDest);
  const visible=Array.from({length:5},(_,i)=>{const idx=c.math('ModuloFloored',c.math('Add',R(slot),i+3),5);return c.sel(active,choose(idx,records),i===2?activeRecord:'Unused^Unused^Unused^Unused^Unused');});
  const richRecords=c.fmt('{A}~{B}~{C}~{D}~{E}',...visible),legacyNames=c.fmt('{A}~{B}~{C}~{D}~{E}',...visible.map(v=>c.split(v,2,'^')[0])),rows=c.sel(c.cmp('Equal',R(station),'Board:2'),legacyNames,richRecords),requirement=c.sel(active,requirementLabel(selected('require')),requirementLabel(activeRule)),requirementText=c.sel(c.and(c.not(active),c.not(owns)),requirement,c.fmt('{A} (not owned)',requirement));
  const info=c.fmt('{A}|{B}|{C}|{D}|{E}|{F}|{G}',c.sel(active,selected('pay'),R(stats.pay)),requirementText,c.sel(active,selected('pickupName'),activePickup),c.sel(active,selected('destName'),activeDest),c.sel(active,'Accept','Abandon'),selectedRev,R(stats.state));
  const extra=c.fmt('{A}|{B}|{C}|{D}',showKind,R(stats.id),R(stats.pickup),R(stats.dest));
- const args=[R(reply),R(player),R(station),R(nonce),R(message),rows,c.fmt('{A}|{B}',info,extra),R(replyCode)];const replyKind=c.branch(finishDelay,nonnull(R(reply)),'Output');const send=c.send(REPLY,args,R(reply)),stationSend=c.send('LB1.StationReply',args);c.link(replyKind,send,'ExecOutA','ExecIn');c.link(replyKind,stationSend,'ExecOutB','ExecIn');c.to([[send,'ExecOut'],[stationSend,'ExecOut']],inbox.done,'ExecA');
+ const args=[R(reply),R(player),R(station),R(nonce),R(message),rows,c.fmt('{A}|{B}',info,extra),R(replyCode)];const replyKind=c.branch(replyReady,nonnull(R(reply)),formatter?'Completed':'Output');const send=c.send(REPLY,args,R(reply)),stationSend=c.send('LB1.StationReply',args);c.link(replyKind,send,'ExecOutA','ExecIn');c.link(replyKind,stationSend,'ExecOutB','ExecIn');c.to([[send,'ExecOut'],[stationSend,'ExecOut']],inbox.done,'ExecA');
  const joined=c.n('Event_Gamemode_ControllerJoined'),joinDelay=c.n('QueueTicks',{TicksToWait:2,DataIn1:R(joined,'PlayerState')});c.link(joined,joinDelay,'ExecOut','ExecIn');const refreshOwner=c.send(REQUEST,[R(joinDelay,'DataOut1'),O(null),0,0,0,'Join',O(null),0]);c.link(joinDelay,refreshOwner,'ExecOut','ExecIn');
- return {event,inbox,stats,row,players,entities,config,send,prop,pay,chat,joined,snapshots};
+ return {event,inbox,stats,row,players,entities,config,send,prop,pay,chat,joined,snapshots,formatter,listingCalls,fast};
 };
 module.exports.REQUEST=REQUEST;module.exports.REPLY=REPLY;module.exports.TYPES=TYPES;module.exports.KEYS=KEYS;
