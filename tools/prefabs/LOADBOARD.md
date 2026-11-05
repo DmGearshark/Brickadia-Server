@@ -1,5 +1,7 @@
 # Central load-board system
 
+**Current route update:** cargo, pickup, destination and route catalogues now generate equal-probability offers with inclusive whole-number payout ranges. Pickup and delivery copies use one editable numeric location ID, and the Load Settings chip includes a full catalogue validator based on the supplied customizable diagnostic-menu reference. See [LOADBOARD-ROUTES.md](LOADBOARD-ROUTES.md).
+
 **Current presentation update:** one top title, default sounds on all four buttons, confirmed accept/abandon/collect/deliver cues, and compact labeled chip sections based on the supplied reference. The working event-driven queues, spawn placement and gameplay are retained. See [LOADBOARD-PRESENTATION.md](LOADBOARD-PRESENTATION.md).
 
 **Current repair:** the spawner feedback boundary is restored, and the four 0.1-second inbox polls are replaced by event-driven queues. The portable client and cargo bytes are unchanged. See [LOADBOARD-SPAWN-REPAIR.md](LOADBOARD-SPAWN-REPAIR.md).
@@ -23,7 +25,7 @@ The separated-chip diagnostic was tested in game, but this updated complete asse
 
 ## Behavior
 
-- Five shared, exclusive listings. Initial jobs alternate Cheap Crate/Fuel. Each initial listing expires after 10, 15, 20, 25 or 30 minutes. Subsequent lifetimes are randomly chosen from the configurable 10–60 minute range, and cargo type is randomized independently per listing. Accepting reserves that listing. Abandoning immediately returns the original offer to its original slot and restarts that slot’s lifetime; completing delivery leaves it taken until rotation. Other boards refresh on opening, after actions and every 15 seconds.
+- Five shared, exclusive listings. Initial jobs alternate Cheap Crate/Fuel. Subsequent offers choose equally from the Route Catalogue and roll their configured payout range. Accepting reserves that listing. Abandoning during the same rotation restores the exact offer; after rotation it disappears. Completing delivery during the same rotation immediately refills that slot, while an older accepted assignment cannot disturb newer offers. Other boards refresh on opening, after actions and every 15 seconds.
 - Each player has at most one active contract. Payment, cargo type, pickup ID and destination ID are stored at acceptance; listing rotation and later price changes cannot change that accepted reward or route. There is no delivery deadline.
 - The centered row is selected automatically. Scroll wraps across the five listings. Taken jobs are marked **Taken**. While a player has a contract, the center shows their cargo and the action becomes **Abandon**; the first click asks **Confirm?**, the second abandons. Confirmation expires after five seconds.
 - Spare display fields show **Unused**. Live pickup screens disable their text when unbound. Board controls require the caller's character; pickup controls require the bound character still inside the zone.
@@ -32,7 +34,9 @@ The separated-chip diagnostic was tested in game, but this updated complete asse
 - `/loadboard` replaces the caller's previous command screen. It closes/deletes that screen after three minutes without player input; passive refreshes do not extend that time. Accepted contracts remain on the central server.
 - Duplicate/stale board and pickup mutations are rejected using per-screen/per-station receipt counters. The server serializes requests; repeat delivery events see a completed/inactive job and cannot pay or send another receipt.
 
-## Configuration
+## Legacy configuration notes
+
+The catalogue format below documents the earlier two-load implementation retained in the rebuild history. The current editable formats and diagnostic workflow are in [LOADBOARD-ROUTES.md](LOADBOARD-ROUTES.md).
 
 The added gold chip marked **Load settings** contains the editable catalogue map and five settings variables. It is beside the central server. Both cargo spawners are inside the user-marked cargo-spawner chip.
 
@@ -83,6 +87,7 @@ The server uses numeric leaderboard stats:
 | LoadboardDestination | Accepted destination ID |
 | LoadboardListing | Original listing slot plus one; zero for older contracts |
 | LoadboardRule | Accepted qualifying-vehicle rule |
+| LoadboardOfferRevision | Accepted board-slot generation used for safe restore/refill |
 
 Ensure your gamemode persists these stats: enable **Persist All Player Stats** or include the keys in its persistent-stat list. No existing vehicle configuration fields are reset or changed. Native cargo properties are `LB.Owner`, `LB.Id`, and `LB.Destination`; payment comes from the server's saved contract, never from the crate.
 
@@ -98,7 +103,7 @@ All events use the `LB1.` namespace.
 
 1. PlayerState (null for cargo-driven delivery)
 2. Reply target object (portable board root; null for stations)
-3. Operation: 0 read, 1 accept, 2 abandon, 3 collect/replace, 4 spawn result, 5 deliver, 6 rotate listing
+3. Operation: 0 read, 1 accept, 2 abandon, 3 collect/replace, 4 spawn result, 5 deliver, 6 rotate listing, 7 validate catalogues
 4. Listing index for boards; numeric pickup/destination ID for station operations
 5. Expected listing revision or pickup delivery-generation ID
 6. Station reply-routing key
