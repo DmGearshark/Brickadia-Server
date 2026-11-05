@@ -65,3 +65,9 @@ first step that differs, ideally with a screenshot of the panel and wiring.
 ## Central load-board system
 
 [LOADBOARD.md](LOADBOARD.md) documents `prefabs/loadboard-system.brz`, built from the supplied v5 layout. It includes the authoritative load server, event-driven `/loadboard` client, zone-bound pickup station, delivery station, editable catalogue and embedded cargo prefabs. Rebuild with `build-loadboard.cjs`; generation runs the graph, serialization and event-integration checks.
+
+## Gate reference and native experiments
+
+[GATE-STUDY.md](GATE-STUDY.md) reviews all 396 gate/component definitions exposed by the pinned library. [gate-reference/GATES.md](gate-reference/GATES.md) lists every definition's ports and saved fields; `gates.json` also retains known defaults and enum values. Refresh with `node catalogue-gates.cjs`.
+
+[GATE-PROBE.md](GATE-PROBE.md) documents the independent GP1 native timing/function/loop experiments. Build with `node build-gate-probe.cjs ../../prefabs/gate-laboratory-gp1.brz`; inspect a returned save with `node read-gate-probe.cjs returned.brz`. This is a separate test assembly and does not replace the working loadboard.
