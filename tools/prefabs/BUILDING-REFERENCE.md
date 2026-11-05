@@ -48,3 +48,87 @@ asset collision meshes. V4's in-game result remains unconfirmed.
 Before another full-car iteration, validate a small panel assembly against
 the working chassis and verify an import/re-export. File readback alone is
 not evidence that the game accepts the geometry.
+
+## Landscape and architecture reference
+
+The user's `example.brz` is a local-only style reference containing 22,477
+bricks, 41 entities, 34 brick grids, 3,154 components, and 3,387 wires. The
+main grid contains 18,772 bricks. It includes a timber house, mature trees,
+windmill, pond, flower fields, fences, vehicles, lighting, garden furniture,
+rockwork, and embedded logic.
+
+The placement validator finds zero confirmed cuboid overlaps across the full
+reference. It reports 392 shaped-asset envelope intersections, primarily where
+wedges, ramps, and other non-box geometry intentionally occupies compatible
+space. This reinforces the rule that complex appearance should come from
+shape-aware contact and layering rather than intersecting rectangular solids.
+
+### Visual vocabulary
+
+- 6,001 default microbricks form most custom silhouettes and fine trim.
+- 5,468 native small flowers and 3,987 procedural poles create dense fields
+  economically through repetition, varied height, rotation, and color.
+- 1,769 micro-wedges plus hundreds of side wedges, ramps, round corners, and
+  wedge-corner variants soften silhouettes and build roofs, roots, rocks, and
+  decorative transitions.
+- The material palette is intentionally restrained: 21,176 plastic bricks,
+  959 metallic, 189 glass, 135 glow, and 18 translucent plastic. Glass, glow,
+  and metal appear as accents where their surface behavior communicates a
+  purpose.
+- The common colors establish a coherent world palette: field green, dark
+  foliage green, warm timber brown, white, yellow, charcoal, red, pink, blue,
+  muted stone greys, and limited bright accents.
+- Fine dimensions are routine. Half-extents of 1, 2, and 3 appear thousands
+  of times beside long beams and broad panels. Good detail comes from mixing
+  these scales rather than constructing everything from similarly sized boxes.
+- Every direction family and rotation is used. Most landscaping remains
+  upright, while roofs, roots, branches, latticework, and mechanical details
+  use sideways and inverted orientations.
+
+### Trees
+
+The mature custom tree is organized around a readable structural hierarchy:
+
+1. A thick, multi-piece trunk with slight width and color variation.
+2. Tapered roots that radiate outward at ground level using wedges and ramps.
+3. Several long primary branches extending from different trunk heights.
+4. Smaller secondary branches visible beneath and between foliage masses.
+5. An irregular canopy assembled from offset rectangular foliage slabs in
+   multiple heights, with gaps, asymmetric overhangs, and hanging edge pieces.
+
+The foliage does not form a symmetric pyramid. Its silhouette changes from
+every side, and the visible branch network makes the canopy appear supported.
+Use at least two close foliage colors and multiple piece thicknesses. Preserve
+open gaps beneath the canopy instead of filling a solid green volume.
+
+### House and small structures
+
+- The house uses warm timber beams as an exposed frame over recessed white
+  wall infill. The depth difference makes the framing readable in sunlight.
+- Repeated windows share a consistent module of frame, mullions, sill, glass,
+  and small roof or trim pieces.
+- Roofs use broad sloped fields with narrow edge trim, ridge treatment, and
+  gable transitions rather than a single oversized wedge.
+- The porch, steps, planters, climbing plants, and furniture break the main
+  facade into inhabited layers.
+- The windmill combines narrow vertical posts, diagonal lattice braces,
+  framed white blades, and a visually distinct hub. Repetition establishes
+  structure while small offsets prevent it from reading as a flat diagram.
+- Fences and lamps use repeatable modules with consistent post spacing. Their
+  color and proportions match nearby timber construction.
+
+### Landscaping
+
+- Flower areas use uneven boundaries, mixed density, multiple stem heights,
+  small color families, and occasional gaps. They are arranged as patches and
+  drifts rather than a uniform rectangular grid.
+- The pond has an irregular stepped perimeter, layered water treatment,
+  underwater plants, lotus leaves, fish, edge masonry, a dock or bench area,
+  and nearby lighting. The surrounding props make it a place rather than a
+  bare water rectangle.
+- Large objects are supported by small context: flowers around tree roots,
+  paths near entrances, pumpkins beside fields, lamps beside seating, and
+  fences defining rather than filling space.
+- Repeated native assets provide density; custom microbrick assemblies provide
+  focal points. Preserve that balance to keep large scenes detailed without
+  making every background object equally complex.
