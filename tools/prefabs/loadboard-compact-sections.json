@@ -398,19 +398,8 @@
     },
     {
       "grid": 7,
-      "section": "CARGO OFFSET MATH",
-      "gates": 11,
-      "bounds": [
-        0,
-        70,
-        164,
-        130
-      ]
-    },
-    {
-      "grid": 7,
-      "section": "Pinned cargo spawners and position references",
-      "gates": 4
+      "section": "Cargo prefab spawners with intrinsic Z=40 offsets",
+      "gates": 2
     },
     {
       "grid": 8,
