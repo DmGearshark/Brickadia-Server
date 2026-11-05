@@ -150,6 +150,38 @@ from multiple sides. Add large, varied foliage masses afterward, then use
 small poles or microbricks for shoots, hanging tips, and silhouette noise. A
 box-built trunk with ramps added only at the roots does not match this style.
 
+#### Minimal mixed-tree pack
+
+The user-supplied `mixed-trees.brz` contains 13 deliberately simple trees and
+54 bricks. It is a useful silhouette and proportion reference rather than a
+branch-construction reference: it uses only `PB_DefaultStudded` foliage and
+`PB_DefaultBrick` trunks, with no ramps.
+
+- Twelve conifers use a single centered trunk plus two to four centered
+  foliage masses. The common three-piece form is 50 units wide and 170 units
+  tall; the common four-piece form is 70 wide and 200 tall. Two five-piece
+  forms are 90 wide and 330 tall.
+- The foliage tapers consistently upward. The four-piece 200-unit tree uses
+  foliage half-extents `[35,35,35]`, `[25,25,25]`, then `[15,15,20]`.
+  The 330-unit tree uses `[45,45,45]`, `[35,35,35]`, `[25,25,35]`, then
+  `[15,15,30]`.
+- The canopy begins low and accounts for most of the total height. Trunks are
+  short visible bases rather than long poles supporting foliage at the top.
+- The layers meet directly and narrow in one readable progression. This gives
+  even a three-brick tree a stronger silhouette than many small unrelated leaf
+  pieces.
+- Color changes occur per tree, not randomly per brick. Repeated geometry in
+  several greens and one red-orange variant remains visually coherent.
+- The single broad eight-brick tree is 170 by 110 by 210. It combines one
+  large central foliage mass with six thin slabs on its cardinal faces, top,
+  and bottom. This produces a distinct silhouette without increasing detail
+  everywhere.
+
+For efficient trees, establish the outer silhouette with two to five major
+masses before adding any branches or detail. Keep the trunk-to-canopy ratio,
+layer taper, and color grouping coherent. Complexity should refine that clear
+shape rather than substitute for it.
+
 ### House and small structures
 
 - The house uses warm timber beams as an exposed frame over recessed white
