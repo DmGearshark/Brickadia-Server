@@ -1,0 +1,3380 @@
+{
+  "version": 1,
+  "tests": [
+    {
+      "id": "S000",
+      "asset": "PB_DefaultWedge",
+      "size": [
+        5,
+        5,
+        4
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S001",
+      "asset": "PB_DefaultWedge",
+      "size": [
+        5,
+        5,
+        4
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -3,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S002",
+      "asset": "PB_DefaultWedge",
+      "size": [
+        5,
+        5,
+        4
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -3,
+        0,
+        3
+      ]
+    },
+    {
+      "id": "S003",
+      "asset": "PB_DefaultWedge",
+      "size": [
+        5,
+        5,
+        4
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        4,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S004",
+      "asset": "PB_DefaultWedge",
+      "size": [
+        5,
+        5,
+        4
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        4,
+        0,
+        3
+      ]
+    },
+    {
+      "id": "S005",
+      "asset": "PB_DefaultWedge",
+      "size": [
+        5,
+        5,
+        4
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -3,
+        0
+      ]
+    },
+    {
+      "id": "S006",
+      "asset": "PB_DefaultWedge",
+      "size": [
+        5,
+        5,
+        4
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "S007",
+      "asset": "PB_DefaultWedge",
+      "size": [
+        5,
+        5,
+        4
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -3,
+        -3,
+        2
+      ]
+    },
+    {
+      "id": "S008",
+      "asset": "PB_DefaultWedge",
+      "size": [
+        5,
+        5,
+        4
+      ],
+      "sample": "BR",
+      "localPoint": [
+        3,
+        3,
+        -2
+      ]
+    },
+    {
+      "id": "S009",
+      "asset": "PB_DefaultSideWedge",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S010",
+      "asset": "PB_DefaultSideWedge",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -7,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "S011",
+      "asset": "PB_DefaultSideWedge",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -7,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S012",
+      "asset": "PB_DefaultSideWedge",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        7,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "S013",
+      "asset": "PB_DefaultSideWedge",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        7,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S014",
+      "asset": "PB_DefaultSideWedge",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -7,
+        0
+      ]
+    },
+    {
+      "id": "S015",
+      "asset": "PB_DefaultSideWedge",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        7,
+        0
+      ]
+    },
+    {
+      "id": "S016",
+      "asset": "PB_DefaultSideWedge",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -5,
+        -5,
+        3
+      ]
+    },
+    {
+      "id": "S017",
+      "asset": "PB_DefaultSideWedge",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "BR",
+      "localPoint": [
+        6,
+        6,
+        -3
+      ]
+    },
+    {
+      "id": "S018",
+      "asset": "PB_DefaultSideWedgetile",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S019",
+      "asset": "PB_DefaultSideWedgetile",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -7,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "S020",
+      "asset": "PB_DefaultSideWedgetile",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -7,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S021",
+      "asset": "PB_DefaultSideWedgetile",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        7,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "S022",
+      "asset": "PB_DefaultSideWedgetile",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        7,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S023",
+      "asset": "PB_DefaultSideWedgetile",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -7,
+        0
+      ]
+    },
+    {
+      "id": "S024",
+      "asset": "PB_DefaultSideWedgetile",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        7,
+        0
+      ]
+    },
+    {
+      "id": "S025",
+      "asset": "PB_DefaultSideWedgetile",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -5,
+        -5,
+        3
+      ]
+    },
+    {
+      "id": "S026",
+      "asset": "PB_DefaultSideWedgetile",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "BR",
+      "localPoint": [
+        6,
+        6,
+        -3
+      ]
+    },
+    {
+      "id": "S027",
+      "asset": "PB_DefaultRampCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S028",
+      "asset": "PB_DefaultRampCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -7,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "S029",
+      "asset": "PB_DefaultRampCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -7,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S030",
+      "asset": "PB_DefaultRampCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        7,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "S031",
+      "asset": "PB_DefaultRampCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        7,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S032",
+      "asset": "PB_DefaultRampCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -7,
+        0
+      ]
+    },
+    {
+      "id": "S033",
+      "asset": "PB_DefaultRampCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        7,
+        0
+      ]
+    },
+    {
+      "id": "S034",
+      "asset": "PB_DefaultRampCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -5,
+        -5,
+        3
+      ]
+    },
+    {
+      "id": "S035",
+      "asset": "PB_DefaultRampCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "BR",
+      "localPoint": [
+        6,
+        6,
+        -3
+      ]
+    },
+    {
+      "id": "S036",
+      "asset": "PB_DefaultRampCornerInverted",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S037",
+      "asset": "PB_DefaultRampCornerInverted",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -7,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "S038",
+      "asset": "PB_DefaultRampCornerInverted",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -7,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S039",
+      "asset": "PB_DefaultRampCornerInverted",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        7,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "S040",
+      "asset": "PB_DefaultRampCornerInverted",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        7,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S041",
+      "asset": "PB_DefaultRampCornerInverted",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -7,
+        0
+      ]
+    },
+    {
+      "id": "S042",
+      "asset": "PB_DefaultRampCornerInverted",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        7,
+        0
+      ]
+    },
+    {
+      "id": "S043",
+      "asset": "PB_DefaultRampCornerInverted",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -5,
+        -5,
+        3
+      ]
+    },
+    {
+      "id": "S044",
+      "asset": "PB_DefaultRampCornerInverted",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "BR",
+      "localPoint": [
+        6,
+        6,
+        -3
+      ]
+    },
+    {
+      "id": "S045",
+      "asset": "PB_DefaultRampInnerCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S046",
+      "asset": "PB_DefaultRampInnerCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -7,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "S047",
+      "asset": "PB_DefaultRampInnerCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -7,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S048",
+      "asset": "PB_DefaultRampInnerCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        7,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "S049",
+      "asset": "PB_DefaultRampInnerCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        7,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S050",
+      "asset": "PB_DefaultRampInnerCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -7,
+        0
+      ]
+    },
+    {
+      "id": "S051",
+      "asset": "PB_DefaultRampInnerCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        7,
+        0
+      ]
+    },
+    {
+      "id": "S052",
+      "asset": "PB_DefaultRampInnerCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -5,
+        -5,
+        3
+      ]
+    },
+    {
+      "id": "S053",
+      "asset": "PB_DefaultRampInnerCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "BR",
+      "localPoint": [
+        6,
+        6,
+        -3
+      ]
+    },
+    {
+      "id": "S054",
+      "asset": "PB_DefaultRampInnerCornerInverted",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S055",
+      "asset": "PB_DefaultRampInnerCornerInverted",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -7,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "S056",
+      "asset": "PB_DefaultRampInnerCornerInverted",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -7,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S057",
+      "asset": "PB_DefaultRampInnerCornerInverted",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        7,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "S058",
+      "asset": "PB_DefaultRampInnerCornerInverted",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        7,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S059",
+      "asset": "PB_DefaultRampInnerCornerInverted",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -7,
+        0
+      ]
+    },
+    {
+      "id": "S060",
+      "asset": "PB_DefaultRampInnerCornerInverted",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        7,
+        0
+      ]
+    },
+    {
+      "id": "S061",
+      "asset": "PB_DefaultRampInnerCornerInverted",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -5,
+        -5,
+        3
+      ]
+    },
+    {
+      "id": "S062",
+      "asset": "PB_DefaultRampInnerCornerInverted",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "BR",
+      "localPoint": [
+        6,
+        6,
+        -3
+      ]
+    },
+    {
+      "id": "S063",
+      "asset": "PB_DefaultRampCrest",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S064",
+      "asset": "PB_DefaultRampCrest",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -7,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "S065",
+      "asset": "PB_DefaultRampCrest",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -7,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S066",
+      "asset": "PB_DefaultRampCrest",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        7,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "S067",
+      "asset": "PB_DefaultRampCrest",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        7,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S068",
+      "asset": "PB_DefaultRampCrest",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -3,
+        0
+      ]
+    },
+    {
+      "id": "S069",
+      "asset": "PB_DefaultRampCrest",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "S070",
+      "asset": "PB_DefaultRampCrest",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -5,
+        -3,
+        3
+      ]
+    },
+    {
+      "id": "S071",
+      "asset": "PB_DefaultRampCrest",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "sample": "BR",
+      "localPoint": [
+        6,
+        3,
+        -3
+      ]
+    },
+    {
+      "id": "S072",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S073",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -7,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "S074",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -7,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S075",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        7,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "S076",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        7,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S077",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -3,
+        0
+      ]
+    },
+    {
+      "id": "S078",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "S079",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -5,
+        -3,
+        3
+      ]
+    },
+    {
+      "id": "S080",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "sample": "BR",
+      "localPoint": [
+        6,
+        3,
+        -3
+      ]
+    },
+    {
+      "id": "S081",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S082",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -7,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "S083",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -7,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S084",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        7,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "S085",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        7,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S086",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -7,
+        0
+      ]
+    },
+    {
+      "id": "S087",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        7,
+        0
+      ]
+    },
+    {
+      "id": "S088",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -5,
+        -5,
+        3
+      ]
+    },
+    {
+      "id": "S089",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "sample": "BR",
+      "localPoint": [
+        6,
+        6,
+        -3
+      ]
+    },
+    {
+      "id": "S090",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S091",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -7,
+        0,
+        -21
+      ]
+    },
+    {
+      "id": "S092",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -7,
+        0,
+        21
+      ]
+    },
+    {
+      "id": "S093",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        7,
+        0,
+        -21
+      ]
+    },
+    {
+      "id": "S094",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        7,
+        0,
+        21
+      ]
+    },
+    {
+      "id": "S095",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -10,
+        0
+      ]
+    },
+    {
+      "id": "S096",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        11,
+        0
+      ]
+    },
+    {
+      "id": "S097",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -5,
+        -8,
+        17
+      ]
+    },
+    {
+      "id": "S098",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "sample": "BR",
+      "localPoint": [
+        6,
+        8,
+        -16
+      ]
+    },
+    {
+      "id": "S099",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S100",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -7,
+        0,
+        -21
+      ]
+    },
+    {
+      "id": "S101",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -7,
+        0,
+        21
+      ]
+    },
+    {
+      "id": "S102",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        7,
+        0,
+        -21
+      ]
+    },
+    {
+      "id": "S103",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        7,
+        0,
+        21
+      ]
+    },
+    {
+      "id": "S104",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -10,
+        0
+      ]
+    },
+    {
+      "id": "S105",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        11,
+        0
+      ]
+    },
+    {
+      "id": "S106",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -5,
+        -8,
+        17
+      ]
+    },
+    {
+      "id": "S107",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "sample": "BR",
+      "localPoint": [
+        6,
+        8,
+        -16
+      ]
+    },
+    {
+      "id": "S108",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S109",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -3,
+        0,
+        -8
+      ]
+    },
+    {
+      "id": "S110",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -3,
+        0,
+        8
+      ]
+    },
+    {
+      "id": "S111",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        4,
+        0,
+        -8
+      ]
+    },
+    {
+      "id": "S112",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        4,
+        0,
+        8
+      ]
+    },
+    {
+      "id": "S113",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -3,
+        0
+      ]
+    },
+    {
+      "id": "S114",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "S115",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -3,
+        -3,
+        7
+      ]
+    },
+    {
+      "id": "S116",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "sample": "BR",
+      "localPoint": [
+        3,
+        3,
+        -7
+      ]
+    },
+    {
+      "id": "S117",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S118",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -7,
+        0,
+        -7
+      ]
+    },
+    {
+      "id": "S119",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -7,
+        0,
+        7
+      ]
+    },
+    {
+      "id": "S120",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        7,
+        0,
+        -7
+      ]
+    },
+    {
+      "id": "S121",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        7,
+        0,
+        7
+      ]
+    },
+    {
+      "id": "S122",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -7,
+        0
+      ]
+    },
+    {
+      "id": "S123",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        7,
+        0
+      ]
+    },
+    {
+      "id": "S124",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -5,
+        -5,
+        6
+      ]
+    },
+    {
+      "id": "S125",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "sample": "BR",
+      "localPoint": [
+        6,
+        6,
+        -5
+      ]
+    },
+    {
+      "id": "S126",
+      "asset": "PB_DefaultMicroRamp",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S127",
+      "asset": "PB_DefaultMicroRamp",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -3,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S128",
+      "asset": "PB_DefaultMicroRamp",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -3,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S129",
+      "asset": "PB_DefaultMicroRamp",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        4,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S130",
+      "asset": "PB_DefaultMicroRamp",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S131",
+      "asset": "PB_DefaultMicroRamp",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -3,
+        0
+      ]
+    },
+    {
+      "id": "S132",
+      "asset": "PB_DefaultMicroRamp",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "S133",
+      "asset": "PB_DefaultMicroRamp",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -3,
+        -3,
+        3
+      ]
+    },
+    {
+      "id": "S134",
+      "asset": "PB_DefaultMicroRamp",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "BR",
+      "localPoint": [
+        3,
+        3,
+        -3
+      ]
+    },
+    {
+      "id": "S135",
+      "asset": "PB_DefaultMicroWedge",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S136",
+      "asset": "PB_DefaultMicroWedge",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -3,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S137",
+      "asset": "PB_DefaultMicroWedge",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -3,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S138",
+      "asset": "PB_DefaultMicroWedge",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        4,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S139",
+      "asset": "PB_DefaultMicroWedge",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S140",
+      "asset": "PB_DefaultMicroWedge",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -3,
+        0
+      ]
+    },
+    {
+      "id": "S141",
+      "asset": "PB_DefaultMicroWedge",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "S142",
+      "asset": "PB_DefaultMicroWedge",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -3,
+        -3,
+        3
+      ]
+    },
+    {
+      "id": "S143",
+      "asset": "PB_DefaultMicroWedge",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "BR",
+      "localPoint": [
+        3,
+        3,
+        -3
+      ]
+    },
+    {
+      "id": "S144",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S145",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -3,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S146",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -3,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S147",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        4,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S148",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S149",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -3,
+        0
+      ]
+    },
+    {
+      "id": "S150",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "S151",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -3,
+        -3,
+        3
+      ]
+    },
+    {
+      "id": "S152",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "BR",
+      "localPoint": [
+        3,
+        3,
+        -3
+      ]
+    },
+    {
+      "id": "S153",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S154",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -3,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S155",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -3,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S156",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        4,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S157",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S158",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -3,
+        0
+      ]
+    },
+    {
+      "id": "S159",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "S160",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -3,
+        -3,
+        3
+      ]
+    },
+    {
+      "id": "S161",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "BR",
+      "localPoint": [
+        3,
+        3,
+        -3
+      ]
+    },
+    {
+      "id": "S162",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S163",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -3,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S164",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -3,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S165",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        4,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S166",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S167",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -3,
+        0
+      ]
+    },
+    {
+      "id": "S168",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "S169",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -3,
+        -3,
+        3
+      ]
+    },
+    {
+      "id": "S170",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "BR",
+      "localPoint": [
+        3,
+        3,
+        -3
+      ]
+    },
+    {
+      "id": "S171",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S172",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -3,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S173",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -3,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S174",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        4,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S175",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S176",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -3,
+        0
+      ]
+    },
+    {
+      "id": "S177",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "S178",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -3,
+        -3,
+        3
+      ]
+    },
+    {
+      "id": "S179",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "BR",
+      "localPoint": [
+        3,
+        3,
+        -3
+      ]
+    },
+    {
+      "id": "S180",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S181",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -3,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S182",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -3,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S183",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        4,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S184",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S185",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -3,
+        0
+      ]
+    },
+    {
+      "id": "S186",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "S187",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -3,
+        -3,
+        3
+      ]
+    },
+    {
+      "id": "S188",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "BR",
+      "localPoint": [
+        3,
+        3,
+        -3
+      ]
+    },
+    {
+      "id": "S189",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S190",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -3,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S191",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -3,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S192",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        4,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S193",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S194",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -3,
+        0
+      ]
+    },
+    {
+      "id": "S195",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "S196",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -3,
+        -3,
+        3
+      ]
+    },
+    {
+      "id": "S197",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "BR",
+      "localPoint": [
+        3,
+        3,
+        -3
+      ]
+    },
+    {
+      "id": "S198",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S199",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -3,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S200",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -3,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S201",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        4,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S202",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S203",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -3,
+        0
+      ]
+    },
+    {
+      "id": "S204",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "S205",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -3,
+        -3,
+        3
+      ]
+    },
+    {
+      "id": "S206",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "BR",
+      "localPoint": [
+        3,
+        3,
+        -3
+      ]
+    },
+    {
+      "id": "S207",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S208",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -3,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S209",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -3,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S210",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        4,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S211",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S212",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -3,
+        0
+      ]
+    },
+    {
+      "id": "S213",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "S214",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -3,
+        -3,
+        3
+      ]
+    },
+    {
+      "id": "S215",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "sample": "BR",
+      "localPoint": [
+        3,
+        3,
+        -3
+      ]
+    },
+    {
+      "id": "S216",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "sample": "C",
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "S217",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "sample": "LLO",
+      "localPoint": [
+        -3,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S218",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "sample": "LHI",
+      "localPoint": [
+        -3,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S219",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "sample": "RLO",
+      "localPoint": [
+        4,
+        0,
+        -3
+      ]
+    },
+    {
+      "id": "S220",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "sample": "RHI",
+      "localPoint": [
+        4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "S221",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "sample": "FL",
+      "localPoint": [
+        0,
+        -7,
+        0
+      ]
+    },
+    {
+      "id": "S222",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "sample": "BK",
+      "localPoint": [
+        0,
+        7,
+        0
+      ]
+    },
+    {
+      "id": "S223",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "sample": "TL",
+      "localPoint": [
+        -3,
+        -5,
+        3
+      ]
+    },
+    {
+      "id": "S224",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "sample": "BR",
+      "localPoint": [
+        3,
+        6,
+        -3
+      ]
+    }
+  ]
+}
