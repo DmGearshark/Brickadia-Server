@@ -27,3 +27,12 @@ units. The panel reports native hit distances: a horizontal value below 60 or
 a top-down value below 120 is a detailed-body hit. Comparing those numbers in
 standing, crouching and sitting poses establishes whether emote animation is
 visible to Wire collision queries.
+
+## Collision-channel matrix
+
+`prefabs/shark-tail-body-collision-channel-probe.brz` sends the same outside-in
+Z+20 ray through the character using all nine native Sweep collision channels.
+Every detailed-body sweep has radius zero. A tenth, otherwise identical Sweep
+uses channel 8 with detailed-body filtering disabled as a capsule control. The
+saved distances establish whether detailed collision requires a particular
+query channel or whether it is unavailable for the controlled character.
