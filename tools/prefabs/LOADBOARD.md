@@ -1,5 +1,7 @@
 # Central load-board system
 
+Latest placement update: the artifact uses the edited collision-free portable display from **needs updating.brz** unchanged. `/loadboard` applies a direct world position 60 units ahead and 16 above the character, facing back toward them, before initialization. See [LOADBOARD-PLACEMENT.md](LOADBOARD-PLACEMENT.md).
+
 > **Updated build:** the portable client now uses the separated chip placement that the user confirmed could spawn and initialize without crashing. String Split gates now use occurrence **1**, matching the working shops; the previous occurrence 0 caused raw packed records to spill across the screen. Replace the old system with this build and retest the normal `/loadboard` path. The exact engine-level cause of the earlier graph assertion remains unconfirmed.
 
 `prefabs/loadboard-system.brz` now uses the five-row display from **Update Needed..brz**, with immediate re-listing of abandoned offers. See [LOADBOARD-V2.md](LOADBOARD-V2.md). Paste **one** copy of the central system. It embeds the portable display and both cargo prefabs; there is no separate file installation.
