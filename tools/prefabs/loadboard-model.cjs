@@ -25,6 +25,7 @@ module.exports=function model(ctx,options={}){
  case C.Exec_ArrayVar_Get.NAME:{const arr=state.get(get('ArrayVarRef')),i=get('Index');setResult(n,{Value:arr[i]??null,bOutOfBounds:i<0||i>=arr.length});break;}
  case C.Exec_ArrayVar_Find.NAME:{const arr=state.get(get('ArrayVarRef')),i=arr.indexOf(get('Value'));setResult(n,{Index:i,bFound:i>=0});break;}
  case C.Exec_ArrayVar_RemoveAtIndex.NAME:state.get(get('ArrayVarRef')).splice(get('Index'),1);break;
+ case C.Exec_MapVar_GetKeys.NAME:state.set(get('ArrayVarRef'),[...state.get(get('MapVarRef')).keys()]);break;
  case C.Exec_MapVar_Get.NAME:{const m=state.get(get('MapVarRef')),k=get('Key'),def=nodes.get(get('MapVarRef')).data.Value.$valueType;setResult(n,{bFound:m.has(k),Value:m.get(k)??(def==='weak_object'?null:def==='str'?'':0)});break;}
  case C.Exec_MapVar_Set.NAME:state.get(get('MapVarRef')).set(get('Key'),get('Value'));break;
  case C.Exec_MapVar_Remove.NAME:{const found=state.get(get('MapVarRef')).delete(get('Key'));setResult(n,{bFound:found});break;}

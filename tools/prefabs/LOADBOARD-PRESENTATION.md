@@ -36,6 +36,39 @@ Cargo's two spawner gates and two Get Own Transform gates retain their exact pos
 
 The organized sections retain compact ten-unit cells for ordinary gates and extra room for wider gates. No transaction timing or gameplay path was changed; the event-driven queues and required spawn buffer remain intact.
 
+## Editable catalogue and settings
+
+The configuration chip has five individually labeled rows under **CATALOGUE & SETTINGS**:
+
+1. **Vehicle Catalogue** — one string-to-string map.
+2. **Load Catalogue** — the existing load-definition map.
+3. **Payout Leaderboard Key** — `Scrap` by default.
+4. **Minimum Load Rotation** — `600` seconds, or 10 minutes.
+5. **Maximum Load Rotation** — `3600` seconds, or 60 minutes.
+
+The two former per-vehicle Vars (`CarOwned` and `TruckOwned`) are replaced by one editable vehicle map. Its format is:
+
+```text
+Key:   Leaderboard ownership stat
+Value: Display Name|Minimum Owned Value|Capability
+
+CarOwned   = Car|1|1
+TruckOwned = Truck|1|2
+```
+
+Capability `1` qualifies for normal freight. Capability `2` qualifies for normal and heavy freight; larger values continue the same greater-than-or-equal rule for future load classes. The saved leaderboard score must be at least the configured owned value. A new vehicle therefore requires one map row and no new gate or wire. For example, `VanOwned = Van|1|1` adds Van to normal-load eligibility and changes its displayed requirement to `Car / Truck / Van` automatically.
+
+The server scans this map for the requesting player, derives the highest capability they own, and builds the requirement labels from every valid vehicle name. Gate count remains fixed as the map grows. The scan is serialized through the existing request queue and includes timing boundaries around native array, map and leaderboard reads. Its work grows linearly with the number of configured vehicles. Malformed entries are skipped. Changes are read on the next board request; there is no Apply button or generated cache to maintain.
+
+The separate load map retains this format:
+
+```text
+Key:   Load index
+Value: Cargo Name|Payout|Required Capability|Pickup ID|Destination ID|Pickup Name|Destination Name
+```
+
+Vehicle purchase prices do not belong to the load board and are not stored here. `Scrap` selects the leaderboard score paid on successful delivery; `600` and `3600` control offer rotation timing rather than prices.
+
 ## Validation
 
 Checks reread the serialized main/client and verify every endpoint, one driver per input, microchip link, exact stored fields and absence of instantaneous cycles. All original main wires remain; the only removed client wires belong to the eight removed decals. Footprint checks cover non-overlapping gate placement, including wide procedural gates. Cargo embeds remain byte-identical. All visible PC/world geometry and position-sensitive cargo data are compared against the source.

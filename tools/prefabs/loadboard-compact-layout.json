@@ -76,7 +76,7 @@
           "node": true,
           "type": "BrickComponentType_Var",
           "pos": [
-            95,
+            105,
             25,
             6
           ],
@@ -86,7 +86,7 @@
           "node": true,
           "type": "BrickComponentType_Var",
           "pos": [
-            105,
+            125,
             25,
             6
           ],
@@ -97,8 +97,8 @@
         "node": true,
         "type": "BrickComponentType_BufferTicks",
         "pos": [
-          15,
-          95,
+          25,
+          125,
           6
         ],
         "group": "server"
@@ -107,8 +107,8 @@
         "node": true,
         "type": "BrickComponentType_Exec_Union",
         "pos": [
-          25,
-          95,
+          35,
+          125,
           6
         ],
         "group": "server"
@@ -317,7 +317,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             435,
-            125,
+            195,
             6
           ],
           "group": "server"
@@ -327,7 +327,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             445,
-            125,
+            195,
             6
           ],
           "group": "server"
@@ -337,7 +337,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             455,
-            125,
+            195,
             6
           ],
           "group": "server"
@@ -347,7 +347,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             465,
-            125,
+            195,
             6
           ],
           "group": "server"
@@ -357,7 +357,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             475,
-            125,
+            195,
             6
           ],
           "group": "server"
@@ -367,7 +367,7 @@
           "type": "BrickComponentType_Stopwatch",
           "pos": [
             385,
-            125,
+            195,
             6
           ],
           "group": "server"
@@ -379,7 +379,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             485,
-            125,
+            195,
             6
           ],
           "group": "server"
@@ -389,7 +389,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             495,
-            125,
+            195,
             6
           ],
           "group": "server"
@@ -399,7 +399,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             505,
-            125,
+            195,
             6
           ],
           "group": "server"
@@ -409,7 +409,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             435,
-            135,
+            205,
             6
           ],
           "group": "server"
@@ -419,7 +419,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             445,
-            135,
+            205,
             6
           ],
           "group": "server"
@@ -429,7 +429,7 @@
           "type": "BrickComponentType_Stopwatch",
           "pos": [
             395,
-            125,
+            195,
             6
           ],
           "group": "server"
@@ -441,7 +441,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             455,
-            135,
+            205,
             6
           ],
           "group": "server"
@@ -451,7 +451,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             465,
-            135,
+            205,
             6
           ],
           "group": "server"
@@ -461,7 +461,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             475,
-            135,
+            205,
             6
           ],
           "group": "server"
@@ -471,7 +471,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             485,
-            135,
+            205,
             6
           ],
           "group": "server"
@@ -481,7 +481,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             495,
-            135,
+            205,
             6
           ],
           "group": "server"
@@ -491,7 +491,7 @@
           "type": "BrickComponentType_Stopwatch",
           "pos": [
             405,
-            125,
+            195,
             6
           ],
           "group": "server"
@@ -503,7 +503,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             505,
-            135,
+            205,
             6
           ],
           "group": "server"
@@ -513,7 +513,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             435,
-            145,
+            215,
             6
           ],
           "group": "server"
@@ -523,7 +523,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             445,
-            145,
+            215,
             6
           ],
           "group": "server"
@@ -533,7 +533,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             455,
-            145,
+            215,
             6
           ],
           "group": "server"
@@ -543,7 +543,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             465,
-            145,
+            215,
             6
           ],
           "group": "server"
@@ -553,7 +553,7 @@
           "type": "BrickComponentType_Stopwatch",
           "pos": [
             415,
-            125,
+            195,
             6
           ],
           "group": "server"
@@ -565,7 +565,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             475,
-            145,
+            215,
             6
           ],
           "group": "server"
@@ -575,7 +575,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             485,
-            145,
+            215,
             6
           ],
           "group": "server"
@@ -585,7 +585,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             495,
-            145,
+            215,
             6
           ],
           "group": "server"
@@ -595,7 +595,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             505,
-            145,
+            215,
             6
           ],
           "group": "server"
@@ -605,7 +605,7 @@
           "type": "BrickComponentType_Var",
           "pos": [
             435,
-            155,
+            225,
             6
           ],
           "group": "server"
@@ -615,7 +615,7 @@
           "type": "BrickComponentType_Stopwatch",
           "pos": [
             385,
-            135,
+            205,
             6
           ],
           "group": "server"
@@ -627,7 +627,7 @@
       "type": "BrickComponentType_MapVar",
       "pos": [
         55,
-        125,
+        195,
         6
       ],
       "group": "server"
@@ -637,7 +637,7 @@
       "type": "BrickComponentType_MapVar",
       "pos": [
         65,
-        125,
+        195,
         6
       ],
       "group": "server"
@@ -647,7 +647,7 @@
       "type": "BrickComponentType_Exec_SendCustomEventGlobal",
       "pos": [
         20,
-        965,
+        1035,
         6
       ],
       "group": "server"
@@ -658,7 +658,7 @@
         "type": "BrickComponentType_Exec_Entity_GetCustomProperty",
         "pos": [
           195,
-          125,
+          195,
           6
         ],
         "group": "server"
@@ -668,7 +668,7 @@
         "type": "BrickComponentType_Exec_Entity_GetCustomProperty",
         "pos": [
           205,
-          125,
+          195,
           6
         ],
         "group": "server"
@@ -678,7 +678,7 @@
         "type": "BrickComponentType_Exec_Entity_GetCustomProperty",
         "pos": [
           215,
-          125,
+          195,
           6
         ],
         "group": "server"
@@ -689,7 +689,7 @@
       "type": "BrickComponentType_Exec_Gamemode_IncrementLeaderboardValue",
       "pos": [
         35,
-        695,
+        765,
         6
       ],
       "group": "server"
@@ -699,7 +699,7 @@
       "type": "BrickComponentType_Exec_PlayerState_ShowChatMessage",
       "pos": [
         5,
-        705,
+        775,
         6
       ],
       "group": "server"
@@ -709,7 +709,7 @@
       "type": "BrickComponentType_Event_Gamemode_ControllerJoined",
       "pos": [
         455,
-        785,
+        855,
         6
       ],
       "group": "server"
@@ -719,7 +719,7 @@
       "type": "BrickComponentType_MapVar",
       "pos": [
         75,
-        125,
+        195,
         6
       ],
       "group": "server"
@@ -730,7 +730,7 @@
         "type": "Component_Internal_Microchip_FunctionDefinition",
         "pos": [
           55,
-          935,
+          1005,
           6
         ],
         "group": "server"
@@ -1074,7 +1074,7 @@
         "type": "BrickComponentType_FunctionCall",
         "pos": [
           30,
-          935,
+          1005,
           6
         ],
         "group": "server"
@@ -1084,7 +1084,7 @@
         "type": "BrickComponentType_FunctionCall",
         "pos": [
           10,
-          945,
+          1015,
           6
         ],
         "group": "server"
@@ -1094,7 +1094,7 @@
         "type": "BrickComponentType_FunctionCall",
         "pos": [
           30,
-          945,
+          1015,
           6
         ],
         "group": "server"
@@ -1104,7 +1104,7 @@
         "type": "BrickComponentType_FunctionCall",
         "pos": [
           10,
-          955,
+          1025,
           6
         ],
         "group": "server"
@@ -1114,7 +1114,7 @@
         "type": "BrickComponentType_FunctionCall",
         "pos": [
           30,
-          955,
+          1025,
           6
         ],
         "group": "server"
@@ -1280,38 +1280,20 @@
       "group": "config",
       "type": "BrickComponentType_MapVar",
       "pos": [
-        55,
-        5,
+        180,
+        170,
         6
       ]
     },
-    "car": {
-      "node": true,
-      "group": "config",
-      "type": "BrickComponentType_Var",
-      "pos": [
-        65,
-        5,
-        6
-      ]
-    },
-    "truck": {
-      "node": true,
-      "group": "config",
-      "type": "BrickComponentType_Var",
-      "pos": [
-        75,
-        5,
-        6
-      ]
-    },
+    "car": null,
+    "truck": null,
     "scrap": {
       "node": true,
       "group": "config",
       "type": "BrickComponentType_Var",
       "pos": [
-        85,
-        5,
+        180,
+        240,
         6
       ]
     },
@@ -1320,8 +1302,8 @@
       "group": "config",
       "type": "BrickComponentType_Var",
       "pos": [
-        95,
-        5,
+        180,
+        310,
         6
       ]
     },
@@ -1330,8 +1312,8 @@
       "group": "config",
       "type": "BrickComponentType_Var",
       "pos": [
-        105,
-        5,
+        180,
+        380,
         6
       ]
     }
