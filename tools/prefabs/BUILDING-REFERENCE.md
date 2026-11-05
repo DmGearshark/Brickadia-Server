@@ -101,6 +101,55 @@ every side, and the visible branch network makes the canopy appear supported.
 Use at least two close foliage colors and multiple piece thicknesses. Preserve
 open gaps beneath the canopy instead of filling a solid green volume.
 
+Two isolated custom-tree assemblies provide more exact construction guidance.
+Their coordinates and source prefab remain local.
+
+#### Ramp-built tree A
+
+This tree contains 131 procedural bricks:
+
+- The entire 78-piece brown structure uses 75 `PB_DefaultRamp` pieces and
+  only three `PB_DefaultBrick` pieces.
+- Its branch ramps commonly use half-extents `[20,5,6]`, `[25,5,6]`,
+  `[30,5,6]`, and `[15,5,6]`, with additional lengths from 10 through 35.
+- Its rising trunk and branch transitions use ramp heights from 16 through 54
+  with the repeated width/depth `[10,5]`.
+- Ramps use both Z-positive and Z-negative directions and every rotation. The
+  builder turns and inverts the same ramp asset to taper all four sides rather
+  than wrapping a rectangular trunk in a few cosmetic slopes.
+- The light-green canopy uses 31 large microbrick slabs, all half-height 5,
+  with deliberately varied footprints such as `[20,15,5]`, `[30,15,5]`,
+  `[20,25,5]`, `[15,30,5]`, `[35,15,5]`, and `[45,10,5]`.
+- Twenty-one dark-green microbricks use tiny `[2,4,2]`, `[2,6,2]`, and
+  `[2,2,8]` forms to add fine shoots and vertical foliage accents around the
+  broad canopy pieces.
+
+#### Ramp-built tree B
+
+This larger tree contains 181 procedural bricks:
+
+- Its 96-piece brown skeleton uses 43 `PB_DefaultRampInverted`, 33
+  `PB_DefaultRamp`, and 20 `PB_DefaultBrick` pieces.
+- Branch ramps range from half-length 10 through 40 at thickness `[5,6]`.
+  Tall trunk tapers use `[10,5,Z]` pieces with Z half-extents extending from
+  26 through 78.
+- Standard and inverted ramps are paired through placement and orientation,
+  not stacked at identical centers. Each sloped face occupies its own valid
+  volume.
+- Forty-four dark-green microbricks create the major foliage masses. They use
+  thick, varied three-dimensional blocks rather than uniform tiles: examples
+  include `[15,15,10]`, `[15,15,16]`, `[20,15,10]`, `[25,15,10]`,
+  `[15,30,10]`, `[15,15,28]`, and `[30,15,10]`.
+- Forty-one light-green `PB_DefaultPole` pieces add fine foliage detail in
+  three repeated sizes: 14 at `[3,3,2]`, 14 at `[3,3,6]`, and 13 at
+  `[3,3,12]`.
+
+Future custom trees should begin with a ramp-defined trunk and branch skeleton.
+Use standard and inverted ramps to taper roots, trunks, forks, and branch ends
+from multiple sides. Add large, varied foliage masses afterward, then use
+small poles or microbricks for shoots, hanging tips, and silhouette noise. A
+box-built trunk with ramps added only at the roots does not match this style.
+
 ### House and small structures
 
 - The house uses warm timber beams as an exposed frame over recessed white
