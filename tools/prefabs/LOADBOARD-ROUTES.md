@@ -95,7 +95,7 @@ The Load Settings chip uses the interface placed natively in Brickadia and retur
 
 The ten square help buttons beside those rows explain the adjacent setting in game. The diagnostic status Var, Validate edge detector and wireless validation sender live inside the nested **Catalogue validation logic** chip, keeping non-configuration gates out of the editable catalogue surface.
 
-Pickup and delivery copies each have a dedicated configuration menu. Only their numeric **Pickup ID** or **Delivery ID** is exposed for editing. Names, routes, payouts, cargo requirements, vehicle requirements and event keys remain derived from the central catalogues. Each menu includes contextual help and a live ID diagnostic; the diagnostic formatter is isolated in its nested support chip.
+Pickup and delivery copies each have a compact configuration menu. Each menu contains exactly one functional row: its numeric **Pickup ID** or **Delivery ID**, plus the help button for that gate. The setup and live diagnostic panels remain, while names, routes, payouts, cargo requirements, vehicle requirements and event keys stay derived from the central catalogues. The diagnostic formatter is isolated in the nested support chip.
 
 ## Rebuild and validation
 
@@ -124,6 +124,12 @@ The station configuration menus can be reproduced with:
 ```sh
 node tools/prefabs/configure-station-menus.cjs tools/prefabs/references/loadboard-station-menus-source.brz prefabs/loadboard-system.brz
 node tools/prefabs/test-station-menus.cjs tools/prefabs/references/loadboard-station-menus-source.brz
+```
+
+The final compact in-game edit is stored as `references/loadboard-station-menus-minimal.brz` and checked with:
+
+```sh
+node tools/prefabs/test-minimal-station-menus.cjs prefabs/loadboard-system.brz
 ```
 
 The tests serialize and reread every component and wire, reject instantaneous cycles and idle polling, preserve embedded display/cargo assets, and execute route generation, new cargo IDs, restoration, expired abandonment, delivery payment/refill and invalid-catalogue diagnostics.
