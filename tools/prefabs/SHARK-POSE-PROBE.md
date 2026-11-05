@@ -16,3 +16,14 @@ The original gates and 107 wires are retained. The probe adds 19 gates and 38
 wires. Placement validation finds no invalid bricks, confirmed overlaps or new
 contacts. It retains the source prefab's four pre-existing shape-uncertain
 switch contacts.
+
+## Outside-in revision
+
+`prefabs/shark-tail-body-part-pose-probe-v2.brz` corrects the first probe's
+inside-origin limitation. Six radius-2 sweeps begin 30 units to one side of the
+character and travel 60 units completely through it at heights 0 through 50.
+A seventh sweep starts 80 units above the character and travels downward 120
+units. The panel reports native hit distances: a horizontal value below 60 or
+a top-down value below 120 is a detailed-body hit. Comparing those numbers in
+standing, crouching and sitting poses establishes whether emote animation is
+visible to Wire collision queries.
