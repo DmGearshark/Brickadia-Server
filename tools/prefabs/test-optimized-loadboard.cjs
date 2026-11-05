@@ -11,3 +11,5 @@ module.exports=function test(ctx){const out=serialized(ctx.scene,ctx.bytes),clie
  for(const d of [0,1])require('./test-loadboard.cjs').scenarios({...ctx,testResetRows:true},d);require('./test-loadboard-v2.cjs').testReturn(ctx);require('./test-loadboard-v2.cjs').testRichClient(ctx);formatterTests(ctx);concurrency(ctx);placement(ctx);
  console.log('Optimized checks passed: exact main/client endpoints, display/colliders/Fine/chip transforms, original stations/config/cargo, gameplay safeguards, 40 concurrent accepts, 160 function-format cases and spawn placement.');
 };
+
+module.exports.serialized=serialized;

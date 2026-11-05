@@ -1,5 +1,7 @@
 # Central load-board system
 
+**Current repair:** the spawner feedback boundary is restored, and the four 0.1-second inbox polls are replaced by event-driven queues. The portable client and cargo bytes are unchanged. See [LOADBOARD-SPAWN-REPAIR.md](LOADBOARD-SPAWN-REPAIR.md).
+
 **Current artifact:** optimized after GP1–GP3, with batched request/stat reads and a reusable listing Function. Current display, Fine/collider settings, spawn placement and gameplay safeguards are preserved. See [LOADBOARD-OPTIMIZED.md](LOADBOARD-OPTIMIZED.md) for validation, modeled timings and reproduction.
 
 Latest placement update: the artifact uses the edited collision-free portable display from **needs updating.brz** unchanged. `/loadboard` applies a direct world position 60 units ahead and 16 above the character, facing back toward them, before initialization. See [LOADBOARD-PLACEMENT.md](LOADBOARD-PLACEMENT.md).

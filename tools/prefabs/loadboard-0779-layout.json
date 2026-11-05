@@ -1,0 +1,2277 @@
+{
+  "central": {
+    "event": {
+      "node": true,
+      "type": "BrickComponentType_Event_CustomGlobal",
+      "pos": [
+        0,
+        0,
+        2
+      ],
+      "group": "server"
+    },
+    "inbox": {
+      "vars": [
+        {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            624,
+            48,
+            2
+          ],
+          "group": "server"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            672,
+            48,
+            2
+          ],
+          "group": "server"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            720,
+            48,
+            2
+          ],
+          "group": "server"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            0,
+            96,
+            2
+          ],
+          "group": "server"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            48,
+            96,
+            2
+          ],
+          "group": "server"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            96,
+            96,
+            2
+          ],
+          "group": "server"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            144,
+            96,
+            2
+          ],
+          "group": "server"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            192,
+            96,
+            2
+          ],
+          "group": "server"
+        }
+      ],
+      "start": {
+        "node": true,
+        "type": "BrickComponentType_BufferTicks",
+        "pos": [
+          288,
+          144,
+          2
+        ],
+        "group": "server"
+      },
+      "done": {
+        "node": true,
+        "type": "BrickComponentType_Exec_Union",
+        "pos": [
+          336,
+          144,
+          2
+        ],
+        "group": "server"
+      },
+      "busy": {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          240,
+          48,
+          2
+        ],
+        "group": "server"
+      },
+      "arrays": [
+        {
+          "node": true,
+          "type": "BrickComponentType_ArrayVar",
+          "pos": [
+            96,
+            0,
+            2
+          ],
+          "group": "server"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_ArrayVar",
+          "pos": [
+            144,
+            0,
+            2
+          ],
+          "group": "server"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_ArrayVar",
+          "pos": [
+            192,
+            0,
+            2
+          ],
+          "group": "server"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_ArrayVar",
+          "pos": [
+            240,
+            0,
+            2
+          ],
+          "group": "server"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_ArrayVar",
+          "pos": [
+            288,
+            0,
+            2
+          ],
+          "group": "server"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_ArrayVar",
+          "pos": [
+            336,
+            0,
+            2
+          ],
+          "group": "server"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_ArrayVar",
+          "pos": [
+            384,
+            0,
+            2
+          ],
+          "group": "server"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_ArrayVar",
+          "pos": [
+            432,
+            0,
+            2
+          ],
+          "group": "server"
+        }
+      ],
+      "pump": {
+        "node": true,
+        "type": "BrickComponentType_Exec_Union",
+        "pos": [
+          96,
+          48,
+          2
+        ],
+        "group": "server"
+      },
+      "clock": {
+        "node": true,
+        "type": "BrickComponentType_Stopwatch",
+        "pos": [
+          144,
+          48,
+          2
+        ],
+        "group": "server"
+      },
+      "batched": true
+    },
+    "stats": {
+      "state": {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          336,
+          192,
+          2
+        ],
+        "group": "server"
+      },
+      "id": {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          384,
+          192,
+          2
+        ],
+        "group": "server"
+      },
+      "serial": {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          432,
+          192,
+          2
+        ],
+        "group": "server"
+      },
+      "kind": {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          480,
+          192,
+          2
+        ],
+        "group": "server"
+      },
+      "pay": {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          528,
+          192,
+          2
+        ],
+        "group": "server"
+      },
+      "pickup": {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          576,
+          192,
+          2
+        ],
+        "group": "server"
+      },
+      "dest": {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          624,
+          192,
+          2
+        ],
+        "group": "server"
+      },
+      "listing": {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          672,
+          192,
+          2
+        ],
+        "group": "server"
+      },
+      "rule": {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          720,
+          192,
+          2
+        ],
+        "group": "server"
+      }
+    },
+    "row": [
+      {
+        "kind": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            0,
+            240,
+            2
+          ],
+          "group": "server"
+        },
+        "available": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            48,
+            240,
+            2
+          ],
+          "group": "server"
+        },
+        "rev": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            96,
+            240,
+            2
+          ],
+          "group": "server"
+        },
+        "interval": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            144,
+            240,
+            2
+          ],
+          "group": "server"
+        },
+        "record": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            192,
+            240,
+            2
+          ],
+          "group": "server"
+        },
+        "timer": {
+          "node": true,
+          "type": "BrickComponentType_Stopwatch",
+          "pos": [
+            432,
+            288,
+            2
+          ],
+          "group": "server"
+        }
+      },
+      {
+        "kind": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            240,
+            240,
+            2
+          ],
+          "group": "server"
+        },
+        "available": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            288,
+            240,
+            2
+          ],
+          "group": "server"
+        },
+        "rev": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            336,
+            240,
+            2
+          ],
+          "group": "server"
+        },
+        "interval": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            384,
+            240,
+            2
+          ],
+          "group": "server"
+        },
+        "record": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            432,
+            240,
+            2
+          ],
+          "group": "server"
+        },
+        "timer": {
+          "node": true,
+          "type": "BrickComponentType_Stopwatch",
+          "pos": [
+            528,
+            288,
+            2
+          ],
+          "group": "server"
+        }
+      },
+      {
+        "kind": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            480,
+            240,
+            2
+          ],
+          "group": "server"
+        },
+        "available": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            528,
+            240,
+            2
+          ],
+          "group": "server"
+        },
+        "rev": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            576,
+            240,
+            2
+          ],
+          "group": "server"
+        },
+        "interval": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            624,
+            240,
+            2
+          ],
+          "group": "server"
+        },
+        "record": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            672,
+            240,
+            2
+          ],
+          "group": "server"
+        },
+        "timer": {
+          "node": true,
+          "type": "BrickComponentType_Stopwatch",
+          "pos": [
+            624,
+            288,
+            2
+          ],
+          "group": "server"
+        }
+      },
+      {
+        "kind": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            720,
+            240,
+            2
+          ],
+          "group": "server"
+        },
+        "available": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            0,
+            288,
+            2
+          ],
+          "group": "server"
+        },
+        "rev": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            48,
+            288,
+            2
+          ],
+          "group": "server"
+        },
+        "interval": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            96,
+            288,
+            2
+          ],
+          "group": "server"
+        },
+        "record": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            144,
+            288,
+            2
+          ],
+          "group": "server"
+        },
+        "timer": {
+          "node": true,
+          "type": "BrickComponentType_Stopwatch",
+          "pos": [
+            720,
+            288,
+            2
+          ],
+          "group": "server"
+        }
+      },
+      {
+        "kind": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            192,
+            288,
+            2
+          ],
+          "group": "server"
+        },
+        "available": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            240,
+            288,
+            2
+          ],
+          "group": "server"
+        },
+        "rev": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            288,
+            288,
+            2
+          ],
+          "group": "server"
+        },
+        "interval": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            336,
+            288,
+            2
+          ],
+          "group": "server"
+        },
+        "record": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            384,
+            288,
+            2
+          ],
+          "group": "server"
+        },
+        "timer": {
+          "node": true,
+          "type": "BrickComponentType_Stopwatch",
+          "pos": [
+            48,
+            336,
+            2
+          ],
+          "group": "server"
+        }
+      }
+    ],
+    "players": {
+      "node": true,
+      "type": "BrickComponentType_MapVar",
+      "pos": [
+        192,
+        192,
+        2
+      ],
+      "group": "server"
+    },
+    "entities": {
+      "node": true,
+      "type": "BrickComponentType_MapVar",
+      "pos": [
+        240,
+        192,
+        2
+      ],
+      "group": "server"
+    },
+    "send": {
+      "node": true,
+      "type": "BrickComponentType_Exec_SendCustomEventGlobal",
+      "pos": [
+        288,
+        2736,
+        2
+      ],
+      "group": "server"
+    },
+    "prop": {
+      "Owner": {
+        "node": true,
+        "type": "BrickComponentType_Exec_Entity_GetCustomProperty",
+        "pos": [
+          720,
+          624,
+          2
+        ],
+        "group": "server"
+      },
+      "Id": {
+        "node": true,
+        "type": "BrickComponentType_Exec_Entity_GetCustomProperty",
+        "pos": [
+          48,
+          672,
+          2
+        ],
+        "group": "server"
+      },
+      "Destination": {
+        "node": true,
+        "type": "BrickComponentType_Exec_Entity_GetCustomProperty",
+        "pos": [
+          144,
+          672,
+          2
+        ],
+        "group": "server"
+      }
+    },
+    "pay": {
+      "node": true,
+      "type": "BrickComponentType_Exec_Gamemode_IncrementLeaderboardValue",
+      "pos": [
+        720,
+        2160,
+        2
+      ],
+      "group": "server"
+    },
+    "chat": {
+      "node": true,
+      "type": "BrickComponentType_Exec_PlayerState_ShowChatMessage",
+      "pos": [
+        48,
+        2208,
+        2
+      ],
+      "group": "server"
+    },
+    "joined": {
+      "node": true,
+      "type": "BrickComponentType_Event_Gamemode_ControllerJoined",
+      "pos": [
+        432,
+        2736,
+        2
+      ],
+      "group": "server"
+    },
+    "snapshots": {
+      "node": true,
+      "type": "BrickComponentType_MapVar",
+      "pos": [
+        288,
+        192,
+        2
+      ],
+      "group": "server"
+    },
+    "formatter": {
+      "def": {
+        "node": true,
+        "type": "Component_Internal_Microchip_FunctionDefinition",
+        "pos": [
+          880,
+          0,
+          2
+        ],
+        "group": "server"
+      },
+      "entry": {
+        "node": true,
+        "type": "BrickComponentType_CallableEntry_Function",
+        "pos": [
+          0,
+          0,
+          2
+        ],
+        "group": "formatter"
+      },
+      "input": {
+        "node": true,
+        "type": "BrickComponentType_FunctionInput",
+        "pos": [
+          96,
+          0,
+          2
+        ],
+        "group": "formatter"
+      },
+      "output": {
+        "node": true,
+        "type": "BrickComponentType_FunctionOutput",
+        "pos": [
+          624,
+          48,
+          2
+        ],
+        "group": "formatter"
+      },
+      "nodes": [
+        {
+          "node": true,
+          "type": "BrickComponentType_CallableEntry_Function",
+          "pos": [
+            0,
+            0,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Exec_Union",
+          "pos": [
+            48,
+            0,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_FunctionInput",
+          "pos": [
+            96,
+            0,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_String_Split",
+          "pos": [
+            144,
+            0,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_String_Split",
+          "pos": [
+            192,
+            0,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_String_Split",
+          "pos": [
+            240,
+            0,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_String_Split",
+          "pos": [
+            288,
+            0,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_String_Split",
+          "pos": [
+            336,
+            0,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_String_Split",
+          "pos": [
+            384,
+            0,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_String_Split",
+          "pos": [
+            432,
+            0,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_String_Split",
+          "pos": [
+            480,
+            0,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_String_Split",
+          "pos": [
+            528,
+            0,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_String_ParseNumber",
+          "pos": [
+            576,
+            0,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_String_ParseNumber",
+          "pos": [
+            624,
+            0,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_CompareGreater",
+          "pos": [
+            672,
+            0,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_String_ParseNumber",
+          "pos": [
+            720,
+            0,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_CompareGreater",
+          "pos": [
+            0,
+            48,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_CompareEqual",
+          "pos": [
+            48,
+            48,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_String_ParseNumber",
+          "pos": [
+            96,
+            48,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_CompareGreater",
+          "pos": [
+            144,
+            48,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_LogicalAND",
+          "pos": [
+            192,
+            48,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_LogicalOR",
+          "pos": [
+            240,
+            48,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_CompareEqual",
+          "pos": [
+            288,
+            48,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_Select",
+          "pos": [
+            336,
+            48,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_String_FormatText",
+          "pos": [
+            384,
+            48,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_Select",
+          "pos": [
+            432,
+            48,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_Select",
+          "pos": [
+            480,
+            48,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_String_ParseNumber",
+          "pos": [
+            528,
+            48,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Expr_String_FormatText",
+          "pos": [
+            576,
+            48,
+            2
+          ],
+          "group": "formatter"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_FunctionOutput",
+          "pos": [
+            624,
+            48,
+            2
+          ],
+          "group": "formatter"
+        }
+      ]
+    },
+    "listingCalls": [
+      {
+        "node": true,
+        "type": "BrickComponentType_FunctionCall",
+        "pos": [
+          336,
+          2400,
+          2
+        ],
+        "group": "server"
+      },
+      {
+        "node": true,
+        "type": "BrickComponentType_FunctionCall",
+        "pos": [
+          480,
+          2400,
+          2
+        ],
+        "group": "server"
+      },
+      {
+        "node": true,
+        "type": "BrickComponentType_FunctionCall",
+        "pos": [
+          624,
+          2400,
+          2
+        ],
+        "group": "server"
+      },
+      {
+        "node": true,
+        "type": "BrickComponentType_FunctionCall",
+        "pos": [
+          0,
+          2448,
+          2
+        ],
+        "group": "server"
+      },
+      {
+        "node": true,
+        "type": "BrickComponentType_FunctionCall",
+        "pos": [
+          144,
+          2448,
+          2
+        ],
+        "group": "server"
+      }
+    ],
+    "fast": true
+  },
+  "cmd": {
+    "chat": {
+      "node": true,
+      "type": "BrickComponentType_Event_ChatCommand",
+      "pos": [
+        0,
+        0,
+        2
+      ],
+      "group": "command"
+    },
+    "inbox": {
+      "vars": [
+        {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            0,
+            48,
+            2
+          ],
+          "group": "command"
+        }
+      ],
+      "start": {
+        "node": true,
+        "type": "BrickComponentType_BufferTicks",
+        "pos": [
+          192,
+          48,
+          2
+        ],
+        "group": "command"
+      },
+      "done": {
+        "node": true,
+        "type": "BrickComponentType_Exec_Union",
+        "pos": [
+          240,
+          48,
+          2
+        ],
+        "group": "command"
+      },
+      "busy": {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          384,
+          0,
+          2
+        ],
+        "group": "command"
+      },
+      "arrays": [
+        {
+          "node": true,
+          "type": "BrickComponentType_ArrayVar",
+          "pos": [
+            144,
+            0,
+            2
+          ],
+          "group": "command"
+        }
+      ],
+      "pump": {
+        "node": true,
+        "type": "BrickComponentType_Exec_Union",
+        "pos": [
+          240,
+          0,
+          2
+        ],
+        "group": "command"
+      },
+      "clock": {
+        "node": true,
+        "type": "BrickComponentType_Stopwatch",
+        "pos": [
+          288,
+          0,
+          2
+        ],
+        "group": "command"
+      }
+    },
+    "spawner": {
+      "node": true,
+      "type": "BrickComponentType_Exec_PrefabSpawner",
+      "pos": [
+        528,
+        96,
+        2
+      ],
+      "group": "command"
+    },
+    "boards": {
+      "node": true,
+      "type": "BrickComponentType_MapVar",
+      "pos": [
+        384,
+        48,
+        2
+      ],
+      "group": "command"
+    },
+    "init": {
+      "node": true,
+      "type": "BrickComponentType_Exec_SendCustomEventGlobal",
+      "pos": [
+        672,
+        144,
+        2
+      ],
+      "group": "command"
+    },
+    "orient": {
+      "node": true,
+      "type": "BrickComponentType_Exec_Entity_SetLocationRotation",
+      "pos": [
+        720,
+        144,
+        2
+      ],
+      "group": "command"
+    },
+    "transform": {
+      "node": true,
+      "type": "BrickComponentType_Exec_Entity_GetLocationRotation",
+      "pos": [
+        480,
+        96,
+        2
+      ],
+      "group": "command"
+    },
+    "desired": [
+      {
+        "node": true,
+        "type": "BrickComponentType_Expr_MathAdd",
+        "pos": [
+          96,
+          144,
+          2
+        ],
+        "group": "command"
+      },
+      "Output"
+    ],
+    "facing": {
+      "node": true,
+      "type": "BrickComponentType_Expr_MakeRotation",
+      "pos": [
+        192,
+        144,
+        2
+      ],
+      "group": "command"
+    }
+  },
+  "config": {
+    "catalog": {
+      "node": true,
+      "group": "config",
+      "type": "BrickComponentType_MapVar",
+      "pos": [
+        0,
+        0,
+        2
+      ]
+    },
+    "car": {
+      "node": true,
+      "group": "config",
+      "type": "BrickComponentType_Var",
+      "pos": [
+        48,
+        0,
+        2
+      ]
+    },
+    "truck": {
+      "node": true,
+      "group": "config",
+      "type": "BrickComponentType_Var",
+      "pos": [
+        96,
+        0,
+        2
+      ]
+    },
+    "scrap": {
+      "node": true,
+      "group": "config",
+      "type": "BrickComponentType_Var",
+      "pos": [
+        144,
+        0,
+        2
+      ]
+    },
+    "min": {
+      "node": true,
+      "group": "config",
+      "type": "BrickComponentType_Var",
+      "pos": [
+        192,
+        0,
+        2
+      ]
+    },
+    "max": {
+      "node": true,
+      "group": "config",
+      "type": "BrickComponentType_Var",
+      "pos": [
+        240,
+        0,
+        2
+      ]
+    }
+  },
+  "portable": {
+    "init": {
+      "node": true,
+      "type": "BrickComponentType_Event_CustomGlobal",
+      "pos": [
+        528,
+        0,
+        2
+      ],
+      "group": "client"
+    },
+    "reply": {
+      "node": true,
+      "type": "BrickComponentType_Event_CustomGlobal",
+      "pos": [
+        576,
+        0,
+        2
+      ],
+      "group": "client"
+    },
+    "root": {
+      "node": true,
+      "type": "BrickComponentType_Var",
+      "pos": [
+        0,
+        0,
+        2
+      ],
+      "group": "client"
+    },
+    "player": {
+      "node": true,
+      "type": "BrickComponentType_Var",
+      "pos": [
+        48,
+        0,
+        2
+      ],
+      "group": "client"
+    },
+    "serial": {
+      "node": true,
+      "type": "BrickComponentType_Var",
+      "pos": [
+        192,
+        0,
+        2
+      ],
+      "group": "client"
+    },
+    "request": {
+      "node": true,
+      "type": "BrickComponentType_Exec_Union",
+      "pos": [
+        144,
+        48,
+        2
+      ],
+      "group": "client"
+    },
+    "send": {
+      "node": true,
+      "type": "BrickComponentType_Exec_SendCustomEventGlobal",
+      "pos": [
+        48,
+        240,
+        2
+      ],
+      "group": "client"
+    },
+    "ui": [
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          4,
+          11,
+          -13
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_Button",
+        "pos": [
+          4,
+          11,
+          -13
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          4,
+          11,
+          -9
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_Button",
+        "pos": [
+          4,
+          11,
+          -9
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          3,
+          -14,
+          -11
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          3,
+          14,
+          -11
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          4,
+          7,
+          -11
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          3,
+          -14,
+          5
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          3,
+          14,
+          5
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          2,
+          -7,
+          -3
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          2,
+          -7,
+          1
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          2,
+          -7,
+          5
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          2,
+          -7,
+          9
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          2,
+          -7,
+          13
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          2,
+          6,
+          -3
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          2,
+          6,
+          1
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          2,
+          6,
+          5
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          2,
+          6,
+          9
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          2,
+          6,
+          13
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          3,
+          -4,
+          -11
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_Button",
+        "pos": [
+          3,
+          -4,
+          -11
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          3,
+          0,
+          -16
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          3,
+          0,
+          -6
+        ],
+        "group": "clientUI"
+      },
+      {
+        "node": true,
+        "type": "Component_TextDisplay",
+        "pos": [
+          3,
+          0,
+          16
+        ],
+        "group": "clientUI"
+      }
+    ],
+    "rowVars": [
+      {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          672,
+          336,
+          2
+        ],
+        "group": "client"
+      },
+      {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          720,
+          336,
+          2
+        ],
+        "group": "client"
+      },
+      {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          0,
+          384,
+          2
+        ],
+        "group": "client"
+      },
+      {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          48,
+          384,
+          2
+        ],
+        "group": "client"
+      },
+      {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          96,
+          384,
+          2
+        ],
+        "group": "client"
+      }
+    ],
+    "rowInfoVars": [
+      {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          48,
+          336,
+          2
+        ],
+        "group": "client"
+      },
+      {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          96,
+          336,
+          2
+        ],
+        "group": "client"
+      },
+      {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          144,
+          336,
+          2
+        ],
+        "group": "client"
+      },
+      {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          192,
+          336,
+          2
+        ],
+        "group": "client"
+      },
+      {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          240,
+          336,
+          2
+        ],
+        "group": "client"
+      }
+    ],
+    "richRows": true,
+    "fast": true
+  },
+  "pick": {
+    "binding": {
+      "owner": {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          288,
+          48,
+          2
+        ],
+        "group": "pickup"
+      },
+      "within": {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          336,
+          48,
+          2
+        ],
+        "group": "pickup"
+      },
+      "notify": {
+        "node": true,
+        "type": "BrickComponentType_BufferTicks",
+        "pos": [
+          144,
+          288,
+          2
+        ],
+        "group": "pickup"
+      },
+      "done": {
+        "node": true,
+        "type": "BrickComponentType_Exec_Union",
+        "pos": [
+          288,
+          144,
+          2
+        ],
+        "group": "pickup"
+      },
+      "box": {
+        "vars": [
+          {
+            "node": true,
+            "type": "BrickComponentType_Var",
+            "pos": [
+              624,
+              96,
+              2
+            ],
+            "group": "pickup"
+          },
+          {
+            "node": true,
+            "type": "BrickComponentType_Var",
+            "pos": [
+              672,
+              96,
+              2
+            ],
+            "group": "pickup"
+          }
+        ],
+        "start": {
+          "node": true,
+          "type": "BrickComponentType_BufferTicks",
+          "pos": [
+            240,
+            144,
+            2
+          ],
+          "group": "pickup"
+        },
+        "done": {
+          "node": true,
+          "type": "BrickComponentType_Exec_Union",
+          "pos": [
+            288,
+            144,
+            2
+          ],
+          "group": "pickup"
+        },
+        "busy": {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            240,
+            96,
+            2
+          ],
+          "group": "pickup"
+        },
+        "arrays": [
+          {
+            "node": true,
+            "type": "BrickComponentType_ArrayVar",
+            "pos": [
+              672,
+              48,
+              2
+            ],
+            "group": "pickup"
+          },
+          {
+            "node": true,
+            "type": "BrickComponentType_ArrayVar",
+            "pos": [
+              720,
+              48,
+              2
+            ],
+            "group": "pickup"
+          }
+        ],
+        "pump": {
+          "node": true,
+          "type": "BrickComponentType_Exec_Union",
+          "pos": [
+            96,
+            96,
+            2
+          ],
+          "group": "pickup"
+        },
+        "clock": {
+          "node": true,
+          "type": "BrickComponentType_Stopwatch",
+          "pos": [
+            144,
+            96,
+            2
+          ],
+          "group": "pickup"
+        }
+      },
+      "enter": {
+        "node": true,
+        "type": "BrickComponentType_Internal_CharacterZoneEvent_Entered",
+        "pos": [
+          432,
+          48,
+          2
+        ],
+        "group": "pickup"
+      },
+      "leave": {
+        "node": true,
+        "type": "BrickComponentType_Internal_CharacterZoneEvent_Left",
+        "pos": [
+          480,
+          48,
+          2
+        ],
+        "group": "pickup"
+      }
+    },
+    "player": {
+      "node": true,
+      "type": "BrickComponentType_Var",
+      "pos": [
+        144,
+        0,
+        2
+      ],
+      "group": "pickup"
+    },
+    "busy": {
+      "node": true,
+      "type": "BrickComponentType_Var",
+      "pos": [
+        96,
+        0,
+        2
+      ],
+      "group": "pickup"
+    },
+    "send": {
+      "node": true,
+      "type": "BrickComponentType_Exec_SendCustomEventGlobal",
+      "pos": [
+        144,
+        432,
+        2
+      ],
+      "group": "pickup"
+    },
+    "response": {
+      "node": true,
+      "type": "BrickComponentType_Event_CustomGlobal",
+      "pos": [
+        240,
+        432,
+        2
+      ],
+      "group": "pickup"
+    },
+    "box": {
+      "vars": [
+        {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            96,
+            528,
+            2
+          ],
+          "group": "pickup"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            144,
+            528,
+            2
+          ],
+          "group": "pickup"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            192,
+            528,
+            2
+          ],
+          "group": "pickup"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            240,
+            528,
+            2
+          ],
+          "group": "pickup"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            288,
+            528,
+            2
+          ],
+          "group": "pickup"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            336,
+            528,
+            2
+          ],
+          "group": "pickup"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            384,
+            528,
+            2
+          ],
+          "group": "pickup"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_Var",
+          "pos": [
+            432,
+            528,
+            2
+          ],
+          "group": "pickup"
+        }
+      ],
+      "start": {
+        "node": true,
+        "type": "BrickComponentType_BufferTicks",
+        "pos": [
+          96,
+          624,
+          2
+        ],
+        "group": "pickup"
+      },
+      "done": {
+        "node": true,
+        "type": "BrickComponentType_Exec_Union",
+        "pos": [
+          144,
+          624,
+          2
+        ],
+        "group": "pickup"
+      },
+      "busy": {
+        "node": true,
+        "type": "BrickComponentType_Var",
+        "pos": [
+          480,
+          480,
+          2
+        ],
+        "group": "pickup"
+      },
+      "arrays": [
+        {
+          "node": true,
+          "type": "BrickComponentType_ArrayVar",
+          "pos": [
+            336,
+            432,
+            2
+          ],
+          "group": "pickup"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_ArrayVar",
+          "pos": [
+            384,
+            432,
+            2
+          ],
+          "group": "pickup"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_ArrayVar",
+          "pos": [
+            432,
+            432,
+            2
+          ],
+          "group": "pickup"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_ArrayVar",
+          "pos": [
+            480,
+            432,
+            2
+          ],
+          "group": "pickup"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_ArrayVar",
+          "pos": [
+            528,
+            432,
+            2
+          ],
+          "group": "pickup"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_ArrayVar",
+          "pos": [
+            576,
+            432,
+            2
+          ],
+          "group": "pickup"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_ArrayVar",
+          "pos": [
+            624,
+            432,
+            2
+          ],
+          "group": "pickup"
+        },
+        {
+          "node": true,
+          "type": "BrickComponentType_ArrayVar",
+          "pos": [
+            672,
+            432,
+            2
+          ],
+          "group": "pickup"
+        }
+      ],
+      "pump": {
+        "node": true,
+        "type": "BrickComponentType_Exec_Union",
+        "pos": [
+          336,
+          480,
+          2
+        ],
+        "group": "pickup"
+      },
+      "clock": {
+        "node": true,
+        "type": "BrickComponentType_Stopwatch",
+        "pos": [
+          384,
+          480,
+          2
+        ],
+        "group": "pickup"
+      }
+    },
+    "spawners": [
+      {
+        "node": true,
+        "type": "BrickComponentType_Exec_PrefabSpawner",
+        "pos": [
+          0,
+          0,
+          2
+        ],
+        "group": "cargo"
+      },
+      {
+        "node": true,
+        "type": "BrickComponentType_Exec_PrefabSpawner",
+        "pos": [
+          96,
+          0,
+          2
+        ],
+        "group": "cargo"
+      }
+    ],
+    "result": {
+      "node": true,
+      "type": "BrickComponentType_Exec_SendCustomEventGlobal",
+      "pos": [
+        480,
+        816,
+        2
+      ],
+      "group": "pickup"
+    }
+  },
+  "delivery": {
+    "entered": {
+      "node": true,
+      "type": "BrickComponentType_Internal_EntityZoneEvent_Entered",
+      "pos": [
+        96,
+        0,
+        2
+      ],
+      "group": "delivery"
+    },
+    "submit": {
+      "node": true,
+      "type": "BrickComponentType_Exec_SendCustomEventGlobal",
+      "pos": [
+        288,
+        0,
+        2
+      ],
+      "group": "delivery"
+    },
+    "deliveryZone": {
+      "node": true,
+      "type": "Component_Internal_AttachedZone",
+      "pos": [
+        0,
+        -260,
+        -36
+      ],
+      "group": "worldZone"
+    },
+    "deliveryId": {
+      "node": true,
+      "type": "BrickComponentType_Var",
+      "pos": [
+        0,
+        0,
+        2
+      ],
+      "group": "delivery"
+    }
+  }
+}

@@ -1,5 +1,7 @@
 # Optimized loadboard after native gate experiments
 
+**Superseded by the [spawn/queue repair](LOADBOARD-SPAWN-REPAIR.md):** the original direct remember-to-spawner link was rejected in game as a feedback cycle. The current artifact restores its required buffer and removes idle queue polling. The measurements below describe the earlier model, which did not detect that engine rejection.
+
 Updates the working placement build from commit `46642b013c32431fb13d95063315de88deca6c67`, incorporating the GP1–GP3 findings. The shipped artifact is still `prefabs/loadboard-system.brz`.
 
 ## Changes
