@@ -95,6 +95,8 @@ The Load Settings chip uses the interface placed natively in Brickadia and retur
 
 The ten square help buttons beside those rows explain the adjacent setting in game. The diagnostic status Var, Validate edge detector and wireless validation sender live inside the nested **Catalogue validation logic** chip, keeping non-configuration gates out of the editable catalogue surface.
 
+Pickup and delivery copies each have a dedicated configuration menu. Only their numeric **Pickup ID** or **Delivery ID** is exposed for editing. Names, routes, payouts, cargo requirements, vehicle requirements and event keys remain derived from the central catalogues. Each menu includes contextual help and a live ID diagnostic; the diagnostic formatter is isolated in its nested support chip.
+
 ## Rebuild and validation
 
 ```sh
@@ -115,6 +117,13 @@ The final help-button and nested-validation pass is reproducible with:
 ```sh
 node tools/prefabs/update-loadboard-settings-help.cjs tools/prefabs/references/loadboard-settings-help-source.brz prefabs/loadboard-system.brz
 node tools/prefabs/test-loadboard-settings-help.cjs tools/prefabs/references/loadboard-settings-help-source.brz
+```
+
+The station configuration menus can be reproduced with:
+
+```sh
+node tools/prefabs/configure-station-menus.cjs tools/prefabs/references/loadboard-station-menus-source.brz prefabs/loadboard-system.brz
+node tools/prefabs/test-station-menus.cjs tools/prefabs/references/loadboard-station-menus-source.brz
 ```
 
 The tests serialize and reread every component and wire, reject instantaneous cycles and idle polling, preserve embedded display/cargo assets, and execute route generation, new cargo IDs, restoration, expired abandonment, delivery payment/refill and invalid-catalogue diagnostics.
