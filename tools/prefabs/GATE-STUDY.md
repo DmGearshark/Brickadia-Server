@@ -45,3 +45,7 @@ For UI browsing, another candidate is displaying an already-received catalogue l
 A small manual test can retain expected inputs, immediate and delayed results, body/completion counters and elapsed timer values in ordinary Var gates and display them as text. Reading that exported save lets us compare results without relying on a screenshot. It cannot recover every historical wire pulse unless the test explicitly records it. Stopwatch resolution and real network/rendering latency are separate from same-graph execution ordering.
 
 One working Function example would also establish native chip assembly conventions if generated definition/call wiring is rejected. There is no need for a prefab containing every gate. Definitions do not have to have appeared in an uploaded prefab for their metadata to be available.
+
+## First engine evidence
+
+The user's first exported probe confirms Function output 18 readable on Completed, immediate ordinary scalar/map reads of 111, the expected edge/change counts and queued payload history [10,20]. Nine rejected callable-body variable-reference wires invalidate the body-counter/loop-sum measurements. [GATE-PROBE-RESULTS.md](GATE-PROBE-RESULTS.md) records both the usable findings and the corrected GP2 experiment. No broad same-tick guarantee is inferred from these limited cases.

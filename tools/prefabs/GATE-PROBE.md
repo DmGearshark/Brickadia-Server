@@ -29,3 +29,7 @@ node tools/prefabs/read-gate-probe.cjs 'returned-test.brz'
 ```
 
 The recorded experiments support choosing appropriate native gates and removing unnecessary waits. They do not establish that every expression/query is safe inside a Function, or that Functions can make prefab initialization instantaneous. Later tests can focus on any uncertain behavior this first batch reveals.
+
+## Returned results and corrected test
+
+The first returned test reported **nine unconnectable wires**, all variable-reference wires crossing into callable bodies. The affected body counters and loop sums are excluded from conclusions. Function arithmetic, ordinary scalar/map readback, edge/change counts and queue payload results remain useful. See [GATE-PROBE-RESULTS.md](GATE-PROBE-RESULTS.md). Use **GP2** for the follow-up test; it keeps callable references local and reports outward through Function Outputs/events.
