@@ -17,4 +17,5 @@ const expected=require('./build-placement-probe.cjs')().tests;
 const rows=expected.map(t=>{const parts=found.get(t.id)||new Set();return {id:t.id,base:parts.has('Base'),probe:parts.has('Probe'),result:parts.has('Probe')?'PLACED':'BLOCKED/MISSING',description:t.description};});
 console.table(rows);
 const counts=rows.reduce((o,x)=>(o[x.result]=(o[x.result]||0)+1,o),{});
-console.log(JSON.stringify({file:input,cases:rows.length,counts,missingBases:rows.filter(x=>!x.base).map(x=>x.id)},null,2));
+const rejectedWholeCases=rows.filter(x=>!x.base&&!x.probe).map(x=>x.id),partialCases=rows.filter(x=>x.base!==x.probe).map(x=>x.id);
+console.log(JSON.stringify({file:input,cases:rows.length,counts,rejectedWholeCases,partialCases},null,2));
