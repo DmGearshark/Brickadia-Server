@@ -157,7 +157,7 @@
     {
       "grid": 4,
       "section": "ROTATE OFFERS",
-      "gates": 114,
+      "gates": 94,
       "bounds": [
         0,
         270,
@@ -179,18 +179,18 @@
     {
       "grid": 4,
       "section": "ACCEPT LOAD",
-      "gates": 85,
+      "gates": 72,
       "bounds": [
         380,
         270,
         544,
-        410
+        400
       ]
     },
     {
       "grid": 4,
       "section": "ABANDON & RETURN",
-      "gates": 177,
+      "gates": 143,
       "bounds": [
         0,
         490,
@@ -201,7 +201,7 @@
     {
       "grid": 4,
       "section": "PICKUP AUTHORIZE",
-      "gates": 28,
+      "gates": 26,
       "bounds": [
         190,
         490,
@@ -212,7 +212,7 @@
     {
       "grid": 4,
       "section": "CARGO STAMPING",
-      "gates": 27,
+      "gates": 26,
       "bounds": [
         380,
         490,
@@ -234,7 +234,7 @@
     {
       "grid": 4,
       "section": "SHARED RECORD DATA",
-      "gates": 26,
+      "gates": 28,
       "bounds": [
         190,
         740,
@@ -245,7 +245,7 @@
     {
       "grid": 4,
       "section": "SHARED CHECKS",
-      "gates": 180,
+      "gates": 179,
       "bounds": [
         380,
         740,
@@ -256,12 +256,12 @@
     {
       "grid": 4,
       "section": "BUILD REPLY",
-      "gates": 139,
+      "gates": 118,
       "bounds": [
         0,
         1000,
         164,
-        1200
+        1170
       ]
     },
     {
@@ -322,7 +322,7 @@
     {
       "grid": 6,
       "section": "ZONE OWNERSHIP",
-      "gates": 79,
+      "gates": 77,
       "bounds": [
         190,
         0,
@@ -333,7 +333,7 @@
     {
       "grid": 6,
       "section": "BIND & CONTROLS",
-      "gates": 40,
+      "gates": 37,
       "bounds": [
         380,
         0,
@@ -355,7 +355,7 @@
     {
       "grid": 6,
       "section": "LOAD STATUS",
-      "gates": 65,
+      "gates": 59,
       "bounds": [
         190,
         180,
@@ -366,7 +366,7 @@
     {
       "grid": 6,
       "section": "SPAWN HANDSHAKE",
-      "gates": 41,
+      "gates": 19,
       "bounds": [
         380,
         180,
@@ -417,7 +417,7 @@
     {
       "grid": 3,
       "section": "BIND & CONTROLS",
-      "gates": 56,
+      "gates": 54,
       "bounds": [
         0,
         0,
@@ -428,7 +428,7 @@
     {
       "grid": 3,
       "section": "REQUEST & ACTION",
-      "gates": 42,
+      "gates": 39,
       "bounds": [
         190,
         0,
@@ -439,7 +439,7 @@
     {
       "grid": 3,
       "section": "ROWS & REPLIES",
-      "gates": 89,
+      "gates": 87,
       "bounds": [
         0,
         90,

@@ -1,4 +1,4 @@
-# Clean display, sounds and compact logic sections
+# Clean display, sounds and optimized compact logic
 
 Builds on the in-game-confirmed spawn/event-driven queue repair at `57505ea396298069eab0db19e0daaa4f7e4a96c2`. Uses the user's **gate placing rough reference.brz** for the ten-unit gate spacing, backing panels and side labels.
 
@@ -36,6 +36,14 @@ The cargo chip now contains only its two prefab spawners. Each spawner uses its 
 
 The organized sections retain compact ten-unit cells for ordinary gates and extra room for wider gates. No transaction timing or gameplay path was changed; the event-driven queues and required spawn buffer remain intact.
 
+## Logic optimization audit
+
+The final graph runs common-subexpression elimination over pure expression gates. Gates are shared only when they are on the same chip, have the same type and stored settings, and receive the same source ports on every input. It repeats to a fixpoint, so sharing an identical first layer can expose an identical second layer. Detectors and time-reading expressions are excluded because they may carry state or depend on evaluation time. Native role nodes referenced by the model or layout manifest are also retained.
+
+This shares 125 duplicate comparison, selection, boolean, formatting and math gates. Five unreferenced one-input Union gates are also bypassed because they are immediate execution pass-throughs. Compared with the previously published working prefab, the central assembly drops from 1,511 to 1,388 components and from 2,485 to 2,322 wires. Its embedded portable board drops from 222 to 215 components and from 344 to 337 wires. That is 130 fewer gates/components and 170 fewer wires across both graphs.
+
+The approach follows the behavior-preserving common-subexpression optimization used by the public [Wirescript compiler](https://github.com/Meshiest/wirescript). Queues, tick buffers, detectors, variables, event boundaries, callable gates and transaction guards are deliberately left alone. Those gates protect native publication timing, request snapshots, duplicate suppression and simultaneous-player behavior; removing them would trade correctness for a smaller count.
+
 ## Editable catalogue and settings
 
 The configuration chip has five individually labeled rows under **CATALOGUE & SETTINGS**:
@@ -71,7 +79,7 @@ Vehicle purchase prices do not belong to the load board and are not stored here.
 
 ## Validation
 
-Checks reread the serialized main/client and verify every endpoint, one driver per input, microchip link, exact stored fields and absence of instantaneous cycles. All original main wires remain; the only removed client wires belong to the eight removed decals. Footprint checks cover non-overlapping gate placement, including wide procedural gates. Cargo embeds remain byte-identical. All visible PC/world geometry and position-sensitive cargo data are compared against the source.
+Checks reread the serialized main/client and verify every endpoint, one driver per input, microchip link, exact stored fields and absence of instantaneous cycles. Original wiring is retained except for the documented catalogue, cargo, display and equivalent-expression/pass-through rewrites. Footprint checks cover non-overlapping gate placement, including wide procedural gates. Cargo embeds remain byte-identical. All visible PC/world geometry and position-sensitive cargo data are compared against the source.
 
 Graph tests cover successful and rejected actions, duplicate/stale replies, cue replay suppression, one delivery payout/sound, correct button assets, one visible top title, full ownership/abandonment/eligibility safeguards, first-entry zone binding/handoff, concurrent/staggered requests, command replacement, spawn placement, expiry and idle silence. The final serialized graph is also reimported using the new compact role map and rerun through gameplay and pickup/delivery integration. These are offline checks; audible levels, appearance and attachment acceptance still need an in-game check.
 

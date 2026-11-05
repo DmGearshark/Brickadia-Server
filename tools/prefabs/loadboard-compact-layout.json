@@ -708,7 +708,7 @@
       "node": true,
       "type": "BrickComponentType_Event_Gamemode_ControllerJoined",
       "pos": [
-        455,
+        465,
         855,
         6
       ],
@@ -1842,7 +1842,7 @@
       "node": true,
       "type": "BrickComponentType_Exec_SendCustomEventGlobal",
       "pos": [
-        400,
+        390,
         75,
         6
       ],
@@ -1852,7 +1852,7 @@
       "node": true,
       "type": "BrickComponentType_Event_CustomGlobal",
       "pos": [
-        460,
+        440,
         15,
         6
       ],
