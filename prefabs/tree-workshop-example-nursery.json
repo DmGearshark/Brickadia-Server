@@ -1,0 +1,167 @@
+{
+  "version": 1,
+  "seed": 17421,
+  "count": 12,
+  "style": "Mixed",
+  "scale": 1,
+  "variation": 0.65,
+  "spacing": 260,
+  "trees": [
+    {
+      "id": 1,
+      "seed": 1687577463,
+      "style": "Conifer",
+      "height": 300,
+      "width": 90,
+      "tiers": 5,
+      "bricks": 8,
+      "center": [
+        0,
+        0
+      ]
+    },
+    {
+      "id": 2,
+      "seed": 1489382297,
+      "style": "Broadleaf",
+      "height": 210,
+      "width": 130,
+      "tiers": 3,
+      "bricks": 13,
+      "center": [
+        260,
+        0
+      ]
+    },
+    {
+      "id": 3,
+      "seed": 3941344595,
+      "style": "Conifer",
+      "height": 300,
+      "width": 90,
+      "tiers": 5,
+      "bricks": 11,
+      "center": [
+        520,
+        0
+      ]
+    },
+    {
+      "id": 4,
+      "seed": 3856793003,
+      "style": "Conifer",
+      "height": 300,
+      "width": 90,
+      "tiers": 5,
+      "bricks": 10,
+      "center": [
+        780,
+        0
+      ]
+    },
+    {
+      "id": 5,
+      "seed": 3030836656,
+      "style": "Conifer",
+      "height": 300,
+      "width": 90,
+      "tiers": 5,
+      "bricks": 11,
+      "center": [
+        0,
+        260
+      ]
+    },
+    {
+      "id": 6,
+      "seed": 3166409038,
+      "style": "Conifer",
+      "height": 300,
+      "width": 90,
+      "tiers": 5,
+      "bricks": 12,
+      "center": [
+        260,
+        260
+      ]
+    },
+    {
+      "id": 7,
+      "seed": 3287995977,
+      "style": "Conifer",
+      "height": 300,
+      "width": 90,
+      "tiers": 5,
+      "bricks": 9,
+      "center": [
+        520,
+        260
+      ]
+    },
+    {
+      "id": 8,
+      "seed": 3636667213,
+      "style": "Broadleaf",
+      "height": 210,
+      "width": 130,
+      "tiers": 3,
+      "bricks": 15,
+      "center": [
+        780,
+        260
+      ]
+    },
+    {
+      "id": 9,
+      "seed": 179695803,
+      "style": "Broadleaf",
+      "height": 210,
+      "width": 130,
+      "tiers": 3,
+      "bricks": 13,
+      "center": [
+        0,
+        520
+      ]
+    },
+    {
+      "id": 10,
+      "seed": 3046131802,
+      "style": "Broadleaf",
+      "height": 210,
+      "width": 130,
+      "tiers": 3,
+      "bricks": 15,
+      "center": [
+        260,
+        520
+      ]
+    },
+    {
+      "id": 11,
+      "seed": 1004104756,
+      "style": "Conifer",
+      "height": 300,
+      "width": 90,
+      "tiers": 5,
+      "bricks": 10,
+      "center": [
+        520,
+        520
+      ]
+    },
+    {
+      "id": 12,
+      "seed": 867936997,
+      "style": "Conifer",
+      "height": 300,
+      "width": 90,
+      "tiers": 5,
+      "bricks": 13,
+      "center": [
+        780,
+        520
+      ]
+    }
+  ]
+}

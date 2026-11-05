@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "brs-js": "4.0.4"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.11"
   }
 }

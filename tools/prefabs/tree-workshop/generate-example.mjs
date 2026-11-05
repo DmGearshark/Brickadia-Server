@@ -1,0 +1,2 @@
+import fs from 'node:fs';import {generateNursery} from './tree-workshop-core.mjs';
+const out=process.argv[2]||'../../../prefabs/tree-workshop-example-nursery.brz',r=generateNursery({seed:17421,count:12,style:'Mixed',scale:1,variation:.65,spacing:260});fs.writeFileSync(new URL(out,import.meta.url),r.bytes);fs.writeFileSync(new URL(out.replace(/\.brz$/,'.json'),import.meta.url),JSON.stringify(r.manifest,null,2));console.log(JSON.stringify({output:out,bricks:r.bricks,trees:r.manifest.trees.length},null,2));
