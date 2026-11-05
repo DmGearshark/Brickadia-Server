@@ -13,3 +13,8 @@ examples offered by the editor, not an exhaustive list of every resizable size.
 Orientation is independent of these local size rules. Directions 0 through 5
 are valid Brickadia orientations, so the placement validator must not reject a
 standard shape merely because it is mounted sideways.
+
+The validator models `PB_DefaultRamp` and `PB_DefaultRampInverted` as convex
+triangular prisms and uses the separating axis theorem for ramp/box and
+ramp/ramp checks. Other non-convex or curved procedural assets remain marked as
+uncertain until their cooked geometry has an exact decomposition.
