@@ -1,0 +1,11888 @@
+{
+  "version": 1,
+  "pack": 2,
+  "levels": [
+    -0.8,
+    -0.4,
+    0,
+    0.4,
+    0.8
+  ],
+  "tests": [
+    {
+      "id": "D2-000",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        -4,
+        -5
+      ]
+    },
+    {
+      "id": "D2-001",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-002",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -8,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D2-003",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D2-004",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        -4,
+        5
+      ]
+    },
+    {
+      "id": "D2-005",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        -2,
+        -5
+      ]
+    },
+    {
+      "id": "D2-006",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D2-007",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -8,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D2-008",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D2-009",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        -2,
+        5
+      ]
+    },
+    {
+      "id": "D2-010",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        0,
+        -5
+      ]
+    },
+    {
+      "id": "D2-011",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D2-012",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        -8,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-013",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D2-014",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        0,
+        5
+      ]
+    },
+    {
+      "id": "D2-015",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        2,
+        -5
+      ]
+    },
+    {
+      "id": "D2-016",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D2-017",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -8,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D2-018",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D2-019",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        2,
+        5
+      ]
+    },
+    {
+      "id": "D2-020",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        4,
+        -5
+      ]
+    },
+    {
+      "id": "D2-021",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-022",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -8,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D2-023",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D2-024",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D2-025",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -5
+      ]
+    },
+    {
+      "id": "D2-026",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-027",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D2-028",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D2-029",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        5
+      ]
+    },
+    {
+      "id": "D2-030",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        -5
+      ]
+    },
+    {
+      "id": "D2-031",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D2-032",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D2-033",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D2-034",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        5
+      ]
+    },
+    {
+      "id": "D2-035",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -5
+      ]
+    },
+    {
+      "id": "D2-036",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D2-037",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        -4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-038",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D2-039",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        5
+      ]
+    },
+    {
+      "id": "D2-040",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        2,
+        -5
+      ]
+    },
+    {
+      "id": "D2-041",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D2-042",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D2-043",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D2-044",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        2,
+        5
+      ]
+    },
+    {
+      "id": "D2-045",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -5
+      ]
+    },
+    {
+      "id": "D2-046",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-047",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D2-048",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D2-049",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D2-050",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -5
+      ]
+    },
+    {
+      "id": "D2-051",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-052",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D2-053",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D2-054",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        5
+      ]
+    },
+    {
+      "id": "D2-055",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -2,
+        -5
+      ]
+    },
+    {
+      "id": "D2-056",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D2-057",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D2-058",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D2-059",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -2,
+        5
+      ]
+    },
+    {
+      "id": "D2-060",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        -5
+      ]
+    },
+    {
+      "id": "D2-061",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D2-062",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        0,
+        0
+      ],
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-063",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D2-064",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        5
+      ]
+    },
+    {
+      "id": "D2-065",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        2,
+        -5
+      ]
+    },
+    {
+      "id": "D2-066",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D2-067",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D2-068",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D2-069",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        2,
+        5
+      ]
+    },
+    {
+      "id": "D2-070",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        -5
+      ]
+    },
+    {
+      "id": "D2-071",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-072",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D2-073",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D2-074",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D2-075",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -5
+      ]
+    },
+    {
+      "id": "D2-076",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-077",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D2-078",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D2-079",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        5
+      ]
+    },
+    {
+      "id": "D2-080",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -2,
+        -5
+      ]
+    },
+    {
+      "id": "D2-081",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D2-082",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D2-083",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D2-084",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -2,
+        5
+      ]
+    },
+    {
+      "id": "D2-085",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        -5
+      ]
+    },
+    {
+      "id": "D2-086",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D2-087",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-088",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D2-089",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        5
+      ]
+    },
+    {
+      "id": "D2-090",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        2,
+        -5
+      ]
+    },
+    {
+      "id": "D2-091",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D2-092",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D2-093",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D2-094",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        2,
+        5
+      ]
+    },
+    {
+      "id": "D2-095",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        -5
+      ]
+    },
+    {
+      "id": "D2-096",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-097",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D2-098",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D2-099",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D2-100",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        -4,
+        -5
+      ]
+    },
+    {
+      "id": "D2-101",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-102",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        8,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D2-103",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D2-104",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        -4,
+        5
+      ]
+    },
+    {
+      "id": "D2-105",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        -2,
+        -5
+      ]
+    },
+    {
+      "id": "D2-106",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D2-107",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        8,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D2-108",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D2-109",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        -2,
+        5
+      ]
+    },
+    {
+      "id": "D2-110",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        0,
+        -5
+      ]
+    },
+    {
+      "id": "D2-111",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D2-112",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        8,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-113",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D2-114",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        0,
+        5
+      ]
+    },
+    {
+      "id": "D2-115",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        2,
+        -5
+      ]
+    },
+    {
+      "id": "D2-116",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D2-117",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        8,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D2-118",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D2-119",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        2,
+        5
+      ]
+    },
+    {
+      "id": "D2-120",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        4,
+        -5
+      ]
+    },
+    {
+      "id": "D2-121",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-122",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        8,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D2-123",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D2-124",
+      "asset": "PB_DefaultRampCrestEnd",
+      "size": [
+        10,
+        5,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D2-125",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        -8,
+        -5
+      ]
+    },
+    {
+      "id": "D2-126",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        -8,
+        -2
+      ]
+    },
+    {
+      "id": "D2-127",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -8,
+        -8,
+        0
+      ]
+    },
+    {
+      "id": "D2-128",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        -8,
+        2
+      ]
+    },
+    {
+      "id": "D2-129",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        -8,
+        5
+      ]
+    },
+    {
+      "id": "D2-130",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        -4,
+        -5
+      ]
+    },
+    {
+      "id": "D2-131",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-132",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -8,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D2-133",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D2-134",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        -4,
+        5
+      ]
+    },
+    {
+      "id": "D2-135",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        0,
+        -5
+      ]
+    },
+    {
+      "id": "D2-136",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D2-137",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        -8,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-138",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D2-139",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        0,
+        5
+      ]
+    },
+    {
+      "id": "D2-140",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        4,
+        -5
+      ]
+    },
+    {
+      "id": "D2-141",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-142",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -8,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D2-143",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D2-144",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D2-145",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        8,
+        -5
+      ]
+    },
+    {
+      "id": "D2-146",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        8,
+        -2
+      ]
+    },
+    {
+      "id": "D2-147",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -8,
+        8,
+        0
+      ]
+    },
+    {
+      "id": "D2-148",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        8,
+        2
+      ]
+    },
+    {
+      "id": "D2-149",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        8,
+        5
+      ]
+    },
+    {
+      "id": "D2-150",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -8,
+        -5
+      ]
+    },
+    {
+      "id": "D2-151",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -8,
+        -2
+      ]
+    },
+    {
+      "id": "D2-152",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -8,
+        0
+      ]
+    },
+    {
+      "id": "D2-153",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -8,
+        2
+      ]
+    },
+    {
+      "id": "D2-154",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -8,
+        5
+      ]
+    },
+    {
+      "id": "D2-155",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -5
+      ]
+    },
+    {
+      "id": "D2-156",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-157",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D2-158",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D2-159",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        5
+      ]
+    },
+    {
+      "id": "D2-160",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -5
+      ]
+    },
+    {
+      "id": "D2-161",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D2-162",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        -4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-163",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D2-164",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        5
+      ]
+    },
+    {
+      "id": "D2-165",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -5
+      ]
+    },
+    {
+      "id": "D2-166",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-167",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D2-168",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D2-169",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D2-170",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        8,
+        -5
+      ]
+    },
+    {
+      "id": "D2-171",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        8,
+        -2
+      ]
+    },
+    {
+      "id": "D2-172",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        8,
+        0
+      ]
+    },
+    {
+      "id": "D2-173",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        8,
+        2
+      ]
+    },
+    {
+      "id": "D2-174",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        8,
+        5
+      ]
+    },
+    {
+      "id": "D2-175",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -8,
+        -5
+      ]
+    },
+    {
+      "id": "D2-176",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -8,
+        -2
+      ]
+    },
+    {
+      "id": "D2-177",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        -8,
+        0
+      ]
+    },
+    {
+      "id": "D2-178",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -8,
+        2
+      ]
+    },
+    {
+      "id": "D2-179",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -8,
+        5
+      ]
+    },
+    {
+      "id": "D2-180",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -5
+      ]
+    },
+    {
+      "id": "D2-181",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-182",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D2-183",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D2-184",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        5
+      ]
+    },
+    {
+      "id": "D2-185",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        -5
+      ]
+    },
+    {
+      "id": "D2-186",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D2-187",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        0,
+        0
+      ],
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-188",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D2-189",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        5
+      ]
+    },
+    {
+      "id": "D2-190",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        -5
+      ]
+    },
+    {
+      "id": "D2-191",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-192",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D2-193",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D2-194",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D2-195",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        8,
+        -5
+      ]
+    },
+    {
+      "id": "D2-196",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        8,
+        -2
+      ]
+    },
+    {
+      "id": "D2-197",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        8,
+        0
+      ]
+    },
+    {
+      "id": "D2-198",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        8,
+        2
+      ]
+    },
+    {
+      "id": "D2-199",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        8,
+        5
+      ]
+    },
+    {
+      "id": "D2-200",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -8,
+        -5
+      ]
+    },
+    {
+      "id": "D2-201",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -8,
+        -2
+      ]
+    },
+    {
+      "id": "D2-202",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        -8,
+        0
+      ]
+    },
+    {
+      "id": "D2-203",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -8,
+        2
+      ]
+    },
+    {
+      "id": "D2-204",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -8,
+        5
+      ]
+    },
+    {
+      "id": "D2-205",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -5
+      ]
+    },
+    {
+      "id": "D2-206",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-207",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D2-208",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D2-209",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        5
+      ]
+    },
+    {
+      "id": "D2-210",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        -5
+      ]
+    },
+    {
+      "id": "D2-211",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D2-212",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-213",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D2-214",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        5
+      ]
+    },
+    {
+      "id": "D2-215",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        -5
+      ]
+    },
+    {
+      "id": "D2-216",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-217",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D2-218",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D2-219",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D2-220",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        8,
+        -5
+      ]
+    },
+    {
+      "id": "D2-221",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        8,
+        -2
+      ]
+    },
+    {
+      "id": "D2-222",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        8,
+        0
+      ]
+    },
+    {
+      "id": "D2-223",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        8,
+        2
+      ]
+    },
+    {
+      "id": "D2-224",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        8,
+        5
+      ]
+    },
+    {
+      "id": "D2-225",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        -8,
+        -5
+      ]
+    },
+    {
+      "id": "D2-226",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        -8,
+        -2
+      ]
+    },
+    {
+      "id": "D2-227",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        8,
+        -8,
+        0
+      ]
+    },
+    {
+      "id": "D2-228",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        -8,
+        2
+      ]
+    },
+    {
+      "id": "D2-229",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        -8,
+        5
+      ]
+    },
+    {
+      "id": "D2-230",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        -4,
+        -5
+      ]
+    },
+    {
+      "id": "D2-231",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-232",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        8,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D2-233",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D2-234",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        -4,
+        5
+      ]
+    },
+    {
+      "id": "D2-235",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        0,
+        -5
+      ]
+    },
+    {
+      "id": "D2-236",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D2-237",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        8,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-238",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D2-239",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        0,
+        5
+      ]
+    },
+    {
+      "id": "D2-240",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        4,
+        -5
+      ]
+    },
+    {
+      "id": "D2-241",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-242",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        8,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D2-243",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D2-244",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D2-245",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        8,
+        -5
+      ]
+    },
+    {
+      "id": "D2-246",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        8,
+        -2
+      ]
+    },
+    {
+      "id": "D2-247",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        8,
+        8,
+        0
+      ]
+    },
+    {
+      "id": "D2-248",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        8,
+        2
+      ]
+    },
+    {
+      "id": "D2-249",
+      "asset": "PB_DefaultRampCrestCorner",
+      "size": [
+        10,
+        10,
+        6
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        8,
+        5
+      ]
+    },
+    {
+      "id": "D2-250",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        -12,
+        -24
+      ]
+    },
+    {
+      "id": "D2-251",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        -12,
+        -12
+      ]
+    },
+    {
+      "id": "D2-252",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -8,
+        -12,
+        0
+      ]
+    },
+    {
+      "id": "D2-253",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        -12,
+        12
+      ]
+    },
+    {
+      "id": "D2-254",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        -12,
+        24
+      ]
+    },
+    {
+      "id": "D2-255",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        -6,
+        -24
+      ]
+    },
+    {
+      "id": "D2-256",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        -6,
+        -12
+      ]
+    },
+    {
+      "id": "D2-257",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -8,
+        -6,
+        0
+      ]
+    },
+    {
+      "id": "D2-258",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        -6,
+        12
+      ]
+    },
+    {
+      "id": "D2-259",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        -6,
+        24
+      ]
+    },
+    {
+      "id": "D2-260",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        0,
+        -24
+      ]
+    },
+    {
+      "id": "D2-261",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        0,
+        -12
+      ]
+    },
+    {
+      "id": "D2-262",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        -8,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-263",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        0,
+        12
+      ]
+    },
+    {
+      "id": "D2-264",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        0,
+        24
+      ]
+    },
+    {
+      "id": "D2-265",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        6,
+        -24
+      ]
+    },
+    {
+      "id": "D2-266",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        6,
+        -12
+      ]
+    },
+    {
+      "id": "D2-267",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -8,
+        6,
+        0
+      ]
+    },
+    {
+      "id": "D2-268",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        6,
+        12
+      ]
+    },
+    {
+      "id": "D2-269",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        6,
+        24
+      ]
+    },
+    {
+      "id": "D2-270",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        12,
+        -24
+      ]
+    },
+    {
+      "id": "D2-271",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        12,
+        -12
+      ]
+    },
+    {
+      "id": "D2-272",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -8,
+        12,
+        0
+      ]
+    },
+    {
+      "id": "D2-273",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        12,
+        12
+      ]
+    },
+    {
+      "id": "D2-274",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        12,
+        24
+      ]
+    },
+    {
+      "id": "D2-275",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -12,
+        -24
+      ]
+    },
+    {
+      "id": "D2-276",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -12,
+        -12
+      ]
+    },
+    {
+      "id": "D2-277",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -12,
+        0
+      ]
+    },
+    {
+      "id": "D2-278",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -12,
+        12
+      ]
+    },
+    {
+      "id": "D2-279",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -12,
+        24
+      ]
+    },
+    {
+      "id": "D2-280",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -6,
+        -24
+      ]
+    },
+    {
+      "id": "D2-281",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -6,
+        -12
+      ]
+    },
+    {
+      "id": "D2-282",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -6,
+        0
+      ]
+    },
+    {
+      "id": "D2-283",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -6,
+        12
+      ]
+    },
+    {
+      "id": "D2-284",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -6,
+        24
+      ]
+    },
+    {
+      "id": "D2-285",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -24
+      ]
+    },
+    {
+      "id": "D2-286",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -12
+      ]
+    },
+    {
+      "id": "D2-287",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        -4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-288",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        12
+      ]
+    },
+    {
+      "id": "D2-289",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        24
+      ]
+    },
+    {
+      "id": "D2-290",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        6,
+        -24
+      ]
+    },
+    {
+      "id": "D2-291",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        6,
+        -12
+      ]
+    },
+    {
+      "id": "D2-292",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        6,
+        0
+      ]
+    },
+    {
+      "id": "D2-293",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        6,
+        12
+      ]
+    },
+    {
+      "id": "D2-294",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        6,
+        24
+      ]
+    },
+    {
+      "id": "D2-295",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        12,
+        -24
+      ]
+    },
+    {
+      "id": "D2-296",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        12,
+        -12
+      ]
+    },
+    {
+      "id": "D2-297",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        12,
+        0
+      ]
+    },
+    {
+      "id": "D2-298",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        12,
+        12
+      ]
+    },
+    {
+      "id": "D2-299",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        12,
+        24
+      ]
+    },
+    {
+      "id": "D2-300",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -12,
+        -24
+      ]
+    },
+    {
+      "id": "D2-301",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -12,
+        -12
+      ]
+    },
+    {
+      "id": "D2-302",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        -12,
+        0
+      ]
+    },
+    {
+      "id": "D2-303",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -12,
+        12
+      ]
+    },
+    {
+      "id": "D2-304",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -12,
+        24
+      ]
+    },
+    {
+      "id": "D2-305",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -6,
+        -24
+      ]
+    },
+    {
+      "id": "D2-306",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -6,
+        -12
+      ]
+    },
+    {
+      "id": "D2-307",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        -6,
+        0
+      ]
+    },
+    {
+      "id": "D2-308",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -6,
+        12
+      ]
+    },
+    {
+      "id": "D2-309",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -6,
+        24
+      ]
+    },
+    {
+      "id": "D2-310",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        -24
+      ]
+    },
+    {
+      "id": "D2-311",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        -12
+      ]
+    },
+    {
+      "id": "D2-312",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0,
+        0
+      ],
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-313",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        12
+      ]
+    },
+    {
+      "id": "D2-314",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        24
+      ]
+    },
+    {
+      "id": "D2-315",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        6,
+        -24
+      ]
+    },
+    {
+      "id": "D2-316",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        6,
+        -12
+      ]
+    },
+    {
+      "id": "D2-317",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        6,
+        0
+      ]
+    },
+    {
+      "id": "D2-318",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        6,
+        12
+      ]
+    },
+    {
+      "id": "D2-319",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        6,
+        24
+      ]
+    },
+    {
+      "id": "D2-320",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        12,
+        -24
+      ]
+    },
+    {
+      "id": "D2-321",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        12,
+        -12
+      ]
+    },
+    {
+      "id": "D2-322",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        12,
+        0
+      ]
+    },
+    {
+      "id": "D2-323",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        12,
+        12
+      ]
+    },
+    {
+      "id": "D2-324",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        12,
+        24
+      ]
+    },
+    {
+      "id": "D2-325",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -12,
+        -24
+      ]
+    },
+    {
+      "id": "D2-326",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -12,
+        -12
+      ]
+    },
+    {
+      "id": "D2-327",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        -12,
+        0
+      ]
+    },
+    {
+      "id": "D2-328",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -12,
+        12
+      ]
+    },
+    {
+      "id": "D2-329",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -12,
+        24
+      ]
+    },
+    {
+      "id": "D2-330",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -6,
+        -24
+      ]
+    },
+    {
+      "id": "D2-331",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -6,
+        -12
+      ]
+    },
+    {
+      "id": "D2-332",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        -6,
+        0
+      ]
+    },
+    {
+      "id": "D2-333",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -6,
+        12
+      ]
+    },
+    {
+      "id": "D2-334",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -6,
+        24
+      ]
+    },
+    {
+      "id": "D2-335",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        -24
+      ]
+    },
+    {
+      "id": "D2-336",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        -12
+      ]
+    },
+    {
+      "id": "D2-337",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-338",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        12
+      ]
+    },
+    {
+      "id": "D2-339",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        24
+      ]
+    },
+    {
+      "id": "D2-340",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        6,
+        -24
+      ]
+    },
+    {
+      "id": "D2-341",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        6,
+        -12
+      ]
+    },
+    {
+      "id": "D2-342",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        6,
+        0
+      ]
+    },
+    {
+      "id": "D2-343",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        6,
+        12
+      ]
+    },
+    {
+      "id": "D2-344",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        6,
+        24
+      ]
+    },
+    {
+      "id": "D2-345",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        12,
+        -24
+      ]
+    },
+    {
+      "id": "D2-346",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        12,
+        -12
+      ]
+    },
+    {
+      "id": "D2-347",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        12,
+        0
+      ]
+    },
+    {
+      "id": "D2-348",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        12,
+        12
+      ]
+    },
+    {
+      "id": "D2-349",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        12,
+        24
+      ]
+    },
+    {
+      "id": "D2-350",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        -12,
+        -24
+      ]
+    },
+    {
+      "id": "D2-351",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        -12,
+        -12
+      ]
+    },
+    {
+      "id": "D2-352",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        8,
+        -12,
+        0
+      ]
+    },
+    {
+      "id": "D2-353",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        -12,
+        12
+      ]
+    },
+    {
+      "id": "D2-354",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        -12,
+        24
+      ]
+    },
+    {
+      "id": "D2-355",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        -6,
+        -24
+      ]
+    },
+    {
+      "id": "D2-356",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        -6,
+        -12
+      ]
+    },
+    {
+      "id": "D2-357",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        8,
+        -6,
+        0
+      ]
+    },
+    {
+      "id": "D2-358",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        -6,
+        12
+      ]
+    },
+    {
+      "id": "D2-359",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        -6,
+        24
+      ]
+    },
+    {
+      "id": "D2-360",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        0,
+        -24
+      ]
+    },
+    {
+      "id": "D2-361",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        0,
+        -12
+      ]
+    },
+    {
+      "id": "D2-362",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        8,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-363",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        0,
+        12
+      ]
+    },
+    {
+      "id": "D2-364",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        0,
+        24
+      ]
+    },
+    {
+      "id": "D2-365",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        6,
+        -24
+      ]
+    },
+    {
+      "id": "D2-366",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        6,
+        -12
+      ]
+    },
+    {
+      "id": "D2-367",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        8,
+        6,
+        0
+      ]
+    },
+    {
+      "id": "D2-368",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        6,
+        12
+      ]
+    },
+    {
+      "id": "D2-369",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        6,
+        24
+      ]
+    },
+    {
+      "id": "D2-370",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        12,
+        -24
+      ]
+    },
+    {
+      "id": "D2-371",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        12,
+        -12
+      ]
+    },
+    {
+      "id": "D2-372",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        8,
+        12,
+        0
+      ]
+    },
+    {
+      "id": "D2-373",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        12,
+        12
+      ]
+    },
+    {
+      "id": "D2-374",
+      "asset": "PB_DefaultArch",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        12,
+        24
+      ]
+    },
+    {
+      "id": "D2-375",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        -12,
+        -24
+      ]
+    },
+    {
+      "id": "D2-376",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        -12,
+        -12
+      ]
+    },
+    {
+      "id": "D2-377",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -8,
+        -12,
+        0
+      ]
+    },
+    {
+      "id": "D2-378",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        -12,
+        12
+      ]
+    },
+    {
+      "id": "D2-379",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        -12,
+        24
+      ]
+    },
+    {
+      "id": "D2-380",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        -6,
+        -24
+      ]
+    },
+    {
+      "id": "D2-381",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        -6,
+        -12
+      ]
+    },
+    {
+      "id": "D2-382",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -8,
+        -6,
+        0
+      ]
+    },
+    {
+      "id": "D2-383",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        -6,
+        12
+      ]
+    },
+    {
+      "id": "D2-384",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        -6,
+        24
+      ]
+    },
+    {
+      "id": "D2-385",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        0,
+        -24
+      ]
+    },
+    {
+      "id": "D2-386",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        0,
+        -12
+      ]
+    },
+    {
+      "id": "D2-387",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        -8,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-388",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        0,
+        12
+      ]
+    },
+    {
+      "id": "D2-389",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        0,
+        24
+      ]
+    },
+    {
+      "id": "D2-390",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        6,
+        -24
+      ]
+    },
+    {
+      "id": "D2-391",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        6,
+        -12
+      ]
+    },
+    {
+      "id": "D2-392",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -8,
+        6,
+        0
+      ]
+    },
+    {
+      "id": "D2-393",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        6,
+        12
+      ]
+    },
+    {
+      "id": "D2-394",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        6,
+        24
+      ]
+    },
+    {
+      "id": "D2-395",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        12,
+        -24
+      ]
+    },
+    {
+      "id": "D2-396",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        12,
+        -12
+      ]
+    },
+    {
+      "id": "D2-397",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -8,
+        12,
+        0
+      ]
+    },
+    {
+      "id": "D2-398",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        12,
+        12
+      ]
+    },
+    {
+      "id": "D2-399",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        12,
+        24
+      ]
+    },
+    {
+      "id": "D2-400",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -12,
+        -24
+      ]
+    },
+    {
+      "id": "D2-401",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -12,
+        -12
+      ]
+    },
+    {
+      "id": "D2-402",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -12,
+        0
+      ]
+    },
+    {
+      "id": "D2-403",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -12,
+        12
+      ]
+    },
+    {
+      "id": "D2-404",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -12,
+        24
+      ]
+    },
+    {
+      "id": "D2-405",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -6,
+        -24
+      ]
+    },
+    {
+      "id": "D2-406",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -6,
+        -12
+      ]
+    },
+    {
+      "id": "D2-407",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -6,
+        0
+      ]
+    },
+    {
+      "id": "D2-408",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -6,
+        12
+      ]
+    },
+    {
+      "id": "D2-409",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -6,
+        24
+      ]
+    },
+    {
+      "id": "D2-410",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -24
+      ]
+    },
+    {
+      "id": "D2-411",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -12
+      ]
+    },
+    {
+      "id": "D2-412",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        -4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-413",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        12
+      ]
+    },
+    {
+      "id": "D2-414",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        24
+      ]
+    },
+    {
+      "id": "D2-415",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        6,
+        -24
+      ]
+    },
+    {
+      "id": "D2-416",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        6,
+        -12
+      ]
+    },
+    {
+      "id": "D2-417",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        6,
+        0
+      ]
+    },
+    {
+      "id": "D2-418",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        6,
+        12
+      ]
+    },
+    {
+      "id": "D2-419",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        6,
+        24
+      ]
+    },
+    {
+      "id": "D2-420",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        12,
+        -24
+      ]
+    },
+    {
+      "id": "D2-421",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        12,
+        -12
+      ]
+    },
+    {
+      "id": "D2-422",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        12,
+        0
+      ]
+    },
+    {
+      "id": "D2-423",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        12,
+        12
+      ]
+    },
+    {
+      "id": "D2-424",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        12,
+        24
+      ]
+    },
+    {
+      "id": "D2-425",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -12,
+        -24
+      ]
+    },
+    {
+      "id": "D2-426",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -12,
+        -12
+      ]
+    },
+    {
+      "id": "D2-427",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        -12,
+        0
+      ]
+    },
+    {
+      "id": "D2-428",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -12,
+        12
+      ]
+    },
+    {
+      "id": "D2-429",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -12,
+        24
+      ]
+    },
+    {
+      "id": "D2-430",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -6,
+        -24
+      ]
+    },
+    {
+      "id": "D2-431",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -6,
+        -12
+      ]
+    },
+    {
+      "id": "D2-432",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        -6,
+        0
+      ]
+    },
+    {
+      "id": "D2-433",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -6,
+        12
+      ]
+    },
+    {
+      "id": "D2-434",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -6,
+        24
+      ]
+    },
+    {
+      "id": "D2-435",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        -24
+      ]
+    },
+    {
+      "id": "D2-436",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        -12
+      ]
+    },
+    {
+      "id": "D2-437",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0,
+        0
+      ],
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-438",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        12
+      ]
+    },
+    {
+      "id": "D2-439",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        24
+      ]
+    },
+    {
+      "id": "D2-440",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        6,
+        -24
+      ]
+    },
+    {
+      "id": "D2-441",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        6,
+        -12
+      ]
+    },
+    {
+      "id": "D2-442",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        6,
+        0
+      ]
+    },
+    {
+      "id": "D2-443",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        6,
+        12
+      ]
+    },
+    {
+      "id": "D2-444",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        6,
+        24
+      ]
+    },
+    {
+      "id": "D2-445",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        12,
+        -24
+      ]
+    },
+    {
+      "id": "D2-446",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        12,
+        -12
+      ]
+    },
+    {
+      "id": "D2-447",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        12,
+        0
+      ]
+    },
+    {
+      "id": "D2-448",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        12,
+        12
+      ]
+    },
+    {
+      "id": "D2-449",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        12,
+        24
+      ]
+    },
+    {
+      "id": "D2-450",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -12,
+        -24
+      ]
+    },
+    {
+      "id": "D2-451",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -12,
+        -12
+      ]
+    },
+    {
+      "id": "D2-452",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        -12,
+        0
+      ]
+    },
+    {
+      "id": "D2-453",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -12,
+        12
+      ]
+    },
+    {
+      "id": "D2-454",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -12,
+        24
+      ]
+    },
+    {
+      "id": "D2-455",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -6,
+        -24
+      ]
+    },
+    {
+      "id": "D2-456",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -6,
+        -12
+      ]
+    },
+    {
+      "id": "D2-457",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        -6,
+        0
+      ]
+    },
+    {
+      "id": "D2-458",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -6,
+        12
+      ]
+    },
+    {
+      "id": "D2-459",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -6,
+        24
+      ]
+    },
+    {
+      "id": "D2-460",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        -24
+      ]
+    },
+    {
+      "id": "D2-461",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        -12
+      ]
+    },
+    {
+      "id": "D2-462",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-463",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        12
+      ]
+    },
+    {
+      "id": "D2-464",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        24
+      ]
+    },
+    {
+      "id": "D2-465",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        6,
+        -24
+      ]
+    },
+    {
+      "id": "D2-466",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        6,
+        -12
+      ]
+    },
+    {
+      "id": "D2-467",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        6,
+        0
+      ]
+    },
+    {
+      "id": "D2-468",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        6,
+        12
+      ]
+    },
+    {
+      "id": "D2-469",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        6,
+        24
+      ]
+    },
+    {
+      "id": "D2-470",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        12,
+        -24
+      ]
+    },
+    {
+      "id": "D2-471",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        12,
+        -12
+      ]
+    },
+    {
+      "id": "D2-472",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        12,
+        0
+      ]
+    },
+    {
+      "id": "D2-473",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        12,
+        12
+      ]
+    },
+    {
+      "id": "D2-474",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        12,
+        24
+      ]
+    },
+    {
+      "id": "D2-475",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        -12,
+        -24
+      ]
+    },
+    {
+      "id": "D2-476",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        -12,
+        -12
+      ]
+    },
+    {
+      "id": "D2-477",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        8,
+        -12,
+        0
+      ]
+    },
+    {
+      "id": "D2-478",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        -12,
+        12
+      ]
+    },
+    {
+      "id": "D2-479",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        -12,
+        24
+      ]
+    },
+    {
+      "id": "D2-480",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        -6,
+        -24
+      ]
+    },
+    {
+      "id": "D2-481",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        -6,
+        -12
+      ]
+    },
+    {
+      "id": "D2-482",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        8,
+        -6,
+        0
+      ]
+    },
+    {
+      "id": "D2-483",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        -6,
+        12
+      ]
+    },
+    {
+      "id": "D2-484",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        -6,
+        24
+      ]
+    },
+    {
+      "id": "D2-485",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        0,
+        -24
+      ]
+    },
+    {
+      "id": "D2-486",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        0,
+        -12
+      ]
+    },
+    {
+      "id": "D2-487",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        8,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-488",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        0,
+        12
+      ]
+    },
+    {
+      "id": "D2-489",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        0,
+        24
+      ]
+    },
+    {
+      "id": "D2-490",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        6,
+        -24
+      ]
+    },
+    {
+      "id": "D2-491",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        6,
+        -12
+      ]
+    },
+    {
+      "id": "D2-492",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        8,
+        6,
+        0
+      ]
+    },
+    {
+      "id": "D2-493",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        6,
+        12
+      ]
+    },
+    {
+      "id": "D2-494",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        6,
+        24
+      ]
+    },
+    {
+      "id": "D2-495",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        12,
+        -24
+      ]
+    },
+    {
+      "id": "D2-496",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        12,
+        -12
+      ]
+    },
+    {
+      "id": "D2-497",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        8,
+        12,
+        0
+      ]
+    },
+    {
+      "id": "D2-498",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        12,
+        12
+      ]
+    },
+    {
+      "id": "D2-499",
+      "asset": "PB_DefaultArchInverted",
+      "size": [
+        10,
+        15,
+        30
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        12,
+        24
+      ]
+    },
+    {
+      "id": "D2-500",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D2-501",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-502",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D2-503",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D2-504",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D2-505",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D2-506",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D2-507",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D2-508",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D2-509",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D2-510",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D2-511",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D2-512",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        -4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-513",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D2-514",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D2-515",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D2-516",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D2-517",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D2-518",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D2-519",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D2-520",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D2-521",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-522",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D2-523",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D2-524",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D2-525",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D2-526",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-527",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D2-528",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D2-529",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D2-530",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D2-531",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D2-532",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D2-533",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D2-534",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D2-535",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D2-536",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D2-537",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        -2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-538",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D2-539",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D2-540",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D2-541",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D2-542",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -2,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D2-543",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D2-544",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D2-545",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D2-546",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-547",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -2,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D2-548",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D2-549",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D2-550",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D2-551",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-552",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D2-553",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D2-554",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D2-555",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D2-556",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D2-557",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D2-558",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D2-559",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D2-560",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D2-561",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D2-562",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0
+      ],
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-563",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D2-564",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D2-565",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D2-566",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D2-567",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D2-568",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D2-569",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D2-570",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D2-571",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-572",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D2-573",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D2-574",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D2-575",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D2-576",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-577",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        2,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D2-578",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D2-579",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D2-580",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D2-581",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D2-582",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        2,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D2-583",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D2-584",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D2-585",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D2-586",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D2-587",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-588",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D2-589",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D2-590",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D2-591",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D2-592",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        2,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D2-593",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D2-594",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D2-595",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D2-596",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-597",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        2,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D2-598",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D2-599",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D2-600",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D2-601",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-602",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D2-603",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D2-604",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D2-605",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D2-606",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D2-607",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D2-608",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D2-609",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D2-610",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D2-611",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D2-612",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D2-613",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D2-614",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D2-615",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D2-616",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D2-617",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D2-618",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D2-619",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D2-620",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D2-621",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D2-622",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D2-623",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D2-624",
+      "asset": "PB_DefaultMicroWedgeCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        4
+      ]
+    }
+  ]
+}

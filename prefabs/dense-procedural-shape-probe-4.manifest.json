@@ -1,0 +1,11888 @@
+{
+  "version": 1,
+  "pack": 4,
+  "levels": [
+    -0.8,
+    -0.4,
+    0,
+    0.4,
+    0.8
+  ],
+  "tests": [
+    {
+      "id": "D4-000",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-001",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-002",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-003",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D4-004",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D4-005",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D4-006",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D4-007",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D4-008",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D4-009",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D4-010",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D4-011",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D4-012",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        -4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-013",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D4-014",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D4-015",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D4-016",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D4-017",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D4-018",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D4-019",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D4-020",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-021",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-022",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-023",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D4-024",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D4-025",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-026",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-027",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-028",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D4-029",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D4-030",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D4-031",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D4-032",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D4-033",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D4-034",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D4-035",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D4-036",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D4-037",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        -2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-038",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D4-039",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D4-040",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D4-041",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D4-042",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -2,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D4-043",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D4-044",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D4-045",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-046",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-047",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -2,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-048",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D4-049",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D4-050",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-051",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-052",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-053",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D4-054",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D4-055",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D4-056",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D4-057",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D4-058",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D4-059",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D4-060",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D4-061",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D4-062",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0
+      ],
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-063",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D4-064",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D4-065",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D4-066",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D4-067",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D4-068",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D4-069",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D4-070",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-071",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-072",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-073",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D4-074",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D4-075",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-076",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-077",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        2,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-078",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D4-079",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D4-080",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D4-081",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D4-082",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        2,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D4-083",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D4-084",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D4-085",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D4-086",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D4-087",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-088",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D4-089",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D4-090",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D4-091",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D4-092",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        2,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D4-093",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D4-094",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D4-095",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-096",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-097",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        2,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-098",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D4-099",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D4-100",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-101",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-102",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-103",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D4-104",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D4-105",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D4-106",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D4-107",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D4-108",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D4-109",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D4-110",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D4-111",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D4-112",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-113",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D4-114",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D4-115",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D4-116",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D4-117",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D4-118",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D4-119",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D4-120",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-121",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-122",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-123",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D4-124",
+      "asset": "PB_DefaultMicroWedgeHalfOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D4-125",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-126",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-127",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-128",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D4-129",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D4-130",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D4-131",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D4-132",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D4-133",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D4-134",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D4-135",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D4-136",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D4-137",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        -4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-138",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D4-139",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D4-140",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D4-141",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D4-142",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D4-143",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D4-144",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D4-145",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-146",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-147",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-148",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D4-149",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D4-150",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-151",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-152",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-153",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D4-154",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D4-155",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D4-156",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D4-157",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D4-158",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D4-159",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D4-160",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D4-161",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D4-162",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        -2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-163",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D4-164",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D4-165",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D4-166",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D4-167",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -2,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D4-168",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D4-169",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D4-170",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-171",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-172",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -2,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-173",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D4-174",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D4-175",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-176",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-177",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-178",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D4-179",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D4-180",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D4-181",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D4-182",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D4-183",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D4-184",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D4-185",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D4-186",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D4-187",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0
+      ],
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-188",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D4-189",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D4-190",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D4-191",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D4-192",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D4-193",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D4-194",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D4-195",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-196",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-197",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-198",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D4-199",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D4-200",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-201",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-202",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        2,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-203",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D4-204",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D4-205",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D4-206",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D4-207",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        2,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D4-208",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D4-209",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D4-210",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D4-211",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D4-212",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-213",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D4-214",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D4-215",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D4-216",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D4-217",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        2,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D4-218",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D4-219",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D4-220",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-221",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-222",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        2,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-223",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D4-224",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D4-225",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-226",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-227",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-228",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D4-229",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D4-230",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D4-231",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D4-232",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D4-233",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D4-234",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D4-235",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D4-236",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D4-237",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-238",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D4-239",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D4-240",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D4-241",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D4-242",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D4-243",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D4-244",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D4-245",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-246",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-247",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-248",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D4-249",
+      "asset": "PB_DefaultMicroRoundCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D4-250",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -8,
+        -4
+      ]
+    },
+    {
+      "id": "D4-251",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -8,
+        -2
+      ]
+    },
+    {
+      "id": "D4-252",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -8,
+        0
+      ]
+    },
+    {
+      "id": "D4-253",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -8,
+        2
+      ]
+    },
+    {
+      "id": "D4-254",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -8,
+        4
+      ]
+    },
+    {
+      "id": "D4-255",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-256",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-257",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-258",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D4-259",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D4-260",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D4-261",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D4-262",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        -4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-263",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D4-264",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D4-265",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-266",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-267",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-268",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D4-269",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D4-270",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        8,
+        -4
+      ]
+    },
+    {
+      "id": "D4-271",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        8,
+        -2
+      ]
+    },
+    {
+      "id": "D4-272",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        8,
+        0
+      ]
+    },
+    {
+      "id": "D4-273",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        8,
+        2
+      ]
+    },
+    {
+      "id": "D4-274",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        8,
+        4
+      ]
+    },
+    {
+      "id": "D4-275",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        -8,
+        -4
+      ]
+    },
+    {
+      "id": "D4-276",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        -8,
+        -2
+      ]
+    },
+    {
+      "id": "D4-277",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -2,
+        -8,
+        0
+      ]
+    },
+    {
+      "id": "D4-278",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        -8,
+        2
+      ]
+    },
+    {
+      "id": "D4-279",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        -8,
+        4
+      ]
+    },
+    {
+      "id": "D4-280",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-281",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-282",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-283",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D4-284",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D4-285",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D4-286",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D4-287",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        -2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-288",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D4-289",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D4-290",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-291",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-292",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -2,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-293",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D4-294",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D4-295",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        8,
+        -4
+      ]
+    },
+    {
+      "id": "D4-296",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        8,
+        -2
+      ]
+    },
+    {
+      "id": "D4-297",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -2,
+        8,
+        0
+      ]
+    },
+    {
+      "id": "D4-298",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        8,
+        2
+      ]
+    },
+    {
+      "id": "D4-299",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        8,
+        4
+      ]
+    },
+    {
+      "id": "D4-300",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -8,
+        -4
+      ]
+    },
+    {
+      "id": "D4-301",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -8,
+        -2
+      ]
+    },
+    {
+      "id": "D4-302",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        -8,
+        0
+      ]
+    },
+    {
+      "id": "D4-303",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -8,
+        2
+      ]
+    },
+    {
+      "id": "D4-304",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -8,
+        4
+      ]
+    },
+    {
+      "id": "D4-305",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-306",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-307",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-308",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D4-309",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D4-310",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D4-311",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D4-312",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0
+      ],
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-313",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D4-314",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D4-315",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-316",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-317",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-318",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D4-319",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D4-320",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        8,
+        -4
+      ]
+    },
+    {
+      "id": "D4-321",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        8,
+        -2
+      ]
+    },
+    {
+      "id": "D4-322",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        8,
+        0
+      ]
+    },
+    {
+      "id": "D4-323",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        8,
+        2
+      ]
+    },
+    {
+      "id": "D4-324",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        8,
+        4
+      ]
+    },
+    {
+      "id": "D4-325",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        -8,
+        -4
+      ]
+    },
+    {
+      "id": "D4-326",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        -8,
+        -2
+      ]
+    },
+    {
+      "id": "D4-327",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        2,
+        -8,
+        0
+      ]
+    },
+    {
+      "id": "D4-328",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        -8,
+        2
+      ]
+    },
+    {
+      "id": "D4-329",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        -8,
+        4
+      ]
+    },
+    {
+      "id": "D4-330",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-331",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-332",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        2,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-333",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D4-334",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D4-335",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D4-336",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D4-337",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-338",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D4-339",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D4-340",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-341",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-342",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        2,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-343",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D4-344",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D4-345",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        8,
+        -4
+      ]
+    },
+    {
+      "id": "D4-346",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        8,
+        -2
+      ]
+    },
+    {
+      "id": "D4-347",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        2,
+        8,
+        0
+      ]
+    },
+    {
+      "id": "D4-348",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        8,
+        2
+      ]
+    },
+    {
+      "id": "D4-349",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        8,
+        4
+      ]
+    },
+    {
+      "id": "D4-350",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -8,
+        -4
+      ]
+    },
+    {
+      "id": "D4-351",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -8,
+        -2
+      ]
+    },
+    {
+      "id": "D4-352",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        -8,
+        0
+      ]
+    },
+    {
+      "id": "D4-353",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -8,
+        2
+      ]
+    },
+    {
+      "id": "D4-354",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -8,
+        4
+      ]
+    },
+    {
+      "id": "D4-355",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-356",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-357",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-358",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D4-359",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D4-360",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D4-361",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D4-362",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-363",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D4-364",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D4-365",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-366",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D4-367",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-368",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D4-369",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D4-370",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        8,
+        -4
+      ]
+    },
+    {
+      "id": "D4-371",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        8,
+        -2
+      ]
+    },
+    {
+      "id": "D4-372",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        8,
+        0
+      ]
+    },
+    {
+      "id": "D4-373",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        8,
+        2
+      ]
+    },
+    {
+      "id": "D4-374",
+      "asset": "PB_DefaultMicroRoundHalf",
+      "size": [
+        5,
+        10,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        8,
+        4
+      ]
+    },
+    {
+      "id": "D4-375",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -10
+      ]
+    },
+    {
+      "id": "D4-376",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -5
+      ]
+    },
+    {
+      "id": "D4-377",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-378",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        5
+      ]
+    },
+    {
+      "id": "D4-379",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        10
+      ]
+    },
+    {
+      "id": "D4-380",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        -10
+      ]
+    },
+    {
+      "id": "D4-381",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        -5
+      ]
+    },
+    {
+      "id": "D4-382",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D4-383",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        5
+      ]
+    },
+    {
+      "id": "D4-384",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        10
+      ]
+    },
+    {
+      "id": "D4-385",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -10
+      ]
+    },
+    {
+      "id": "D4-386",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -5
+      ]
+    },
+    {
+      "id": "D4-387",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        -4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-388",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        5
+      ]
+    },
+    {
+      "id": "D4-389",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        10
+      ]
+    },
+    {
+      "id": "D4-390",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        2,
+        -10
+      ]
+    },
+    {
+      "id": "D4-391",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        2,
+        -5
+      ]
+    },
+    {
+      "id": "D4-392",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D4-393",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        2,
+        5
+      ]
+    },
+    {
+      "id": "D4-394",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        2,
+        10
+      ]
+    },
+    {
+      "id": "D4-395",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -10
+      ]
+    },
+    {
+      "id": "D4-396",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -5
+      ]
+    },
+    {
+      "id": "D4-397",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-398",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D4-399",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        10
+      ]
+    },
+    {
+      "id": "D4-400",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        -10
+      ]
+    },
+    {
+      "id": "D4-401",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        -5
+      ]
+    },
+    {
+      "id": "D4-402",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-403",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        5
+      ]
+    },
+    {
+      "id": "D4-404",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        10
+      ]
+    },
+    {
+      "id": "D4-405",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        -10
+      ]
+    },
+    {
+      "id": "D4-406",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        -5
+      ]
+    },
+    {
+      "id": "D4-407",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D4-408",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        5
+      ]
+    },
+    {
+      "id": "D4-409",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        10
+      ]
+    },
+    {
+      "id": "D4-410",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        0,
+        -10
+      ]
+    },
+    {
+      "id": "D4-411",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        0,
+        -5
+      ]
+    },
+    {
+      "id": "D4-412",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        -2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-413",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        0,
+        5
+      ]
+    },
+    {
+      "id": "D4-414",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        0,
+        10
+      ]
+    },
+    {
+      "id": "D4-415",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        2,
+        -10
+      ]
+    },
+    {
+      "id": "D4-416",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        2,
+        -5
+      ]
+    },
+    {
+      "id": "D4-417",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -2,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D4-418",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        2,
+        5
+      ]
+    },
+    {
+      "id": "D4-419",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        2,
+        10
+      ]
+    },
+    {
+      "id": "D4-420",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        4,
+        -10
+      ]
+    },
+    {
+      "id": "D4-421",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        4,
+        -5
+      ]
+    },
+    {
+      "id": "D4-422",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -2,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-423",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D4-424",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        4,
+        10
+      ]
+    },
+    {
+      "id": "D4-425",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -10
+      ]
+    },
+    {
+      "id": "D4-426",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -5
+      ]
+    },
+    {
+      "id": "D4-427",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-428",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        5
+      ]
+    },
+    {
+      "id": "D4-429",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        10
+      ]
+    },
+    {
+      "id": "D4-430",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -2,
+        -10
+      ]
+    },
+    {
+      "id": "D4-431",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -2,
+        -5
+      ]
+    },
+    {
+      "id": "D4-432",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D4-433",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -2,
+        5
+      ]
+    },
+    {
+      "id": "D4-434",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -2,
+        10
+      ]
+    },
+    {
+      "id": "D4-435",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        -10
+      ]
+    },
+    {
+      "id": "D4-436",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        -5
+      ]
+    },
+    {
+      "id": "D4-437",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        0,
+        0
+      ],
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-438",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        5
+      ]
+    },
+    {
+      "id": "D4-439",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        10
+      ]
+    },
+    {
+      "id": "D4-440",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        2,
+        -10
+      ]
+    },
+    {
+      "id": "D4-441",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        2,
+        -5
+      ]
+    },
+    {
+      "id": "D4-442",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D4-443",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        2,
+        5
+      ]
+    },
+    {
+      "id": "D4-444",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        2,
+        10
+      ]
+    },
+    {
+      "id": "D4-445",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        -10
+      ]
+    },
+    {
+      "id": "D4-446",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        -5
+      ]
+    },
+    {
+      "id": "D4-447",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-448",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D4-449",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        10
+      ]
+    },
+    {
+      "id": "D4-450",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        -4,
+        -10
+      ]
+    },
+    {
+      "id": "D4-451",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        -4,
+        -5
+      ]
+    },
+    {
+      "id": "D4-452",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        2,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-453",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        -4,
+        5
+      ]
+    },
+    {
+      "id": "D4-454",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        -4,
+        10
+      ]
+    },
+    {
+      "id": "D4-455",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        -2,
+        -10
+      ]
+    },
+    {
+      "id": "D4-456",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        -2,
+        -5
+      ]
+    },
+    {
+      "id": "D4-457",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        2,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D4-458",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        -2,
+        5
+      ]
+    },
+    {
+      "id": "D4-459",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        -2,
+        10
+      ]
+    },
+    {
+      "id": "D4-460",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        0,
+        -10
+      ]
+    },
+    {
+      "id": "D4-461",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        0,
+        -5
+      ]
+    },
+    {
+      "id": "D4-462",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-463",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        0,
+        5
+      ]
+    },
+    {
+      "id": "D4-464",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        0,
+        10
+      ]
+    },
+    {
+      "id": "D4-465",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        2,
+        -10
+      ]
+    },
+    {
+      "id": "D4-466",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        2,
+        -5
+      ]
+    },
+    {
+      "id": "D4-467",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        2,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D4-468",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        2,
+        5
+      ]
+    },
+    {
+      "id": "D4-469",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        2,
+        10
+      ]
+    },
+    {
+      "id": "D4-470",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        4,
+        -10
+      ]
+    },
+    {
+      "id": "D4-471",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        4,
+        -5
+      ]
+    },
+    {
+      "id": "D4-472",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        2,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-473",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D4-474",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        4,
+        10
+      ]
+    },
+    {
+      "id": "D4-475",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -10
+      ]
+    },
+    {
+      "id": "D4-476",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -5
+      ]
+    },
+    {
+      "id": "D4-477",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-478",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        5
+      ]
+    },
+    {
+      "id": "D4-479",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        10
+      ]
+    },
+    {
+      "id": "D4-480",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -2,
+        -10
+      ]
+    },
+    {
+      "id": "D4-481",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -2,
+        -5
+      ]
+    },
+    {
+      "id": "D4-482",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D4-483",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -2,
+        5
+      ]
+    },
+    {
+      "id": "D4-484",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -2,
+        10
+      ]
+    },
+    {
+      "id": "D4-485",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        -10
+      ]
+    },
+    {
+      "id": "D4-486",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        -5
+      ]
+    },
+    {
+      "id": "D4-487",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-488",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        5
+      ]
+    },
+    {
+      "id": "D4-489",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        10
+      ]
+    },
+    {
+      "id": "D4-490",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        2,
+        -10
+      ]
+    },
+    {
+      "id": "D4-491",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        2,
+        -5
+      ]
+    },
+    {
+      "id": "D4-492",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D4-493",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        2,
+        5
+      ]
+    },
+    {
+      "id": "D4-494",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        2,
+        10
+      ]
+    },
+    {
+      "id": "D4-495",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        -10
+      ]
+    },
+    {
+      "id": "D4-496",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        -5
+      ]
+    },
+    {
+      "id": "D4-497",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-498",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "D4-499",
+      "asset": "PB_DefaultPole",
+      "size": [
+        5,
+        5,
+        12
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        10
+      ]
+    },
+    {
+      "id": "D4-500",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        -8,
+        -8
+      ]
+    },
+    {
+      "id": "D4-501",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        -8,
+        -4
+      ]
+    },
+    {
+      "id": "D4-502",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -8,
+        -8,
+        0
+      ]
+    },
+    {
+      "id": "D4-503",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        -8,
+        4
+      ]
+    },
+    {
+      "id": "D4-504",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        -8,
+        8
+      ]
+    },
+    {
+      "id": "D4-505",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        -4,
+        -8
+      ]
+    },
+    {
+      "id": "D4-506",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-507",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -8,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-508",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D4-509",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        -4,
+        8
+      ]
+    },
+    {
+      "id": "D4-510",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        0,
+        -8
+      ]
+    },
+    {
+      "id": "D4-511",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D4-512",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        -8,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-513",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D4-514",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        0,
+        8
+      ]
+    },
+    {
+      "id": "D4-515",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        4,
+        -8
+      ]
+    },
+    {
+      "id": "D4-516",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-517",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -8,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-518",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D4-519",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        4,
+        8
+      ]
+    },
+    {
+      "id": "D4-520",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -8,
+        8,
+        -8
+      ]
+    },
+    {
+      "id": "D4-521",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -8,
+        8,
+        -4
+      ]
+    },
+    {
+      "id": "D4-522",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -8,
+        8,
+        0
+      ]
+    },
+    {
+      "id": "D4-523",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -8,
+        8,
+        4
+      ]
+    },
+    {
+      "id": "D4-524",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -8,
+        8,
+        8
+      ]
+    },
+    {
+      "id": "D4-525",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -8,
+        -8
+      ]
+    },
+    {
+      "id": "D4-526",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -8,
+        -4
+      ]
+    },
+    {
+      "id": "D4-527",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -8,
+        0
+      ]
+    },
+    {
+      "id": "D4-528",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -8,
+        4
+      ]
+    },
+    {
+      "id": "D4-529",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -8,
+        8
+      ]
+    },
+    {
+      "id": "D4-530",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -8
+      ]
+    },
+    {
+      "id": "D4-531",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-532",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-533",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D4-534",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        8
+      ]
+    },
+    {
+      "id": "D4-535",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -8
+      ]
+    },
+    {
+      "id": "D4-536",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D4-537",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        -4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-538",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D4-539",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        8
+      ]
+    },
+    {
+      "id": "D4-540",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -8
+      ]
+    },
+    {
+      "id": "D4-541",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-542",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-543",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D4-544",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        8
+      ]
+    },
+    {
+      "id": "D4-545",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        8,
+        -8
+      ]
+    },
+    {
+      "id": "D4-546",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        8,
+        -4
+      ]
+    },
+    {
+      "id": "D4-547",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        8,
+        0
+      ]
+    },
+    {
+      "id": "D4-548",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        8,
+        4
+      ]
+    },
+    {
+      "id": "D4-549",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        8,
+        8
+      ]
+    },
+    {
+      "id": "D4-550",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -8,
+        -8
+      ]
+    },
+    {
+      "id": "D4-551",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -8,
+        -4
+      ]
+    },
+    {
+      "id": "D4-552",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        -8,
+        0
+      ]
+    },
+    {
+      "id": "D4-553",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -8,
+        4
+      ]
+    },
+    {
+      "id": "D4-554",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -8,
+        8
+      ]
+    },
+    {
+      "id": "D4-555",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -8
+      ]
+    },
+    {
+      "id": "D4-556",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-557",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-558",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D4-559",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        8
+      ]
+    },
+    {
+      "id": "D4-560",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        -8
+      ]
+    },
+    {
+      "id": "D4-561",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D4-562",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        0,
+        0
+      ],
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-563",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D4-564",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        8
+      ]
+    },
+    {
+      "id": "D4-565",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        -8
+      ]
+    },
+    {
+      "id": "D4-566",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-567",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-568",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D4-569",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        8
+      ]
+    },
+    {
+      "id": "D4-570",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        8,
+        -8
+      ]
+    },
+    {
+      "id": "D4-571",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        8,
+        -4
+      ]
+    },
+    {
+      "id": "D4-572",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        8,
+        0
+      ]
+    },
+    {
+      "id": "D4-573",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        8,
+        4
+      ]
+    },
+    {
+      "id": "D4-574",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        8,
+        8
+      ]
+    },
+    {
+      "id": "D4-575",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -8,
+        -8
+      ]
+    },
+    {
+      "id": "D4-576",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -8,
+        -4
+      ]
+    },
+    {
+      "id": "D4-577",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        -8,
+        0
+      ]
+    },
+    {
+      "id": "D4-578",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -8,
+        4
+      ]
+    },
+    {
+      "id": "D4-579",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -8,
+        8
+      ]
+    },
+    {
+      "id": "D4-580",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -8
+      ]
+    },
+    {
+      "id": "D4-581",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-582",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-583",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D4-584",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        8
+      ]
+    },
+    {
+      "id": "D4-585",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        -8
+      ]
+    },
+    {
+      "id": "D4-586",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D4-587",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-588",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D4-589",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        8
+      ]
+    },
+    {
+      "id": "D4-590",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        -8
+      ]
+    },
+    {
+      "id": "D4-591",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-592",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-593",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D4-594",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        8
+      ]
+    },
+    {
+      "id": "D4-595",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        8,
+        -8
+      ]
+    },
+    {
+      "id": "D4-596",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        8,
+        -4
+      ]
+    },
+    {
+      "id": "D4-597",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        8,
+        0
+      ]
+    },
+    {
+      "id": "D4-598",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        8,
+        4
+      ]
+    },
+    {
+      "id": "D4-599",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        8,
+        8
+      ]
+    },
+    {
+      "id": "D4-600",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        -8,
+        -8
+      ]
+    },
+    {
+      "id": "D4-601",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        -8,
+        -4
+      ]
+    },
+    {
+      "id": "D4-602",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        8,
+        -8,
+        0
+      ]
+    },
+    {
+      "id": "D4-603",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        -8,
+        4
+      ]
+    },
+    {
+      "id": "D4-604",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        -8,
+        8
+      ]
+    },
+    {
+      "id": "D4-605",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        -4,
+        -8
+      ]
+    },
+    {
+      "id": "D4-606",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-607",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        8,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D4-608",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D4-609",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        -4,
+        8
+      ]
+    },
+    {
+      "id": "D4-610",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        0,
+        -8
+      ]
+    },
+    {
+      "id": "D4-611",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D4-612",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        8,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D4-613",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D4-614",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        0,
+        8
+      ]
+    },
+    {
+      "id": "D4-615",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        4,
+        -8
+      ]
+    },
+    {
+      "id": "D4-616",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D4-617",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        8,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D4-618",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D4-619",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        4,
+        8
+      ]
+    },
+    {
+      "id": "D4-620",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        8,
+        8,
+        -8
+      ]
+    },
+    {
+      "id": "D4-621",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        8,
+        8,
+        -4
+      ]
+    },
+    {
+      "id": "D4-622",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        8,
+        8,
+        0
+      ]
+    },
+    {
+      "id": "D4-623",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        8,
+        8,
+        4
+      ]
+    },
+    {
+      "id": "D4-624",
+      "asset": "PB_DefaultStudded",
+      "size": [
+        10,
+        10,
+        10
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        8,
+        8,
+        8
+      ]
+    }
+  ]
+}

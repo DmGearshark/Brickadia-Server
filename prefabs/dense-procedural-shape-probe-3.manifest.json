@@ -1,0 +1,11888 @@
+{
+  "version": 1,
+  "pack": 3,
+  "levels": [
+    -0.8,
+    -0.4,
+    0,
+    0.4,
+    0.8
+  ],
+  "tests": [
+    {
+      "id": "D3-000",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-001",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-002",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-003",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-004",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-005",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-006",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-007",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-008",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-009",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-010",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-011",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-012",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        -4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-013",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-014",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-015",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-016",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-017",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-018",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-019",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-020",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-021",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-022",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-023",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-024",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-025",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-026",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-027",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-028",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-029",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-030",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-031",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-032",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-033",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-034",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-035",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-036",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-037",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        -2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-038",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-039",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-040",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-041",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-042",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -2,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-043",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-044",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-045",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-046",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-047",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -2,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-048",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-049",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-050",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-051",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-052",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-053",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-054",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-055",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-056",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-057",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-058",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-059",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-060",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-061",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-062",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0
+      ],
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-063",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-064",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-065",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-066",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-067",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-068",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-069",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-070",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-071",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-072",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-073",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-074",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-075",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-076",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-077",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        2,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-078",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-079",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-080",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-081",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-082",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        2,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-083",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-084",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-085",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-086",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-087",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-088",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-089",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-090",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-091",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-092",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        2,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-093",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-094",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-095",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-096",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-097",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        2,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-098",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-099",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-100",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-101",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-102",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-103",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-104",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-105",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-106",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-107",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-108",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-109",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-110",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-111",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-112",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-113",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-114",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-115",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-116",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-117",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-118",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-119",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-120",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-121",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-122",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-123",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-124",
+      "asset": "PB_DefaultMicroWedgeTriangleCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-125",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-126",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-127",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-128",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-129",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-130",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-131",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-132",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-133",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-134",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-135",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-136",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-137",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        -4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-138",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-139",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-140",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-141",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-142",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-143",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-144",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-145",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-146",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-147",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-148",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-149",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-150",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-151",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-152",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-153",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-154",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-155",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-156",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-157",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-158",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-159",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-160",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-161",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-162",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        -2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-163",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-164",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-165",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-166",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-167",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -2,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-168",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-169",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-170",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-171",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-172",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -2,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-173",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-174",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-175",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-176",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-177",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-178",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-179",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-180",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-181",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-182",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-183",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-184",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-185",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-186",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-187",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0
+      ],
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-188",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-189",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-190",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-191",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-192",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-193",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-194",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-195",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-196",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-197",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-198",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-199",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-200",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-201",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-202",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        2,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-203",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-204",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-205",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-206",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-207",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        2,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-208",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-209",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-210",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-211",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-212",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-213",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-214",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-215",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-216",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-217",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        2,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-218",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-219",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-220",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-221",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-222",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        2,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-223",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-224",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-225",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-226",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-227",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-228",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-229",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-230",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-231",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-232",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-233",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-234",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-235",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-236",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-237",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-238",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-239",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-240",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-241",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-242",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-243",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-244",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-245",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-246",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-247",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-248",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-249",
+      "asset": "PB_DefaultMicroWedgeInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-250",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-251",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-252",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-253",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-254",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-255",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-256",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-257",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-258",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-259",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-260",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-261",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-262",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        -4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-263",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-264",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-265",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-266",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-267",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-268",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-269",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-270",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-271",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-272",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-273",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-274",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-275",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-276",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-277",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-278",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-279",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-280",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-281",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-282",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-283",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-284",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-285",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-286",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-287",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        -2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-288",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-289",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-290",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-291",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-292",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -2,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-293",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-294",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-295",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-296",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-297",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -2,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-298",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-299",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-300",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-301",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-302",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-303",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-304",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-305",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-306",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-307",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-308",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-309",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-310",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-311",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-312",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0
+      ],
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-313",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-314",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-315",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-316",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-317",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-318",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-319",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-320",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-321",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-322",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-323",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-324",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-325",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-326",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-327",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        2,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-328",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-329",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-330",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-331",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-332",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        2,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-333",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-334",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-335",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-336",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-337",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-338",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-339",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-340",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-341",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-342",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        2,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-343",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-344",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-345",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-346",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-347",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        2,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-348",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-349",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-350",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-351",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-352",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-353",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-354",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-355",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-356",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-357",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-358",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-359",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-360",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-361",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-362",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-363",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-364",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-365",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-366",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-367",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-368",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-369",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-370",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-371",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-372",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-373",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-374",
+      "asset": "PB_DefaultMicroWedgeOuterCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-375",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-376",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-377",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-378",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-379",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-380",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-381",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-382",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-383",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-384",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-385",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-386",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-387",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        -4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-388",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-389",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-390",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-391",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-392",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-393",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-394",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-395",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-396",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-397",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-398",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-399",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-400",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-401",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-402",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-403",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-404",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-405",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-406",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-407",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-408",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-409",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-410",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-411",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-412",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        -2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-413",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-414",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-415",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-416",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-417",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -2,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-418",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-419",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-420",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-421",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-422",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -2,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-423",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-424",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-425",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-426",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-427",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-428",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-429",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-430",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-431",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-432",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-433",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-434",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-435",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-436",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-437",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0
+      ],
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-438",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-439",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-440",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-441",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-442",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-443",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-444",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-445",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-446",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-447",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-448",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-449",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-450",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-451",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-452",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        2,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-453",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-454",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-455",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-456",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-457",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        2,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-458",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-459",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-460",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-461",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-462",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-463",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-464",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-465",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-466",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-467",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        2,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-468",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-469",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-470",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-471",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-472",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        2,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-473",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-474",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-475",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-476",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-477",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-478",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-479",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-480",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-481",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-482",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-483",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-484",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-485",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-486",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-487",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-488",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-489",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-490",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-491",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-492",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-493",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-494",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-495",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-496",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-497",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-498",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-499",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCorner",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-500",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-501",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-502",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-503",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-504",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-505",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-506",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-507",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-508",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-509",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-510",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-511",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-512",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        -4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-513",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-514",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-515",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-516",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-517",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -4,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-518",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-519",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-520",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-521",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-522",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-523",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-524",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -4,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-525",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-526",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-527",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-528",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-529",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-530",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-531",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-532",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-533",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-534",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-535",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-536",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-537",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        -2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-538",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-539",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-540",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-541",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-542",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        -2,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-543",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-544",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-545",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        -2,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-546",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        -2,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-547",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        -2,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-548",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        -2,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-549",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        -0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        -2,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-550",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-551",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-552",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-553",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-554",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-555",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-556",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-557",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-558",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-559",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-560",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-561",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-562",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0
+      ],
+      "localPoint": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-563",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-564",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-565",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-566",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-567",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        0,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-568",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-569",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-570",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-571",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-572",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        0,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-573",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        0,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-574",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        0,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-575",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-576",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-577",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        2,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-578",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-579",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-580",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-581",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-582",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        2,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-583",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-584",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-585",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-586",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-587",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0
+      ],
+      "localPoint": [
+        2,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-588",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-589",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-590",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-591",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-592",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        2,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-593",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-594",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-595",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        2,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-596",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        2,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-597",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        2,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-598",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        2,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-599",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.4,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        2,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "D3-600",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-601",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-602",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        -4,
+        0
+      ]
+    },
+    {
+      "id": "D3-603",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -4,
+        2
+      ]
+    },
+    {
+      "id": "D3-604",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -4,
+        4
+      ]
+    },
+    {
+      "id": "D3-605",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        -2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-606",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        -2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-607",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        -2,
+        0
+      ]
+    },
+    {
+      "id": "D3-608",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        -2,
+        2
+      ]
+    },
+    {
+      "id": "D3-609",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        -0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        -2,
+        4
+      ]
+    },
+    {
+      "id": "D3-610",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        -4
+      ]
+    },
+    {
+      "id": "D3-611",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        -2
+      ]
+    },
+    {
+      "id": "D3-612",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0
+      ],
+      "localPoint": [
+        4,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "D3-613",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        0,
+        2
+      ]
+    },
+    {
+      "id": "D3-614",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        0,
+        4
+      ]
+    },
+    {
+      "id": "D3-615",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        2,
+        -4
+      ]
+    },
+    {
+      "id": "D3-616",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "D3-617",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0
+      ],
+      "localPoint": [
+        4,
+        2,
+        0
+      ]
+    },
+    {
+      "id": "D3-618",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        2,
+        2
+      ]
+    },
+    {
+      "id": "D3-619",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.4,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        2,
+        4
+      ]
+    },
+    {
+      "id": "D3-620",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        -4
+      ]
+    },
+    {
+      "id": "D3-621",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        -0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        -2
+      ]
+    },
+    {
+      "id": "D3-622",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0
+      ],
+      "localPoint": [
+        4,
+        4,
+        0
+      ]
+    },
+    {
+      "id": "D3-623",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.4
+      ],
+      "localPoint": [
+        4,
+        4,
+        2
+      ]
+    },
+    {
+      "id": "D3-624",
+      "asset": "PB_DefaultMicroWedgeHalfInnerCornerInverted",
+      "size": [
+        5,
+        5,
+        5
+      ],
+      "normalized": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "localPoint": [
+        4,
+        4,
+        4
+      ]
+    }
+  ]
+}
