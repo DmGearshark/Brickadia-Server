@@ -93,6 +93,8 @@ The authority queue remains event-driven while idle. Request snapshots, publicat
 
 The Load Settings chip uses the interface placed natively in Brickadia and returned in `references/loadboard-native-settings-source.brz`. Its example gates are replaced with the eight live editable settings, its diagnostic panel reads the validator status, and its ninth row runs **Validate Catalogues**. The large side panel documents every data format.
 
+The ten square help buttons beside those rows explain the adjacent setting in game. The diagnostic status Var, Validate edge detector and wireless validation sender live inside the nested **Catalogue validation logic** chip, keeping non-configuration gates out of the editable catalogue surface.
+
 ## Rebuild and validation
 
 ```sh
@@ -106,6 +108,13 @@ The published prefab's native settings interface can be reproduced exactly with:
 ```sh
 node tools/prefabs/wire-native-loadboard-settings.cjs tools/prefabs/references/loadboard-native-settings-source.brz prefabs/loadboard-system.brz
 node tools/prefabs/test-native-loadboard-settings.cjs tools/prefabs/references/loadboard-native-settings-source.brz
+```
+
+The final help-button and nested-validation pass is reproducible with:
+
+```sh
+node tools/prefabs/update-loadboard-settings-help.cjs tools/prefabs/references/loadboard-settings-help-source.brz prefabs/loadboard-system.brz
+node tools/prefabs/test-loadboard-settings-help.cjs tools/prefabs/references/loadboard-settings-help-source.brz
 ```
 
 The tests serialize and reread every component and wire, reject instantaneous cycles and idle polling, preserve embedded display/cargo assets, and execute route generation, new cargo IDs, restoration, expired abandonment, delivery payment/refill and invalid-catalogue diagnostics.
