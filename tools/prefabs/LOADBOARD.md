@@ -1,5 +1,7 @@
 # Central load-board system
 
+**Current presentation update:** one top title, default sounds on all four buttons, confirmed accept/abandon/collect/deliver cues, and compact labeled chip sections based on the supplied reference. The working event-driven queues, spawn placement and gameplay are retained. See [LOADBOARD-PRESENTATION.md](LOADBOARD-PRESENTATION.md).
+
 **Current repair:** the spawner feedback boundary is restored, and the four 0.1-second inbox polls are replaced by event-driven queues. The portable client and cargo bytes are unchanged. See [LOADBOARD-SPAWN-REPAIR.md](LOADBOARD-SPAWN-REPAIR.md).
 
 **Current artifact:** optimized after GP1–GP3, with batched request/stat reads and a reusable listing Function. Current display, Fine/collider settings, spawn placement and gameplay safeguards are preserved. See [LOADBOARD-OPTIMIZED.md](LOADBOARD-OPTIMIZED.md) for validation, modeled timings and reproduction.

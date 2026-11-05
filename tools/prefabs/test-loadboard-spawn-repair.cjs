@@ -13,3 +13,7 @@ module.exports=function test(r){require('./test-optimized-loadboard.cjs').serial
  const now=new Set(r.scene.edges.map(e=>JSON.stringify(e)));for(const e of r.original.edges)if(!deleted.has(e.a)&&!deleted.has(e.z)&&!r.drivers.some(d=>e.a===d.remove.key&&e.z===d.unlock.key)&&!(e.a===r.spawn.remember.key&&e.z===r.spawn.spawn.key&&e.q==='Exec'))assert(now.has(JSON.stringify(e)),'Unrelated original wire retained');const out=read(r.bytes);assert.deepEqual(out.r.prefabPaths(),r.original.r.prefabPaths());for(const p of out.r.prefabPaths())assert(Buffer.from(out.r.readPrefab(p)).equals(Buffer.from(r.original.r.readPrefab(p))),'Every client/cargo embed unchanged');
  const c=nativeContext(r);for(const delay of [0,1])require('./test-loadboard.cjs').scenarios({...c,testResetRows:true},delay);require('./test-loadboard-v2.cjs').testReturn(c);require('./test-loadboard-v2.cjs').testRichClient(c);integration(c);scheduling(c);
  console.log('Repair checks passed: actual saved graph, restored timed spawn path, no instantaneous wire cycles, four event-driven queues, no 0.1s polling, simultaneous/staggered requests, idle silence, pickup first-entry/handoff, payout once, command replacement, placement and expiry.');};
+
+module.exports.setup=setup;
+module.exports.integration=integration;
+module.exports.scheduling=scheduling;

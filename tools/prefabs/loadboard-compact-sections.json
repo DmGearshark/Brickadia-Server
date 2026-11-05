@@ -1,0 +1,429 @@
+{
+  "main": [
+    {
+      "grid": 2,
+      "section": "CATALOGUE & SETTINGS",
+      "gates": 6,
+      "bounds": [
+        0,
+        0,
+        164,
+        60
+      ]
+    },
+    {
+      "grid": 3,
+      "section": "COMMAND QUEUE",
+      "gates": 28,
+      "bounds": [
+        0,
+        0,
+        164,
+        60
+      ]
+    },
+    {
+      "grid": 3,
+      "section": "PLAYER & OLD BOARD",
+      "gates": 16,
+      "bounds": [
+        190,
+        0,
+        354,
+        60
+      ]
+    },
+    {
+      "grid": 3,
+      "section": "SPAWN & BIND",
+      "gates": 28,
+      "bounds": [
+        0,
+        80,
+        164,
+        140
+      ]
+    },
+    {
+      "grid": 4,
+      "section": "REQUEST QUEUE",
+      "gates": 58,
+      "bounds": [
+        0,
+        0,
+        164,
+        100
+      ]
+    },
+    {
+      "grid": 4,
+      "section": "READ PLAYER DATA",
+      "gates": 11,
+      "bounds": [
+        190,
+        0,
+        354,
+        60
+      ]
+    },
+    {
+      "grid": 4,
+      "section": "PLAYER FIELDS",
+      "gates": 9,
+      "bounds": [
+        380,
+        0,
+        544,
+        60
+      ]
+    },
+    {
+      "grid": 4,
+      "section": "PLAYER CACHES",
+      "gates": 3,
+      "bounds": [
+        0,
+        120,
+        164,
+        180
+      ]
+    },
+    {
+      "grid": 4,
+      "section": "CARGO IDENTITY",
+      "gates": 3,
+      "bounds": [
+        190,
+        120,
+        354,
+        180
+      ]
+    },
+    {
+      "grid": 4,
+      "section": "OFFER STATE",
+      "gates": 30,
+      "bounds": [
+        380,
+        120,
+        544,
+        180
+      ]
+    },
+    {
+      "grid": 4,
+      "section": "ROTATE OFFERS",
+      "gates": 114,
+      "bounds": [
+        0,
+        200,
+        164,
+        400
+      ]
+    },
+    {
+      "grid": 4,
+      "section": "BROWSE",
+      "gates": 5,
+      "bounds": [
+        190,
+        200,
+        354,
+        260
+      ]
+    },
+    {
+      "grid": 4,
+      "section": "ACCEPT LOAD",
+      "gates": 85,
+      "bounds": [
+        380,
+        200,
+        544,
+        340
+      ]
+    },
+    {
+      "grid": 4,
+      "section": "ABANDON & RETURN",
+      "gates": 177,
+      "bounds": [
+        0,
+        420,
+        164,
+        650
+      ]
+    },
+    {
+      "grid": 4,
+      "section": "PICKUP AUTHORIZE",
+      "gates": 28,
+      "bounds": [
+        190,
+        420,
+        354,
+        480
+      ]
+    },
+    {
+      "grid": 4,
+      "section": "CARGO STAMPING",
+      "gates": 27,
+      "bounds": [
+        380,
+        420,
+        544,
+        480
+      ]
+    },
+    {
+      "grid": 4,
+      "section": "DELIVER & PAY",
+      "gates": 30,
+      "bounds": [
+        0,
+        670,
+        164,
+        730
+      ]
+    },
+    {
+      "grid": 4,
+      "section": "SHARED RECORD DATA",
+      "gates": 26,
+      "bounds": [
+        190,
+        670,
+        354,
+        730
+      ]
+    },
+    {
+      "grid": 4,
+      "section": "SHARED CHECKS",
+      "gates": 180,
+      "bounds": [
+        380,
+        670,
+        544,
+        910
+      ]
+    },
+    {
+      "grid": 4,
+      "section": "BUILD REPLY",
+      "gates": 139,
+      "bounds": [
+        0,
+        930,
+        164,
+        1090
+      ]
+    },
+    {
+      "grid": 5,
+      "section": "FUNCTION INPUT",
+      "gates": 3,
+      "bounds": [
+        0,
+        0,
+        164,
+        60
+      ]
+    },
+    {
+      "grid": 5,
+      "section": "PARSE RECORD",
+      "gates": 14,
+      "bounds": [
+        190,
+        0,
+        354,
+        60
+      ]
+    },
+    {
+      "grid": 5,
+      "section": "ELIGIBILITY",
+      "gates": 10,
+      "bounds": [
+        0,
+        80,
+        164,
+        140
+      ]
+    },
+    {
+      "grid": 5,
+      "section": "FORMAT OUTPUT",
+      "gates": 3,
+      "bounds": [
+        190,
+        80,
+        354,
+        140
+      ]
+    },
+    {
+      "grid": 6,
+      "section": "PICKUP STATE",
+      "gates": 25,
+      "bounds": [
+        0,
+        0,
+        164,
+        60
+      ]
+    },
+    {
+      "grid": 6,
+      "section": "ZONE OWNERSHIP",
+      "gates": 79,
+      "bounds": [
+        190,
+        0,
+        354,
+        160
+      ]
+    },
+    {
+      "grid": 6,
+      "section": "BIND & CONTROLS",
+      "gates": 40,
+      "bounds": [
+        380,
+        0,
+        544,
+        80
+      ]
+    },
+    {
+      "grid": 6,
+      "section": "REPLY QUEUE",
+      "gates": 54,
+      "bounds": [
+        0,
+        180,
+        164,
+        280
+      ]
+    },
+    {
+      "grid": 6,
+      "section": "LOAD STATUS",
+      "gates": 65,
+      "bounds": [
+        190,
+        180,
+        354,
+        270
+      ]
+    },
+    {
+      "grid": 6,
+      "section": "SPAWN HANDSHAKE",
+      "gates": 41,
+      "bounds": [
+        380,
+        180,
+        544,
+        240
+      ]
+    },
+    {
+      "grid": 6,
+      "section": "QUEUE CONTROL",
+      "gates": 15,
+      "bounds": [
+        0,
+        300,
+        164,
+        360
+      ]
+    },
+    {
+      "grid": 6,
+      "section": "COLLECT SOUND",
+      "gates": 6,
+      "bounds": [
+        190,
+        300,
+        354,
+        360
+      ]
+    },
+    {
+      "grid": 7,
+      "section": "CARGO OFFSET MATH",
+      "gates": 11,
+      "bounds": [
+        0,
+        70,
+        164,
+        130
+      ]
+    },
+    {
+      "grid": 7,
+      "section": "Pinned cargo spawners and position references",
+      "gates": 4
+    },
+    {
+      "grid": 8,
+      "section": "DELIVERY EVENT",
+      "gates": 7,
+      "bounds": [
+        0,
+        0,
+        164,
+        60
+      ]
+    }
+  ],
+  "client": [
+    {
+      "grid": 3,
+      "section": "BIND & CONTROLS",
+      "gates": 45,
+      "bounds": [
+        0,
+        0,
+        164,
+        60
+      ]
+    },
+    {
+      "grid": 3,
+      "section": "REQUEST & ACTION",
+      "gates": 41,
+      "bounds": [
+        190,
+        0,
+        354,
+        70
+      ]
+    },
+    {
+      "grid": 3,
+      "section": "ROWS & REPLIES",
+      "gates": 89,
+      "bounds": [
+        0,
+        90,
+        164,
+        180
+      ]
+    },
+    {
+      "grid": 3,
+      "section": "ACTION SOUNDS",
+      "gates": 11,
+      "bounds": [
+        190,
+        90,
+        354,
+        150
+      ]
+    }
+  ]
+}
