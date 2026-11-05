@@ -75,3 +75,19 @@ node tools/prefabs/read-gate-probe.cjs 'returned-gp3.brz'
 ```
 
 Offline checks additionally reject Component_Interact inside callable chips and verify that the unannotated variables remain recoverable. GP3 still requires engine validation of its attachment/readout correction. Production loadboard remains unchanged.
+
+## Returned GP3: clean Function confirmation
+
+The next exported **results.brz** contains all **312 bricks, 395 components, 415 wires and six entities**. Per-component-type counts match the generated GP3 exactly: the nine annotation components were omitted at generation, and no additional components are missing in this return. Count matching does not by itself compare every wire's endpoints, but the corrected Function path executed successfully.
+
+Only button 1 ran, exactly once. Saved results:
+
+- Expected result **18**; result read on Completed **18**; result after one tick **18**.
+- Returned body count **1**, matching the local counter **1**.
+- Completed count **1**, native IterationsExecuted **1**, bAborted **false**, AbortReason **0**.
+- Stopwatch start/completion samples both **27.61287060007453**, yielding **0 ms at that timer's resolution**.
+- Other seven run counters are zero, as requested. Their zeroed measurements in GP3 are unrun tests, not regressions; the GP2 findings remain the evidence for those paths.
+
+[gp3-observed.json](gate-reference/gp3-observed.json) retains the decoded results and source hash. This confirms the cleanup and corrected output mapping for this definition. The arithmetic Function's return value is available on Completed without the additional one-tick read delay. It does not establish a universal pin-order rule, arbitrary query timing inside functions, zero computational cost, or instantaneous prefab initialization.
+
+Together with GP2, these results support targeted removal of unnecessary ordinary read/Function-return delays and use of native bounded loops/local callable state. Outward global-event delivery still needs its own completion handling, and production request serialization/ownership/payment checks should remain. No production loadboard change is included with this record.

@@ -1,0 +1,211 @@
+{
+  "sourceFile": "results.brz (GP3 returned by user)",
+  "sha256": "6acc954c91f0190313af71fd6cd9f2cf96a23b1f8a9e2f2ba51a4b1539abea55",
+  "counts": {
+    "bricks": 312,
+    "components": 395,
+    "wires": 415,
+    "entities": 6
+  },
+  "componentCounts": {
+    "Component_TextDisplay": 18,
+    "Component_Button": 8,
+    "Component_Internal_Microchip_FunctionDefinition": 1,
+    "Component_Interact": 83,
+    "Component_Internal_Microchip_ForEachMap": 1,
+    "Component_Internal_Microchip_ForEachArray": 1,
+    "Component_Internal_Microchip_CountFor": 2,
+    "Component_Internal_Microchip": 1,
+    "BrickComponentType_QueueTicks": 1,
+    "BrickComponentType_FunctionCall": 1,
+    "BrickComponentType_Exec_SendCustomEventGlobal": 6,
+    "BrickComponentType_Event_CustomGlobal": 5,
+    "BrickComponentType_Stopwatch": 1,
+    "BrickComponentType_Exec_ArrayVar_Push": 1,
+    "BrickComponentType_Expr_String_FormatText": 8,
+    "BrickComponentType_Expr_MathSubtract": 5,
+    "BrickComponentType_BufferTicks": 29,
+    "BrickComponentType_Expr_MathMultiply": 6,
+    "BrickComponentType_ArrayVar": 2,
+    "BrickComponentType_Var": 87,
+    "BrickComponentType_MapVar": 2,
+    "BrickComponentType_Expr_MathAdd": 4,
+    "BrickComponentType_Expr_EdgeDetectorExec": 9,
+    "BrickComponentType_Expr_ContainerChangeDetector": 1,
+    "BrickComponentType_Expr_ChangeDetectorExec": 1,
+    "BrickComponentType_Exec_Var_Set": 61,
+    "BrickComponentType_Exec_Var_Increment": 38,
+    "BrickComponentType_Exec_Var_Get": 1,
+    "BrickComponentType_Exec_MapVar_Set": 1,
+    "BrickComponentType_Exec_MapVar_Get": 1,
+    "BrickComponentType_FunctionOutput": 2,
+    "BrickComponentType_FunctionInput": 2,
+    "BrickComponentType_CallableEntry_Function": 1,
+    "BrickComponentType_CallableEntry_CountFor": 2,
+    "BrickComponentType_CallableEntry_ForEachArray": 1,
+    "BrickComponentType_CallableEntry_ForEachMap": 1
+  },
+  "functionResults": {
+    "function.bodyCalls": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "function.immediate": {
+      "$variant": "f64",
+      "value": 18
+    },
+    "function.after1tick": {
+      "$variant": "f64",
+      "value": 18
+    },
+    "function.expected": {
+      "$variant": "f64",
+      "value": 18
+    },
+    "function.startTime": {
+      "$variant": "f64",
+      "value": 27.61287060007453
+    },
+    "function.elapsedMs": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "function.completed": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "test0.runs": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "function.completedTime": {
+      "$variant": "f64",
+      "value": 27.61287060007453
+    },
+    "function.aborted": {
+      "$variant": "Bool",
+      "value": false
+    },
+    "test1.runs": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "test2.runs": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "test3.runs": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "test4.runs": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "test5.runs": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "test6.runs": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "test7.runs": {
+      "$variant": "f64",
+      "value": 0
+    }
+  },
+  "functionLocals": [
+    {
+      "scope": "GP3:chip:function",
+      "position": [
+        240,
+        0,
+        2
+      ],
+      "value": {
+        "$variant": "f64",
+        "value": 1
+      }
+    }
+  ],
+  "functionCall": {
+    "Input0": {
+      "$variant": "f64",
+      "value": 11
+    },
+    "Input1": {
+      "$variant": "f64",
+      "value": 7
+    },
+    "Input2": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Input3": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Input4": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Input5": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Input6": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Input7": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Output0": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "Output1": {
+      "$variant": "f64",
+      "value": 18
+    },
+    "Output2": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Output3": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Output4": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Output5": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Output6": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Output7": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "InputSources": [
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "bAborted": false,
+    "AbortReason": 0,
+    "IterationsExecuted": 1
+  }
+}
