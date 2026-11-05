@@ -1,0 +1,5 @@
+'use strict';
+const assert=require('assert/strict'),fs=require('fs'),organize=require('./organize-loadboard-authority.cjs'),validate=require('./validate-placement.cjs'),{read}=require('./reskin-loadboard.cjs');
+const input=process.argv[2];if(!input)throw Error('Usage: node test-organize-loadboard-authority.cjs input.brz');
+const before=read(fs.readFileSync(input)),r=organize(input),after=read(r.bytes),report=validate(r.bytes);
+assert(report.strictOk,JSON.stringify(report));assert.equal(after.edges.length,before.edges.length,'Every wire retained');assert.equal(after.links.length,before.links.length,'Every chip link retained');assert.equal(after.bricks.length,before.bricks.length+r.sections.length*2,'Only section panels and labels added');assert(r.after.width<r.before.width/4.2);assert(r.after.height<r.before.height/2.2);assert.equal(r.sections.reduce((n,s)=>n+s.gates,0),r.before.bricks);console.log(JSON.stringify({authorityGates:r.before.bricks,sections:r.sections.length,wires:after.edges.length,chipLinks:after.links.length,before:r.before,after:r.after,strictPlacement:true},null,2));
