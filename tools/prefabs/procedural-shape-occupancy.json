@@ -1,0 +1,33 @@
+{
+  "source": "Brickadia in-game placement result from procedural-shape-collision-probe.brz",
+  "summary": {"cases":225,"solid":159,"empty":66,"partial":0},
+  "samples": ["C","LLO","LHI","RLO","RHI","FL","BK","TL","BR"],
+  "legend": {"S":"probe collided with solid shape","E":"probe survived in empty envelope space"},
+  "assets": {
+    "PB_DefaultWedge":"SSSSESSSS",
+    "PB_DefaultSideWedge":"SSSEESESE",
+    "PB_DefaultSideWedgetile":"SSSEESESE",
+    "PB_DefaultRampCorner":"SSSSESSSS",
+    "PB_DefaultRampCornerInverted":"SSSESSSSE",
+    "PB_DefaultRampInnerCorner":"SSSSSSSSS",
+    "PB_DefaultRampInnerCornerInverted":"SSSSSSSSE",
+    "PB_DefaultRampCrest":"SSESESSES",
+    "PB_DefaultRampCrestEnd":"SSESEESES",
+    "PB_DefaultRampCrestCorner":"SSESSSSES",
+    "PB_DefaultArch":"EEEEESSSS",
+    "PB_DefaultArchInverted":"EEEEESSSS",
+    "PB_DefaultPole":"SSSSSSSSS",
+    "PB_DefaultStudded":"SSSSSSSSS",
+    "PB_DefaultMicroRamp":"SSSSESSSS",
+    "PB_DefaultMicroWedge":"SSSEESESE",
+    "PB_DefaultMicroWedgeCorner":"SSESESESS",
+    "PB_DefaultMicroWedgeTriangleCorner":"ESEEESESE",
+    "PB_DefaultMicroWedgeInnerCorner":"SSSSESSSS",
+    "PB_DefaultMicroWedgeOuterCorner":"SSSSESSSS",
+    "PB_DefaultMicroWedgeHalfInnerCorner":"SSEEEEEEE",
+    "PB_DefaultMicroWedgeHalfInnerCornerInverted":"SSEEESEEE",
+    "PB_DefaultMicroWedgeHalfOuterCorner":"SSSEESEEE",
+    "PB_DefaultMicroRoundCorner":"SSSSSSSSS",
+    "PB_DefaultMicroRoundHalf":"SSSSSSSSS"
+  }
+}

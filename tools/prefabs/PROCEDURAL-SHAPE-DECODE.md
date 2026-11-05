@@ -19,3 +19,15 @@ the asset identity. It cannot be recovered as a mesh from these `.uasset`
 payloads. `build-procedural-shape-probe.cjs` provides isolated in-game point
 samples for empirically identifying the solid portions without inventing
 collision geometry.
+
+The returned 225-case probe placed 358 of 676 bricks and blocked 318. After
+removing the 226 labels/instruction bricks, this resolves to 159 colliding
+shape/probe pairs and 66 surviving pairs, with no partial cases. The normalized
+results are stored in `procedural-shape-occupancy.json` in the manifest's sample
+order. These measurements also establish that the normal ramp's full-height
+side is local `-X`; the convex ramp model follows that orientation.
+
+The measured patterns support exact convex triangular-prism models for normal
+and inverted ramps, default wedges, micro-ramps, side wedges, side-wedge tiles,
+and micro-wedges. Complex corners, crests, arches, and round shapes retain their
+measured occupancy but remain conservative envelopes pending denser sampling.

@@ -18,7 +18,8 @@ function orient(vector,direction=4,rotation=0){
 function orientedHalfExtents(size,direction=4,rotation=0){return orient(size,direction,rotation).map(Math.abs);}
 const exactCuboids=new Set(['PB_DefaultMicroBrick','PB_DefaultBrick']);
 const cuboids=new Set(['PB_DefaultMicroBrick','PB_DefaultBrick','PB_DefaultTile','PB_DefaultSmoothTile']);
-const rampAssets=new Set(['PB_DefaultRamp','PB_DefaultRampInverted']);
+const slopeAssets=new Set(['PB_DefaultRamp','PB_DefaultRampInverted','PB_DefaultWedge','PB_DefaultMicroRamp']);
+const sideWedgeAssets=new Set(['PB_DefaultSideWedge','PB_DefaultSideWedgetile','PB_DefaultMicroWedge']);
 const sub=(a,b)=>a.map((v,i)=>v-b[i]),cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],dot=(a,b)=>a.reduce((s,v,i)=>s+v*b[i],0);
 function makeConvex(brick){
  const {asset,size,position,direction=4,rotation=0}=brick;if(!size?.some(Boolean))return null;let vertices,faces;
@@ -26,12 +27,19 @@ function makeConvex(brick){
  if(cuboids.has(asset)){
   vertices=[[-x,-y,-z],[-x,-y,z],[-x,y,-z],[-x,y,z],[x,-y,-z],[x,-y,z],[x,y,-z],[x,y,z]];
   faces=[[0,4,6,2],[1,3,7,5],[0,1,5,4],[2,6,7,3],[0,2,3,1],[4,5,7,6]];
- }else if(rampAssets.has(asset)){
-  vertices=[[-x,-y,-z],[-x,y,-z],[x,-y,-z],[x,y,-z],[x,-y,z],[x,y,z]];
-  // The inverted ramp keeps the visible slope direction while moving the
-  // solid volume above it, which mirrors both the local run and height axes.
-  if(asset==='PB_DefaultRampInverted')vertices=vertices.map(([a,b,c])=>[-a,b,-c]);
-  faces=[[0,2,3,1],[2,4,5,3],[0,1,5,4],[0,4,2],[1,3,5]];
+ }else if(slopeAssets.has(asset)){
+  // Brickadia's local ramp runs from the full-height -X face to the low +X
+  // edge. The inverted asset occupies the complementary volume above it.
+  if(asset!=='PB_DefaultRampInverted'){
+   vertices=[[-x,-y,-z],[-x,y,-z],[-x,-y,z],[-x,y,z],[x,-y,-z],[x,y,-z]];
+   faces=[[0,4,5,1],[0,1,3,2],[0,2,4],[1,5,3],[2,3,5,4]];
+  }else{
+   vertices=[[-x,-y,z],[-x,y,z],[x,-y,-z],[x,y,-z],[x,-y,z],[x,y,z]];
+   faces=[[0,4,5,1],[2,3,5,4],[0,2,4],[1,5,3],[0,1,3,2]];
+  }
+ }else if(sideWedgeAssets.has(asset)){
+  vertices=[[-x,-y,-z],[-x,y,-z],[x,-y,-z],[-x,-y,z],[-x,y,z],[x,-y,z]];
+  faces=[[0,2,1],[3,4,5],[0,3,5,2],[0,1,4,3],[1,2,5,4]];
  }else return null;
  vertices=vertices.map(v=>orient(v,direction,rotation).map((n,i)=>n+position[i]));
  const normals=faces.map(f=>cross(sub(vertices[f[1]],vertices[f[0]]),sub(vertices[f[2]],vertices[f[0]])));
