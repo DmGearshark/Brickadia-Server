@@ -91,7 +91,7 @@ No payout, route, cargo-name or vehicle rules are stored in station copies. Pick
 
 The authority queue remains event-driven while idle. Request snapshots, publication buffers, duplicate suppression, cargo ownership stamping, private payment chat, local confirmation sounds and wireless delivery audio are retained.
 
-The Load Settings chip uses coarse `PB_DefaultTile` rows for its catalogue labels, live diagnostic readout, validation button and editing notes. This follows the supplied customizable diagnostic-menu layout while using the same native-safe tile construction as the other logic chips. Press **Validate Catalogues** after editing to scan every configured route.
+The Load Settings chip uses the interface placed natively in Brickadia and returned in `references/loadboard-native-settings-source.brz`. Its example gates are replaced with the eight live editable settings, its diagnostic panel reads the validator status, and its ninth row runs **Validate Catalogues**. The large side panel documents every data format.
 
 ## Rebuild and validation
 
@@ -99,6 +99,13 @@ The Load Settings chip uses coarse `PB_DefaultTile` rows for its catalogue label
 git show 6674025b7dd07eb948dad955f1e92bf5f5f26ef4:prefabs/loadboard-system.brz > /tmp/loadboard-before-routes.brz
 node --max-old-space-size=512 tools/prefabs/upgrade-loadboard-route-system.cjs /tmp/loadboard-before-routes.brz prefabs/loadboard-system.brz
 node --max-old-space-size=512 tools/prefabs/test-loadboard-route-system.cjs /tmp/loadboard-before-routes.brz
+```
+
+The published prefab's native settings interface can be reproduced exactly with:
+
+```sh
+node tools/prefabs/wire-native-loadboard-settings.cjs tools/prefabs/references/loadboard-native-settings-source.brz prefabs/loadboard-system.brz
+node tools/prefabs/test-native-loadboard-settings.cjs tools/prefabs/references/loadboard-native-settings-source.brz
 ```
 
 The tests serialize and reread every component and wire, reject instantaneous cycles and idle polling, preserve embedded display/cargo assets, and execute route generation, new cargo IDs, restoration, expired abandonment, delivery payment/refill and invalid-catalogue diagnostics.
