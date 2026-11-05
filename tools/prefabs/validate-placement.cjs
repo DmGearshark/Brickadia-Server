@@ -2,7 +2,7 @@
 const fs=require('fs'),{read}=require('./reskin-loadboard.cjs'),{orientedHalfExtents,makeConvex,convexIntersects}=require('./brick-shapes.cjs');
 const native=require('./native-brick-half-extents.json');
 const procedural=require('./procedural-brick-metadata.json');
-const proceduralBoxes=new Set(['PB_DefaultBrick','PB_DefaultMicroBrick','PB_DefaultTile','PB_DefaultSmoothTile']);
+const proceduralBoxes=new Set(['PB_DefaultBrick','PB_DefaultMicroBrick','PB_DefaultStudded','PB_DefaultTile','PB_DefaultSmoothTile']);
 const shaped=new Set(['PB_DefaultWedge','PB_DefaultMicroWedge','PB_DefaultRamp']);
 const standardGridProcedural=/^PB_Default(?:Brick|Tile|SmoothTile|Wedge|SideWedge|SideWedgetile|Ramp|RampInverted|RampCorner|RampCornerInverted|RampCrest|RampCrestCorner|RampCrestEnd|RampInnerCorner|RampInnerCornerInverted|Arch|ArchInverted)$/;
 const nativeBoxes=name=>(/^B_1x1_Gate_/.test(name)&&!/(?:WheelEngine|SeatControl)/.test(name))||/^PB_Gate_/.test(name)||/^B_Button_Square(?:_|$)/.test(name)||/^B_1x1_Microchip(?:_|$)/.test(name);
