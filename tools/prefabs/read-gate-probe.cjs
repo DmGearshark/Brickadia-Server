@@ -1,5 +1,6 @@
 'use strict';
 const fs=require('fs'),{read}=require('./reskin-loadboard.cjs'),{C}=require('./loadboard-lib.cjs');
-const s=read(fs.readFileSync(process.argv[2])),results={},native=[],screens=[];
-for(const b of s.bricks){const marker=b.comps.find(c=>c.type===C.Interact.NAME&&/^GP[12]:/.test(c.data.Message||'')),v=b.comps.find(c=>c.type===C.Var.NAME);if(marker&&v)results[marker.data.Message.slice(4)]=v.data.Value;for(const c of b.comps){if([C.FunctionCall.NAME,C.Microchip_CountFor.NAME,C.Microchip_ForEachArray.NAME,C.Microchip_ForEachMap.NAME,C.QueueTicks.NAME,C.ArrayVar.NAME].includes(c.type))native.push({grid:b.g,position:b.data.position,type:c.type,data:c.data});if(c.type===C.TextDisplay.NAME)screens.push({grid:b.g,position:b.data.position,text:c.data.Text});}}
-console.log(JSON.stringify({results,native,screens},null,2));
+const s=read(fs.readFileSync(process.argv[2])),results={},native=[],screens=[],callableLocals=[];
+for(const b of s.bricks){const marker=b.comps.find(c=>c.type===C.Interact.NAME&&/^GP[123]:/.test(c.data.Message||'')),v=b.comps.find(c=>c.type===C.Var.NAME);if(marker&&v)results[marker.data.Message.slice(4)]=v.data.Value;for(const c of b.comps){if([C.FunctionCall.NAME,C.Microchip_CountFor.NAME,C.Microchip_ForEachArray.NAME,C.Microchip_ForEachMap.NAME,C.QueueTicks.NAME,C.ArrayVar.NAME].includes(c.type))native.push({grid:b.g,position:b.data.position,type:c.type,data:c.data});if(c.type===C.TextDisplay.NAME)screens.push({grid:b.g,position:b.data.position,text:c.data.Text});}}
+for(const l of s.links){const shell=s.bricks.find(b=>b.key===l.key),marker=shell.comps.find(c=>c.type===C.Interact.NAME&&/^GP[123]:chip:/.test(c.data.Message||''));if(!marker)continue;for(const b of s.bricks.filter(b=>b.g===l.grid)){const v=b.comps.find(c=>c.type===C.Var.NAME);if(v)callableLocals.push({scope:marker.data.Message,position:b.data.position,value:v.data.Value});}}
+console.log(JSON.stringify({results,callableLocals,native,screens},null,2));

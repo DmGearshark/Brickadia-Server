@@ -1,0 +1,618 @@
+{
+  "sourceFile": "results.brz (GP2 returned by user)",
+  "sha256": "1278b8b7ed5cbbf6e333c197d4aafb84699eacd58f17ccfa329b52006727c126",
+  "wireCount": 415,
+  "componentDifferences": [
+    {
+      "type": "Component_Interact",
+      "before": 92,
+      "after": 83
+    }
+  ],
+  "results": {
+    "function.bodyCalls": {
+      "$variant": "f64",
+      "value": 18
+    },
+    "function.immediate": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "function.after1tick": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "function.expected": {
+      "$variant": "f64",
+      "value": 18
+    },
+    "function.startTime": {
+      "$variant": "f64",
+      "value": 5.375466100871563
+    },
+    "function.elapsedMs": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "function.completed": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "test0.runs": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "function.completedTime": {
+      "$variant": "f64",
+      "value": 5.375466100871563
+    },
+    "function.aborted": {
+      "$variant": "Bool",
+      "value": false
+    },
+    "loop1.sum": {
+      "$variant": "f64",
+      "value": 10
+    },
+    "loop1.bodyCalls": {
+      "$variant": "f64",
+      "value": 5
+    },
+    "loop1.immediate": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "loop1.after1tick": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "loop1.completed": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "loop1.startTime": {
+      "$variant": "f64",
+      "value": 5.787965498864651
+    },
+    "loop1.elapsedMs": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "loop1.aborted": {
+      "$variant": "Bool",
+      "value": false
+    },
+    "loop1.reportedLocalSum": {
+      "$variant": "f64",
+      "value": 10
+    },
+    "loop1.reportedLocalBodyCalls": {
+      "$variant": "f64",
+      "value": 5
+    },
+    "test1.runs": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "loop1.completedTime": {
+      "$variant": "f64",
+      "value": 5.787965498864651
+    },
+    "loop2.sum": {
+      "$variant": "f64",
+      "value": 10
+    },
+    "loop2.bodyCalls": {
+      "$variant": "f64",
+      "value": 5
+    },
+    "loop2.immediate": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "loop2.after1tick": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "loop2.completed": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "loop2.startTime": {
+      "$variant": "f64",
+      "value": 6.270432200282812
+    },
+    "loop2.elapsedMs": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "loop2.aborted": {
+      "$variant": "Bool",
+      "value": false
+    },
+    "loop2.reportedLocalSum": {
+      "$variant": "f64",
+      "value": 10
+    },
+    "loop2.reportedLocalBodyCalls": {
+      "$variant": "f64",
+      "value": 5
+    },
+    "test2.runs": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "loop2.completedTime": {
+      "$variant": "f64",
+      "value": 6.270432200282812
+    },
+    "loop3.sum": {
+      "$variant": "f64",
+      "value": 15
+    },
+    "loop3.bodyCalls": {
+      "$variant": "f64",
+      "value": 5
+    },
+    "loop3.immediate": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "loop3.after1tick": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "loop3.completed": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "loop3.startTime": {
+      "$variant": "f64",
+      "value": 6.7492823004722595
+    },
+    "loop3.elapsedMs": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "loop3.aborted": {
+      "$variant": "Bool",
+      "value": false
+    },
+    "loop3.reportedLocalSum": {
+      "$variant": "f64",
+      "value": 15
+    },
+    "loop3.reportedLocalBodyCalls": {
+      "$variant": "f64",
+      "value": 5
+    },
+    "test3.runs": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "loop3.completedTime": {
+      "$variant": "f64",
+      "value": 6.7492823004722595
+    },
+    "loop4.sum": {
+      "$variant": "f64",
+      "value": 10
+    },
+    "loop4.bodyCalls": {
+      "$variant": "f64",
+      "value": 3
+    },
+    "loop4.immediate": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "loop4.after1tick": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "loop4.completed": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "loop4.startTime": {
+      "$variant": "f64",
+      "value": 7.194125302135944
+    },
+    "loop4.elapsedMs": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "loop4.aborted": {
+      "$variant": "Bool",
+      "value": false
+    },
+    "loop4.reportedLocalSum": {
+      "$variant": "f64",
+      "value": 10
+    },
+    "loop4.reportedLocalBodyCalls": {
+      "$variant": "f64",
+      "value": 3
+    },
+    "test4.runs": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "loop4.completedTime": {
+      "$variant": "f64",
+      "value": 7.194125302135944
+    },
+    "read.seed": {
+      "$variant": "f64",
+      "value": 111
+    },
+    "read.directImmediate": {
+      "$variant": "f64",
+      "value": 111
+    },
+    "read.explicitImmediate": {
+      "$variant": "f64",
+      "value": 111
+    },
+    "read.mapImmediate": {
+      "$variant": "f64",
+      "value": 111
+    },
+    "read.mapAfter1tick": {
+      "$variant": "f64",
+      "value": 111
+    },
+    "read.directAfter1tick": {
+      "$variant": "f64",
+      "value": 111
+    },
+    "read.expected": {
+      "$variant": "f64",
+      "value": 111
+    },
+    "read.containerChanges": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "read.mapFound": {
+      "$variant": "Bool",
+      "value": true
+    },
+    "test5.runs": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "edges.signal": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "edges.rising": {
+      "$variant": "f64",
+      "value": 2
+    },
+    "edges.falling": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "edges.changed": {
+      "$variant": "f64",
+      "value": 3
+    },
+    "test6.runs": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "queue.rawCount": {
+      "$variant": "f64",
+      "value": 2
+    },
+    "queue.rawSum": {
+      "$variant": "f64",
+      "value": 30
+    },
+    "queue.count": {
+      "$variant": "f64",
+      "value": 2
+    },
+    "queue.sum": {
+      "$variant": "f64",
+      "value": 30
+    },
+    "test7.runs": {
+      "$variant": "f64",
+      "value": 1
+    }
+  },
+  "callableLocals": [
+    {
+      "scope": "GP2:chip:function",
+      "position": [
+        240,
+        0,
+        2
+      ],
+      "value": {
+        "$variant": "f64",
+        "value": 1
+      }
+    },
+    {
+      "scope": "GP2:chip:loop4",
+      "position": [
+        48,
+        0,
+        2
+      ],
+      "value": {
+        "$variant": "f64",
+        "value": 10
+      }
+    },
+    {
+      "scope": "GP2:chip:loop4",
+      "position": [
+        96,
+        0,
+        2
+      ],
+      "value": {
+        "$variant": "f64",
+        "value": 3
+      }
+    },
+    {
+      "scope": "GP2:chip:loop3",
+      "position": [
+        48,
+        0,
+        2
+      ],
+      "value": {
+        "$variant": "f64",
+        "value": 15
+      }
+    },
+    {
+      "scope": "GP2:chip:loop3",
+      "position": [
+        96,
+        0,
+        2
+      ],
+      "value": {
+        "$variant": "f64",
+        "value": 5
+      }
+    },
+    {
+      "scope": "GP2:chip:loop2",
+      "position": [
+        48,
+        0,
+        2
+      ],
+      "value": {
+        "$variant": "f64",
+        "value": 10
+      }
+    },
+    {
+      "scope": "GP2:chip:loop2",
+      "position": [
+        96,
+        0,
+        2
+      ],
+      "value": {
+        "$variant": "f64",
+        "value": 5
+      }
+    },
+    {
+      "scope": "GP2:chip:loop1",
+      "position": [
+        48,
+        0,
+        2
+      ],
+      "value": {
+        "$variant": "f64",
+        "value": 10
+      }
+    },
+    {
+      "scope": "GP2:chip:loop1",
+      "position": [
+        96,
+        0,
+        2
+      ],
+      "value": {
+        "$variant": "f64",
+        "value": 5
+      }
+    }
+  ],
+  "functionCall": {
+    "Input0": {
+      "$variant": "f64",
+      "value": 11
+    },
+    "Input1": {
+      "$variant": "f64",
+      "value": 7
+    },
+    "Input2": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Input3": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Input4": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Input5": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Input6": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Input7": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Output0": {
+      "$variant": "f64",
+      "value": 1
+    },
+    "Output1": {
+      "$variant": "f64",
+      "value": 18
+    },
+    "Output2": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Output3": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Output4": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Output5": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Output6": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "Output7": {
+      "$variant": "f64",
+      "value": 0
+    },
+    "InputSources": [
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "bAborted": false,
+    "AbortReason": 0,
+    "IterationsExecuted": 1
+  },
+  "loopStates": [
+    {
+      "type": "Component_Internal_Microchip_ForEachMap",
+      "data": {
+        "bAborted": false,
+        "AbortReason": 0,
+        "IterationsExecuted": 3,
+        "bRunAcrossTicks": false,
+        "bRunning": false,
+        "RunState": {
+          "Ordinal": 0,
+          "Count": 0,
+          "Index": 0,
+          "Step": 0,
+          "IterationsExecuted": 0,
+          "SavedMapCursor": 0,
+          "bActive": false
+        }
+      }
+    },
+    {
+      "type": "Component_Internal_Microchip_ForEachArray",
+      "data": {
+        "bAborted": false,
+        "AbortReason": 0,
+        "IterationsExecuted": 5,
+        "bRunAcrossTicks": false,
+        "bRunning": false,
+        "RunState": {
+          "Ordinal": 0,
+          "Count": 0,
+          "Index": 0,
+          "Step": 0,
+          "IterationsExecuted": 0,
+          "SavedMapCursor": 0,
+          "bActive": false
+        }
+      }
+    },
+    {
+      "type": "Component_Internal_Microchip_CountFor",
+      "data": {
+        "Count": 5,
+        "FirstIndex": 0,
+        "Step": 1,
+        "bAborted": false,
+        "AbortReason": 0,
+        "IterationsExecuted": 5,
+        "bRunAcrossTicks": true,
+        "bRunning": false,
+        "RunState": {
+          "Ordinal": 5,
+          "Count": 5,
+          "Index": 4,
+          "Step": 1,
+          "IterationsExecuted": 5,
+          "SavedMapCursor": 0,
+          "bActive": false
+        }
+      }
+    },
+    {
+      "type": "Component_Internal_Microchip_CountFor",
+      "data": {
+        "Count": 5,
+        "FirstIndex": 0,
+        "Step": 1,
+        "bAborted": false,
+        "AbortReason": 0,
+        "IterationsExecuted": 5,
+        "bRunAcrossTicks": false,
+        "bRunning": false,
+        "RunState": {
+          "Ordinal": 0,
+          "Count": 0,
+          "Index": 0,
+          "Step": 0,
+          "IterationsExecuted": 0,
+          "SavedMapCursor": 0,
+          "bActive": false
+        }
+      }
+    }
+  ],
+  "payloadHistory": [
+    {
+      "$elementType": "f64",
+      "$array": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "$elementType": "f64",
+      "$array": [
+        10,
+        20
+      ]
+    }
+  ]
+}

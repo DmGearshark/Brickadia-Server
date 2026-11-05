@@ -33,3 +33,5 @@ The recorded experiments support choosing appropriate native gates and removing 
 ## Returned results and corrected test
 
 The first returned test reported **nine unconnectable wires**, all variable-reference wires crossing into callable bodies. The affected body counters and loop sums are excluded from conclusions. Function arithmetic, ordinary scalar/map readback, edge/change counts and queue payload results remain useful. See [GATE-PROBE-RESULTS.md](GATE-PROBE-RESULTS.md). Use **GP2** for the follow-up test; it keeps callable references local and reports outward through Function Outputs/events.
+
+GP2's returned save retained all wires and local variables, but rejected nine annotation components inside callable chips. The loops completed correctly. Its Function output slots were opposite the generator's display assumptions. **GP3** removes those annotations and corrects that display; only button 1 needs to be rerun for the focused follow-up. The decoder now also reads unannotated callable-local variables by scope/position. See the full results document above.
