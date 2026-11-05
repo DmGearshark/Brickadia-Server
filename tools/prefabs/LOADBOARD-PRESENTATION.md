@@ -17,6 +17,10 @@ All four buttons (three portable controls plus the pickup control) receive the n
 
 These are spatial one-shot emitters on existing display/depot bricks, with repetition disabled. Acceptance/abandonment/collection remember their last played request nonce to suppress duplicate confirmed replies. The delivery sound follows the existing one-payment guard. Preview clicks, refresh replies, eligibility failures, failed spawning and rejected deliveries do not play confirmation cues. Native press/release sounds still provide normal button feedback; those automatic component sounds are distinct from confirmed-action cues.
 
+Inactive catalogue rows retain their internal `Unused` sentinel for availability checks, but the portable display converts that sentinel to an empty string for both the load name and details. The selected-row chevrons are also suppressed when that row is empty.
+
+Delivery audio is wireless across the world layout. The successful payment/chat path broadcasts `LB1.DeliveryCompleted`; an event receiver inside the delivery-location logic plays the local cash-register emitter. No sound wire connects the Server Load Board directly to the delivery location.
+
 ## Chip layout
 
 Thirty-nine section records describe the current main/client layout in [loadboard-compact-sections.json](loadboard-compact-sections.json). Ordinary chips have compact flow/data columns on shaded backing tiles with side labels. Wide procedural gates occupy multiple ten-unit cells. Format Text gates reserve three cells as a conservative clearance allowance; their intrinsic asset name does not imply a one-cell footprint. Backing and label tiles use sizes and centers aligned to the five-unit coarse tile grid. Sections cover:

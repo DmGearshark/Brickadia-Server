@@ -97,8 +97,8 @@
         "node": true,
         "type": "BrickComponentType_BufferTicks",
         "pos": [
-          35,
-          85,
+          15,
+          95,
           6
         ],
         "group": "server"
@@ -107,7 +107,7 @@
         "node": true,
         "type": "BrickComponentType_Exec_Union",
         "pos": [
-          5,
+          25,
           95,
           6
         ],

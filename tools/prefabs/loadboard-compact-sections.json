@@ -47,7 +47,7 @@
     {
       "grid": 4,
       "section": "REQUEST QUEUE",
-      "gates": 58,
+      "gates": 59,
       "bounds": [
         0,
         0,
@@ -371,7 +371,7 @@
     {
       "grid": 8,
       "section": "DELIVERY EVENT",
-      "gates": 7,
+      "gates": 8,
       "bounds": [
         0,
         0,
@@ -384,7 +384,7 @@
     {
       "grid": 3,
       "section": "BIND & CONTROLS",
-      "gates": 45,
+      "gates": 56,
       "bounds": [
         0,
         0,
@@ -395,7 +395,7 @@
     {
       "grid": 3,
       "section": "REQUEST & ACTION",
-      "gates": 41,
+      "gates": 42,
       "bounds": [
         190,
         0,
