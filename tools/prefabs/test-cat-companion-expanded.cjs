@@ -56,11 +56,25 @@ for (const [label, pattern] of [
   ['Tired cyan mapping', /mode\.Value == RETURN_BED then ColorSRGB\(45, 225, 235, 255\)/],
   ['Sleep dark-blue mapping', /mode\.Value == SLEEP then ColorSRGB\(25, 55, 150, 255\)/],
   ['Hungry lime mapping', /hunger\.Value >= 72\.0 then ColorSRGB\(155, 230, 80, 255\)/],
+  ['Stretch amber mapping', /mode\.Value == STRETCH then ColorSRGB\(245, 180, 45, 255\)/],
   ['Angry face mapping', /mode\.Value == ANGRY then "😾"/u],
+  ['Stretch face mapping', /mode\.Value == STRETCH then "🐈"/u],
   ['Stalk and Chase face mapping', /mode\.Value == STALK \|\| mode\.Value == CHASE then "😼"/u],
-  ['Sleep face mapping', /mode\.Value == SLEEP then "😺"/u],
-  ['Stalk front-low posture', /let wantedFront = if mode == STALK then 100\.0/],
-  ['Stalk rear-high posture', /let wantedRear = if mode == STALK then 500\.0/],
+  ['Sleep face mapping', /mode\.Value == SLEEP then "zzZ"/],
+  ['Sleepy face mapping', /tired\.Value \|\| mode\.Value == RETURN_BED then "zzz"/],
+  ['Sad face mapping', /mode\.Value == FLEE then "😿"/u],
+  ['Angry front-low posture', /let wantedFront = if mode == ANGRY then 100\.0/],
+  ['Angry rear-low posture', /let wantedRear = if mode == ANGRY then 100\.0/],
+  ['Stretch front-low posture', /else if mode == STRETCH then 100\.0/],
+  ['Stretch rear-high posture', /else if mode == STRETCH then 500\.0/],
+  ['Stalk front-low posture', /else if mode == STALK then 100\.0/],
+  ['Stalk rear-high posture', /else if mode == STALK then 500\.0/],
+  ['Angry retreat timer', /angryDriveUntil = seconds \+ 5/],
+  ['Angry retreat from live player', /let threat = if playerNearby then nearestPlayerPosition/],
+  ['Angry retreat target', /aimAway\(threat\)/],
+  ['Stretch duration', /stretchUntil = seconds \+ Random\(4, 7\)/],
+  ['Stretch reverse motion', /if mode == STRETCH \{\s+driveCommand = -0\.18/],
+  ['Stretch releases brake', /driveCommand = -0\.18\s+steerCommand = 0\.0\s+brakeCommand = false/],
   ['Five-to-ten-minute awake interval', /nextNapAt = seconds \+ Random\(300, 600\)/],
   ['Thirty-to-sixty-second nap', /napUntil = seconds \+ Random\(30, 60\)/],
   ['Fifteen-second pet request', /petRequestUntil = seconds \+ 15/],
@@ -175,11 +189,15 @@ assert.deepEqual(neck.brick.data, sourceNeck.brick.data, 'Neck servo brick chang
 assert.deepEqual(neck.comp.data, sourceNeck.comp.data, 'Neck servo settings changed');
 const face = one(all(output, TYPES.text).filter(({comp}) =>
   /[😺😼😿😻😾]/u.test(comp.data.Text || '')), 'cat face');
+const sourceFace = one(all(source, TYPES.text).filter(({comp}) =>
+  /[😺😼😿😻😾]/u.test(comp.data.Text || '')), 'source cat face');
 const mood = one(all(output, TYPES.text).filter(({comp}) =>
   comp.data.Text === '■'), 'cat mood indicator');
 const sourceMood = one(all(source, TYPES.text).filter(({comp}) =>
   comp.data.Text === '■'), 'source cat mood indicator');
 assert.equal(mood.brick.g, face.brick.g, 'Mood indicator remains on the head grid');
+assert.deepEqual(face.brick.data, sourceFace.brick.data, 'Face display brick changed');
+assert.deepEqual(face.comp.data, sourceFace.comp.data, 'Face display settings changed');
 assert.deepEqual(mood.brick.data, sourceMood.brick.data, 'Mood indicator brick changed');
 assert.deepEqual(mood.comp.data, sourceMood.comp.data, 'Mood indicator settings changed');
 const palette = all(output, TYPES.select).flatMap(({comp}) =>
@@ -203,6 +221,7 @@ for (const [label, rgb] of [
   ['dark-blue Sleep', [25, 55, 150]],
   ['lime Hungry', [155, 230, 80]],
   ['magenta Treat', [230, 80, 210]],
+  ['amber Stretch', [245, 180, 45]],
 ]) {
   assert(hasColor(linearColor(...rgb)), `Missing ${label} indicator color`);
 }
@@ -210,8 +229,8 @@ const faceLiterals = new Set(all(output, TYPES.select).flatMap(({comp}) =>
   [comp.data.InputA, comp.data.InputB]
     .filter(value => value?.$variant === 'str')
     .map(value => value.value)));
-for (const emoji of ['😾', '😼', '😿', '😺', '😻']) {
-  assert(faceLiterals.has(emoji), `Missing state-driven ${emoji} face literal`);
+for (const faceText of ['😾', '😼', '😿', '😺', '😻', '🐈', 'zzz', 'zzZ']) {
+  assert(faceLiterals.has(faceText), `Missing state-driven ${faceText} face literal`);
 }
 
 const outputs = new Map(all(output, TYPES.microchipOutput)
@@ -266,9 +285,10 @@ assertOutputDriver(TYPES.engine, 'ManualInput_Steer', 'Steer');
 assertOutputDriver(TYPES.engine, 'bManualInput_Brake', 'Brake');
 assertOutputDriver(TYPES.servo, 'TargetAngle', 'HeadAngle');
 assertOutputDriver(TYPES.text, 'Text', 'FaceText');
-assertOutputDriver(TYPES.text, 'Color', 'MoodColor');
-assert.equal(drivers(TYPES.text, 'Color')[0].z, mood.brick.key,
-  'Mood color should drive the square indicator');
+assertOutputDriver(TYPES.text, 'Color', 'MoodColor', 2);
+assert.deepEqual(new Set(drivers(TYPES.text, 'Color').map(edge => edge.z)),
+  new Set([mood.brick.key, face.brick.key]),
+  'Mood color should drive both the square and face displays');
 
 for (const label of ['DriveSpeed', 'FrontSuspension', 'RearSuspension']) {
   const before = sourceControls[label];
@@ -343,7 +363,10 @@ assert.deepEqual(
 
 const shell = one(output.bricks.filter(brick => component(brick, TYPES.microchip)
   && output.links.some(link => link.key === brick.key)), 'brain shell');
-assert.equal(shell.g, face.brick.g, 'Brain shell should remain mounted on the head grid');
+assert.equal(shell.g, engine.brick.g, 'Brain shell should be mounted on the chassis');
+assert.notEqual(shell.g, face.brick.g, 'Brain shell must not rotate with the head');
+assert.deepEqual(shell.data.position, [15, 17, 18], 'Brain shell body position changed');
+assert.equal(output.links[0].key, shell.key, 'Brain link must originate at the moved shell');
 assert.equal(component(shell, TYPES.interact), undefined,
   'Old brain-note interaction should not override petting');
 assert.equal(face.comp.data.bEnabled, true);

@@ -126,7 +126,10 @@ function physicalTargets(scene, brainGrid) {
     Brake: [{key: engine.key, type: TYPES.engine, port: 'bManualInput_Brake'}],
     HeadAngle: [{key: neck.key, type: TYPES.servo, port: 'TargetAngle'}],
     FaceText: [{key: face.key, type: TYPES.text, port: 'Text'}],
-    MoodColor: [{key: mood.key, type: TYPES.text, port: 'Color'}],
+    MoodColor: [
+      {key: mood.key, type: TYPES.text, port: 'Color'},
+      {key: face.key, type: TYPES.text, port: 'Color'},
+    ],
   };
 }
 
@@ -377,6 +380,9 @@ function merge(catPath, compiledPath) {
   const targets = physicalTargets(scene, targetGrid);
   const importing = assetImporter(scene, compiled);
   const hardware = ensureHardware(scene, targets.chassisGrid, importing);
+  catBrain.brick.g = targets.chassisGrid;
+  place(scene, targets.chassisGrid, catBrain.brick,
+    [[15, 17, 18], [15, -17, 18], [-15, -17, 18], [0, 17, 18], [0, -17, 18]]);
   targets.Purr = [{key: hardware.speaker.key, type: TYPES.audio, port: 'bEnabled'}];
   const oldBrainInteractions = catBrain.brick.comps.filter(comp =>
     comp.type === 'Component_Interact').length;

@@ -2,7 +2,7 @@
 
 `cat-companion-expanded.brz` keeps the supplied cat body, servo, wheel engine,
 four native wheels, and all five joints. Its old disconnected brain has been
-replaced with a compiled WireScript state machine.
+replaced with a compiled WireScript state machine mounted on the body chassis.
 
 ## Behavior
 
@@ -13,9 +13,9 @@ its needs cannot issue conflicting drive commands.
 From highest to lowest priority, it can react to being carried, flee danger,
 hold an angry response, eat a discovered treat, wait after asking for pets,
 return to bed or nap where it is, seek food, answer `/cat`, stalk and chase a
-toy or player, ask for petting, follow a nearby player, sit, sprint, or roam near
-its spawn point. Its face uses the supplied 😺 😼 😿 😻 😾 set, with active
-behavior states choosing both the emoji and square color together.
+toy or player, ask for petting, follow a nearby player, stretch, sit, sprint, or
+roam near its spawn point. Its face uses the supplied emoji moods plus `zzz`,
+`zzZ`, and 🐈, with active states choosing the face text and color together.
 
 The provided control inputs are now active:
 
@@ -27,6 +27,8 @@ The provided control inputs are now active:
 | Sleep | 50, with drive braked | 100 | 100 |
 | Chase / pounce | 280 | 500 | 500 |
 | Flee | 320 | 500 | 500 |
+| Angry | 180 while retreating, then braked | 100 | 100 |
+| Stretch | 50, gently reversing | 100 | 500 |
 
 Suspension values blend toward their targets instead of changing in one tick.
 
@@ -39,22 +41,24 @@ head looks at the carrier while held, wanders through small idle glances only
 without a focus, and returns smoothly to center while sleeping. Tracking is
 clamped to 55 degrees in either direction.
 
-The microchip remains mounted on the head grid. Physical navigation, sensing,
-and spatial audio use explicit chassis adapters, so turning the head does not
-change the cat's movement reference.
+The outer microchip is mounted on the wheel-engine chassis at a checked free
+body position. The internal logic plane remains linked to that shell. The face
+and square stay on the servo head, while navigation, sensing, interaction, and
+spatial audio now share the body's reference directly.
 
 ## Mood indicator
 
-The square decal on the rear of the head follows the active behavior and its
-matching face:
+The face display and square decal share the same `MoodColor` output, so both
+follow the active behavior:
 
 | Indicator | Meaning |
 | --- | --- |
 | Orange + 😼 | Stalking a locked toy or player |
 | Yellow + 😼 | Chasing after a stalk or having a spontaneous fast run |
-| Red + 😾 | Angry |
-| Cyan + 😿 | Tired or returning to bed |
-| Dark blue + 😺 | Sleeping |
+| Red + 😾 | Angry, retreating, or lying low |
+| Cyan + `zzz` | Sleepy or returning to bed |
+| Dark blue + `zzZ` | Sleeping |
+| Amber + 🐈 | Stretching |
 | Lime + 😿 | Hungry or walking to food |
 | Magenta + 😻 | Walking to a treat |
 | Green + 😺 | Calm / normal |
@@ -62,19 +66,21 @@ matching face:
 | Blue + 😿 | Needy, unhappy, frightened, or fleeing |
 | Pink + 😻 | Affectionate / pleased |
 
-The user's square and face display placement and style are preserved, along with
-the supplied emoji set. The brain controls the face text and square color.
+The user's square and face display placement and style are preserved. The brain
+controls the face text and sends the same color to both displays.
 
 ## Interaction
 
-- Interact with the visible cat head and choose **Pet Cat**. Petting lowers fear
+- Interact with the cat body and choose **Pet Cat**. Petting lowers fear
   and social need, raises affection and familiarity, changes the face, and
   starts purring. When the cat walks over to ask for pets, it waits 15 seconds.
   Being ignored makes it angry for about 12 seconds. During a requested petting
   session the sixth accepted pet is too much; outside a request, the third and
   later rapid pets each have a 35% chance to annoy it. Accepted pets are spaced
   by the existing two-second interaction cooldown. Angry cats do not award
-  affection or purr, and wait at least 45 seconds before asking again.
+  affection or purr, and wait at least 45 seconds before asking again. Angry
+  cats drive away from the offending or nearby player for five seconds, then
+  remain braked with both suspensions low for the rest of the angry period.
 - Pickup is inferred after the chassis stays off the ground for about two
   seconds while a player is within 210 units. The cat randomly enjoys or
   dislikes each pickup, weighted by affection and fear. A disliked pickup makes
@@ -82,7 +88,7 @@ the supplied emoji set. The brain controls the face text and square color.
 - `/cat` is heard within 1,200 units. Familiar players are much more likely to
   get a response; strangers are usually ignored. Petting and being near the cat
   when it gets a treat increase familiarity.
-- Damage to the head immediately raises fear and starts a flee response.
+- Damage to the body immediately raises fear and starts a flee response.
 
 The `/cat` handler uses Brickadia's admin-only Chat Command Event gate. An admin
 must place the prefab for that one feature to load. The rest of the behavior is
@@ -131,8 +137,10 @@ burst of energy without a stalking target or boredom reward.
 
 After five to ten minutes awake and once higher-priority behavior clears, the cat
 prefers a known bed 75% of the time and otherwise naps in place. The final minute
-before that deadline is the cyan tired period unless another active mode owns the
-indicator. A nap lasts 30 to 60 seconds, then a new awake interval is scheduled.
+before that deadline is the cyan `zzz` period unless another active mode owns the
+indicator. Sleep uses `zzZ`. A nap lasts 30 to 60 seconds, then the cat stretches
+for four to seven seconds. It can also stretch occasionally while idle, lowering
+the front, raising the rear, centering its neck, and slowly backing up.
 
 The sensor reaches 900 units in front of the chassis and is approximately 240
 units wide by 120 units tall. Roaming lets the cat discover objects in different
@@ -147,8 +155,8 @@ for every call. Purring uses a quiet, low-pitched spatial
 
 ## Verification
 
-The final prefab contains 1,462 bricks, including 1,441 compiled brain gates plus
-the three supplied annotated control gates, and 2,574 wires. Static verification
+The final prefab contains 1,588 bricks, including 1,567 compiled brain gates plus
+the three supplied annotated control gates, and 2,803 wires. Static verification
 found zero invalid bricks, overlaps, duplicate wire drivers, or instant cycles.
 The four native wheel entities, four suspension joints, and neck servo joint
 survive byte-level round trips.
@@ -156,6 +164,8 @@ survive byte-level round trips.
 The first live test should check wheel steering, neck polarity, physical pickup
 detection, spatial audio volume, and `/cat` behavior with two players. It should
 also verify orange Stalk with a low front and high rear, yellow Chase at speed,
-the pet-request timeout and both over-petting anger paths, 30-to-60-second naps,
-zone discovery, treat deletion, and exact `Cat Food` deletion. Those physics and
-multiplayer details cannot be reproduced by the headless gate simulator.
+the angry retreat and low resting posture, cyan `zzz`, dark-blue `zzZ`, amber
+Stretch reverse movement, the pet-request timeout and both over-petting paths,
+30-to-60-second naps, zone discovery, treat deletion, and exact `Cat Food`
+deletion. Those physics and multiplayer details cannot be reproduced by the
+headless gate simulator.

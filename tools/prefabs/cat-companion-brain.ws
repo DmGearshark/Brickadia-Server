@@ -32,6 +32,7 @@ const SIT = 11
 const SLEEP = 12
 const WAIT_PETS = 13
 const ANGRY = 14
+const STRETCH = 15
 
 const HEARING_RANGE = 1200.0
 const ARRIVE_RANGE = 75.0
@@ -126,10 +127,13 @@ var requestedPettingUntil: int = 0
 var petBurstUntil: int = 0
 var petBurstCount: int = 0
 var angryUntil: int = 0
+var angryDriveUntil: int = 0
 var angryLookPosition: vector = Vec(0.0, 0.0, 0.0)
 var nextNapAt: int = 0
 var napUntil: int = 0
 var tired: bool = false
+var stretchUntil: int = 0
+var nextStretchAt: int = 0
 var obstacleTurn: float = 1.0
 var avoidTicks: int = 0
 
@@ -142,12 +146,13 @@ out FrontSuspension: float = frontSuspension.Value
 out RearSuspension: float = rearSuspension.Value
 out HeadAngle: float = headAngle.Value
 out FaceText: string = if mode.Value == ANGRY then "😾"
+  else if mode.Value == STRETCH then "🐈"
   else if mode.Value == FLEE then "😿"
   else if mode.Value == STALK || mode.Value == CHASE then "😼"
-  else if mode.Value == SLEEP then "😺"
+  else if mode.Value == SLEEP then "zzZ"
   else if mode.Value == SEEK_TREAT then "😻"
   else if mode.Value == SEEK_FOOD then "😿"
-  else if tired.Value || mode.Value == RETURN_BED then "😿"
+  else if tired.Value || mode.Value == RETURN_BED then "zzz"
   else if hunger.Value >= 72.0 then "😿"
   else face.Value
 out MoodColor: color = if mode.Value == ANGRY then ColorSRGB(255, 65, 65, 255)
@@ -155,6 +160,7 @@ out MoodColor: color = if mode.Value == ANGRY then ColorSRGB(255, 65, 65, 255)
   else if mode.Value == SLEEP then ColorSRGB(25, 55, 150, 255)
   else if mode.Value == STALK then ColorSRGB(255, 145, 35, 255)
   else if mode.Value == CHASE then ColorSRGB(255, 225, 45, 255)
+  else if mode.Value == STRETCH then ColorSRGB(245, 180, 45, 255)
   else if mode.Value == SEEK_TREAT then ColorSRGB(230, 80, 210, 255)
   else if mode.Value == SEEK_FOOD then ColorSRGB(155, 230, 80, 255)
   else if tired.Value || mode.Value == RETURN_BED then ColorSRGB(45, 225, 235, 255)
@@ -195,11 +201,20 @@ mod beginFlee(origin: vector, duration: int) {
   face = "😾"
 }
 
+mod aimAway(origin: vector) {
+  let cat = if Chassis != null then Chassis else ReadBrickGrid()
+  let position = cat.GetLocation()
+  let away = Normalize(Vec(position.x - origin.x, position.y - origin.y, 0.0))
+  angryLookPosition = origin
+  targetPosition = position + away * 650.0
+  targetValid = true
+}
+
 mod beginAngry(origin: vector, duration: int) {
   mode = ANGRY
   angryUntil = seconds + duration
-  angryLookPosition = origin
-  targetValid = false
+  angryDriveUntil = seconds + 5
+  aimAway(origin)
   petRequestUntil = 0
   requestedPettingUntil = 0
   petRequestRetryAfter = seconds + 45
@@ -214,7 +229,15 @@ mod beginNap() {
   napUntil = seconds + Random(30, 60)
   targetValid = false
   tired = false
-  face = "😺"
+  face = "zzZ"
+}
+
+mod beginStretch() {
+  mode = STRETCH
+  stretchUntil = seconds + Random(4, 7)
+  nextStretchAt = seconds + Random(90, 180)
+  targetValid = false
+  face = "🐈"
 }
 
 on Loaded() {
@@ -225,6 +248,7 @@ on Loaded() {
   face = "😺"
   mode = IDLE
   nextNapAt = seconds + Random(300, 600)
+  nextStretchAt = seconds + Random(60, 150)
 }
 
 // Refresh the nearby-player snapshot and remember coordinates of recognized props.
@@ -410,7 +434,12 @@ on Clock(interval = 2.0) {
     face = "😿"
   } else if seconds < angryUntil {
     mode = ANGRY
-    targetValid = false
+    if seconds < angryDriveUntil {
+      let threat = if playerNearby then nearestPlayerPosition else angryLookPosition
+      aimAway(threat)
+    } else {
+      targetValid = false
+    }
     face = "😾"
   } else if mode == ANGRY {
     mode = SIT
@@ -431,13 +460,18 @@ on Clock(interval = 2.0) {
     beginAngry(ignoredAt, 12)
   } else if mode == SLEEP && seconds < napUntil {
     targetValid = false
-    face = "😺"
+    face = "zzZ"
   } else if mode == SLEEP {
-    mode = IDLE
-    targetValid = false
     sleepiness = 0.0
     tired = false
     nextNapAt = seconds + Random(300, 600)
+    beginStretch()
+  } else if mode == STRETCH && seconds < stretchUntil {
+    targetValid = false
+    face = "🐈"
+  } else if mode == STRETCH {
+    mode = SIT
+    targetValid = false
     face = "😺"
   } else if mode == RETURN_BED && targetValid {
     targetPosition = bedPosition
@@ -527,6 +561,8 @@ on Clock(interval = 2.0) {
     targetPosition = nearestPlayerPosition
     targetValid = true
     face = "😺"
+  } else if seconds >= nextStretchAt && !tired {
+    beginStretch()
   } else {
     let choice = Random(0, 100)
     if choice < 10 {
@@ -646,15 +682,21 @@ on Clock(interval = 2.0) {
 
 // Motion, posture, and simple obstacle avoidance.
 on Clock(interval = 0.2) {
-  let wantedFront = if mode == STALK then 100.0
+  let wantedFront = if mode == ANGRY then 100.0
+    else if mode == STRETCH then 100.0
+    else if mode == STALK then 100.0
     else if mode == SLEEP then 100.0
     else 500.0
-  let wantedRear = if mode == STALK then 500.0
+  let wantedRear = if mode == ANGRY then 100.0
+    else if mode == STRETCH then 500.0
+    else if mode == STALK then 500.0
     else if mode == SLEEP || mode == SIT then 100.0
     else 500.0
-  let wantedSpeed = if mode == STALK || mode == SIT || mode == SLEEP || mode == CARRIED then 50.0
+  let wantedSpeed = if mode == STALK || mode == SIT || mode == SLEEP
+    || mode == STRETCH || mode == CARRIED then 50.0
     else if mode == CHASE then 280.0
     else if mode == FLEE then 320.0
+    else if mode == ANGRY then 180.0
     else 100.0
 
   frontSuspension = lerp(frontSuspension, wantedFront, 0.18)
@@ -671,7 +713,7 @@ on Clock(interval = 0.2) {
   let forward = Normalize(Vec(rawForward.x, rawForward.y, 0.0))
   var lookPosition: vector = targetPosition
   var lookValid: bool = false
-  if mode != SLEEP {
+  if mode != SLEEP && mode != STRETCH {
     if mode == CARRIED && closePlayerForPickup {
       lookPosition = pickupPlayerPosition
       lookValid = true
@@ -695,7 +737,7 @@ on Clock(interval = 0.2) {
       lookValid = true
     }
   }
-  var wantedHeadAngle: float = if mode == SLEEP then 0.0 else idleHeadAngle
+  var wantedHeadAngle: float = if mode == SLEEP || mode == STRETCH then 0.0 else idleHeadAngle
   if lookValid {
     let toLook = Vec(lookPosition.x - position.x, lookPosition.y - position.y, 0.0)
     if Magnitude(toLook) > 8.0 {
@@ -706,8 +748,13 @@ on Clock(interval = 0.2) {
   }
   headAngle = lerp(headAngle, wantedHeadAngle, 0.22)
 
-  if mode == CARRIED || mode == SIT || mode == SLEEP || mode == WAIT_PETS
-    || mode == ANGRY || mode == IDLE || !targetValid {
+  if mode == STRETCH {
+    driveCommand = -0.18
+    steerCommand = 0.0
+    brakeCommand = false
+    avoidTicks = 0
+  } else if mode == CARRIED || mode == SIT || mode == SLEEP || mode == WAIT_PETS
+    || mode == IDLE || !targetValid {
     driveCommand = 0.0
     steerCommand = 0.0
     brakeCommand = true
@@ -757,7 +804,7 @@ on Clock(interval = 0.2) {
   }
 }
 
-// Petting applies to the servo-attached head grid that holds the outer chip.
+// Petting applies to the chassis grid that holds the outer chip.
 // The postprocessor sets this event's prompt to "Pet Cat" and enables nearby interaction.
 on WholeGridInteracted() -> { held: isHeld } {
   if isHeld && petCooldown == 0 {
@@ -775,9 +822,10 @@ on WholeGridInteracted() -> { held: isHeld } {
       // Fear cannot be canceled by repeatedly interacting with the cat.
       face = "😿"
     } else if mode == ANGRY || seconds < angryUntil {
-      // Petting an already angry cat extends the mood and gives no reward.
-      angryLookPosition = petPosition
+      // Petting an angry cat restarts a short retreat and gives no reward.
       angryUntil = max(angryUntil, seconds + 6)
+      angryDriveUntil = max(angryDriveUntil, seconds + 3)
+      aimAway(petPosition)
       face = "😾"
     } else {
       let requestActive = mode == SEEK_PETS || mode == WAIT_PETS
