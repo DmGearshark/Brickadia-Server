@@ -207,8 +207,8 @@ for (const zone of [radar, mouth]) {
 }
 assert.equal(radar.comp.data.ZoneEndDistance, 900);
 assert.deepEqual(radar.brick.data.size, [60, 120, 2]);
-assert.equal(mouth.comp.data.ZoneEndDistance, 28);
-assert.deepEqual(mouth.brick.data.size, [12, 12, 2]);
+assert.equal(mouth.comp.data.ZoneEndDistance, 30);
+assert.deepEqual(mouth.brick.data.size, [20, 20, 2]);
 
 const queries = all(output, T.zoneEntities);
 const observedTags = queries.map(({comp}) => comp.data.TagFilter);
@@ -291,9 +291,7 @@ assert.equal(placement.strictOk, true, JSON.stringify(placement));
 assert.equal(placement.invalidBricks.length, 0);
 assert.equal(placement.confirmedPairs.length, 0);
 assert.equal(placement.uncertainPairs.length, 0);
-assert.equal(placement.warnings.length, 2, JSON.stringify(placement.warnings));
-assert(placement.warnings.every(warning => warning.type === 'unknown-native-bounds'
-  && warning.asset === 'BP_ZoneProjector'), JSON.stringify(placement.warnings));
+assert.equal(placement.warnings.length, 0, JSON.stringify(placement.warnings));
 
 console.log(JSON.stringify({
   integration: 'passed',

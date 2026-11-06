@@ -175,10 +175,10 @@ function addHardware(scene, chassisGrid, headGrid) {
   place(scene, chassisGrid, radar, [[23, 0, 10], [28, 0, 10], [33, 0, 10]]);
 
   const mouth = hiddenBrick('priority-cat:mouth', chassisGrid, 'BP_ZoneProjector',
-    [28, 0, 10], [12, 12, 2], 0);
+    [28, 0, 10], [20, 20, 2], 0);
   mouth.comps.push({type: T.zone, data: {
     ZoneStartDistance: 0,
-    ZoneEndDistance: 28,
+    ZoneEndDistance: 30,
     bIsBuildingZone: false,
     bIsLooseZone: false,
     bIsShareZone: false,
