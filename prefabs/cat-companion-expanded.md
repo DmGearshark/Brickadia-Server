@@ -135,12 +135,24 @@ directly into that exact focus. A successful focused pounce relieves boredom;
 toys remain in the world. Chase can also occur as a five-to-eight-second random
 burst of energy without a stalking target or boredom reward.
 
+Navigation now has separate forward and rear wall sweeps. A front obstruction
+allows only a short 0.6-second recovery at low reverse power. The cat then locks
+out another reverse attempt for about ten seconds, and abandons an ordinary
+blocked target rather than retrying the same wall. The rear sweep watches every
+negative drive command; a wall behind the cat stops and brakes it immediately.
+After one recovery, a wall-retry latch remains closed until a clear forward
+sweep proves that the cat has moved or turned away, so persistent needs cannot
+restart the same reverse loop. Continuous reversing also has a three-second hard
+limit as a final guard.
+
 After five to ten minutes awake and once higher-priority behavior clears, the cat
 prefers a known bed 75% of the time and otherwise naps in place. The final minute
 before that deadline is the cyan `zzz` period unless another active mode owns the
-indicator. Sleep uses `zzZ`. A nap lasts 30 to 60 seconds, then the cat stretches
-for four to seven seconds. It can also stretch occasionally while idle, lowering
-the front, raising the rear, centering its neck, and slowly backing up.
+indicator. Sleep uses `zzZ`. A nap lasts 30 to 60 seconds, then the cat schedules
+a two-to-four-second stretch, with the reverse guard limiting continuous motion
+to three seconds. Idle stretches begin after two to four minutes and recur only
+every three to six minutes. Stretch lowers the front, raises the rear, centers
+the neck, and backs up gently unless the rear sweep sees an obstruction.
 
 The sensor reaches 900 units in front of the chassis and is approximately 240
 units wide by 120 units tall. Roaming lets the cat discover objects in different
@@ -155,8 +167,8 @@ for every call. Purring uses a quiet, low-pitched spatial
 
 ## Verification
 
-The final prefab contains 1,588 bricks, including 1,567 compiled brain gates plus
-the three supplied annotated control gates, and 2,803 wires. Static verification
+The final prefab contains 1,676 bricks, including 1,655 compiled brain gates plus
+the three supplied annotated control gates, and 2,964 wires. Static verification
 found zero invalid bricks, overlaps, duplicate wire drivers, or instant cycles.
 The four native wheel entities, four suspension joints, and neck servo joint
 survive byte-level round trips.
@@ -166,6 +178,7 @@ detection, spatial audio volume, and `/cat` behavior with two players. It should
 also verify orange Stalk with a low front and high rear, yellow Chase at speed,
 the angry retreat and low resting posture, cyan `zzz`, dark-blue `zzZ`, amber
 Stretch reverse movement, the pet-request timeout and both over-petting paths,
-30-to-60-second naps, zone discovery, treat deletion, and exact `Cat Food`
-deletion. Those physics and multiplayer details cannot be reproduced by the
-headless gate simulator.
+30-to-60-second naps, zone discovery, treat deletion, exact `Cat Food` deletion,
+and immediate braking when a wall is placed behind it during either Stretch or
+obstacle recovery. Those physics and multiplayer details cannot be reproduced by
+the headless gate simulator.

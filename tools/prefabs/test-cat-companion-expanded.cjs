@@ -72,9 +72,24 @@ for (const [label, pattern] of [
   ['Angry retreat timer', /angryDriveUntil = seconds \+ 5/],
   ['Angry retreat from live player', /let threat = if playerNearby then nearestPlayerPosition/],
   ['Angry retreat target', /aimAway\(threat\)/],
-  ['Stretch duration', /stretchUntil = seconds \+ Random\(4, 7\)/],
-  ['Stretch reverse motion', /if mode == STRETCH \{\s+driveCommand = -0\.18/],
-  ['Stretch releases brake', /driveCommand = -0\.18\s+steerCommand = 0\.0\s+brakeCommand = false/],
+  ['Stretch duration', /stretchUntil = seconds \+ Random\(2, 4\)/],
+  ['Stretch recurrence', /nextStretchAt = seconds \+ Random\(180, 360\)/],
+  ['Stretch reverse motion', /driveCommand = -0\.10/],
+  ['Stretch releases brake', /driveCommand = -0\.10\s+steerCommand = 0\.0\s+brakeCommand = false/],
+  ['Rear sweep direction', /Vec\(-forward\.x, -forward\.y, 0\.0\)/],
+  ['Consecutive reverse cap', /reverseTicks >= 15/],
+  ['Stretch counter reset', /targetValid = false\s+reverseTicks = 0\s+face = "🐈"/u],
+  ['Stretch reverse lock guard', /seconds >= stretchUntil \|\| rearObstacle\.Hit \|\| reverseCooldownTicks > 0\s+\|\| reverseTicks >= 15/],
+  ['Stretch stop clears face', /reverseCooldownTicks = 50\s+face = "😺"/u],
+  ['Recovery rear wall guard', /else if avoidTicks > 0 \{\s+if rearObstacle\.Hit \|\| reverseTicks >= 15/],
+  ['Blocked reverse start guard', /rearObstacle\.Hit \|\| reverseCooldownTicks > 0 \|\| reverseLocked/],
+  ['Ten-second reverse cooldown', /reverseCooldownTicks = 50/],
+  ['Rear block closes latch and refreshes cooldown', /if rearObstacle\.Hit \{\s+reverseCooldownTicks = 50\s+reverseLocked = true/],
+  ['Recovery closes wall retry latch', /if avoidTicks == 0 \{\s+reverseCooldownTicks = 50\s+reverseLocked = true/],
+  ['Clear forward sweep opens wall retry latch', /else \{\s+\/\/ A clear forward sweep[\s\S]*?reverseLocked = false/],
+  ['Flee clears stale recovery', /targetValid = true\s+avoidTicks = 0\s+reverseTicks = 0\s+mode = FLEE/],
+  ['Anger clears stale recovery', /likesCurrentPickup = false\s+avoidTicks = 0\s+reverseTicks = 0/],
+  ['Forward motion resets reverse counter', /brakeCommand = distance <= stoppingRange\s+reverseTicks = 0/],
   ['Five-to-ten-minute awake interval', /nextNapAt = seconds \+ Random\(300, 600\)/],
   ['Thirty-to-sixty-second nap', /napUntil = seconds \+ Random\(30, 60\)/],
   ['Fifteen-second pet request', /petRequestUntil = seconds \+ 15/],
@@ -83,6 +98,8 @@ for (const [label, pattern] of [
 ]) {
   assert.match(behaviorSource, pattern, `Missing behavior contract: ${label}`);
 }
+assert.equal((behaviorSource.match(/driveCommand = -/g) || []).length, 3,
+  'Every negative-drive site must remain covered by one of the three rear-wall guards');
 
 assertNoInstantCycles(output);
 const placement = validatePlacement(fs.readFileSync(outputPath));
@@ -143,14 +160,15 @@ for (const consume of consumeProps) {
 assert.equal(new Set(consumedSources).size, 2, 'Food and treat use distinct entity variables');
 
 const sweeps = all(output, TYPES.sweep);
-assert.equal(sweeps.length, 3, 'Pickup, ground, and obstacle sweeps');
+assert.equal(sweeps.length, 4, 'Pickup, ground, front, and rear sweeps');
 const pickupSweep = one(sweeps.filter(({comp}) => comp.data.Radius === 210), 'pickup player sweep').comp.data;
 assert.equal(pickupSweep.bDetectBricks, false);
 assert.equal(pickupSweep.bDetectPhysics, false);
 assert.equal(pickupSweep.bDetectMap, false);
 assert.equal(pickupSweep.bDetectPlayers1, true);
 assert.equal(pickupSweep.bOnlyHitPlayerBodyParts, false);
-const groundSweep = one(sweeps.filter(({comp}) => comp.data.Distance === 72), 'ground sweep').comp.data;
+const groundSweep = one(sweeps.filter(({comp}) => comp.data.Distance === 72
+  && comp.data.Radius === 4), 'ground sweep').comp.data;
 assert.equal(groundSweep.bDetectBricks, true);
 assert.equal(groundSweep.bDetectPhysics, false,
   'The cat must not mistake its four attached wheel entities for the ground');
@@ -162,6 +180,17 @@ assert.equal(obstacleSweep.bDetectPhysics, false,
   'Tagged physics targets must not be mistaken for obstacles');
 assert.equal(obstacleSweep.bDetectMap, true);
 assert.equal(obstacleSweep.bDetectPlayers1, false);
+const rearSweep = one(sweeps.filter(({comp}) => comp.data.Distance === 72
+  && comp.data.Radius === 12), 'rear obstacle sweep').comp.data;
+assert.equal(rearSweep.bDetectBricks, true);
+assert.equal(rearSweep.bDetectPhysics, false,
+  'Rear sensing must ignore the cat wheels');
+assert.equal(rearSweep.bDetectMap, true);
+assert.equal(rearSweep.bDetectPlayers1, false);
+assert.equal(rearSweep.bDetectPlayers2, false);
+assert.equal(rearSweep.bDetectPlayers3, false);
+assert.equal(rearSweep.bDetectPlayers4, false);
+assert.equal(rearSweep.bIgnoreOwningGrid, true);
 
 const wheelSnapshot = scene => [...scene.r.entities()]
   .filter(entity => entity.typeName === 'Entity_Wheel_Offroad1')

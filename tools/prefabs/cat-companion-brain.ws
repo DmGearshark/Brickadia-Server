@@ -136,6 +136,9 @@ var stretchUntil: int = 0
 var nextStretchAt: int = 0
 var obstacleTurn: float = 1.0
 var avoidTicks: int = 0
+var reverseTicks: int = 0
+var reverseCooldownTicks: int = 0
+var reverseLocked: bool = false
 
 // Named, stable outputs expected by merge-cat-wirescript.cjs.
 out Drive: float = driveCommand.Value
@@ -197,6 +200,8 @@ mod beginFlee(origin: vector, duration: int) {
   fleeUntil = seconds + duration
   targetPosition = position + away * 650.0
   targetValid = true
+  avoidTicks = 0
+  reverseTicks = 0
   mode = FLEE
   face = "😾"
 }
@@ -220,6 +225,8 @@ mod beginAngry(origin: vector, duration: int) {
   petRequestRetryAfter = seconds + 45
   purrUntil = seconds
   likesCurrentPickup = false
+  avoidTicks = 0
+  reverseTicks = 0
   face = "😾"
   meow(0.40)
 }
@@ -234,9 +241,10 @@ mod beginNap() {
 
 mod beginStretch() {
   mode = STRETCH
-  stretchUntil = seconds + Random(4, 7)
-  nextStretchAt = seconds + Random(90, 180)
+  stretchUntil = seconds + Random(2, 4)
+  nextStretchAt = seconds + Random(180, 360)
   targetValid = false
+  reverseTicks = 0
   face = "🐈"
 }
 
@@ -248,7 +256,7 @@ on Loaded() {
   face = "😺"
   mode = IDLE
   nextNapAt = seconds + Random(300, 600)
-  nextStretchAt = seconds + Random(60, 150)
+  nextStretchAt = seconds + Random(120, 240)
 }
 
 // Refresh the nearby-player snapshot and remember coordinates of recognized props.
@@ -711,6 +719,22 @@ on Clock(interval = 0.2) {
   let position = transform.Vector
   let rawForward = transform.Rotation.ToDirection()
   let forward = Normalize(Vec(rawForward.x, rawForward.y, 0.0))
+  if reverseCooldownTicks > 0 { reverseCooldownTicks -= 1 }
+  let rearObstacle = Sweep(
+    position + Vec(0.0, 0.0, 10.0),
+    Vec(-forward.x, -forward.y, 0.0),
+    72.0,
+    radius = 12.0,
+    ignore = cat,
+    detectBricks = true,
+    detectPhysics = false,
+    detectMap = true,
+    detectPlayers1 = false,
+    detectPlayers2 = false,
+    detectPlayers3 = false,
+    detectPlayers4 = false,
+    ignoreOwningGrid = true,
+  )
   var lookPosition: vector = targetPosition
   var lookValid: bool = false
   if mode != SLEEP && mode != STRETCH {
@@ -749,21 +773,52 @@ on Clock(interval = 0.2) {
   headAngle = lerp(headAngle, wantedHeadAngle, 0.22)
 
   if mode == STRETCH {
-    driveCommand = -0.18
-    steerCommand = 0.0
-    brakeCommand = false
-    avoidTicks = 0
+    if seconds >= stretchUntil || rearObstacle.Hit || reverseCooldownTicks > 0
+      || reverseTicks >= 15 {
+      mode = SIT
+      driveCommand = 0.0
+      steerCommand = 0.0
+      brakeCommand = true
+      avoidTicks = 0
+      reverseTicks = 0
+      reverseCooldownTicks = 50
+      face = "😺"
+    } else {
+      driveCommand = -0.10
+      steerCommand = 0.0
+      brakeCommand = false
+      avoidTicks = 0
+      reverseTicks += 1
+    }
   } else if mode == CARRIED || mode == SIT || mode == SLEEP || mode == WAIT_PETS
     || mode == IDLE || !targetValid {
     driveCommand = 0.0
     steerCommand = 0.0
     brakeCommand = true
     avoidTicks = 0
+    reverseTicks = 0
   } else if avoidTicks > 0 {
-    driveCommand = -0.32
-    steerCommand = obstacleTurn
-    brakeCommand = false
-    avoidTicks -= 1
+    if rearObstacle.Hit || reverseTicks >= 15 {
+      driveCommand = 0.0
+      steerCommand = 0.0
+      brakeCommand = true
+      avoidTicks = 0
+      reverseTicks = 0
+      reverseCooldownTicks = 50
+      reverseLocked = true
+      targetValid = false
+      if mode != FLEE && mode != ANGRY { mode = SIT }
+    } else {
+      driveCommand = -0.20
+      steerCommand = obstacleTurn
+      brakeCommand = false
+      avoidTicks -= 1
+      reverseTicks += 1
+      if avoidTicks == 0 {
+        reverseCooldownTicks = 50
+        reverseLocked = true
+      }
+    }
   } else {
     let toTarget = Vec(targetPosition.x - position.x, targetPosition.y - position.y, 0.0)
     let distance = Magnitude(toTarget)
@@ -774,6 +829,7 @@ on Clock(interval = 0.2) {
     driveCommand = if distance > stoppingRange then (if mode == CHASE then 1.0 else 0.72) else 0.0
     steerCommand = min(max(turnAngle / 1.15, -1.0), 1.0)
     brakeCommand = distance <= stoppingRange
+    reverseTicks = 0
 
     let activityTarget = mode == RETURN_BED || mode == SEEK_FOOD || mode == SEEK_TREAT
       || mode == STALK || mode == CHASE
@@ -794,11 +850,30 @@ on Clock(interval = 0.2) {
         ignoreOwningGrid = true,
       )
       if obstacle.Hit {
-        avoidTicks = 5
         obstacleTurn = -obstacleTurn
-        driveCommand = -0.32
-        steerCommand = obstacleTurn
-        brakeCommand = false
+        if rearObstacle.Hit || reverseCooldownTicks > 0 || reverseLocked {
+          driveCommand = 0.0
+          steerCommand = 0.0
+          brakeCommand = true
+          avoidTicks = 0
+          reverseTicks = 0
+          if rearObstacle.Hit {
+            reverseCooldownTicks = 50
+            reverseLocked = true
+          }
+          targetValid = false
+          if mode != FLEE && mode != ANGRY { mode = SIT }
+        } else {
+          avoidTicks = 2
+          driveCommand = -0.20
+          steerCommand = obstacleTurn
+          brakeCommand = false
+          reverseTicks = 1
+        }
+      } else {
+        // A clear forward sweep proves the cat has moved or turned away from
+        // the wall that caused its one recovery attempt.
+        reverseLocked = false
       }
     }
   }
