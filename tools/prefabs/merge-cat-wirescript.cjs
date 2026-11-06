@@ -14,6 +14,7 @@ const TYPES = {
   interacted: 'BrickComponentType_Event_WholeGridInteracted',
   readBrickGrid: 'BrickComponentType_Internal_ReadBrickGrid',
   engine: 'Component_Internal_WheelEngine',
+  servo: 'Component_Internal_Servo',
   suspension: 'Component_Internal_Joint_Wheel_Suspension',
   text: 'Component_TextDisplay',
   zone: 'Component_Internal_AttachedZone',
@@ -27,6 +28,7 @@ const OUTPUTS = [
   'DriveSpeed',
   'FrontSuspension',
   'RearSuspension',
+  'HeadAngle',
   'FaceText',
   'Purr',
 ];
@@ -107,6 +109,8 @@ function controlPins(scene, grid) {
 function physicalTargets(scene, brainGrid) {
   const engine = one(components(scene, TYPES.engine,
     (_comp, brick) => brick.g !== brainGrid), 'cat wheel engine').brick;
+  const neck = one(components(scene, TYPES.servo,
+    (_comp, brick) => brick.g !== brainGrid), 'cat neck servo').brick;
   const faceCandidates = components(scene, TYPES.text,
     (_comp, brick) => brick.g !== brainGrid);
   const emojiFaces = faceCandidates.filter(({comp}) => /[😺😼😿😻😾]/u.test(comp.data.Text || ''));
@@ -117,6 +121,7 @@ function physicalTargets(scene, brainGrid) {
     Drive: [{key: engine.key, type: TYPES.engine, port: 'ManualInput_Drive'}],
     Steer: [{key: engine.key, type: TYPES.engine, port: 'ManualInput_Steer'}],
     Brake: [{key: engine.key, type: TYPES.engine, port: 'bManualInput_Brake'}],
+    HeadAngle: [{key: neck.key, type: TYPES.servo, port: 'TargetAngle'}],
     FaceText: [{key: face.key, type: TYPES.text, port: 'Text'}],
   };
 }

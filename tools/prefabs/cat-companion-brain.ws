@@ -48,6 +48,9 @@ var brakeCommand: bool = true
 var speedCommand: float = 100.0
 var frontSuspension: float = 500.0
 var rearSuspension: float = 500.0
+var headAngle: float = 0.0
+var idleHeadAngle: float = 0.0
+var nextIdleHeadTurn: int = 0
 var face: string = "😺"
 var targetPosition: vector = Vec(0.0, 0.0, 0.0)
 var targetValid: bool = false
@@ -104,6 +107,7 @@ out Brake: bool = brakeCommand.Value
 out DriveSpeed: float = speedCommand.Value
 out FrontSuspension: float = frontSuspension.Value
 out RearSuspension: float = rearSuspension.Value
+out HeadAngle: float = headAngle.Value
 out FaceText: string = face.Value
 out Purr: bool = seconds.Value < purrUntil.Value || carried.Value && likesCurrentPickup.Value
 
@@ -149,6 +153,10 @@ on Loaded() {
 on Clock(interval = 1.0) {
   seconds += 1
   if petCooldown > 0 { petCooldown -= 1 }
+  if seconds >= nextIdleHeadTurn {
+    idleHeadAngle = Random(-32.0, 32.0)
+    nextIdleHeadTurn = seconds + Random(3, 7)
+  }
 
   nearbyPlayers.fillFromZonePlayers(Sensor)
   if nearbyPlayers.length() > 0 {
@@ -442,6 +450,39 @@ on Clock(interval = 0.2) {
   rearSuspension = lerp(rearSuspension, wantedRear, 0.18)
   speedCommand = wantedSpeed
 
+  // The servo sits on the chassis and rotates the head grid. Look toward the
+  // current activity, toward a nearby player while socializing, or around at
+  // random while idle. Sleeping returns the neck to its neutral angle.
+  let cat = if Chassis != null then Chassis else ReadBrickGrid()
+  let transform = cat.GetLocationRotation()
+  let position = transform.Vector
+  let rawForward = transform.Rotation.ToDirection()
+  let forward = Normalize(Vec(rawForward.x, rawForward.y, 0.0))
+  var lookPosition: vector = targetPosition
+  var lookValid: bool = false
+  if mode != SLEEP {
+    if mode == CARRIED && closePlayerForPickup {
+      lookPosition = pickupPlayerPosition
+      lookValid = true
+    } else if playerNearby && (mode == SIT || mode == SEEK_PETS || mode == FOLLOW) {
+      lookPosition = nearestPlayerPosition
+      lookValid = true
+    } else if targetValid {
+      lookPosition = targetPosition
+      lookValid = true
+    }
+  }
+  var wantedHeadAngle: float = if mode == SLEEP then 0.0 else idleHeadAngle
+  if lookValid {
+    let toLook = Vec(lookPosition.x - position.x, lookPosition.y - position.y, 0.0)
+    if Magnitude(toLook) > 8.0 {
+      let desiredLook = Normalize(toLook)
+      let lookRadians = atan2(Cross(forward, desiredLook).z, Dot(forward, desiredLook))
+      wantedHeadAngle = min(max(lookRadians * 57.2958, -55.0), 55.0)
+    }
+  }
+  headAngle = lerp(headAngle, wantedHeadAngle, 0.22)
+
   if mode == CARRIED || mode == SIT || mode == SLEEP || mode == IDLE || !targetValid {
     driveCommand = 0.0
     steerCommand = 0.0
@@ -453,14 +494,9 @@ on Clock(interval = 0.2) {
     brakeCommand = false
     avoidTicks -= 1
   } else {
-    let cat = if Chassis != null then Chassis else ReadBrickGrid()
-    let transform = cat.GetLocationRotation()
-    let position = transform.Vector
     let toTarget = Vec(targetPosition.x - position.x, targetPosition.y - position.y, 0.0)
     let distance = Magnitude(toTarget)
     let desired = Normalize(toTarget)
-    let rawForward = transform.Rotation.ToDirection()
-    let forward = Normalize(Vec(rawForward.x, rawForward.y, 0.0))
     let turnAngle = atan2(Cross(forward, desired).z, Dot(forward, desired))
 
     driveCommand = if distance > ARRIVE_RANGE then 0.72 else 0.0
@@ -496,8 +532,8 @@ on Clock(interval = 0.2) {
   }
 }
 
-// Petting applies to the whole servo-attached body grid. The postprocessor
-// sets this event's prompt to "Pet Cat" and enables nearby interaction.
+// Petting applies to the servo-attached head grid that holds the outer chip.
+// The postprocessor sets this event's prompt to "Pet Cat" and enables nearby interaction.
 on WholeGridInteracted() -> { held: isHeld } {
   if isHeld && petCooldown == 0 {
     petCooldown = 2

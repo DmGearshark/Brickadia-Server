@@ -19,6 +19,7 @@ const TYPES = {
   readBrickGrid: 'BrickComponentType_Internal_ReadBrickGrid',
   sweep: 'BrickComponentType_Exec_Sweep',
   engine: 'Component_Internal_WheelEngine',
+  servo: 'Component_Internal_Servo',
   suspension: 'Component_Internal_Joint_Wheel_Suspension',
   text: 'Component_TextDisplay',
   zone: 'Component_Internal_AttachedZone',
@@ -126,6 +127,11 @@ assert.deepEqual(wheelSnapshot(output), wheelSnapshot(source), 'Native wheel rec
 const engine = one(all(output, TYPES.engine), 'wheel engine');
 assert.equal(engine.comp.data.bEnableManualControl, true);
 assert.equal(engine.comp.data.ManualControlMode, 1);
+const neck = one(all(output, TYPES.servo), 'neck servo');
+const sourceNeck = one(all(source, TYPES.servo), 'source neck servo');
+assert.equal(neck.brick.g, engine.brick.g, 'Neck servo remains on the chassis');
+assert.deepEqual(neck.brick.data, sourceNeck.brick.data, 'Neck servo brick changed');
+assert.deepEqual(neck.comp.data, sourceNeck.comp.data, 'Neck servo settings changed');
 const face = one(all(output, TYPES.text).filter(({comp}) =>
   /[😺😼😿😻😾]/u.test(comp.data.Text || '')), 'cat face');
 
@@ -150,7 +156,7 @@ const sourceControls = {
     /^Input Rear Wheel Suspension(?:,|$)/i, 'source rear suspension control pin'),
 };
 for (const label of ['Drive', 'Steer', 'Brake', 'DriveSpeed', 'FrontSuspension',
-  'RearSuspension', 'FaceText', 'Purr']) {
+  'RearSuspension', 'HeadAngle', 'FaceText', 'Purr']) {
   assert(outputs.has(label), `Missing output ${label}`);
 }
 for (const label of ['Chassis', 'Sensor', 'Petter']) {
@@ -172,6 +178,7 @@ function assertOutputDriver(type, port, label, count = 1) {
 assertOutputDriver(TYPES.engine, 'ManualInput_Drive', 'Drive');
 assertOutputDriver(TYPES.engine, 'ManualInput_Steer', 'Steer');
 assertOutputDriver(TYPES.engine, 'bManualInput_Brake', 'Brake');
+assertOutputDriver(TYPES.servo, 'TargetAngle', 'HeadAngle');
 assertOutputDriver(TYPES.text, 'Text', 'FaceText');
 
 for (const label of ['DriveSpeed', 'FrontSuspension', 'RearSuspension']) {
@@ -247,6 +254,7 @@ assert.deepEqual(
 
 const shell = one(output.bricks.filter(brick => component(brick, TYPES.microchip)
   && output.links.some(link => link.key === brick.key)), 'brain shell');
+assert.equal(shell.g, face.brick.g, 'Brain shell should remain mounted on the head grid');
 assert.equal(component(shell, TYPES.interact), undefined,
   'Old brain-note interaction should not override petting');
 assert.equal(face.comp.data.bEnabled, true);
@@ -269,7 +277,7 @@ console.log(JSON.stringify({
   bricks: output.bricks.length,
   wires: output.edges.length,
   brainGates: output.bricks.filter(brick => brick.g === output.links[0].grid).length,
-  outputs: 8,
+  outputs: 9,
   inputs: 3,
   nativeWheels: 4,
   joints: output.joints.length,
