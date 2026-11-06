@@ -16,6 +16,7 @@ const TYPES = {
   zoneEntities: 'BrickComponentType_Exec_Zone_GetEntities',
   playAudioAt: 'Component_WireGraph_PlayAudioAt',
   mathDivide: 'BrickComponentType_Expr_MathDivide',
+  select: 'BrickComponentType_Expr_Select',
   destroySpawnedPrefab: 'BrickComponentType_Exec_Entity_DestroySpawnedPrefab',
   varGet: 'BrickComponentType_Exec_Var_Get',
   readBrickGrid: 'BrickComponentType_Internal_ReadBrickGrid',
@@ -149,6 +150,16 @@ const sourceMood = one(all(source, TYPES.text).filter(({comp}) =>
 assert.equal(mood.brick.g, face.brick.g, 'Mood indicator remains on the head grid');
 assert.deepEqual(mood.brick.data, sourceMood.brick.data, 'Mood indicator brick changed');
 assert.deepEqual(mood.comp.data, sourceMood.comp.data, 'Mood indicator settings changed');
+const palette = all(output, TYPES.select).flatMap(({comp}) =>
+  [comp.data.InputA, comp.data.InputB]
+    .filter(value => value?.$variant === 'LinearColor')
+    .map(value => value.value));
+const hasColor = expected => palette.some(color => ['R', 'G', 'B', 'A']
+  .every((channel, index) => Math.abs(color[channel] - expected[index]) < 1e-5));
+assert(hasColor([0.02624122, 0.75294220, 0.64447969, 1]),
+  'Missing cyan treat-intent color');
+assert(hasColor([0.40197778, 0.11443537, 1, 1]),
+  'Missing purple play-intent color');
 
 const outputs = new Map(all(output, TYPES.microchipOutput)
   .map(item => [item.comp.data.PortLabel, item]));

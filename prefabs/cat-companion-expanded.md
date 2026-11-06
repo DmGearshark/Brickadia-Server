@@ -23,7 +23,7 @@ The provided control inputs are now active:
 | Stalk | 50 | 100 | 100 |
 | Sit | 50, with drive braked | 500 | 100 |
 | Sleep | 50, with drive braked | 100 | 100 |
-| Play / pounce | 200 | 500 | 500 |
+| Play / pounce | 280 | 500 | 500 |
 | Flee | 320 | 500 | 500 |
 
 Suspension values blend toward their targets instead of changing in one tick.
@@ -43,16 +43,18 @@ change the cat's movement reference.
 
 ## Mood indicator
 
-The square decal on the rear of the head is driven from the same `face` state as
-the emoji, so the two indicators cannot disagree:
+The square decal on the rear of the head normally follows the emoji mood. Two
+intent colors take priority so the cat visibly announces what it is pursuing:
 
-| Face | Mood | Indicator |
-| --- | --- | --- |
-| 😺 | Calm / normal | Green |
-| 😼 | Playful / stalking | Amber |
-| 😿 | Needy / hungry / tired / unhappy | Blue |
-| 😻 | Affectionate / pleased | Pink |
-| 😾 | Angry / frightened / fleeing | Red |
+| Indicator | Meaning |
+| --- | --- |
+| Cyan | A treat was spotted and the cat is walking over to eat it |
+| Purple | The cat is stalking or pouncing on a toy or player |
+| Green | Calm / normal |
+| Amber | Playful / mischievous without an active play target |
+| Blue | Needy / hungry / tired / unhappy |
+| Pink | Affectionate / pleased |
+| Red | Angry / frightened / fleeing |
 
 The user's square text, face selection, size, anchor, and head placement are
 preserved. Only its `Color` input is controlled by the brain.
@@ -99,6 +101,18 @@ spawned prefab instance. A manually pasted object may ignore that gate, while a
 treat bundled into a larger spawned prefab can cause the entire instance to be
 removed. Food bowls, beds, and toys remain persistent.
 
+Treats no longer depend on hunger or a random roll. A discovered treat becomes
+the highest ordinary priority after carrying and danger, and the indicator turns
+cyan during the approach. Five successful treats are allowed in any rolling
+three-minute window; further treats are ignored until the oldest one leaves that
+window. Missing treats grant no rewards and do not count toward the limit.
+
+Toy play begins soon after placement, then settles into a slower boredom cycle.
+When both a toy and player are available, the toy always wins. The cat turns
+purple, lowers itself, stalks to within 180 units, then raises its speed to 280
+and runs directly into the exact toy. A successful pounce relieves boredom;
+toys remain in the world.
+
 The sensor reaches 900 units in front of the chassis and is approximately 240
 units wide by 120 units tall. Roaming lets the cat discover objects in different
 directions over time.
@@ -112,8 +126,8 @@ for every call. Purring uses a quiet, low-pitched spatial
 
 ## Verification
 
-The final prefab contains 1,158 bricks, including 1,137 compiled brain gates plus
-the three supplied annotated control gates, and 2,008 wires. Static verification
+The final prefab contains 1,203 bricks, including 1,182 compiled brain gates plus
+the three supplied annotated control gates, and 2,092 wires. Static verification
 found zero invalid bricks, overlaps, duplicate wire drivers, or instant cycles.
 The four native wheel entities, four suspension joints, and neck servo joint
 survive byte-level round trips.

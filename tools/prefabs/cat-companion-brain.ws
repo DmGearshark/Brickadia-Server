@@ -33,11 +33,15 @@ const SLEEP = 12
 
 const HEARING_RANGE = 1200.0
 const ARRIVE_RANGE = 75.0
+const STALK_POUNCE_RANGE = 180.0
+const POUNCE_CONTACT_RANGE = 35.0
+const POUNCE_STOP_RANGE = 12.0
+const TREAT_WINDOW = 180
 
 var mode: int = IDLE
 var seconds: int = 0
 var hunger: float = 12.0
-var boredom: float = 18.0
+var boredom: float = 45.0
 var sleepiness: float = 8.0
 var socialNeed: float = 15.0
 var affection: float = 20.0
@@ -68,6 +72,10 @@ var followedPlayer: character
 var stalkingPlayer: bool = false
 var stalkedPlayer: character
 var stalkedPlayerPosition: vector = Vec(0.0, 0.0, 0.0)
+var stalkedToy: entity
+var stalkedToyPosition: vector = Vec(0.0, 0.0, 0.0)
+var stalkUntil: int = 0
+var playRetryAfter: int = 0
 var playUntil: int = 0
 var familiarity: Map<string, int>
 var bedEntity: entity
@@ -80,6 +88,11 @@ var treatEntity: entity
 var treatPosition: vector = Vec(0.0, 0.0, 0.0)
 var treatKnown: bool = false
 var treatVisible: bool = false
+var treatAt1: int = -10000
+var treatAt2: int = -10000
+var treatAt3: int = -10000
+var treatAt4: int = -10000
+var treatAt5: int = -10000
 var toyEntity: entity
 var toyPosition: vector = Vec(0.0, 0.0, 0.0)
 var toyKnown: bool = false
@@ -113,7 +126,9 @@ out FrontSuspension: float = frontSuspension.Value
 out RearSuspension: float = rearSuspension.Value
 out HeadAngle: float = headAngle.Value
 out FaceText: string = face.Value
-out MoodColor: color = if face.Value == "😾" then ColorSRGB(255, 65, 65, 255)
+out MoodColor: color = if mode.Value == SEEK_TREAT then ColorSRGB(45, 225, 210, 255)
+  else if mode.Value == STALK || mode.Value == PLAY then ColorSRGB(170, 95, 255, 255)
+  else if face.Value == "😾" then ColorSRGB(255, 65, 65, 255)
   else if face.Value == "😻" then ColorSRGB(255, 90, 190, 255)
   else if face.Value == "😿" then ColorSRGB(70, 135, 255, 255)
   else if face.Value == "😼" then ColorSRGB(245, 180, 45, 255)
@@ -230,7 +245,7 @@ on Clock(interval = 1.0) {
 
   // Needs rise slowly. Sleep reduces tiredness instead of adding to it.
   hunger = need(hunger + 0.75)
-  boredom = need(boredom + (if mode == PLAY then -5.0 else 0.65))
+  boredom = need(boredom + 0.65)
   sleepiness = need(sleepiness + (if mode == SLEEP then -7.0 else 0.55))
   socialNeed = need(socialNeed + (if seconds < purrUntil then -2.0 else 0.45))
   fear = need(fear - 1.5)
@@ -325,6 +340,12 @@ on Clock(interval = 2.0) {
     let away = Normalize(Vec(position.x - fleeFrom.x, position.y - fleeFrom.y, 0.0))
     targetPosition = position + away * 650.0
     face = "😾"
+  } else if treatKnown && seconds - treatAt5 >= TREAT_WINDOW {
+    // Treats override ordinary needs as soon as one has been discovered.
+    mode = SEEK_TREAT
+    targetPosition = treatPosition
+    targetValid = true
+    face = "😺"
   } else if mode == SLEEP && sleepiness > 18.0 {
     targetValid = false
     face = "😺"
@@ -348,14 +369,6 @@ on Clock(interval = 2.0) {
     targetPosition = foodPosition
     targetValid = true
     face = "😿"
-  } else if mode == SEEK_TREAT && targetValid {
-    targetPosition = treatPosition
-    face = "😺"
-  } else if hunger > 48.0 && treatKnown && Random(0, 100) < 35 {
-    mode = SEEK_TREAT
-    targetPosition = treatPosition
-    targetValid = true
-    face = "😺"
   } else if seconds < callUntil && calledPlayer != null {
     mode = FOLLOW
     followedPlayer = calledPlayer
@@ -363,27 +376,48 @@ on Clock(interval = 2.0) {
     targetValid = true
     face = "😺"
   } else if mode == PLAY && seconds < playUntil {
-    let playCenter = if stalkingPlayer then stalkedPlayerPosition else toyPosition
-    let playOffset = Random(Vec(-140.0, -140.0, 0.0), Vec(140.0, 140.0, 0.0))
-    targetPosition = playCenter + playOffset
+    let playCenter = if stalkingPlayer then stalkedPlayerPosition else stalkedToyPosition
+    targetPosition = playCenter
     targetValid = true
     face = "😼"
-  } else if mode == STALK && targetValid {
+  } else if mode == PLAY {
+    // A missed pounce ends without relieving boredom.
+    playRetryAfter = seconds + 15
+    stalkedPlayer = null
+    stalkedToy = null
+    mode = SIT
+    targetValid = false
+    face = "😿"
+  } else if mode == STALK && targetValid && seconds < stalkUntil {
     face = "😼"
-  } else if boredom > 62.0 && (toyKnown || playerNearby) {
-    var choosePlayer: bool = false
-    if playerNearby && (!toyKnown || Random(0, 100) < 35) {
-      choosePlayer = true
+  } else if mode == STALK {
+    // Give up on a stale or unreachable focus instead of crouching forever.
+    playRetryAfter = seconds + 15
+    if !stalkingPlayer {
+      toyEntity = null
+      toyKnown = false
     }
+    stalkedPlayer = null
+    stalkedToy = null
+    mode = SIT
+    targetValid = false
+    face = "😿"
+  } else if boredom > 55.0 && seconds >= playRetryAfter && (toyKnown || playerNearby) {
+    // A known toy always wins. Players are the fallback when no toy is known.
+    let choosePlayer = !toyKnown && playerNearby
     mode = STALK
     stalkingPlayer = choosePlayer
     if choosePlayer {
       stalkedPlayer = nearestPlayer
       stalkedPlayerPosition = nearestPlayerPosition
+      stalkedToy = null
     } else {
       stalkedPlayer = null
+      stalkedToy = toyEntity
+      stalkedToyPosition = toyPosition
     }
-    targetPosition = if choosePlayer then nearestPlayerPosition else toyPosition
+    stalkUntil = seconds + 30
+    targetPosition = if choosePlayer then stalkedPlayerPosition else stalkedToyPosition
     targetValid = true
     face = "😼"
   } else if socialNeed > 68.0 && playerNearby {
@@ -414,8 +448,12 @@ on Clock(interval = 2.0) {
     }
   }
 
-  // Arrival actions and need relief.
-  if targetValid && Distance(position, targetPosition) < ARRIVE_RANGE {
+  // Arrival actions and need relief. Stalking changes into a pounce from farther
+  // away; a pounce only completes after reaching the focused entity itself.
+  let arrivalRange = if mode == STALK then STALK_POUNCE_RANGE
+    else if mode == PLAY then POUNCE_CONTACT_RANGE
+    else ARRIVE_RANGE
+  if targetValid && Distance(position, targetPosition) < arrivalRange {
     if mode == RETURN_BED {
       mode = SLEEP
       targetValid = false
@@ -432,6 +470,11 @@ on Clock(interval = 2.0) {
       // and food bowls stay in the world.
       if treatEntity != null && treatVisible {
         treatEntity.DestroySpawnedPrefab()
+        treatAt5 = treatAt4
+        treatAt4 = treatAt3
+        treatAt3 = treatAt2
+        treatAt2 = treatAt1
+        treatAt1 = seconds
         hunger = need(hunger - 28.0)
         boredom = need(boredom - 18.0)
         affection = need(affection + 12.0)
@@ -454,12 +497,17 @@ on Clock(interval = 2.0) {
     } else if mode == STALK {
       mode = PLAY
       playUntil = seconds + 8
-      boredom = need(boredom - 35.0)
-      let playCenter = if stalkingPlayer then stalkedPlayerPosition else toyPosition
-      let playOffset = Random(Vec(-140.0, -140.0, 0.0), Vec(140.0, 140.0, 0.0))
-      targetPosition = playCenter + playOffset
+      let playCenter = if stalkingPlayer then stalkedPlayerPosition else stalkedToyPosition
+      targetPosition = playCenter
       targetValid = true
       face = "😼"
+    } else if mode == PLAY {
+      boredom = need(boredom - 35.0)
+      stalkedPlayer = null
+      stalkedToy = null
+      mode = SIT
+      targetValid = false
+      face = "😻"
     } else if mode == SEEK_PETS || mode == FOLLOW {
       mode = SIT
       targetValid = false
@@ -475,7 +523,7 @@ on Clock(interval = 0.2) {
   let wantedFront = if mode == STALK || mode == SLEEP then 100.0 else 500.0
   let wantedRear = if mode == STALK || mode == SLEEP || mode == SIT then 100.0 else 500.0
   let wantedSpeed = if mode == STALK || mode == SIT || mode == SLEEP || mode == CARRIED then 50.0
-    else if mode == PLAY then 200.0
+    else if mode == PLAY then 280.0
     else if mode == FLEE then 320.0
     else 100.0
 
@@ -500,8 +548,8 @@ on Clock(interval = 0.2) {
     } else if (mode == STALK || mode == PLAY) && stalkingPlayer && stalkedPlayer != null {
       lookPosition = stalkedPlayerPosition
       lookValid = true
-    } else if (mode == STALK || mode == PLAY) && !stalkingPlayer && toyKnown {
-      lookPosition = toyPosition
+    } else if (mode == STALK || mode == PLAY) && !stalkingPlayer && stalkedToy != null {
+      lookPosition = stalkedToyPosition
       lookValid = true
     } else if targetValid {
       lookPosition = targetPosition
@@ -538,9 +586,10 @@ on Clock(interval = 0.2) {
     let desired = Normalize(toTarget)
     let turnAngle = atan2(Cross(forward, desired).z, Dot(forward, desired))
 
-    driveCommand = if distance > ARRIVE_RANGE then 0.72 else 0.0
+    let stoppingRange = if mode == PLAY then POUNCE_STOP_RANGE else ARRIVE_RANGE
+    driveCommand = if distance > stoppingRange then (if mode == PLAY then 1.0 else 0.72) else 0.0
     steerCommand = min(max(turnAngle / 1.15, -1.0), 1.0)
-    brakeCommand = distance <= ARRIVE_RANGE
+    brakeCommand = distance <= stoppingRange
 
     let activityTarget = mode == RETURN_BED || mode == SEEK_FOOD || mode == SEEK_TREAT
       || mode == STALK || mode == PLAY
@@ -655,14 +704,10 @@ on Clock(interval = 0.5) {
   if mode == STALK || mode == PLAY {
     if stalkingPlayer && stalkedPlayer != null {
       stalkedPlayerPosition = stalkedPlayer.GetLocation()
-      if mode == STALK {
-        targetPosition = stalkedPlayerPosition
-      }
-    } else if toyEntity != null {
-      toyPosition = toyEntity.GetLocation()
-      if mode == STALK {
-        targetPosition = toyPosition
-      }
+      targetPosition = stalkedPlayerPosition
+    } else if stalkedToy != null {
+      stalkedToyPosition = stalkedToy.GetLocation()
+      targetPosition = stalkedToyPosition
     }
   }
   if mode == SEEK_FOOD && foodEntity != null {
