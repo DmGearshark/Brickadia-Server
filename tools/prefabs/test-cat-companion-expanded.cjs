@@ -77,19 +77,24 @@ for (const [label, pattern] of [
   ['Stretch reverse motion', /driveCommand = -0\.10/],
   ['Stretch releases brake', /driveCommand = -0\.10\s+steerCommand = 0\.0\s+brakeCommand = false/],
   ['Rear sweep direction', /Vec\(-forward\.x, -forward\.y, 0\.0\)/],
+  ['Rear sweep starts behind the cat', /position - forward \* 18\.0 \+ Vec\(0\.0, 0\.0, 14\.0\)/],
+  ['Front sweep starts beyond the head', /position \+ forward \* 36\.0 \+ Vec\(0\.0, 0\.0, 14\.0\)/],
   ['Consecutive reverse cap', /reverseTicks >= 15/],
   ['Stretch counter reset', /targetValid = false\s+reverseTicks = 0\s+face = "🐈"/u],
-  ['Stretch reverse lock guard', /seconds >= stretchUntil \|\| rearObstacle\.Hit \|\| reverseCooldownTicks > 0\s+\|\| reverseTicks >= 15/],
-  ['Stretch stop clears face', /reverseCooldownTicks = 50\s+face = "😺"/u],
+  ['Stretch cooldown guard', /seconds >= stretchUntil \|\| rearObstacle\.Hit \|\| reverseCooldownTicks > 0\s+\|\| reverseTicks >= 15/],
+  ['Denied Stretch does not refresh cooldown', /if rearObstacle\.Hit \|\| reverseTicks > 0 \{ reverseCooldownTicks = 50 \}\s+reverseTicks = 0\s+face = "😺"/u],
   ['Recovery rear wall guard', /else if avoidTicks > 0 \{\s+if rearObstacle\.Hit \|\| reverseTicks >= 15/],
-  ['Blocked reverse start guard', /rearObstacle\.Hit \|\| reverseCooldownTicks > 0 \|\| reverseLocked/],
+  ['Blocked reverse start guard', /rearObstacle\.Hit \|\| reverseCooldownTicks > 0/],
   ['Ten-second reverse cooldown', /reverseCooldownTicks = 50/],
-  ['Rear block closes latch and refreshes cooldown', /if rearObstacle\.Hit \{\s+reverseCooldownTicks = 50\s+reverseLocked = true/],
-  ['Recovery closes wall retry latch', /if avoidTicks == 0 \{\s+reverseCooldownTicks = 50\s+reverseLocked = true/],
-  ['Clear forward sweep opens wall retry latch', /else \{\s+\/\/ A clear forward sweep[\s\S]*?reverseLocked = false/],
+  ['Recovery starts the cooldown', /if avoidTicks == 0 \{ reverseCooldownTicks = 50 \}/],
+  ['Recovery steering changes only when recovery starts', /else \{\s+obstacleTurn = -obstacleTurn\s+avoidTicks = 2/],
   ['Flee clears stale recovery', /targetValid = true\s+avoidTicks = 0\s+reverseTicks = 0\s+mode = FLEE/],
   ['Anger clears stale recovery', /likesCurrentPickup = false\s+avoidTicks = 0\s+reverseTicks = 0/],
   ['Forward motion resets reverse counter', /brakeCommand = distance <= stoppingRange\s+reverseTicks = 0/],
+  ['Nearby call always starts following', /let trust = if known\.Found then known\.Value else 0[\s\S]*?calledPlayer = caller[\s\S]*?callUntil = seconds \+ 20[\s\S]*?mode = FOLLOW[\s\S]*?targetValid = true/],
+  ['Call ignores unsafe states', /seconds >= angryUntil && seconds >= fleeUntil && fear <= 78\.0\s+&& !carried && mode != WAIT_PETS/],
+  ['Call wakes sleeping cat', /if mode == SLEEP \|\| mode == RETURN_BED \|\| tired \{/],
+  ['Call safely stops stale reverse', /if reverseTicks > 0 \{\s+reverseCooldownTicks = 50\s+driveCommand = 0\.0\s+steerCommand = 0\.0\s+brakeCommand = true\s+\}\s+avoidTicks = 0\s+reverseTicks = 0/],
   ['Five-to-ten-minute awake interval', /nextNapAt = seconds \+ Random\(300, 600\)/],
   ['Thirty-to-sixty-second nap', /napUntil = seconds \+ Random\(30, 60\)/],
   ['Fifteen-second pet request', /petRequestUntil = seconds \+ 15/],
@@ -100,6 +105,16 @@ for (const [label, pattern] of [
 }
 assert.equal((behaviorSource.match(/driveCommand = -/g) || []).length, 3,
   'Every negative-drive site must remain covered by one of the three rear-wall guards');
+assert.doesNotMatch(behaviorSource, /reverseLocked/,
+  'Obstacle suppression must expire instead of permanently parking the cat');
+const obstacleController = behaviorSource.slice(behaviorSource.indexOf('if obstacle.Hit'),
+  behaviorSource.indexOf('// Petting applies'));
+assert.doesNotMatch(obstacleController, /targetValid = false|mode = SIT/,
+  'A temporary obstacle stop must preserve /cat and other movement targets');
+const catCommand = behaviorSource.slice(behaviorSource.indexOf('on ChatCommand("cat"'),
+  behaviorSource.indexOf('// Keep live targets fresh'));
+assert.doesNotMatch(catCommand, /Random\(/,
+  'An eligible nearby /cat call should not be randomly ignored');
 
 assertNoInstantCycles(output);
 const placement = validatePlacement(fs.readFileSync(outputPath));
@@ -174,13 +189,13 @@ assert.equal(groundSweep.bDetectPhysics, false,
   'The cat must not mistake its four attached wheel entities for the ground');
 assert.equal(groundSweep.bDetectMap, true);
 assert.equal(groundSweep.bDetectPlayers1, false);
-const obstacleSweep = one(sweeps.filter(({comp}) => comp.data.Distance === 92), 'obstacle sweep').comp.data;
+const obstacleSweep = one(sweeps.filter(({comp}) => comp.data.Distance === 56), 'obstacle sweep').comp.data;
 assert.equal(obstacleSweep.bDetectBricks, true);
 assert.equal(obstacleSweep.bDetectPhysics, false,
   'Tagged physics targets must not be mistaken for obstacles');
 assert.equal(obstacleSweep.bDetectMap, true);
 assert.equal(obstacleSweep.bDetectPlayers1, false);
-const rearSweep = one(sweeps.filter(({comp}) => comp.data.Distance === 72
+const rearSweep = one(sweeps.filter(({comp}) => comp.data.Distance === 54
   && comp.data.Radius === 12), 'rear obstacle sweep').comp.data;
 assert.equal(rearSweep.bDetectBricks, true);
 assert.equal(rearSweep.bDetectPhysics, false,

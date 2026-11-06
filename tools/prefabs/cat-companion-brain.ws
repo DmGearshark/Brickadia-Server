@@ -138,7 +138,6 @@ var obstacleTurn: float = 1.0
 var avoidTicks: int = 0
 var reverseTicks: int = 0
 var reverseCooldownTicks: int = 0
-var reverseLocked: bool = false
 
 // Named, stable outputs expected by merge-cat-wirescript.cjs.
 out Drive: float = driveCommand.Value
@@ -721,9 +720,9 @@ on Clock(interval = 0.2) {
   let forward = Normalize(Vec(rawForward.x, rawForward.y, 0.0))
   if reverseCooldownTicks > 0 { reverseCooldownTicks -= 1 }
   let rearObstacle = Sweep(
-    position + Vec(0.0, 0.0, 10.0),
+    position - forward * 18.0 + Vec(0.0, 0.0, 14.0),
     Vec(-forward.x, -forward.y, 0.0),
-    72.0,
+    54.0,
     radius = 12.0,
     ignore = cat,
     detectBricks = true,
@@ -780,8 +779,8 @@ on Clock(interval = 0.2) {
       steerCommand = 0.0
       brakeCommand = true
       avoidTicks = 0
+      if rearObstacle.Hit || reverseTicks > 0 { reverseCooldownTicks = 50 }
       reverseTicks = 0
-      reverseCooldownTicks = 50
       face = "😺"
     } else {
       driveCommand = -0.10
@@ -805,19 +804,13 @@ on Clock(interval = 0.2) {
       avoidTicks = 0
       reverseTicks = 0
       reverseCooldownTicks = 50
-      reverseLocked = true
-      targetValid = false
-      if mode != FLEE && mode != ANGRY { mode = SIT }
     } else {
       driveCommand = -0.20
       steerCommand = obstacleTurn
       brakeCommand = false
       avoidTicks -= 1
       reverseTicks += 1
-      if avoidTicks == 0 {
-        reverseCooldownTicks = 50
-        reverseLocked = true
-      }
+      if avoidTicks == 0 { reverseCooldownTicks = 50 }
     }
   } else {
     let toTarget = Vec(targetPosition.x - position.x, targetPosition.y - position.y, 0.0)
@@ -835,9 +828,9 @@ on Clock(interval = 0.2) {
       || mode == STALK || mode == CHASE
     if !(activityTarget && distance < 150.0) {
       let obstacle = Sweep(
-        position + Vec(0.0, 0.0, 10.0),
+        position + forward * 36.0 + Vec(0.0, 0.0, 14.0),
         forward,
-        92.0,
+        56.0,
         radius = 12.0,
         ignore = cat,
         detectBricks = true,
@@ -850,30 +843,20 @@ on Clock(interval = 0.2) {
         ignoreOwningGrid = true,
       )
       if obstacle.Hit {
-        obstacleTurn = -obstacleTurn
-        if rearObstacle.Hit || reverseCooldownTicks > 0 || reverseLocked {
+        if rearObstacle.Hit || reverseCooldownTicks > 0 {
           driveCommand = 0.0
           steerCommand = 0.0
           brakeCommand = true
           avoidTicks = 0
           reverseTicks = 0
-          if rearObstacle.Hit {
-            reverseCooldownTicks = 50
-            reverseLocked = true
-          }
-          targetValid = false
-          if mode != FLEE && mode != ANGRY { mode = SIT }
         } else {
+          obstacleTurn = -obstacleTurn
           avoidTicks = 2
           driveCommand = -0.20
           steerCommand = obstacleTurn
           brakeCommand = false
           reverseTicks = 1
         }
-      } else {
-        // A clear forward sweep proves the cat has moved or turned away from
-        // the wall that caused its one recovery attempt.
-        reverseLocked = false
       }
     }
   }
@@ -944,34 +927,41 @@ on WholeGridTargeted() -> (attacker, damage, weapon, weaponName) {
   meow(0.48)
 }
 
-// /cat is global at the gate level, then range-filtered here. Familiar players
-// are usually answered; strangers are sometimes acknowledged and often ignored.
+// /cat is global at the gate level, then range-filtered here. Every eligible
+// nearby call gets a follow response; familiarity changes the greeting face.
 on ChatCommand("cat", "Call a nearby cat") -> (controller, arguments) {
   let caller = controller.CharacterOf()
   if caller != null {
     let callerPosition = caller.GetLocation()
     let catPosition = (if Chassis != null then Chassis else ReadBrickGrid()).GetLocation()
     if Distance(callerPosition, catPosition) <= HEARING_RANGE
-      && seconds >= angryUntil && mode != WAIT_PETS {
+      && seconds >= angryUntil && seconds >= fleeUntil && fear <= 78.0
+      && !carried && mode != WAIT_PETS {
       let id = controller.GetUserId()
       let known = familiarity.get(id)
       let trust = if known.Found then known.Value else 0
-      let response = Random(0, 100)
-      if response < min(12 + trust, 95) {
-        calledPlayer = caller
-        followedPlayer = caller
-        calledPlayerPosition = callerPosition
-        callUntil = seconds + 20
-        mode = FOLLOW
-        targetPosition = callerPosition
-        targetValid = true
-        face = if trust >= 35 then "😻" else "😺"
-        meow(0.34)
-      } else if response < 22 {
-        // The cat heard its name but chose not to come.
-        face = "😼"
-        meow(0.20)
+      if mode == SLEEP || mode == RETURN_BED || tired {
+        napUntil = seconds
+        nextNapAt = seconds + 300
+        tired = false
       }
+      if reverseTicks > 0 {
+        reverseCooldownTicks = 50
+        driveCommand = 0.0
+        steerCommand = 0.0
+        brakeCommand = true
+      }
+      avoidTicks = 0
+      reverseTicks = 0
+      calledPlayer = caller
+      followedPlayer = caller
+      calledPlayerPosition = callerPosition
+      callUntil = seconds + 20
+      mode = FOLLOW
+      targetPosition = callerPosition
+      targetValid = true
+      face = if trust >= 35 then "😻" else "😺"
+      meow(0.34)
     }
   }
 }

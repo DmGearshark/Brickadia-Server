@@ -85,9 +85,10 @@ controls the face text and sends the same color to both displays.
   seconds while a player is within 210 units. The cat randomly enjoys or
   dislikes each pickup, weighted by affection and fear. A disliked pickup makes
   it flee after landing.
-- `/cat` is heard within 1,200 units. Familiar players are much more likely to
-  get a response; strangers are usually ignored. Petting and being near the cat
-  when it gets a treat increase familiarity.
+- `/cat` is heard within 1,200 units and every safe call starts a 20-second
+  follow response. It wakes a sleeping cat, but carrying, danger, anger, or an
+  active pet request take priority. Familiarity changes the greeting face.
+  Petting and being near the cat when it gets a treat increase familiarity.
 - Damage to the body immediately raises fear and starts a flee response.
 
 The `/cat` handler uses Brickadia's admin-only Chat Command Event gate. An admin
@@ -135,15 +136,15 @@ directly into that exact focus. A successful focused pounce relieves boredom;
 toys remain in the world. Chase can also occur as a five-to-eight-second random
 burst of energy without a stalking target or boredom reward.
 
-Navigation now has separate forward and rear wall sweeps. A front obstruction
-allows only a short 0.6-second recovery at low reverse power. The cat then locks
-out another reverse attempt for about ten seconds, and abandons an ordinary
-blocked target rather than retrying the same wall. The rear sweep watches every
-negative drive command; a wall behind the cat stops and brakes it immediately.
-After one recovery, a wall-retry latch remains closed until a clear forward
-sweep proves that the cat has moved or turned away, so persistent needs cannot
-restart the same reverse loop. Continuous reversing also has a three-second hard
-limit as a final guard.
+Navigation has separate forward and rear wall sweeps positioned to clear the
+servo head while explicitly ignoring the chassis, preventing self-detection.
+A front obstruction allows only a short 0.6-second recovery at low reverse power,
+then starts a ten-second reverse cooldown. During that cooldown the cat brakes
+without discarding its current target and resumes immediately when the path is
+clear. A persistent obstruction can trigger only one short retry per cooldown.
+The rear sweep watches every negative drive command; a brick or map wall behind
+the cat stops and brakes it immediately. Continuous reversing also has a
+three-second hard limit as a final guard.
 
 After five to ten minutes awake and once higher-priority behavior clears, the cat
 prefers a known bed 75% of the time and otherwise naps in place. The final minute
@@ -167,8 +168,8 @@ for every call. Purring uses a quiet, low-pitched spatial
 
 ## Verification
 
-The final prefab contains 1,676 bricks, including 1,655 compiled brain gates plus
-the three supplied annotated control gates, and 2,964 wires. Static verification
+The final prefab contains 1,683 bricks, including 1,662 compiled brain gates plus
+the three supplied annotated control gates, and 2,980 wires. Static verification
 found zero invalid bricks, overlaps, duplicate wire drivers, or instant cycles.
 The four native wheel entities, four suspension joints, and neck servo joint
 survive byte-level round trips.
