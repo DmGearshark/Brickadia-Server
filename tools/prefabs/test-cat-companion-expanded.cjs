@@ -16,6 +16,8 @@ const TYPES = {
   zoneEntities: 'BrickComponentType_Exec_Zone_GetEntities',
   playAudioAt: 'Component_WireGraph_PlayAudioAt',
   mathDivide: 'BrickComponentType_Expr_MathDivide',
+  destroySpawnedPrefab: 'BrickComponentType_Exec_Entity_DestroySpawnedPrefab',
+  varGet: 'BrickComponentType_Exec_Var_Get',
   readBrickGrid: 'BrickComponentType_Internal_ReadBrickGrid',
   sweep: 'BrickComponentType_Exec_Sweep',
   engine: 'Component_Internal_WheelEngine',
@@ -86,6 +88,12 @@ for (const {brick, comp} of meows) {
     && edge.zt === TYPES.playAudioAt && edge.q === 'Entity'), 'meow location entity');
   assert.equal(location.p, 'Output');
 }
+
+const consumeTreat = one(all(output, TYPES.destroySpawnedPrefab), 'treat prefab delete gate');
+const consumedEntity = one(output.edges.filter(edge => edge.z === consumeTreat.brick.key
+  && edge.zt === TYPES.destroySpawnedPrefab && edge.q === 'Entity'), 'consumed treat entity');
+assert.equal(consumedEntity.at, TYPES.varGet);
+assert.equal(consumedEntity.p, 'Value');
 
 const sweeps = all(output, TYPES.sweep);
 assert.equal(sweeps.length, 3, 'Pickup, ground, and obstacle sweeps');

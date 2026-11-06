@@ -64,7 +64,10 @@ var playerNearby: bool = false
 var calledPlayer: character
 var calledPlayerPosition: vector = Vec(0.0, 0.0, 0.0)
 var callUntil: int = 0
+var followedPlayer: character
 var stalkingPlayer: bool = false
+var stalkedPlayer: character
+var stalkedPlayerPosition: vector = Vec(0.0, 0.0, 0.0)
 var playUntil: int = 0
 var familiarity: Map<string, int>
 var bedEntity: entity
@@ -76,6 +79,7 @@ var foodKnown: bool = false
 var treatEntity: entity
 var treatPosition: vector = Vec(0.0, 0.0, 0.0)
 var treatKnown: bool = false
+var treatVisible: bool = false
 var toyEntity: entity
 var toyPosition: vector = Vec(0.0, 0.0, 0.0)
 var toyKnown: bool = false
@@ -194,14 +198,17 @@ on Clock(interval = 1.0) {
 
   treatTagged.fillFromZoneEntities(Sensor, "Kitty Treat 1")
   treatNormalized.fillFromZoneEntities(Sensor, "cat:treat")
+  treatVisible = false
   if treatTagged.length() > 0 {
     treatEntity = treatTagged.get(0).Value
     treatPosition = treatEntity.GetLocation()
     treatKnown = true
+    treatVisible = true
   } else if treatNormalized.length() > 0 {
     treatEntity = treatNormalized.get(0).Value
     treatPosition = treatEntity.GetLocation()
     treatKnown = true
+    treatVisible = true
   }
 
   toyTagged.fillFromZoneEntities(Sensor, "Cat toy 1")
@@ -346,11 +353,12 @@ on Clock(interval = 2.0) {
     face = "😺"
   } else if seconds < callUntil && calledPlayer != null {
     mode = FOLLOW
+    followedPlayer = calledPlayer
     targetPosition = calledPlayerPosition
     targetValid = true
     face = "😺"
   } else if mode == PLAY && seconds < playUntil {
-    let playCenter = if stalkingPlayer then nearestPlayerPosition else toyPosition
+    let playCenter = if stalkingPlayer then stalkedPlayerPosition else toyPosition
     let playOffset = Random(Vec(-140.0, -140.0, 0.0), Vec(140.0, 140.0, 0.0))
     targetPosition = playCenter + playOffset
     targetValid = true
@@ -364,17 +372,25 @@ on Clock(interval = 2.0) {
     }
     mode = STALK
     stalkingPlayer = choosePlayer
+    if choosePlayer {
+      stalkedPlayer = nearestPlayer
+      stalkedPlayerPosition = nearestPlayerPosition
+    } else {
+      stalkedPlayer = null
+    }
     targetPosition = if choosePlayer then nearestPlayerPosition else toyPosition
     targetValid = true
     face = "😼"
   } else if socialNeed > 68.0 && playerNearby {
     mode = SEEK_PETS
+    followedPlayer = nearestPlayer
     targetPosition = nearestPlayerPosition
     targetValid = true
     face = "😿"
     if Random(0, 100) < 35 { meow(0.30) }
   } else if playerNearby && affection > 45.0 && Random(0, 100) < 35 {
     mode = FOLLOW
+    followedPlayer = nearestPlayer
     targetPosition = nearestPlayerPosition
     targetValid = true
     face = "😺"
@@ -406,23 +422,35 @@ on Clock(interval = 2.0) {
       face = "😻"
       meow(0.28)
     } else if mode == SEEK_TREAT {
-      hunger = need(hunger - 28.0)
-      boredom = need(boredom - 18.0)
-      affection = need(affection + 12.0)
-      if playerNearby {
-        let id = nearestPlayer.GetUserId()
-        let old = familiarity.get(id)
-        familiarity.set(id, min((if old.Found then old.Value else 0) + 25, 100))
+      // Confirm the remembered treat is still inside the attached zone before
+      // rewarding the cat. Treats are consumable prefab instances; beds, toys,
+      // and food bowls stay in the world.
+      if treatEntity != null && treatVisible {
+        treatEntity.DestroySpawnedPrefab()
+        hunger = need(hunger - 28.0)
+        boredom = need(boredom - 18.0)
+        affection = need(affection + 12.0)
+        if playerNearby {
+          let id = nearestPlayer.GetUserId()
+          let old = familiarity.get(id)
+          familiarity.set(id, min((if old.Found then old.Value else 0) + 25, 100))
+        }
+        face = "😻"
+        purrUntil = seconds + 6
+      } else {
+        face = "😿"
+        meow(0.20)
       }
+      treatEntity = null
+      treatKnown = false
+      treatVisible = false
       mode = SIT
       targetValid = false
-      face = "😻"
-      purrUntil = seconds + 6
     } else if mode == STALK {
       mode = PLAY
       playUntil = seconds + 8
       boredom = need(boredom - 35.0)
-      let playCenter = if stalkingPlayer then nearestPlayerPosition else toyPosition
+      let playCenter = if stalkingPlayer then stalkedPlayerPosition else toyPosition
       let playOffset = Random(Vec(-140.0, -140.0, 0.0), Vec(140.0, 140.0, 0.0))
       targetPosition = playCenter + playOffset
       targetValid = true
@@ -464,11 +492,17 @@ on Clock(interval = 0.2) {
     if mode == CARRIED && closePlayerForPickup {
       lookPosition = pickupPlayerPosition
       lookValid = true
-    } else if playerNearby && (mode == SIT || mode == SEEK_PETS || mode == FOLLOW) {
-      lookPosition = nearestPlayerPosition
+    } else if (mode == STALK || mode == PLAY) && stalkingPlayer && stalkedPlayer != null {
+      lookPosition = stalkedPlayerPosition
+      lookValid = true
+    } else if (mode == STALK || mode == PLAY) && !stalkingPlayer && toyKnown {
+      lookPosition = toyPosition
       lookValid = true
     } else if targetValid {
       lookPosition = targetPosition
+      lookValid = true
+    } else if playerNearby && (mode == SIT || mode == SEEK_PETS) {
+      lookPosition = nearestPlayerPosition
       lookValid = true
     }
   }
@@ -584,6 +618,7 @@ on ChatCommand("cat", "Call a nearby cat") -> (controller, arguments) {
       let response = Random(0, 100)
       if response < min(12 + trust, 95) {
         calledPlayer = caller
+        followedPlayer = caller
         calledPlayerPosition = callerPosition
         callUntil = seconds + 20
         mode = FOLLOW
@@ -608,13 +643,21 @@ on Clock(interval = 0.5) {
       targetPosition = calledPlayerPosition
       targetValid = true
     }
+  } else if (mode == FOLLOW || mode == SEEK_PETS) && followedPlayer != null {
+    targetPosition = followedPlayer.GetLocation()
+    targetValid = true
   }
-  if mode == STALK && stalkingPlayer && playerNearby {
-    targetPosition = nearestPlayerPosition
-  } else if mode == STALK {
-    if toyEntity != null {
+  if mode == STALK || mode == PLAY {
+    if stalkingPlayer && stalkedPlayer != null {
+      stalkedPlayerPosition = stalkedPlayer.GetLocation()
+      if mode == STALK {
+        targetPosition = stalkedPlayerPosition
+      }
+    } else if toyEntity != null {
       toyPosition = toyEntity.GetLocation()
-      targetPosition = toyPosition
+      if mode == STALK {
+        targetPosition = toyPosition
+      }
     }
   }
   if mode == SEEK_FOOD && foodEntity != null {

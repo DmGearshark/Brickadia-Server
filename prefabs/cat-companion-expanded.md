@@ -30,11 +30,12 @@ Suspension values blend toward their targets instead of changing in one tick.
 
 ## Head and neck
 
-The supplied servo is the neck. The brain now drives its `TargetAngle` directly:
-the head follows the current travel or stalking target, looks at nearby players
-while socializing or being carried, wanders through small idle glances, and
-returns smoothly to center while sleeping. Tracking is clamped to 55 degrees in
-either direction.
+The supplied servo is the neck. The brain now drives its `TargetAngle` directly.
+The current behavior focus also owns the head direction: players, food, treats,
+toys, beds, stalking targets, and travel targets are followed precisely. The
+head looks at the carrier while held, wanders through small idle glances only
+without a focus, and returns smoothly to center while sleeping. Tracking is
+clamped to 55 degrees in either direction.
 
 The microchip remains mounted on the head grid. Physical navigation, sensing,
 and spatial audio use explicit chassis adapters, so turning the head does not
@@ -60,9 +61,10 @@ independent of it.
 
 ## Tagged objects
 
-The hidden forward sensor remembers the last coordinates of recognized objects
-even after they leave its detection volume. Tag matching is exact and
-case-sensitive. The current aliases are:
+The attached forward zone moves with the chassis. It discovers nearby players
+and tagged entities because Brickadia has no global tag lookup, then remembers
+the last coordinates of recognized objects after they leave its detection
+volume. Tag matching is exact and case-sensitive. The current aliases are:
 
 | Object | Recognized tags |
 | --- | --- |
@@ -74,6 +76,12 @@ case-sensitive. The current aliases are:
 Each object must be its own physics entity. A tagged brick merged into the map
 or another large grid identifies that entire grid rather than the individual
 object.
+
+When the cat reaches a treat, it runs `DestroySpawnedPrefab` on that treat and
+clears its remembered reference. Each consumable treat must therefore be its own
+spawned prefab instance. A manually pasted object may ignore that gate, while a
+treat bundled into a larger spawned prefab can cause the entire instance to be
+removed. Food bowls, beds, and toys remain persistent.
 
 The sensor reaches 900 units in front of the chassis and is approximately 240
 units wide by 120 units tall. Roaming lets the cat discover objects in different
@@ -88,13 +96,13 @@ for every call. Purring uses a quiet, low-pitched spatial
 
 ## Verification
 
-The final prefab contains 1,075 bricks, including 1,054 compiled brain gates plus
-the three supplied annotated control gates, and 1,854 wires. Static verification
+The final prefab contains 1,149 bricks, including 1,128 compiled brain gates plus
+the three supplied annotated control gates, and 1,995 wires. Static verification
 found zero invalid bricks, overlaps, duplicate wire drivers, or instant cycles.
 The four native wheel entities, four suspension joints, and neck servo joint
 survive byte-level round trips.
 
-The first live test should check wheel steering, physical pickup detection,
-zone discovery using the user's tagged objects, spatial audio volume, and
-`/cat` behavior with two players. Those physics and multiplayer details cannot
-be reproduced by the headless gate simulator.
+The first live test should check wheel steering, neck polarity, physical pickup
+detection, zone discovery and treat deletion using the user's tagged objects,
+spatial audio volume, and `/cat` behavior with two players. Those physics and
+multiplayer details cannot be reproduced by the headless gate simulator.
