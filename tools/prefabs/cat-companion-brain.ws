@@ -9,7 +9,7 @@
 //
 // Recognized prop tags:
 //   beds:   "Cat Bed 1", "cat:bed"
-//   food:   "Cat Food 1", "cat:food"
+//   food:   "Cat Food" (consumable), "Cat Food 1", "cat:food"
 //   treats: "Kitty Treat 1", "cat:treat"
 //   toys:   "Cat toy 1", "cat:toy"
 
@@ -26,10 +26,12 @@ const RETURN_BED = 5
 const SEEK_FOOD = 6
 const SEEK_TREAT = 7
 const STALK = 8
-const PLAY = 9
+const CHASE = 9
 const SEEK_PETS = 10
 const SIT = 11
 const SLEEP = 12
+const WAIT_PETS = 13
+const ANGRY = 14
 
 const HEARING_RANGE = 1200.0
 const ARRIVE_RANGE = 75.0
@@ -76,7 +78,8 @@ var stalkedToy: entity
 var stalkedToyPosition: vector = Vec(0.0, 0.0, 0.0)
 var stalkUntil: int = 0
 var playRetryAfter: int = 0
-var playUntil: int = 0
+var chaseUntil: int = 0
+var chaseForPlay: bool = false
 var familiarity: Map<string, int>
 var bedEntity: entity
 var bedPosition: vector = Vec(0.0, 0.0, 0.0)
@@ -84,6 +87,8 @@ var bedKnown: bool = false
 var foodEntity: entity
 var foodPosition: vector = Vec(0.0, 0.0, 0.0)
 var foodKnown: bool = false
+var foodVisible: bool = false
+var foodIsConsumable: bool = false
 var treatEntity: entity
 var treatPosition: vector = Vec(0.0, 0.0, 0.0)
 var treatKnown: bool = false
@@ -99,6 +104,7 @@ var toyKnown: bool = false
 var nearbyPlayers: character[]
 var bedTagged: entity[]
 var bedNormalized: entity[]
+var foodPlain: entity[]
 var foodTagged: entity[]
 var foodNormalized: entity[]
 var treatTagged: entity[]
@@ -114,6 +120,16 @@ var likesCurrentPickup: bool = false
 var fleeAfterLanding: bool = false
 var purrUntil: int = 0
 var petCooldown: int = 0
+var petRequestUntil: int = 0
+var petRequestRetryAfter: int = 0
+var requestedPettingUntil: int = 0
+var petBurstUntil: int = 0
+var petBurstCount: int = 0
+var angryUntil: int = 0
+var angryLookPosition: vector = Vec(0.0, 0.0, 0.0)
+var nextNapAt: int = 0
+var napUntil: int = 0
+var tired: bool = false
 var obstacleTurn: float = 1.0
 var avoidTicks: int = 0
 
@@ -125,9 +141,24 @@ out DriveSpeed: float = speedCommand.Value
 out FrontSuspension: float = frontSuspension.Value
 out RearSuspension: float = rearSuspension.Value
 out HeadAngle: float = headAngle.Value
-out FaceText: string = face.Value
-out MoodColor: color = if mode.Value == SEEK_TREAT then ColorSRGB(45, 225, 210, 255)
-  else if mode.Value == STALK || mode.Value == PLAY then ColorSRGB(170, 95, 255, 255)
+out FaceText: string = if mode.Value == ANGRY then "😾"
+  else if mode.Value == FLEE then "😿"
+  else if mode.Value == STALK || mode.Value == CHASE then "😼"
+  else if mode.Value == SLEEP then "😺"
+  else if mode.Value == SEEK_TREAT then "😻"
+  else if mode.Value == SEEK_FOOD then "😿"
+  else if tired.Value || mode.Value == RETURN_BED then "😿"
+  else if hunger.Value >= 72.0 then "😿"
+  else face.Value
+out MoodColor: color = if mode.Value == ANGRY then ColorSRGB(255, 65, 65, 255)
+  else if mode.Value == FLEE then ColorSRGB(70, 135, 255, 255)
+  else if mode.Value == SLEEP then ColorSRGB(25, 55, 150, 255)
+  else if mode.Value == STALK then ColorSRGB(255, 145, 35, 255)
+  else if mode.Value == CHASE then ColorSRGB(255, 225, 45, 255)
+  else if mode.Value == SEEK_TREAT then ColorSRGB(230, 80, 210, 255)
+  else if mode.Value == SEEK_FOOD then ColorSRGB(155, 230, 80, 255)
+  else if tired.Value || mode.Value == RETURN_BED then ColorSRGB(45, 225, 235, 255)
+  else if hunger.Value >= 72.0 then ColorSRGB(155, 230, 80, 255)
   else if face.Value == "😾" then ColorSRGB(255, 65, 65, 255)
   else if face.Value == "😻" then ColorSRGB(255, 90, 190, 255)
   else if face.Value == "😿" then ColorSRGB(70, 135, 255, 255)
@@ -164,6 +195,28 @@ mod beginFlee(origin: vector, duration: int) {
   face = "😾"
 }
 
+mod beginAngry(origin: vector, duration: int) {
+  mode = ANGRY
+  angryUntil = seconds + duration
+  angryLookPosition = origin
+  targetValid = false
+  petRequestUntil = 0
+  requestedPettingUntil = 0
+  petRequestRetryAfter = seconds + 45
+  purrUntil = seconds
+  likesCurrentPickup = false
+  face = "😾"
+  meow(0.40)
+}
+
+mod beginNap() {
+  mode = SLEEP
+  napUntil = seconds + Random(30, 60)
+  targetValid = false
+  tired = false
+  face = "😺"
+}
+
 on Loaded() {
   let cat = if Chassis != null then Chassis else ReadBrickGrid()
   homePosition = cat.GetLocation()
@@ -171,6 +224,7 @@ on Loaded() {
   targetPosition = homePosition
   face = "😺"
   mode = IDLE
+  nextNapAt = seconds + Random(300, 600)
 }
 
 // Refresh the nearby-player snapshot and remember coordinates of recognized props.
@@ -204,16 +258,28 @@ on Clock(interval = 1.0) {
     bedKnown = true
   }
 
+  foodPlain.fillFromZoneEntities(Sensor, "Cat Food")
   foodTagged.fillFromZoneEntities(Sensor, "Cat Food 1")
   foodNormalized.fillFromZoneEntities(Sensor, "cat:food")
-  if foodTagged.length() > 0 {
+  foodVisible = false
+  if foodPlain.length() > 0 {
+    foodEntity = foodPlain.get(0).Value
+    foodPosition = foodEntity.GetLocation()
+    foodKnown = true
+    foodVisible = true
+    foodIsConsumable = true
+  } else if foodTagged.length() > 0 {
     foodEntity = foodTagged.get(0).Value
     foodPosition = foodEntity.GetLocation()
     foodKnown = true
+    foodVisible = true
+    foodIsConsumable = false
   } else if foodNormalized.length() > 0 {
     foodEntity = foodNormalized.get(0).Value
     foodPosition = foodEntity.GetLocation()
     foodKnown = true
+    foodVisible = true
+    foodIsConsumable = false
   }
 
   treatTagged.fillFromZoneEntities(Sensor, "Kitty Treat 1")
@@ -243,12 +309,13 @@ on Clock(interval = 1.0) {
     toyKnown = true
   }
 
-  // Needs rise slowly. Sleep reduces tiredness instead of adding to it.
+  // Needs rise slowly. The final minute before a scheduled nap is visibly tired.
   hunger = need(hunger + 0.75)
   boredom = need(boredom + 0.65)
   sleepiness = need(sleepiness + (if mode == SLEEP then -7.0 else 0.55))
   socialNeed = need(socialNeed + (if seconds < purrUntil then -2.0 else 0.45))
   fear = need(fear - 1.5)
+  tired = mode != SLEEP && seconds >= nextNapAt - 60
 
   // Pickup heuristic: a nearby player plus sustained loss of ground contact.
   let cat = if Chassis != null then Chassis else ReadBrickGrid()
@@ -330,6 +397,7 @@ on Clock(interval = 1.0) {
 on Clock(interval = 2.0) {
   let cat = if Chassis != null then Chassis else ReadBrickGrid()
   let position = cat.GetLocation()
+  let focusValid = if stalkingPlayer then stalkedPlayer != null else stalkedToy != null
 
   if carried {
     mode = CARRIED
@@ -339,30 +407,49 @@ on Clock(interval = 2.0) {
     targetValid = true
     let away = Normalize(Vec(position.x - fleeFrom.x, position.y - fleeFrom.y, 0.0))
     targetPosition = position + away * 650.0
+    face = "😿"
+  } else if seconds < angryUntil {
+    mode = ANGRY
+    targetValid = false
     face = "😾"
+  } else if mode == ANGRY {
+    mode = SIT
+    targetValid = false
+    face = "😺"
   } else if treatKnown && seconds - treatAt5 >= TREAT_WINDOW {
     // Treats override ordinary needs as soon as one has been discovered.
     mode = SEEK_TREAT
     targetPosition = treatPosition
     targetValid = true
-    face = "😺"
-  } else if mode == SLEEP && sleepiness > 18.0 {
+    face = "😻"
+  } else if mode == WAIT_PETS && seconds < petRequestUntil {
     targetValid = false
+    face = "😿"
+  } else if mode == WAIT_PETS {
+    let ignoredAt = if followedPlayer != null then followedPlayer.GetLocation() else nearestPlayerPosition
+    socialNeed = 35.0
+    beginAngry(ignoredAt, 12)
+  } else if mode == SLEEP && seconds < napUntil {
+    targetValid = false
+    face = "😺"
+  } else if mode == SLEEP {
+    mode = IDLE
+    targetValid = false
+    sleepiness = 0.0
+    tired = false
+    nextNapAt = seconds + Random(300, 600)
     face = "😺"
   } else if mode == RETURN_BED && targetValid {
     targetPosition = bedPosition
     face = "😿"
-  } else if sleepiness > 78.0 {
+  } else if seconds >= nextNapAt {
     if bedKnown && Random(0, 100) < 75 {
       mode = RETURN_BED
       targetPosition = bedPosition
       targetValid = true
       face = "😿"
     } else {
-      // A bed is preferred most of the time, but the cat can nap anywhere.
-      mode = SLEEP
-      targetValid = false
-      face = "😺"
+      beginNap()
     }
   } else if hunger > 72.0 && foodKnown {
     mode = SEEK_FOOD
@@ -375,20 +462,24 @@ on Clock(interval = 2.0) {
     targetPosition = calledPlayerPosition
     targetValid = true
     face = "😺"
-  } else if mode == PLAY && seconds < playUntil {
-    let playCenter = if stalkingPlayer then stalkedPlayerPosition else stalkedToyPosition
-    targetPosition = playCenter
+  } else if mode == CHASE && seconds < chaseUntil && (!chaseForPlay || focusValid) {
+    if chaseForPlay {
+      let chaseCenter = if stalkingPlayer then stalkedPlayerPosition else stalkedToyPosition
+      targetPosition = chaseCenter
+    }
     targetValid = true
     face = "😼"
-  } else if mode == PLAY {
-    // A missed pounce ends without relieving boredom.
-    playRetryAfter = seconds + 15
+  } else if mode == CHASE {
+    // A missed focused pounce ends without relieving boredom. A spontaneous
+    // sprint simply settles down when its short timer ends.
+    if chaseForPlay { playRetryAfter = seconds + 15 }
+    chaseForPlay = false
     stalkedPlayer = null
     stalkedToy = null
     mode = SIT
     targetValid = false
     face = "😿"
-  } else if mode == STALK && targetValid && seconds < stalkUntil {
+  } else if mode == STALK && targetValid && seconds < stalkUntil && focusValid {
     face = "😼"
   } else if mode == STALK {
     // Give up on a stale or unreachable focus instead of crouching forever.
@@ -402,11 +493,14 @@ on Clock(interval = 2.0) {
     mode = SIT
     targetValid = false
     face = "😿"
-  } else if boredom > 55.0 && seconds >= playRetryAfter && (toyKnown || playerNearby) {
+  } else if boredom > 55.0 && seconds >= playRetryAfter
+    && (toyKnown && toyEntity != null || playerNearby && nearestPlayer != null) {
     // A known toy always wins. Players are the fallback when no toy is known.
-    let choosePlayer = !toyKnown && playerNearby
+    // STALK can only be entered after one of those two exact entities is locked.
+    let choosePlayer = !(toyKnown && toyEntity != null) && playerNearby
     mode = STALK
     stalkingPlayer = choosePlayer
+    chaseForPlay = false
     if choosePlayer {
       stalkedPlayer = nearestPlayer
       stalkedPlayerPosition = nearestPlayerPosition
@@ -420,7 +514,7 @@ on Clock(interval = 2.0) {
     targetPosition = if choosePlayer then stalkedPlayerPosition else stalkedToyPosition
     targetValid = true
     face = "😼"
-  } else if socialNeed > 68.0 && playerNearby {
+  } else if socialNeed > 68.0 && playerNearby && seconds >= petRequestRetryAfter {
     mode = SEEK_PETS
     followedPlayer = nearestPlayer
     targetPosition = nearestPlayerPosition
@@ -435,7 +529,19 @@ on Clock(interval = 2.0) {
     face = "😺"
   } else {
     let choice = Random(0, 100)
-    if choice < 38 {
+    if choice < 10 {
+      // A Chase is occasionally just a burst of energy with no stalking focus.
+      mode = CHASE
+      chaseForPlay = false
+      chaseUntil = seconds + Random(5, 8)
+      stalkingPlayer = false
+      stalkedPlayer = null
+      stalkedToy = null
+      let sprint = Random(Vec(-650.0, -650.0, 0.0), Vec(650.0, 650.0, 0.0))
+      targetPosition = position + sprint
+      targetValid = true
+      face = "😼"
+    } else if choice < 42 {
       mode = SIT
       targetValid = false
       face = "😺"
@@ -448,26 +554,35 @@ on Clock(interval = 2.0) {
     }
   }
 
-  // Arrival actions and need relief. Stalking changes into a pounce from farther
-  // away; a pounce only completes after reaching the focused entity itself.
+  // Arrival actions and need relief. Stalking changes into Chase from farther
+  // away; focused Chase only succeeds after reaching the selected entity.
   let arrivalRange = if mode == STALK then STALK_POUNCE_RANGE
-    else if mode == PLAY then POUNCE_CONTACT_RANGE
+    else if mode == CHASE && chaseForPlay then POUNCE_CONTACT_RANGE
     else ARRIVE_RANGE
   if targetValid && Distance(position, targetPosition) < arrivalRange {
     if mode == RETURN_BED {
-      mode = SLEEP
-      targetValid = false
-      face = "😺"
+      beginNap()
     } else if mode == SEEK_FOOD {
-      hunger = 8.0
+      if foodEntity != null && (!foodIsConsumable || foodVisible) {
+        if foodIsConsumable { foodEntity.DestroySpawnedPrefab() }
+        hunger = 8.0
+        face = "😻"
+        meow(0.28)
+      } else {
+        face = "😿"
+        meow(0.20)
+      }
+      if foodIsConsumable {
+        foodEntity = null
+        foodKnown = false
+        foodVisible = false
+        foodIsConsumable = false
+      }
       mode = SIT
       targetValid = false
-      face = "😻"
-      meow(0.28)
     } else if mode == SEEK_TREAT {
       // Confirm the remembered treat is still inside the attached zone before
-      // rewarding the cat. Treats are consumable prefab instances; beds, toys,
-      // and food bowls stay in the world.
+      // rewarding the cat. Consumables must be standalone spawned prefabs.
       if treatEntity != null && treatVisible {
         treatEntity.DestroySpawnedPrefab()
         treatAt5 = treatAt4
@@ -495,20 +610,31 @@ on Clock(interval = 2.0) {
       mode = SIT
       targetValid = false
     } else if mode == STALK {
-      mode = PLAY
-      playUntil = seconds + 8
-      let playCenter = if stalkingPlayer then stalkedPlayerPosition else stalkedToyPosition
-      targetPosition = playCenter
+      mode = CHASE
+      chaseForPlay = true
+      chaseUntil = seconds + 8
+      let chaseCenter = if stalkingPlayer then stalkedPlayerPosition else stalkedToyPosition
+      targetPosition = chaseCenter
       targetValid = true
       face = "😼"
-    } else if mode == PLAY {
-      boredom = need(boredom - 35.0)
+    } else if mode == CHASE {
+      let completedPlay = chaseForPlay
+      if completedPlay { boredom = need(boredom - 35.0) }
+      chaseForPlay = false
       stalkedPlayer = null
       stalkedToy = null
       mode = SIT
       targetValid = false
-      face = "😻"
-    } else if mode == SEEK_PETS || mode == FOLLOW {
+      face = if completedPlay then "😻" else "😼"
+    } else if mode == SEEK_PETS {
+      mode = WAIT_PETS
+      petRequestUntil = seconds + 15
+      requestedPettingUntil = 0
+      petBurstCount = 0
+      petBurstUntil = seconds + 12
+      targetValid = false
+      face = "😿"
+    } else if mode == FOLLOW {
       mode = SIT
       targetValid = false
     } else if mode == ROAM {
@@ -520,10 +646,14 @@ on Clock(interval = 2.0) {
 
 // Motion, posture, and simple obstacle avoidance.
 on Clock(interval = 0.2) {
-  let wantedFront = if mode == STALK || mode == SLEEP then 100.0 else 500.0
-  let wantedRear = if mode == STALK || mode == SLEEP || mode == SIT then 100.0 else 500.0
+  let wantedFront = if mode == STALK then 100.0
+    else if mode == SLEEP then 100.0
+    else 500.0
+  let wantedRear = if mode == STALK then 500.0
+    else if mode == SLEEP || mode == SIT then 100.0
+    else 500.0
   let wantedSpeed = if mode == STALK || mode == SIT || mode == SLEEP || mode == CARRIED then 50.0
-    else if mode == PLAY then 280.0
+    else if mode == CHASE then 280.0
     else if mode == FLEE then 320.0
     else 100.0
 
@@ -545,16 +675,22 @@ on Clock(interval = 0.2) {
     if mode == CARRIED && closePlayerForPickup {
       lookPosition = pickupPlayerPosition
       lookValid = true
-    } else if (mode == STALK || mode == PLAY) && stalkingPlayer && stalkedPlayer != null {
+    } else if (mode == STALK || mode == CHASE) && stalkingPlayer && stalkedPlayer != null {
       lookPosition = stalkedPlayerPosition
       lookValid = true
-    } else if (mode == STALK || mode == PLAY) && !stalkingPlayer && stalkedToy != null {
+    } else if (mode == STALK || mode == CHASE) && !stalkingPlayer && stalkedToy != null {
       lookPosition = stalkedToyPosition
+      lookValid = true
+    } else if mode == ANGRY {
+      lookPosition = angryLookPosition
       lookValid = true
     } else if targetValid {
       lookPosition = targetPosition
       lookValid = true
-    } else if playerNearby && (mode == SIT || mode == SEEK_PETS) {
+    } else if followedPlayer != null && (mode == SEEK_PETS || mode == WAIT_PETS) {
+      lookPosition = followedPlayer.GetLocation()
+      lookValid = true
+    } else if playerNearby && mode == SIT {
       lookPosition = nearestPlayerPosition
       lookValid = true
     }
@@ -570,7 +706,8 @@ on Clock(interval = 0.2) {
   }
   headAngle = lerp(headAngle, wantedHeadAngle, 0.22)
 
-  if mode == CARRIED || mode == SIT || mode == SLEEP || mode == IDLE || !targetValid {
+  if mode == CARRIED || mode == SIT || mode == SLEEP || mode == WAIT_PETS
+    || mode == ANGRY || mode == IDLE || !targetValid {
     driveCommand = 0.0
     steerCommand = 0.0
     brakeCommand = true
@@ -586,13 +723,13 @@ on Clock(interval = 0.2) {
     let desired = Normalize(toTarget)
     let turnAngle = atan2(Cross(forward, desired).z, Dot(forward, desired))
 
-    let stoppingRange = if mode == PLAY then POUNCE_STOP_RANGE else ARRIVE_RANGE
-    driveCommand = if distance > stoppingRange then (if mode == PLAY then 1.0 else 0.72) else 0.0
+    let stoppingRange = if mode == CHASE && chaseForPlay then POUNCE_STOP_RANGE else ARRIVE_RANGE
+    driveCommand = if distance > stoppingRange then (if mode == CHASE then 1.0 else 0.72) else 0.0
     steerCommand = min(max(turnAngle / 1.15, -1.0), 1.0)
     brakeCommand = distance <= stoppingRange
 
     let activityTarget = mode == RETURN_BED || mode == SEEK_FOOD || mode == SEEK_TREAT
-      || mode == STALK || mode == PLAY
+      || mode == STALK || mode == CHASE
     if !(activityTarget && distance < 150.0) {
       let obstacle = Sweep(
         position + Vec(0.0, 0.0, 10.0),
@@ -625,26 +762,52 @@ on Clock(interval = 0.2) {
 on WholeGridInteracted() -> { held: isHeld } {
   if isHeld && petCooldown == 0 {
     petCooldown = 2
-    socialNeed = need(socialNeed - 42.0)
-    fear = need(fear - 18.0)
-    affection = need(affection + 7.0)
-    purrUntil = seconds + 8
-    face = "😻"
-    mode = SIT
-    if Petter != null || playerNearby {
-      let credited = if Petter != null then Petter else nearestPlayer
-      let id = credited.GetUserId()
-      let old = familiarity.get(id)
-      familiarity.set(id, min((if old.Found then old.Value else 0) + 12, 100))
+    let petPosition = if Petter != null then Petter.GetLocation() else nearestPlayerPosition
+    if Petter != null {
+      followedPlayer = Petter
+    } else if playerNearby {
+      followedPlayer = nearestPlayer
+    } else {
+      followedPlayer = null
     }
-    if affection > 88.0 && Random(0, 100) < 10 {
-      // Occasional overstimulation keeps the cat from acting like a button toy.
+
+    if mode == FLEE {
+      // Fear cannot be canceled by repeatedly interacting with the cat.
+      face = "😿"
+    } else if mode == ANGRY || seconds < angryUntil {
+      // Petting an already angry cat extends the mood and gives no reward.
+      angryLookPosition = petPosition
+      angryUntil = max(angryUntil, seconds + 6)
       face = "😾"
-      fear = need(fear + 12.0)
-      if Petter != null {
-        beginFlee(Petter.GetLocation(), 5)
-      } else if playerNearby {
-        beginFlee(nearestPlayerPosition, 5)
+    } else {
+      let requestActive = mode == SEEK_PETS || mode == WAIT_PETS
+      let requestedSession = requestActive || seconds < requestedPettingUntil
+      if seconds >= petBurstUntil {
+        petBurstCount = 0
+        petBurstUntil = seconds + 12
+      }
+      petBurstCount += 1
+      if requestActive { requestedPettingUntil = seconds + 12 }
+
+      let tooMuchRequested = requestedSession && petBurstCount >= 6
+      let annoyedUnsolicited = !requestedSession && petBurstCount >= 3
+        && Random(0, 100) < 35
+      if tooMuchRequested || annoyedUnsolicited {
+        beginAngry(petPosition, 12)
+      } else {
+        socialNeed = need(socialNeed - 42.0)
+        fear = need(fear - 18.0)
+        affection = need(affection + 7.0)
+        purrUntil = seconds + 8
+        face = "😻"
+        mode = SIT
+        petRequestUntil = 0
+        if Petter != null || playerNearby {
+          let credited = if Petter != null then Petter else nearestPlayer
+          let id = credited.GetUserId()
+          let old = familiarity.get(id)
+          familiarity.set(id, min((if old.Found then old.Value else 0) + 12, 100))
+        }
       }
     }
   }
@@ -665,7 +828,8 @@ on ChatCommand("cat", "Call a nearby cat") -> (controller, arguments) {
   if caller != null {
     let callerPosition = caller.GetLocation()
     let catPosition = (if Chassis != null then Chassis else ReadBrickGrid()).GetLocation()
-    if Distance(callerPosition, catPosition) <= HEARING_RANGE {
+    if Distance(callerPosition, catPosition) <= HEARING_RANGE
+      && seconds >= angryUntil && mode != WAIT_PETS {
       let id = controller.GetUserId()
       let known = familiarity.get(id)
       let trust = if known.Found then known.Value else 0
@@ -701,7 +865,10 @@ on Clock(interval = 0.5) {
     targetPosition = followedPlayer.GetLocation()
     targetValid = true
   }
-  if mode == STALK || mode == PLAY {
+  if mode == ANGRY && followedPlayer != null {
+    angryLookPosition = followedPlayer.GetLocation()
+  }
+  if mode == STALK || mode == CHASE && chaseForPlay {
     if stalkingPlayer && stalkedPlayer != null {
       stalkedPlayerPosition = stalkedPlayer.GetLocation()
       targetPosition = stalkedPlayerPosition

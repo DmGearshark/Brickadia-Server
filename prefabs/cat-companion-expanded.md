@@ -6,24 +6,26 @@ replaced with a compiled WireScript state machine.
 
 ## Behavior
 
-The cat tracks hunger, boredom, sleepiness, social need, affection, fear, and
-per-player familiarity. One priority controller owns the motor outputs so its
-needs cannot issue conflicting drive commands.
+The cat tracks hunger, boredom, its nap schedule, social need, affection, fear,
+and per-player familiarity. One priority controller owns the motor outputs so
+its needs cannot issue conflicting drive commands.
 
-From highest to lowest priority, it can flee, react to being carried, return to
-bed or nap where it is, seek food or a treat, stalk and play with a toy or player,
-seek petting, answer `/cat`, follow a familiar player, sit, or roam near its spawn
-point. Its face uses the supplied 😺 😼 😿 😻 😾 set.
+From highest to lowest priority, it can react to being carried, flee danger,
+hold an angry response, eat a discovered treat, wait after asking for pets,
+return to bed or nap where it is, seek food, answer `/cat`, stalk and chase a
+toy or player, ask for petting, follow a nearby player, sit, sprint, or roam near
+its spawn point. Its face uses the supplied 😺 😼 😿 😻 😾 set, with active
+behavior states choosing both the emoji and square color together.
 
 The provided control inputs are now active:
 
 | Posture | Top speed | Front suspension | Rear suspension |
 | --- | ---: | ---: | ---: |
 | Walk / follow | 100 | 500 | 500 |
-| Stalk | 50 | 100 | 100 |
+| Stalk | 50 | 100 | 500 |
 | Sit | 50, with drive braked | 500 | 100 |
 | Sleep | 50, with drive braked | 100 | 100 |
-| Play / pounce | 280 | 500 | 500 |
+| Chase / pounce | 280 | 500 | 500 |
 | Flee | 320 | 500 | 500 |
 
 Suspension values blend toward their targets instead of changing in one tick.
@@ -43,27 +45,36 @@ change the cat's movement reference.
 
 ## Mood indicator
 
-The square decal on the rear of the head normally follows the emoji mood. Two
-intent colors take priority so the cat visibly announces what it is pursuing:
+The square decal on the rear of the head follows the active behavior and its
+matching face:
 
 | Indicator | Meaning |
 | --- | --- |
-| Cyan | A treat was spotted and the cat is walking over to eat it |
-| Purple | The cat is stalking or pouncing on a toy or player |
-| Green | Calm / normal |
-| Amber | Playful / mischievous without an active play target |
-| Blue | Needy / hungry / tired / unhappy |
-| Pink | Affectionate / pleased |
-| Red | Angry / frightened / fleeing |
+| Orange + 😼 | Stalking a locked toy or player |
+| Yellow + 😼 | Chasing after a stalk or having a spontaneous fast run |
+| Red + 😾 | Angry |
+| Cyan + 😿 | Tired or returning to bed |
+| Dark blue + 😺 | Sleeping |
+| Lime + 😿 | Hungry or walking to food |
+| Magenta + 😻 | Walking to a treat |
+| Green + 😺 | Calm / normal |
+| Amber + 😼 | Playful / mischievous without an active play target |
+| Blue + 😿 | Needy, unhappy, frightened, or fleeing |
+| Pink + 😻 | Affectionate / pleased |
 
-The user's square text, face selection, size, anchor, and head placement are
-preserved. Only its `Color` input is controlled by the brain.
+The user's square and face display placement and style are preserved, along with
+the supplied emoji set. The brain controls the face text and square color.
 
 ## Interaction
 
 - Interact with the visible cat head and choose **Pet Cat**. Petting lowers fear
   and social need, raises affection and familiarity, changes the face, and
-  starts purring. A highly stimulated cat can rarely become annoyed and leave.
+  starts purring. When the cat walks over to ask for pets, it waits 15 seconds.
+  Being ignored makes it angry for about 12 seconds. During a requested petting
+  session the sixth accepted pet is too much; outside a request, the third and
+  later rapid pets each have a 35% chance to annoy it. Accepted pets are spaced
+  by the existing two-second interaction cooldown. Angry cats do not award
+  affection or purr, and wait at least 45 seconds before asking again.
 - Pickup is inferred after the chassis stays off the ground for about two
   seconds while a player is within 210 units. The cat randomly enjoys or
   dislikes each pickup, weighted by affection and fear. A disliked pickup makes
@@ -87,7 +98,8 @@ volume. Tag matching is exact and case-sensitive. The current aliases are:
 | Object | Recognized tags |
 | --- | --- |
 | Bed | `Cat Bed 1`, `cat:bed` |
-| Food | `Cat Food 1`, `cat:food` |
+| Consumable food | `Cat Food` |
+| Persistent food bowl | `Cat Food 1`, `cat:food` |
 | Treat | `Kitty Treat 1`, `cat:treat` |
 | Toy | `Cat toy 1`, `cat:toy` |
 
@@ -95,23 +107,32 @@ Each object must be its own physics entity. A tagged brick merged into the map
 or another large grid identifies that entire grid rather than the individual
 object.
 
-When the cat reaches a treat, it runs `DestroySpawnedPrefab` on that treat and
-clears its remembered reference. Each consumable treat must therefore be its own
-spawned prefab instance. A manually pasted object may ignore that gate, while a
-treat bundled into a larger spawned prefab can cause the entire instance to be
-removed. Food bowls, beds, and toys remain persistent.
+When the cat reaches a treat or exact `Cat Food`, it confirms that entity is
+still inside the sensor, runs `DestroySpawnedPrefab`, and clears its remembered
+reference. Each consumable must therefore be its own spawned prefab instance. A
+manually pasted object may ignore that gate, while an object bundled into a
+larger spawned prefab can cause the entire instance to be removed. The two food
+bowl aliases, beds, and toys remain persistent.
 
 Treats no longer depend on hunger or a random roll. A discovered treat becomes
-the highest ordinary priority after carrying and danger, and the indicator turns
-cyan during the approach. Five successful treats are allowed in any rolling
-three-minute window; further treats are ignored until the oldest one leaves that
-window. Missing treats grant no rewards and do not count toward the limit.
+the highest ordinary priority after carrying, danger, and an active angry
+response, and the indicator turns magenta during the approach. Five successful
+treats are allowed in any rolling three-minute window; further treats are
+ignored until the oldest one leaves that window. Missing treats grant no rewards
+and do not count toward the limit.
 
 Toy play begins soon after placement, then settles into a slower boredom cycle.
 When both a toy and player are available, the toy always wins. The cat turns
-purple, lowers itself, stalks to within 180 units, then raises its speed to 280
-and runs directly into the exact toy. A successful pounce relieves boredom;
-toys remain in the world.
+orange, lowers its front while keeping the rear suspension high, and stalks to
+within 180 units. It then enters yellow Chase, raises its speed to 280, and runs
+directly into that exact focus. A successful focused pounce relieves boredom;
+toys remain in the world. Chase can also occur as a five-to-eight-second random
+burst of energy without a stalking target or boredom reward.
+
+After five to ten minutes awake and once higher-priority behavior clears, the cat
+prefers a known bed 75% of the time and otherwise naps in place. The final minute
+before that deadline is the cyan tired period unless another active mode owns the
+indicator. A nap lasts 30 to 60 seconds, then a new awake interval is scheduled.
 
 The sensor reaches 900 units in front of the chassis and is approximately 240
 units wide by 120 units tall. Roaming lets the cat discover objects in different
@@ -126,14 +147,15 @@ for every call. Purring uses a quiet, low-pitched spatial
 
 ## Verification
 
-The final prefab contains 1,203 bricks, including 1,182 compiled brain gates plus
-the three supplied annotated control gates, and 2,092 wires. Static verification
+The final prefab contains 1,462 bricks, including 1,441 compiled brain gates plus
+the three supplied annotated control gates, and 2,574 wires. Static verification
 found zero invalid bricks, overlaps, duplicate wire drivers, or instant cycles.
 The four native wheel entities, four suspension joints, and neck servo joint
 survive byte-level round trips.
 
-The first live test should check wheel steering, neck polarity, mood-indicator
-color, physical pickup detection, zone discovery and treat deletion using the
-user's tagged objects, spatial audio volume, and `/cat` behavior with two
-players. Those physics and multiplayer details cannot be reproduced by the
-headless gate simulator.
+The first live test should check wheel steering, neck polarity, physical pickup
+detection, spatial audio volume, and `/cat` behavior with two players. It should
+also verify orange Stalk with a low front and high rear, yellow Chase at speed,
+the pet-request timeout and both over-petting anger paths, 30-to-60-second naps,
+zone discovery, treat deletion, and exact `Cat Food` deletion. Those physics and
+multiplayer details cannot be reproduced by the headless gate simulator.

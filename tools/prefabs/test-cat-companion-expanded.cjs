@@ -1,6 +1,7 @@
 'use strict';
 
 const fs = require('fs');
+const path = require('path');
 const assert = require('assert/strict');
 const {read, write} = require('./reskin-loadboard.cjs');
 const validatePlacement = require('./validate-placement.cjs');
@@ -37,6 +38,8 @@ if (!sourcePath || !outputPath) {
 
 const source = read(fs.readFileSync(sourcePath));
 const output = read(fs.readFileSync(outputPath));
+const behaviorSource = fs.readFileSync(
+  path.join(__dirname, 'cat-companion-brain.ws'), 'utf8');
 const all = (scene, type) => scene.bricks.flatMap(brick => brick.comps
   .filter(comp => comp.type === type)
   .map(comp => ({brick, comp})));
@@ -45,6 +48,27 @@ const one = (items, label) => {
   return items[0];
 };
 const component = (brick, type) => brick.comps.find(comp => comp.type === type);
+
+for (const [label, pattern] of [
+  ['Stalk orange mapping', /mode\.Value == STALK then ColorSRGB\(255, 145, 35, 255\)/],
+  ['Chase yellow mapping', /mode\.Value == CHASE then ColorSRGB\(255, 225, 45, 255\)/],
+  ['Angry red mapping', /mode\.Value == ANGRY then ColorSRGB\(255, 65, 65, 255\)/],
+  ['Tired cyan mapping', /mode\.Value == RETURN_BED then ColorSRGB\(45, 225, 235, 255\)/],
+  ['Sleep dark-blue mapping', /mode\.Value == SLEEP then ColorSRGB\(25, 55, 150, 255\)/],
+  ['Hungry lime mapping', /hunger\.Value >= 72\.0 then ColorSRGB\(155, 230, 80, 255\)/],
+  ['Angry face mapping', /mode\.Value == ANGRY then "😾"/u],
+  ['Stalk and Chase face mapping', /mode\.Value == STALK \|\| mode\.Value == CHASE then "😼"/u],
+  ['Sleep face mapping', /mode\.Value == SLEEP then "😺"/u],
+  ['Stalk front-low posture', /let wantedFront = if mode == STALK then 100\.0/],
+  ['Stalk rear-high posture', /let wantedRear = if mode == STALK then 500\.0/],
+  ['Five-to-ten-minute awake interval', /nextNapAt = seconds \+ Random\(300, 600\)/],
+  ['Thirty-to-sixty-second nap', /napUntil = seconds \+ Random\(30, 60\)/],
+  ['Fifteen-second pet request', /petRequestUntil = seconds \+ 15/],
+  ['Requested over-petting threshold', /requestedSession && petBurstCount >= 6/],
+  ['Unsolicited over-petting threshold', /!requestedSession && petBurstCount >= 3/],
+]) {
+  assert.match(behaviorSource, pattern, `Missing behavior contract: ${label}`);
+}
 
 assertNoInstantCycles(output);
 const placement = validatePlacement(fs.readFileSync(outputPath));
@@ -68,6 +92,7 @@ const recognizedTags = all(output, TYPES.zoneEntities)
   .sort();
 assert.deepEqual(recognizedTags, [
   'Cat Bed 1',
+  'Cat Food',
   'Cat Food 1',
   'Cat toy 1',
   'Kitty Treat 1',
@@ -90,11 +115,18 @@ for (const {brick, comp} of meows) {
   assert.equal(location.p, 'Output');
 }
 
-const consumeTreat = one(all(output, TYPES.destroySpawnedPrefab), 'treat prefab delete gate');
-const consumedEntity = one(output.edges.filter(edge => edge.z === consumeTreat.brick.key
-  && edge.zt === TYPES.destroySpawnedPrefab && edge.q === 'Entity'), 'consumed treat entity');
-assert.equal(consumedEntity.at, TYPES.varGet);
-assert.equal(consumedEntity.p, 'Value');
+const consumeProps = all(output, TYPES.destroySpawnedPrefab);
+assert.equal(consumeProps.length, 2, 'Treat and exact Cat Food prefab delete gates');
+const consumedSources = [];
+for (const consume of consumeProps) {
+  const consumedEntity = one(output.edges.filter(edge => edge.z === consume.brick.key
+    && edge.zt === TYPES.destroySpawnedPrefab && edge.q === 'Entity'),
+    'consumed prop entity');
+  assert.equal(consumedEntity.at, TYPES.varGet);
+  assert.equal(consumedEntity.p, 'Value');
+  consumedSources.push(consumedEntity.a);
+}
+assert.equal(new Set(consumedSources).size, 2, 'Food and treat use distinct entity variables');
 
 const sweeps = all(output, TYPES.sweep);
 assert.equal(sweeps.length, 3, 'Pickup, ground, and obstacle sweeps');
@@ -156,10 +188,31 @@ const palette = all(output, TYPES.select).flatMap(({comp}) =>
     .map(value => value.value));
 const hasColor = expected => palette.some(color => ['R', 'G', 'B', 'A']
   .every((channel, index) => Math.abs(color[channel] - expected[index]) < 1e-5));
-assert(hasColor([0.02624122, 0.75294220, 0.64447969, 1]),
-  'Missing cyan treat-intent color');
-assert(hasColor([0.40197778, 0.11443537, 1, 1]),
-  'Missing purple play-intent color');
+const linearChannel = value => {
+  const channel = value / 255;
+  return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+};
+const linearColor = (r, g, b, a = 255) => [
+  linearChannel(r), linearChannel(g), linearChannel(b), a / 255,
+];
+for (const [label, rgb] of [
+  ['orange Stalk', [255, 145, 35]],
+  ['yellow Chase', [255, 225, 45]],
+  ['red Angry', [255, 65, 65]],
+  ['cyan Tired', [45, 225, 235]],
+  ['dark-blue Sleep', [25, 55, 150]],
+  ['lime Hungry', [155, 230, 80]],
+  ['magenta Treat', [230, 80, 210]],
+]) {
+  assert(hasColor(linearColor(...rgb)), `Missing ${label} indicator color`);
+}
+const faceLiterals = new Set(all(output, TYPES.select).flatMap(({comp}) =>
+  [comp.data.InputA, comp.data.InputB]
+    .filter(value => value?.$variant === 'str')
+    .map(value => value.value)));
+for (const emoji of ['😾', '😼', '😿', '😺', '😻']) {
+  assert(faceLiterals.has(emoji), `Missing state-driven ${emoji} face literal`);
+}
 
 const outputs = new Map(all(output, TYPES.microchipOutput)
   .map(item => [item.comp.data.PortLabel, item]));
@@ -187,6 +240,13 @@ for (const label of ['Drive', 'Steer', 'Brake', 'DriveSpeed', 'FrontSuspension',
 }
 for (const label of ['Chassis', 'Sensor', 'Petter']) {
   assert(inputs.has(label), `Missing input ${label}`);
+}
+for (const label of ['FaceText', 'MoodColor']) {
+  const pin = outputs.get(label);
+  const incoming = one(output.edges.filter(edge => edge.z === pin.brick.key
+    && edge.zt === TYPES.microchipOutput && edge.q === 'RER_Input'), `${label} state expression`);
+  assert.equal(incoming.at, TYPES.select, `${label} should be state-derived`);
+  assert.equal(incoming.p, 'Output');
 }
 
 function drivers(type, port) {
