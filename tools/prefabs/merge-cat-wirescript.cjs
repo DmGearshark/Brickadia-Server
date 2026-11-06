@@ -30,6 +30,7 @@ const OUTPUTS = [
   'RearSuspension',
   'HeadAngle',
   'FaceText',
+  'MoodColor',
   'Purr',
 ];
 
@@ -115,6 +116,8 @@ function physicalTargets(scene, brainGrid) {
     (_comp, brick) => brick.g !== brainGrid);
   const emojiFaces = faceCandidates.filter(({comp}) => /[😺😼😿😻😾]/u.test(comp.data.Text || ''));
   const face = one(emojiFaces.length ? emojiFaces : faceCandidates, 'cat face text display').brick;
+  const mood = one(faceCandidates.filter(({brick, comp}) =>
+    brick.g === face.g && comp.data.Text === '■'), 'cat mood indicator').brick;
 
   return {
     chassisGrid: engine.g,
@@ -123,6 +126,7 @@ function physicalTargets(scene, brainGrid) {
     Brake: [{key: engine.key, type: TYPES.engine, port: 'bManualInput_Brake'}],
     HeadAngle: [{key: neck.key, type: TYPES.servo, port: 'TargetAngle'}],
     FaceText: [{key: face.key, type: TYPES.text, port: 'Text'}],
+    MoodColor: [{key: mood.key, type: TYPES.text, port: 'Color'}],
   };
 }
 

@@ -41,6 +41,22 @@ The microchip remains mounted on the head grid. Physical navigation, sensing,
 and spatial audio use explicit chassis adapters, so turning the head does not
 change the cat's movement reference.
 
+## Mood indicator
+
+The square decal on the rear of the head is driven from the same `face` state as
+the emoji, so the two indicators cannot disagree:
+
+| Face | Mood | Indicator |
+| --- | --- | --- |
+| 😺 | Calm / normal | Green |
+| 😼 | Playful / stalking | Amber |
+| 😿 | Needy / hungry / tired / unhappy | Blue |
+| 😻 | Affectionate / pleased | Pink |
+| 😾 | Angry / frightened / fleeing | Red |
+
+The user's square text, face selection, size, anchor, and head placement are
+preserved. Only its `Color` input is controlled by the brain.
+
 ## Interaction
 
 - Interact with the visible cat head and choose **Pet Cat**. Petting lowers fear
@@ -96,13 +112,14 @@ for every call. Purring uses a quiet, low-pitched spatial
 
 ## Verification
 
-The final prefab contains 1,149 bricks, including 1,128 compiled brain gates plus
-the three supplied annotated control gates, and 1,995 wires. Static verification
+The final prefab contains 1,158 bricks, including 1,137 compiled brain gates plus
+the three supplied annotated control gates, and 2,008 wires. Static verification
 found zero invalid bricks, overlaps, duplicate wire drivers, or instant cycles.
 The four native wheel entities, four suspension joints, and neck servo joint
 survive byte-level round trips.
 
-The first live test should check wheel steering, neck polarity, physical pickup
-detection, zone discovery and treat deletion using the user's tagged objects,
-spatial audio volume, and `/cat` behavior with two players. Those physics and
-multiplayer details cannot be reproduced by the headless gate simulator.
+The first live test should check wheel steering, neck polarity, mood-indicator
+color, physical pickup detection, zone discovery and treat deletion using the
+user's tagged objects, spatial audio volume, and `/cat` behavior with two
+players. Those physics and multiplayer details cannot be reproduced by the
+headless gate simulator.

@@ -142,6 +142,13 @@ assert.deepEqual(neck.brick.data, sourceNeck.brick.data, 'Neck servo brick chang
 assert.deepEqual(neck.comp.data, sourceNeck.comp.data, 'Neck servo settings changed');
 const face = one(all(output, TYPES.text).filter(({comp}) =>
   /[😺😼😿😻😾]/u.test(comp.data.Text || '')), 'cat face');
+const mood = one(all(output, TYPES.text).filter(({comp}) =>
+  comp.data.Text === '■'), 'cat mood indicator');
+const sourceMood = one(all(source, TYPES.text).filter(({comp}) =>
+  comp.data.Text === '■'), 'source cat mood indicator');
+assert.equal(mood.brick.g, face.brick.g, 'Mood indicator remains on the head grid');
+assert.deepEqual(mood.brick.data, sourceMood.brick.data, 'Mood indicator brick changed');
+assert.deepEqual(mood.comp.data, sourceMood.comp.data, 'Mood indicator settings changed');
 
 const outputs = new Map(all(output, TYPES.microchipOutput)
   .map(item => [item.comp.data.PortLabel, item]));
@@ -164,7 +171,7 @@ const sourceControls = {
     /^Input Rear Wheel Suspension(?:,|$)/i, 'source rear suspension control pin'),
 };
 for (const label of ['Drive', 'Steer', 'Brake', 'DriveSpeed', 'FrontSuspension',
-  'RearSuspension', 'HeadAngle', 'FaceText', 'Purr']) {
+  'RearSuspension', 'HeadAngle', 'FaceText', 'MoodColor', 'Purr']) {
   assert(outputs.has(label), `Missing output ${label}`);
 }
 for (const label of ['Chassis', 'Sensor', 'Petter']) {
@@ -188,6 +195,9 @@ assertOutputDriver(TYPES.engine, 'ManualInput_Steer', 'Steer');
 assertOutputDriver(TYPES.engine, 'bManualInput_Brake', 'Brake');
 assertOutputDriver(TYPES.servo, 'TargetAngle', 'HeadAngle');
 assertOutputDriver(TYPES.text, 'Text', 'FaceText');
+assertOutputDriver(TYPES.text, 'Color', 'MoodColor');
+assert.equal(drivers(TYPES.text, 'Color')[0].z, mood.brick.key,
+  'Mood color should drive the square indicator');
 
 for (const label of ['DriveSpeed', 'FrontSuspension', 'RearSuspension']) {
   const before = sourceControls[label];
@@ -285,7 +295,7 @@ console.log(JSON.stringify({
   bricks: output.bricks.length,
   wires: output.edges.length,
   brainGates: output.bricks.filter(brick => brick.g === output.links[0].grid).length,
-  outputs: 9,
+  outputs: 10,
   inputs: 3,
   nativeWheels: 4,
   joints: output.joints.length,

@@ -113,6 +113,11 @@ out FrontSuspension: float = frontSuspension.Value
 out RearSuspension: float = rearSuspension.Value
 out HeadAngle: float = headAngle.Value
 out FaceText: string = face.Value
+out MoodColor: color = if face.Value == "😾" then ColorSRGB(255, 65, 65, 255)
+  else if face.Value == "😻" then ColorSRGB(255, 90, 190, 255)
+  else if face.Value == "😿" then ColorSRGB(70, 135, 255, 255)
+  else if face.Value == "😼" then ColorSRGB(245, 180, 45, 255)
+  else ColorSRGB(70, 210, 100, 255)
 out Purr: bool = seconds.Value < purrUntil.Value || carried.Value && likesCurrentPickup.Value
 
 mod meow(volume: float = 0.32) {
