@@ -24,16 +24,20 @@ function build(input){
  const direction=node('Expr_DirectionToRotation',{Direction:{X:1,Y:0,Z:0}});wire(delta,'Output',direction,'Direction');
  const targetRotation=node('Expr_SplitRotation',{Input:{Pitch:0,Yaw:0,Roll:0}});wire(direction,'Output',targetRotation,'Input');
  const displayRotation=node('Expr_SplitRotation',{Input:{Pitch:0,Yaw:0,Roll:0}});wire(transform,'Rotation',displayRotation,'Input');
- function axis(label,current,currentPort,targetPort,bearing,offset=0){
-  const sum=node('Expr_MathAdd',{InputA:N(0),InputB:N(0)});wire(current,'RER_Output',sum,'InputA');wire(displayRotation,currentPort,sum,'InputB');
-  const corrected=node('Expr_MathSubtract',{InputA:N(0),InputB:N(0)});wire(sum,'Output',corrected,'InputA');wire(targetRotation,targetPort,corrected,'InputB');
-  let target=corrected;
-  if(offset){target=node('Expr_MathAdd',{InputA:N(0),InputB:N(offset)});wire(corrected,'Output',target,'InputA');}
+ function axis(label,current,currentPort,targetPort,bearing,wrap=false){
+  const rawError=node('Expr_MathSubtract',{InputA:N(0),InputB:N(0)});wire(displayRotation,currentPort,rawError,'InputA');wire(targetRotation,targetPort,rawError,'InputB');
+  let error=rawError;
+  if(wrap){
+   const shifted=node('Expr_MathAdd',{InputA:N(0),InputB:N(180)});wire(error,'Output',shifted,'InputA');
+   const modulo=node('Expr_MathModuloFloored',{InputA:N(0),InputB:N(360)});wire(shifted,'Output',modulo,'InputA');
+   const centered=node('Expr_MathSubtract',{InputA:N(0),InputB:N(180)});wire(modulo,'Output',centered,'InputA');error=centered;
+  }
+  const target=node('Expr_MathAdd',{InputA:N(0),InputB:N(0)});wire(current,'RER_Output',target,'InputA');wire(error,'Output',target,'InputB');
   const bearingBrick=one(scene.bricks.filter(b=>b.key===bearing.key),`${label} bearing brick`),savedAngle=one(bearingBrick.comps.filter(c=>c.type===BEARING),`${label} bearing component`).data.CurrentAngle||0;
   const held=node('Var',{Value:N(savedAngle)}),set=node('Exec_Var_Set',{Value:N(savedAngle)});wire(held,'VarRef',set,'VarRef');wire(target,'Output',set,'Value');wire(sweep,'Hit',set,'Exec');
   const output=node('MicrochipOutput',{PortLabel:`${label} Angle`});wire(held,'Value',output,'RER_Input');wire(output,'RER_Output',bearing,'TargetAngle');wire(bearing,'CurrentAngle',current,'RER_Input');
  }
- axis('Horizontal',hCurrent,'Yaw','Yaw',horizontal,180);axis('Vertical',vCurrent,'Pitch','Pitch',vertical,180);
+ axis('Horizontal',hCurrent,'Yaw','Yaw',horizontal,true);axis('Vertical',vCurrent,'Pitch','Pitch',vertical);
  const reader={key:'dual-monitor:display-grid-reader',g:shell.g,data:{asset:C.ReadBrickGrid.BRICK,material:'BMC_Plastic',position:[30,0,30],size:[0,0,0],direction:4,rotation:0,collision:{player:false,weapon:false,interaction:false,tool:true,physics:false},visibility:false,material_intensity:0,color:[255,255,255],owner_index:0},comps:[{type:READ,data:{}}]};scene.bricks.push(reader);wire({key:reader.key,type:READ},'BrickGrid',displayInput,'RER_Input');
  const note={key:'dual-monitor:note',g:brain,data:{asset:'PB_DefaultTile',material:'BMC_Plastic',position:[96,-18,2],size:[35,5,2],direction:4,rotation:0,collision:{player:false,weapon:false,interaction:false,tool:true,physics:false},visibility:true,material_intensity:0,color:[20,60,35],owner_index:0},comps:[{type:C.TextDisplay.NAME,data:{Text:'RANGE: EDIT GREEN SWEEP RADIUS  |  150 = 15 BLOCKS',Font:0,Face:0,LineHeight:1.1,WidthScale:.7,bEnabled:true,Color:{R:235,G:255,B:235,A:255},bOverrideColor:true}}]};scene.bricks.push(note);
  const entity=one([...scene.r.entities()].filter(e=>e.persistentIndex===brain),'brain entity');scene.entityOverrides=new Map([[brain,{...entity,data:{...structuredClone(entity.data),PlaneCenter:{X:96,Y:72,Z:entity.data.PlaneCenter.Z},PlaneExtent:{X:145,Y:100,Z:8}}}]]);
