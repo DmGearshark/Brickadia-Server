@@ -164,8 +164,8 @@ const sweeps = all(output, T.sweep);
 assert.equal(sweeps.length, 2, 'One player and one obstacle sweep');
 const playerSweep = one(sweeps.filter(({comp}) => comp.data.Radius === 900
   && comp.data.Distance === 1), 'player sweep');
-const obstacleSweep = one(sweeps.filter(({comp}) => comp.data.Radius === 5
-  && comp.data.Distance === 65), 'wall sweep');
+const obstacleSweep = one(sweeps.filter(({comp}) => comp.data.Radius === 6
+  && comp.data.Distance === 90), 'wall sweep');
 for (const sweep of sweeps) {
   assert.equal(output.edges.filter(edge => edge.z === sweep.brick.key
     && edge.zt === T.sweep && edge.q === 'IgnoreEntity'

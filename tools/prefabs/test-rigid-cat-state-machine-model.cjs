@@ -252,8 +252,8 @@ for (const [label, pattern] of [
   ['awake duration', /Random\(300, 600\)/],
   ['two-second pet display', /pettedTicks = 10/],
   ['cat command', /on ChatCommand\("cat"/],
-  ['short wall sweep', /const WALL_SWEEP_DISTANCE = 65\.0/],
-  ['narrow wall sweep', /const WALL_SWEEP_RADIUS = 5\.0/],
+  ['balanced wall sweep', /const WALL_SWEEP_DISTANCE = 90\.0/],
+  ['balanced wall radius', /const WALL_SWEEP_RADIUS = 6\.0/],
   ['two-tick reverse burst', /const WALL_REVERSE_TICKS = 2/],
   ['no sweep retrigger while reversing', /if avoidTicks > 0 \{[\s\S]*?\} else \{[\s\S]*?let obstacle = Sweep/],
 ]) assert.match(source, pattern, `Missing production contract: ${label}`);
