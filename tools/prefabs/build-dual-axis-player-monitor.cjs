@@ -10,6 +10,7 @@ function build(input){
  const innerJoint=one(scene.joints.filter(j=>j.entity===shell.g),'vertical joint'),verticalBrick=one(scene.bricks.filter(b=>b.key===innerJoint.key),'vertical bearing');
  const outerJoint=one(scene.joints.filter(j=>j.entity===verticalBrick.g),'horizontal joint'),horizontalBrick=one(scene.bricks.filter(b=>b.key===outerJoint.key),'horizontal bearing');
  const horizontal={key:horizontalBrick.key,type:BEARING},vertical={key:verticalBrick.key,type:BEARING};
+ const display=one(scene.bricks.flatMap(b=>b.g===shell.g?b.comps.filter(c=>c.type===C.TextDisplay.NAME):[]),'monitor text display');display.data.Face=1;
  const old=new Set(scene.bricks.filter(b=>b.g===brain).map(b=>b.key));scene.bricks=scene.bricks.filter(b=>b.g!==brain);scene.edges=scene.edges.filter(e=>!old.has(e.a)&&!old.has(e.z));
  let i=0;const nodes=[];
  function node(kind,data={},color=[55,105,165]){const d=C[kind],pos=[(i%5)*48,Math.floor(i/5)*48,2],b={key:`dual-monitor:${i++}:${kind}`,g:brain,data:{asset:d.BRICK,material:'BMC_Plastic',position:pos,size:[0,0,0],direction:4,rotation:0,collision:{player:true,weapon:true,interaction:true,tool:true,physics:true},visibility:true,material_intensity:0,color,owner_index:0},comps:[{type:d.NAME,data}]};scene.bricks.push(b);const n={key:b.key,type:d.NAME,brick:b};nodes.push(n);return n;}
