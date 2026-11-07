@@ -38,7 +38,7 @@ function build(input){
  }
  const verticalDesired=node('Expr_MathNegate',{Input:N(0)});wire(targetRotation,'Pitch',verticalDesired,'Input');
  axis('Output Target Direction Base',hCurrent,baseRotation,'Yaw',targetRotation,'Yaw',horizontal,true,true);
- axis('Output Target Direction Monitor Hinge',vCurrent,monitorRotation,'Pitch',verticalDesired,'Output',vertical,false);
+ axis('Output Target Direction Monitor Hinge',vCurrent,monitorRotation,'Pitch',verticalDesired,'Output',vertical,false,true);
  function reader(key,grid,pos,input){const b={key,g:grid,data:{asset:C.ReadBrickGrid.BRICK,material:'BMC_Plastic',position:pos,size:[0,0,0],direction:4,rotation:0,collision:{player:false,weapon:false,interaction:false,tool:true,physics:false},visibility:false,material_intensity:0,color:[255,255,255],owner_index:0},comps:[{type:READ,data:{}}]};scene.bricks.push(b);wire({key,type:READ},'BrickGrid',input,'RER_Input');}
  reader('independent-monitor:base-reader',horizontalJoint.entity,[30,0,0],baseGrid);reader('independent-monitor:screen-reader',verticalJoint.entity,[30,0,30],monitorGrid);
  const note={key:'independent-monitor:note',g:brain,data:{asset:'PB_DefaultTile',material:'BMC_Plastic',position:[96,-18,2],size:[35,5,2],direction:4,rotation:0,collision:{player:false,weapon:false,interaction:false,tool:true,physics:false},visibility:true,material_intensity:0,color:[20,60,35],owner_index:0},comps:[{type:C.TextDisplay.NAME,data:{Text:'RANGE: EDIT GREEN SWEEP RADIUS  |  150 = 15 BLOCKS',Font:0,Face:0,LineHeight:1.1,WidthScale:.7,bEnabled:true,Color:{R:235,G:255,B:235,A:255},bOverrideColor:true}}]};scene.bricks.push(note);
