@@ -26,6 +26,9 @@ const FOLLOW_RANGE = 90.0
 const STALK_TO_CHASE_RANGE = 180.0
 const CHASE_CONTACT_RANGE = 35.0
 const FOOD_STOP_RANGE = 20.0
+const WALL_SWEEP_DISTANCE = 65.0
+const WALL_SWEEP_RADIUS = 5.0
+const WALL_REVERSE_TICKS = 2
 
 var seconds: int = 0
 var state: int = ROAM
@@ -457,28 +460,34 @@ on Clock(interval = 0.2) {
   }
 
   if wantsMotion {
-    let nose = position + forward * 22.0 + Vec(0.0, 0.0, 5.0)
-    let obstacle = Sweep(
-      nose,
-      forward,
-      140.0,
-      radius = 8.0,
-      ignore = Head,
-      detectBricks = true,
-      detectPhysics = true,
-      detectMap = true,
-      detectPlayers1 = false,
-      detectPlayers2 = false,
-      detectPlayers3 = false,
-      detectPlayers4 = false,
-      ignoreOwningGrid = true,
-    )
-    if obstacle.Hit { avoidTicks = 5 }
     if avoidTicks > 0 {
       driveCommand = -0.22
       steerCommand = 0.9
       brakeCommand = false
       avoidTicks -= 1
+    } else {
+      let nose = position + forward * 22.0 + Vec(0.0, 0.0, 5.0)
+      let obstacle = Sweep(
+        nose,
+        forward,
+        WALL_SWEEP_DISTANCE,
+        radius = WALL_SWEEP_RADIUS,
+        ignore = Head,
+        detectBricks = true,
+        detectPhysics = true,
+        detectMap = true,
+        detectPlayers1 = false,
+        detectPlayers2 = false,
+        detectPlayers3 = false,
+        detectPlayers4 = false,
+        ignoreOwningGrid = true,
+      )
+      if obstacle.Hit {
+        avoidTicks = WALL_REVERSE_TICKS - 1
+        driveCommand = -0.22
+        steerCommand = 0.9
+        brakeCommand = false
+      }
     }
   } else {
     avoidTicks = 0
