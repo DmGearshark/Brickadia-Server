@@ -25,7 +25,7 @@ function build(input){
  const targetRotation=node('Expr_SplitRotation',{Input:{Pitch:0,Yaw:0,Roll:0}});wire(direction,'Output',targetRotation,'Input');
  const displayRotation=node('Expr_SplitRotation',{Input:{Pitch:0,Yaw:0,Roll:0}});wire(transform,'Rotation',displayRotation,'Input');
  function axis(label,current,currentPort,targetPort,bearing,wrap=false){
-  const rawError=node('Expr_MathSubtract',{InputA:N(0),InputB:N(0)});wire(displayRotation,currentPort,rawError,'InputA');wire(targetRotation,targetPort,rawError,'InputB');
+  const rawError=node('Expr_MathSubtract',{InputA:N(0),InputB:N(0)});wire(targetRotation,targetPort,rawError,'InputA');wire(displayRotation,currentPort,rawError,'InputB');
   let error=rawError;
   if(wrap){
    const shifted=node('Expr_MathAdd',{InputA:N(0),InputB:N(180)});wire(error,'Output',shifted,'InputA');
