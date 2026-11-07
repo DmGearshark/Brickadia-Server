@@ -19,8 +19,9 @@ function build(input){
  const pivotInput=node('MicrochipInput',{PortLabel:'Bearing Base'});
  const clock=node('Clock',{bEnabled:true,bPulseOn:false,OnTimeSeconds:1,OffTimeSeconds:1,IntervalSeconds:.1});
  const transform=node('Exec_Entity_GetLocationRotation');wire(pivotInput,'RER_Output',transform,'Entity');wire(clock,'Pulse',transform,'Exec');
+ const transformReady=node('BufferTicks',{TicksToWait:1,ZeroTicksToWait:0});wire(transform,'ExecOut',transformReady,'Input');
  const sweep=node('Exec_Sweep',{Origin:{X:0,Y:0,Z:0},Direction:{X:1,Y:0,Z:0},Distance:1,Radius:150,bRelative:false,bIgnoreOwningGrid:true,CollisionChannel:8,bDetectBricks:false,bDetectPlayers1:true,bDetectPlayers2:true,bDetectPlayers3:true,bDetectPlayers4:true,bOnlyHitPlayerBodyParts:false,bDetectPhysics:false,bDetectMap:false},[45,220,95]);
- wire(transform,'Vector',sweep,'Origin');wire(transform,'ExecOut',sweep,'Exec');
+ wire(transform,'Vector',sweep,'Origin');wire(transformReady,'Output',sweep,'Exec');
  const delta=node('Expr_MathSubtract',{InputA:{$variant:'Vector',value:{X:0,Y:0,Z:0}},InputB:{$variant:'Vector',value:{X:0,Y:0,Z:0}}});wire(sweep,'HitLocation',delta,'InputA');wire(transform,'Vector',delta,'InputB');
  const direction=node('Expr_DirectionToRotation',{Direction:{X:1,Y:0,Z:0}});wire(delta,'Output',direction,'Direction');
  const split=node('Expr_SplitRotation',{Input:{Pitch:0,Yaw:0,Roll:0}});wire(direction,'Output',split,'Input');
