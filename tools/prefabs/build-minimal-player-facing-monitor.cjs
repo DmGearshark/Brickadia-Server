@@ -16,21 +16,21 @@ function build(input){
  let i=0; const nodes=[];
  function node(kind,data={},color=[55,105,165]){const d=C[kind],pos=[(i%5)*48,Math.floor(i/5)*48,2],b={key:`minimal-monitor:${i++}:${kind}`,g:grid,data:{asset:d.BRICK,material:'BMC_Plastic',position:pos,size:[0,0,0],direction:4,rotation:0,collision:{player:true,weapon:true,interaction:true,tool:true,physics:true},visibility:true,material_intensity:0,color,owner_index:0},comps:[{type:d.NAME,data}]};scene.bricks.push(b);const n={key:b.key,type:d.NAME,brick:b};nodes.push(n);return n;}
  function wire(a,p,z,q){assert(C[Object.keys(C).find(k=>C[k].NAME===a.type)]?.PORTS[p],`${a.type}.${p}`);assert(C[Object.keys(C).find(k=>C[k].NAME===z.type)]?.PORTS[q],`${z.type}.${q}`);assert(!scene.edges.some(e=>e.z===z.key&&e.zt===z.type&&e.q===q),`duplicate ${z.type}.${q}`);scene.edges.push({a:a.key,at:a.type,p,z:z.key,zt:z.type,q});}
- const pivotInput=node('MicrochipInput',{PortLabel:'Bearing Base'});
+ const currentInput=node('MicrochipInput',{PortLabel:'Current Angle'});
  const clock=node('Clock',{bEnabled:true,bPulseOn:false,OnTimeSeconds:1,OffTimeSeconds:1,IntervalSeconds:.1});
- const transform=node('Exec_Entity_GetLocationRotation');wire(pivotInput,'RER_Output',transform,'Entity');wire(clock,'Pulse',transform,'Exec');
- const transformReady=node('BufferTicks',{TicksToWait:1,ZeroTicksToWait:0});wire(transform,'ExecOut',transformReady,'Input');
+ const transform=node('Exec_GetOwnTransform');wire(clock,'Pulse',transform,'Exec');
  const sweep=node('Exec_Sweep',{Origin:{X:0,Y:0,Z:0},Direction:{X:1,Y:0,Z:0},Distance:1,Radius:150,bRelative:false,bIgnoreOwningGrid:true,CollisionChannel:8,bDetectBricks:false,bDetectPlayers1:true,bDetectPlayers2:true,bDetectPlayers3:true,bDetectPlayers4:true,bOnlyHitPlayerBodyParts:false,bDetectPhysics:false,bDetectMap:false},[45,220,95]);
- wire(transform,'Vector',sweep,'Origin');wire(transformReady,'Output',sweep,'Exec');
- const delta=node('Expr_MathSubtract',{InputA:{$variant:'Vector',value:{X:0,Y:0,Z:0}},InputB:{$variant:'Vector',value:{X:0,Y:0,Z:0}}});wire(sweep,'HitLocation',delta,'InputA');wire(transform,'Vector',delta,'InputB');
+ wire(transform,'Location',sweep,'Origin');wire(transform,'ExecOut',sweep,'Exec');
+ const delta=node('Expr_MathSubtract',{InputA:{$variant:'Vector',value:{X:0,Y:0,Z:0}},InputB:{$variant:'Vector',value:{X:0,Y:0,Z:0}}});wire(sweep,'HitLocation',delta,'InputA');wire(transform,'Location',delta,'InputB');
  const direction=node('Expr_DirectionToRotation',{Direction:{X:1,Y:0,Z:0}});wire(delta,'Output',direction,'Direction');
  const split=node('Expr_SplitRotation',{Input:{Pitch:0,Yaw:0,Roll:0}});wire(direction,'Output',split,'Input');
- const reverse=node('Expr_MathMultiply',{InputA:N(0),InputB:N(-1)});wire(split,'Yaw',reverse,'InputA');
- const output=node('MicrochipOutput',{PortLabel:'Bearing Angle'});wire(reverse,'Output',output,'RER_Input');wire(output,'RER_Output',bearing,'TargetAngle');
- const reader={key:'minimal-monitor:base-grid-reader',g:bearingBrick.g,data:{asset:C.ReadBrickGrid.BRICK,material:'BMC_Plastic',position:[bearingBrick.data.position[0]+30,bearingBrick.data.position[1],bearingBrick.data.position[2]],size:[0,0,0],direction:4,rotation:0,collision:{player:false,weapon:false,interaction:false,tool:true,physics:false},visibility:false,material_intensity:0,color:[255,255,255],owner_index:0},comps:[{type:READ,data:{}}]};scene.bricks.push(reader);wire({key:reader.key,type:READ},'BrickGrid',pivotInput,'RER_Input');
+ const ownSplit=node('Expr_SplitRotation',{Input:{Pitch:0,Yaw:0,Roll:0}});wire(transform,'Rotation',ownSplit,'Input');
+ const basePlusCurrent=node('Expr_MathAdd',{InputA:N(0),InputB:N(0)});wire(currentInput,'RER_Output',basePlusCurrent,'InputA');wire(ownSplit,'Yaw',basePlusCurrent,'InputB');
+ const corrected=node('Expr_MathSubtract',{InputA:N(0),InputB:N(0)});wire(basePlusCurrent,'Output',corrected,'InputA');wire(split,'Yaw',corrected,'InputB');
+ const output=node('MicrochipOutput',{PortLabel:'Bearing Angle'});wire(corrected,'Output',output,'RER_Input');wire(output,'RER_Output',bearing,'TargetAngle');wire(bearing,'CurrentAngle',currentInput,'RER_Input');
  const note={key:'minimal-monitor:note',g:grid,data:{asset:'PB_DefaultTile',material:'BMC_Plastic',position:[96,-18,2],size:[30,5,2],direction:4,rotation:0,collision:{player:false,weapon:false,interaction:false,tool:true,physics:false},visibility:true,material_intensity:0,color:[20,60,35],owner_index:0},comps:[{type:C.TextDisplay.NAME,data:{Text:'RANGE: EDIT GREEN SWEEP RADIUS\n150 = 15 BLOCKS',Font:0,Face:0,LineHeight:1.2,WidthScale:.75,bEnabled:true,Color:{R:235,G:255,B:235,A:255},bOverrideColor:true}}]};scene.bricks.push(note);
  const entity=one([...scene.r.entities()].filter(e=>e.persistentIndex===grid),'brain entity');scene.entityOverrides=new Map([[grid,{...entity,data:{...structuredClone(entity.data),PlaneCenter:{X:96,Y:24,Z:entity.data.PlaneCenter.Z},PlaneExtent:{X:145,Y:58,Z:8}}}]]);
- const result=write(scene,{assets:scene.r.externalAssets(),embedded:scene.r.prefabPaths().map(p=>scene.r.readPrefab(p)),name:'Closest Player Monitor - Pivot Corrected Tracker',description:'Closest-player tracker aimed from the stationary bearing base to prevent parallax from an offset monitor mount. Edit the green Sweep Radius; 150 equals 15 blocks. Bearing Angle is exposed on the microchip.'});
- return {bytes:result.bytes,inside:nodes.length,total:nodes.length+1,wires:scene.edges.length};
+ const result=write(scene,{assets:scene.r.externalAssets(),embedded:scene.r.prefabPaths().map(p=>scene.r.readPrefab(p)),name:'Closest Player Monitor - Rotation Corrected Tracker',description:'Closest-player tracker corrected for the rigid bearing base orientation using monitor world yaw and CurrentAngle. Edit the green Sweep Radius; 150 equals 15 blocks. Bearing Angle is exposed on the microchip.'});
+ return {bytes:result.bytes,inside:nodes.length,total:nodes.length,wires:scene.edges.length};
 }
 module.exports=build;if(require.main===module){const [a,z]=process.argv.slice(2);const r=build(a);fs.writeFileSync(z,r.bytes);console.log(JSON.stringify({output:z,...r,bytes:r.bytes.length},null,2));}
