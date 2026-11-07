@@ -27,17 +27,17 @@ function build(input){
  const targetRotation=node('Expr_SplitRotation',{Input:{Pitch:0,Yaw:0,Roll:0}});wire(direction,'Output',targetRotation,'Input');
  const baseRotation=node('Expr_SplitRotation',{Input:{Pitch:0,Yaw:0,Roll:0}});wire(baseTransform,'Rotation',baseRotation,'Input');
  const monitorRotation=node('Expr_SplitRotation',{Input:{Pitch:0,Yaw:0,Roll:0}});wire(monitorTransform,'Rotation',monitorRotation,'Input');
- function axis(label,current,actual,actualPort,desired,desiredPort,bearing,wrap){
-  let error=node('Expr_MathSubtract',{InputA:N(0),InputB:N(0)});wire(desired,desiredPort,error,'InputA');wire(actual,actualPort,error,'InputB');
+ function axis(label,current,actual,actualPort,desired,desiredPort,bearing,wrap,reverse=false){
+  let error=node('Expr_MathSubtract',{InputA:N(0),InputB:N(0)});wire(reverse?actual:desired,reverse?actualPort:desiredPort,error,'InputA');wire(reverse?desired:actual,reverse?desiredPort:actualPort,error,'InputB');
   if(wrap){const shifted=node('Expr_MathAdd',{InputA:N(0),InputB:N(180)});wire(error,'Output',shifted,'InputA');const modulo=node('Expr_MathModuloFloored',{InputA:N(0),InputB:N(360)});wire(shifted,'Output',modulo,'InputA');const centered=node('Expr_MathSubtract',{InputA:N(0),InputB:N(180)});wire(modulo,'Output',centered,'InputA');error=centered;}
-  const target=node('Expr_MathAdd',{InputA:N(0),InputB:N(0)});wire(current,'RER_Output',target,'InputA');wire(error,'Output',target,'InputB');
+  const damped=node('Expr_MathMultiply',{InputA:N(0),InputB:N(.25)});wire(error,'Output',damped,'InputA');
+  const target=node('Expr_MathAdd',{InputA:N(0),InputB:N(0)});wire(current,'RER_Output',target,'InputA');wire(damped,'Output',target,'InputB');
   const physical=one(scene.bricks.filter(b=>b.key===bearing.key),`${label} bearing`),saved=one(physical.comps.filter(c=>c.type===BEARING),`${label} bearing component`).data.CurrentAngle||0;
   const held=node('Var',{Value:N(saved)}),set=node('Exec_Var_Set',{Value:N(saved)});wire(held,'VarRef',set,'VarRef');wire(target,'Output',set,'Value');wire(sweep,'Hit',set,'Exec');
   const output=node('MicrochipOutput',{PortLabel:label});wire(held,'Value',output,'RER_Input');wire(output,'RER_Output',bearing,'TargetAngle');wire(bearing,'CurrentAngle',current,'RER_Input');
  }
- const horizontalDesired=node('Expr_MathAdd',{InputA:N(0),InputB:N(180)});wire(targetRotation,'Yaw',horizontalDesired,'InputA');
  const verticalDesired=node('Expr_MathNegate',{Input:N(0)});wire(targetRotation,'Pitch',verticalDesired,'Input');
- axis('Output Target Direction Base',hCurrent,baseRotation,'Yaw',horizontalDesired,'Output',horizontal,true);
+ axis('Output Target Direction Base',hCurrent,baseRotation,'Yaw',targetRotation,'Yaw',horizontal,true,true);
  axis('Output Target Direction Monitor Hinge',vCurrent,monitorRotation,'Pitch',verticalDesired,'Output',vertical,false);
  function reader(key,grid,pos,input){const b={key,g:grid,data:{asset:C.ReadBrickGrid.BRICK,material:'BMC_Plastic',position:pos,size:[0,0,0],direction:4,rotation:0,collision:{player:false,weapon:false,interaction:false,tool:true,physics:false},visibility:false,material_intensity:0,color:[255,255,255],owner_index:0},comps:[{type:READ,data:{}}]};scene.bricks.push(b);wire({key,type:READ},'BrickGrid',input,'RER_Input');}
  reader('independent-monitor:base-reader',horizontalJoint.entity,[30,0,0],baseGrid);reader('independent-monitor:screen-reader',verticalJoint.entity,[30,0,30],monitorGrid);
