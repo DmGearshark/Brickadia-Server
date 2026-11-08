@@ -55,16 +55,10 @@ function build(catPath, brainPath, engineDonorPath) {
   face.comp.data.bOverrideColor = true;
   mood.comp.data.bOverrideColor = true;
 
-  // Put a real nearby-interaction surface on the head. The brain's
-  // WholeGridInteracted event handles the two-second pet response.
-  mood.brick.comps.push({type: T.interact, data: {
-    bAllowNearbyInteraction: true, bHiddenInteraction: false,
-    PromptCustomLabel: 'Pet Cat', InteractSound: 5, Message: 'Pet Cat', ConsoleTag: '',
-  }});
-  mood.brick.comps.push({type: T.button, data: {
-    bAllowNearbyInteraction: true, bHiddenInteraction: false,
-    PromptCustomLabel: 'Pet Cat', PressSound: 2, ReleaseSound: 3,
-  }});
+  // The WholeGridInteracted gate inside the brain supplies the nearby
+  // interaction prompt. Do not add Button/Interact components to the display:
+  // current Brickadia rejects that unsupported component combination while
+  // importing the prefab, before it reaches the inventory.
 
   const importing = I.assetImporter(scene, compiled);
   const oldKeys = new Set(scene.bricks.filter(b => b.g === targetGrid).map(b => b.key));
@@ -73,7 +67,7 @@ function build(catPath, brainPath, engineDonorPath) {
 
   const donorEngine = component(donor, T.engine);
   const engine = I.hiddenBrick('full-cat:engine', servo.brick.g,
-    donorEngine.brick.data.asset, [100, 100, 30]);
+    donorEngine.brick.data.asset, [20, 20, 20]);
   engine.comps.push({type: T.engine, data: structuredClone(donorEngine.comp.data)});
   engine.comps[0].data.bEnableManualControl = true;
   engine.comps[0].data.bAutodiscoverWheels = true;
@@ -94,7 +88,7 @@ function build(catPath, brainPath, engineDonorPath) {
     'B_1x1_Gate_Internal_ReadBrickGrid', [0, 8, 8]);
   headReader.comps.push({type: T.readGrid, data: {}});
   scene.bricks.push(headReader);
-  const radar = addZone(scene, 'full-cat:radar', servo.brick.g, [25, 0, 12], [60, 120, 2], 900);
+  const radar = addZone(scene, 'full-cat:radar', servo.brick.g, [30, 0, 12], [10, 10, 2], 900);
   const mouth = addZone(scene, 'full-cat:mouth', headGrid, [0, -20, -4], [10, 10, 2], 35);
 
   const keyMap = new Map();
