@@ -17,7 +17,13 @@ function tree(worldFs,generatedFs,dir='',donorGrid='38306',generatedGrid='2'){
  for(const name of names){
   const full=dir?`${dir}/${name}`:name;
   let content;
-  if(full==='World/0/GlobalData.mps'||full==='World/0/GlobalData.schema'||(full.startsWith('World/0/Bricks/')&&full.endsWith('.schema'))) content=generatedFs.readFile(full);
+  if(full==='Meta/Bundle.json'){
+   const meta=JSON.parse(new TextDecoder().decode(worldFs.readFile(full)));
+   meta.name='Routing Compact V2 MakeVector';
+   meta.description='Four-waypoint vehicle steering controller using a compatible Make Vector connection.';
+   meta.updatedAt='2026.11.08-02.00.00';
+   content=new TextEncoder().encode(JSON.stringify(meta));
+  }else if(full==='World/0/GlobalData.mps'||full==='World/0/GlobalData.schema'||(full.startsWith('World/0/Bricks/')&&full.endsWith('.schema'))) content=generatedFs.readFile(full);
   else if(full.startsWith(donorInner)){
    const mapped=generatedInner+full.slice(donorInner.length);
    content=generatedFs.readFile(mapped);
