@@ -4,6 +4,7 @@ const fs = require('fs');
 const assert = require('assert/strict');
 const mergeBase = require('./merge-rigid-cat-state-machine.cjs');
 const {read, write} = require('./reskin-loadboard.cjs');
+const repack = require('./repack-with-donor-metadata.cjs');
 const I = mergeBase._internals;
 
 const T = {...mergeBase.T,
@@ -154,7 +155,11 @@ function build(catPath, brainPath, engineDonorPath) {
   const saved = read(result.bytes);
   assert.equal(saved.links.length, original.links.length);
   assert.equal(saved.joints.length, original.joints.length);
-  return {bytes: result.bytes, saved, targetGrid, headGrid};
+  const bytes = repack(result.bytes, fs.readFileSync(catPath), {
+    name: 'Cat Body - Autonomous Brain',
+    description: 'Autonomous four-wheel cat: roam, relax, follow /cat, seek food, eat, stalk, chase, sleep, accept pets, track targets with its head, and avoid walls.',
+  });
+  return {bytes, saved: read(bytes), targetGrid, headGrid};
 }
 
 module.exports = build;
