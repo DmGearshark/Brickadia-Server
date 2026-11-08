@@ -358,6 +358,9 @@ function merge(catPath, compiledPath) {
 
 module.exports = merge;
 module.exports.T = T;
+// Exported for frame-specific assemblers that reuse the validated importer.
+module.exports._internals = {assetImporter, compiledRoot, fitBrainPlane, hiddenBrick, place,
+  components, one, brain};
 
 if (require.main === module) {
   const [catPath, compiledPath, outputPath] = process.argv.slice(2);
