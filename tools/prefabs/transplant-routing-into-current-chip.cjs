@@ -3,7 +3,7 @@ const fs=require('fs');
 const zlib=require('zlib');
 const {brdb}=require('./node_modules/brs-js');
 
-function tree(worldFs,generatedFs,dir='',donorGrid='38306',generatedGrid='2'){
+function tree(worldFs,generatedFs,dir='',donorGrid='38306',generatedGrid='2',bundleName='Routing Compact V2 MakeVector',bundleDescription='Four-waypoint vehicle steering controller using a compatible Make Vector connection.'){
  const out=[];
  const donorInner=`World/0/Bricks/Grids/${donorGrid}`;
  const generatedInner=`World/0/Bricks/Grids/${generatedGrid}`;
@@ -19,8 +19,8 @@ function tree(worldFs,generatedFs,dir='',donorGrid='38306',generatedGrid='2'){
   let content;
   if(full==='Meta/Bundle.json'){
    const meta=JSON.parse(new TextDecoder().decode(worldFs.readFile(full)));
-   meta.name='Routing Compact V2 MakeVector';
-   meta.description='Four-waypoint vehicle steering controller using a compatible Make Vector connection.';
+   meta.name=bundleName;
+   meta.description=bundleDescription;
    meta.updatedAt='2026.11.08-02.00.00';
    content=new TextEncoder().encode(JSON.stringify(meta));
   }else if(full==='World/0/GlobalData.mps'||full==='World/0/GlobalData.schema'||(full.startsWith('World/0/Bricks/')&&full.endsWith('.schema'))) content=generatedFs.readFile(full);
@@ -37,7 +37,7 @@ function tree(worldFs,generatedFs,dir='',donorGrid='38306',generatedGrid='2'){
  }
  for(const name of folderNames){
   const full=dir?`${dir}/${name}`:name;
-  out.push([name,{type:'folder',children:tree(worldFs,generatedFs,full,donorGrid,generatedGrid)}]);
+  out.push([name,{type:'folder',children:tree(worldFs,generatedFs,full,donorGrid,generatedGrid,bundleName,bundleDescription)}]);
  }
  return out;
 }
@@ -50,11 +50,11 @@ function compressIndex(raw){
  out.set(compressed,45);out.set(raw.subarray(45+indexSize),45+compressed.length);return out;
 }
 
-function transplant(donor,generated,out){
+function transplant(donor,generated,out,bundleName,bundleDescription){
  const d=brdb.WorldReader.from(fs.readFileSync(donor)),g=brdb.WorldReader.from(fs.readFileSync(generated));
  const donorInner=String(d.gridIds().find(x=>x!==1));
  const generatedInner=String(g.gridIds().find(x=>x!==1));
- const raw=brdb.writeBrzContainer(tree(d.fs,g.fs,'',donorInner,generatedInner),{compress:x=>zlib.zstdCompressSync(x)});
+ const raw=brdb.writeBrzContainer(tree(d.fs,g.fs,'',donorInner,generatedInner,bundleName,bundleDescription),{compress:x=>zlib.zstdCompressSync(x)});
  const bytes=compressIndex(raw);fs.writeFileSync(out,bytes);
  const check=brdb.WorldReader.from(bytes);let bricks=0,components=0,wires=0;
  for(const id of check.gridIds())for(const ch of check.brickChunkIndex(id)){bricks+=ch.numBricks;components+=ch.numComponents;wires+=ch.numWires;}
@@ -62,4 +62,4 @@ function transplant(donor,generated,out){
 }
 
 module.exports=transplant;
-if(require.main===module){const [donor,generated,out]=process.argv.slice(2);if(!out)throw Error('Usage: node transplant-routing-into-current-chip.cjs donor.brz generated.brz output.brz');console.log(JSON.stringify(transplant(donor,generated,out),null,2));}
+if(require.main===module){const [donor,generated,out,name,description]=process.argv.slice(2);if(!out)throw Error('Usage: node transplant-routing-into-current-chip.cjs donor.brz generated.brz output.brz [bundle name] [description]');console.log(JSON.stringify(transplant(donor,generated,out,name,description),null,2));}
