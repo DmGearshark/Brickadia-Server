@@ -7,7 +7,10 @@ function entries(worldFs,currentFs,dir=''){
  const result=[];
  for(const name of worldFs.childFiles(dir)){
   const full=dir?`${dir}/${name}`:name;
-  const useCurrent=full.endsWith('.schema')&&currentFs.findFileByPath(full);
+  // Preserve current schemas and the game-authored bundle identity/version.
+  // New Brickadia builds silently reject CL0/year-1 synthetic bundles before
+  // presenting a placement preview.
+  const useCurrent=(full.endsWith('.schema')||full==='Meta/Bundle.json'||full==='Meta/Thumbnail.png')&&currentFs.findFileByPath(full);
   result.push([name,{type:'file',content:(useCurrent?currentFs:worldFs).readFile(full)}]);
  }
  for(const name of worldFs.childFolders(dir)){
