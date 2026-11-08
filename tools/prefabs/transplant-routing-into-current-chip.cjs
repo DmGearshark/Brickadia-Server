@@ -31,8 +31,8 @@ function tree(worldFs,generatedFs,dir='',donorGrid='38306',generatedGrid='2',bun
   if(expandPlane&&full==='World/0/Entities/Chunks/0_0_0.mps'){
    content=content.slice();
    // Game-authored donor ends its microchip entity payload with encoded
-   // PlaneExtent {X:25,Y:25,Z:0}. Expand X to 30 for a 6x5 gate plane.
-   for(let at=content.length-3;at>=0;at--)if(content[at]===25&&content[at+1]===25&&content[at+2]===0){content[at]=30;break;}
+   // PlaneExtent {X:25,Y:25,Z:0}. Expand to 30x30 for a 6x6 gate plane.
+   for(let at=content.length-3;at>=0;at--)if(content[at]===25&&content[at+1]===25&&content[at+2]===0){content[at]=30;content[at+1]=30;break;}
   }
   out.push([name,{type:'file',content}]);
  }
