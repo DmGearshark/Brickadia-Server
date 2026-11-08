@@ -3,7 +3,7 @@ const fs=require('fs');
 const zlib=require('zlib');
 const {brdb}=require('./node_modules/brs-js');
 
-function tree(worldFs,generatedFs,dir='',donorGrid='38306',generatedGrid='2',bundleName='Routing Compact V2 MakeVector',bundleDescription='Four-waypoint vehicle steering controller using a compatible Make Vector connection.'){
+function tree(worldFs,generatedFs,dir='',donorGrid='38306',generatedGrid='2',bundleName='Routing Compact V2 MakeVector',bundleDescription='Four-waypoint vehicle steering controller using a compatible Make Vector connection.',expandPlane=false){
  const out=[];
  const donorInner=`World/0/Bricks/Grids/${donorGrid}`;
  const generatedInner=`World/0/Bricks/Grids/${generatedGrid}`;
@@ -28,6 +28,12 @@ function tree(worldFs,generatedFs,dir='',donorGrid='38306',generatedGrid='2',bun
    const mapped=generatedInner+full.slice(donorInner.length);
    content=generatedFs.readFile(mapped);
   }else content=worldFs.readFile(full);
+  if(expandPlane&&full==='World/0/Entities/Chunks/0_0_0.mps'){
+   content=content.slice();
+   // Game-authored donor ends its microchip entity payload with encoded
+   // PlaneExtent {X:25,Y:25,Z:0}. Expand X to 30 for a 6x5 gate plane.
+   for(let at=content.length-3;at>=0;at--)if(content[at]===25&&content[at+1]===25&&content[at+2]===0){content[at]=30;break;}
+  }
   out.push([name,{type:'file',content}]);
  }
  const folderNames=new Set(worldFs.childFolders(dir));
@@ -37,7 +43,7 @@ function tree(worldFs,generatedFs,dir='',donorGrid='38306',generatedGrid='2',bun
  }
  for(const name of folderNames){
   const full=dir?`${dir}/${name}`:name;
-  out.push([name,{type:'folder',children:tree(worldFs,generatedFs,full,donorGrid,generatedGrid,bundleName,bundleDescription)}]);
+  out.push([name,{type:'folder',children:tree(worldFs,generatedFs,full,donorGrid,generatedGrid,bundleName,bundleDescription,expandPlane)}]);
  }
  return out;
 }
@@ -50,11 +56,11 @@ function compressIndex(raw){
  out.set(compressed,45);out.set(raw.subarray(45+indexSize),45+compressed.length);return out;
 }
 
-function transplant(donor,generated,out,bundleName,bundleDescription){
+function transplant(donor,generated,out,bundleName,bundleDescription,expandPlane=false){
  const d=brdb.WorldReader.from(fs.readFileSync(donor)),g=brdb.WorldReader.from(fs.readFileSync(generated));
  const donorInner=String(d.gridIds().find(x=>x!==1));
  const generatedInner=String(g.gridIds().find(x=>x!==1));
- const raw=brdb.writeBrzContainer(tree(d.fs,g.fs,'',donorInner,generatedInner,bundleName,bundleDescription),{compress:x=>zlib.zstdCompressSync(x)});
+ const raw=brdb.writeBrzContainer(tree(d.fs,g.fs,'',donorInner,generatedInner,bundleName,bundleDescription,expandPlane),{compress:x=>zlib.zstdCompressSync(x)});
  const bytes=compressIndex(raw);fs.writeFileSync(out,bytes);
  const check=brdb.WorldReader.from(bytes);let bricks=0,components=0,wires=0;
  for(const id of check.gridIds())for(const ch of check.brickChunkIndex(id)){bricks+=ch.numBricks;components+=ch.numComponents;wires+=ch.numWires;}
@@ -62,4 +68,4 @@ function transplant(donor,generated,out,bundleName,bundleDescription){
 }
 
 module.exports=transplant;
-if(require.main===module){const [donor,generated,out,name,description]=process.argv.slice(2);if(!out)throw Error('Usage: node transplant-routing-into-current-chip.cjs donor.brz generated.brz output.brz [bundle name] [description]');console.log(JSON.stringify(transplant(donor,generated,out,name,description),null,2));}
+if(require.main===module){const [donor,generated,out,name,description,expand]=process.argv.slice(2);if(!out)throw Error('Usage: node transplant-routing-into-current-chip.cjs donor.brz generated.brz output.brz [bundle name] [description] [expand-plane]');console.log(JSON.stringify(transplant(donor,generated,out,name,description,expand==='true'),null,2));}
