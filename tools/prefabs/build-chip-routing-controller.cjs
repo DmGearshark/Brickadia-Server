@@ -63,8 +63,12 @@ function build(){
  ];
  for(const [text,color,y] of labels)b.w.addBrick({asset:'PB_DefaultTile',size:[155,5,2],position:[145,y,2],color,components:[{type:C.TextDisplay.NAME,data:{Text:text,Font:0,Face:4,LineHeight:1.15,WidthScale:.62,bEnabled:true,Color:{R:245,G:250,B:255,A:255},bOverrideColor:true}}]},chip.grid);
 
- b.w.makePrefab({snap:10});
- const bytes=b.finish({x:190,y:190,z:10},'Place this chip on the vehicle. It reads its own position and facing, routes through four editable coordinates, and exposes one Steering output.');
+ b.w.makePrefab({snap:10,isMicrochipPrefab:true});
+ // This must be serialized as a microchip prefab. A normal prefab flag causes the
+ // outer chip to place without exposing/activating its internal callable circuit.
+ for(const e of b.edges)b.w.addWire({brick:e.a.handle,component_type:e.a.type,port:e.p},{brick:e.z.handle,component_type:e.z.type,port:e.q});
+ const pivot={center:{x:0,y:0,z:0},halfExtent:{x:5,y:5,z:2}};
+ const bytes=b.w.toBrz({prefab:{pivots:{bottomStudsPivot:pivot,studsExpandedPivot:pivot,topStudsPivot:pivot,boundsPivot:pivot,bottomStudsDirection:'Z_Negative',topStudsDirection:'Z_Positive',bBottomStudsValid:true,bTopStudsValid:true},addedGlobalGridOffset:{x:0,y:0,z:0},bIsPhysicsGrid:false,bFreezePhysicsGrid:false,bFreezeGlobalGrid:false,bIsMicrochipPrefab:true},bundle:{name:'Vehicle Routing Chip',description:'Place this chip on the vehicle. It reads its own position and facing, routes through four editable coordinates, and exposes one Steering output.'}});
  return {bytes,gates:b.nodes.length,wires:b.edges.length};
 }
 
