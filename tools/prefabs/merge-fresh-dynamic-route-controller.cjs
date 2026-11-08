@@ -8,9 +8,9 @@ function component(brick,type){return brick.comps.find(c=>c.type===type);}
 function labeled(bricks,type,label){const hits=bricks.filter(br=>component(br,type)?.data.PortLabel===label);assert.equal(hits.length,1,`${label} pin`);return hits[0];}
 function connect(scene,a,at,p,z,zt,q){assert(!scene.edges.some(e=>e.z===z.key&&e.zt===zt&&e.q===q),`Duplicate target ${zt}.${q}`);scene.edges.push({a:a.key,at,p,z:z.key,zt,q});}
 
-function merge(input){
+function merge(input,brainFactory=buildBrain){
  const scene=read(fs.readFileSync(input));
- const brainBuilt=buildBrain();
+ const brainBuilt=brainFactory();
  const brain=read(brainBuilt.bytes);
  const targetLink=scene.links.find(link=>{
   const pins=scene.bricks.filter(br=>br.g===link.grid);
