@@ -20,7 +20,7 @@ function build(){
  const clearValid=node('Exec_Var_Set',{VarRef:R(targetValid,'VarRef'),Value:B(false)});b.wire(resetIndex,'ExecOut',clearValid,'Exec');
 
  // This loop refreshes sensors and steering only. It never normally reloads the target.
- const clock=node('Clock',{IntervalSeconds:N(1),bEnabled:B(true)}),transform=node('Exec_Entity_GetLocationRotation',{Entity:R(vehicle,'RER_Output')});b.wire(clock,'Pulse',transform,'Exec');
+ const clock=node('Clock',{IntervalSeconds:1,bEnabled:true}),transform=node('Exec_Entity_GetLocationRotation',{Entity:R(vehicle,'RER_Output')});b.wire(clock,'Pulse',transform,'Exec');
  const transformWait=node('BufferTicks',{TicksToWait:1,ZeroTicksToWait:0});b.wire(transform,'ExecOut',transformWait,'Input');
  const length=node('Exec_ArrayVar_GetLength',{ArrayVarRef:R(points,'ArrayVarRef')});b.wire(transformWait,'Output',length,'Exec');
  const lengthWait=node('BufferTicks',{TicksToWait:1,ZeroTicksToWait:0});b.wire(length,'ExecOut',lengthWait,'Input');
