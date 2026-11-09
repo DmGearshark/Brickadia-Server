@@ -42,11 +42,10 @@ for (const [before, after] of [[donorText, text], ...donorImages.map((item, inde
   assert.equal(after.component.data.Offset.Z, before.component.data.Offset.Z);
 }
 for (const image of images) {
-  assert.equal(image.component.data.WidthScale, 0.30000001192092896);
+  assert.equal(image.component.data.WidthScale, 1);
   assert.equal(image.component.data.LineHeight, 0.15000000596046448);
-  assert.equal(image.component.data.Offset.X, text.component.data.Offset.X);
-  assert.equal(image.component.data.Offset.Y, 20.5);
 }
+assert.deepEqual(images.map(item => item.component.data.Offset.Y), donorImages.map(item => item.component.data.Offset.Y));
 assert.equal(text.component.data.WidthScale, donorText.component.data.WidthScale);
 assert.equal(text.component.data.LineHeight, donorText.component.data.LineHeight);
 assert.equal(data.textPages.length, data.imagePagesA.length);

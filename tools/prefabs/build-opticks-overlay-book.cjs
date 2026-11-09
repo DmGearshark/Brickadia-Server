@@ -61,10 +61,6 @@ function build(input, dataFile = path.join(__dirname, 'opticks-overlay-pages.jso
   textDisplay.data.Text = textPages[0];
   for (const [index, item] of imageDisplays.entries()) {
     item.component.data.Text = (index === 0 ? imagePagesA : imagePagesB)[0];
-    item.component.data.WidthScale = data.layout.imageWidthScale;
-    item.component.data.LineHeight = data.layout.imageLineHeight;
-    item.component.data.Offset.X = textDisplay.data.Offset.X;
-    item.component.data.Offset.Y = 20.5;
   }
   textDisplay.data.WidthScale = data.layout.textWidthScale;
   textDisplay.data.LineHeight = data.layout.textLineHeight;
