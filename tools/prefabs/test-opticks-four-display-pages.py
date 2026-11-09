@@ -20,7 +20,7 @@ def main() -> None:
     data = json.loads(DATA.read_text("utf8"))
     bands = [data[f"imagePages{name}"] for name in "ABCD"]
     page_count = len(data["textPages"])
-    assert page_count == 223
+    assert page_count == 226
     assert page_count == len(data["imagePages"])
     assert all(len(values) == page_count for values in bands)
     assert len(data["imageBandRanges"]) == page_count
@@ -31,6 +31,7 @@ def main() -> None:
     assert data["layout"]["maximumImageColumns"] == 600
     assert data["layout"]["maximumImageRows"] == 260
     assert data["layout"]["imageLineHeight"] == 0.075
+    assert data["layout"]["imageLayoutLineHeight"] == 0.084
     assert data["layout"]["imageWidthScale"] == 1.2
     assert data["layout"]["imageOutlineWidth"] == 4
     assert data["layout"]["imageFont"] == "IosevkaTerm"
@@ -56,12 +57,41 @@ def main() -> None:
         assert 0 <= placement["imageX"]
         assert placement["imageX"] + placement["columns"] <= 600
         assert placement["rows"] <= 260
+        caption_row = 2 + placement["textStartRow"] + placement["reservedTextRows"] - 1
+        image_bottom = (
+            (placement["imageY"] + placement["rows"])
+            * data["layout"]["imageLayoutLineHeight"]
+            + 2.0
+        )
+        assert image_bottom <= caption_row * data["layout"]["textLineHeight"]
+        intended_top = (
+            (2 + placement["textStartRow"])
+            * data["layout"]["textLineHeight"]
+        )
+        actual_top = placement["imageY"] * data["layout"]["imageLayoutLineHeight"]
+        assert abs(actual_top - intended_top) <= data["layout"]["imageLayoutLineHeight"] / 2
+
+    expected_live_layout = {
+        1: (6, 0, 39, 12),
+        4: (10, 11, 27, 77),
+        28: (65, 0, 48, 12),
+        49: (127, 0, 26, 12),
+    }
+    for number, expected in expected_live_layout.items():
+        placement = next(item for item in data["placements"] if item["number"] == number)
+        assert (
+            placement["page"],
+            placement["textStartRow"],
+            placement["reservedTextRows"],
+            placement["imageY"],
+        ) == expected
 
     figure3 = next(item for item in data["placements"] if item["number"] == 3)
     assert figure3["columns"] >= 580
     assert 90 <= figure3["rows"] <= 100
     assert figure3["page"] == 8
-    assert figure3["reservedTextRows"] == 21
+    assert figure3["reservedTextRows"] == 23
+    assert figure3["imageY"] == 83
 
     figure3_rows = data["imagePages"][figure3["page"] - 1].split("\r\n")
     figure3_cells: list[str] = []
@@ -101,9 +131,9 @@ def main() -> None:
         "caption": "Fig. 3. Enlarged central detail from the original plate.",
         "page": 9,
         "textStartRow": 0,
-        "reservedTextRows": 44,
+        "reservedTextRows": 48,
         "imageX": 60,
-        "imageY": 13,
+        "imageY": 12,
         "columns": 480,
         "rows": 249,
     }
@@ -123,15 +153,15 @@ def main() -> None:
     )
     assert detail_occupied == 10349
     assert detail_dots == 32415
-    assert data["imageBandBytes"][detail["page"] - 1] == [30747, 30569, 30915, 30953]
+    assert data["imageBandBytes"][detail["page"] - 1] == [30745, 30567, 30913, 30951]
     assert data["imageBandRanges"][detail["page"] - 1] == [
-        [0, 88], [88, 139], [139, 187], [187, 262],
+        [0, 87], [87, 138], [138, 186], [186, 261],
     ]
     detail_text_rows = data["textPages"][detail["page"] - 1].split("\r\n")
     caption_row = detail_text_rows.index(detail["caption"])
     image_bottom = (
         (detail["imageY"] + detail["rows"])
-        * data["layout"]["imageLineHeight"]
+        * data["layout"]["imageLayoutLineHeight"]
     )
     assert image_bottom + 2.0 <= caption_row * data["layout"]["textLineHeight"]
     for name, (left, top, right, bottom), minimum in (

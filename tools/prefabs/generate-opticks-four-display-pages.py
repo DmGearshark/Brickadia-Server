@@ -22,7 +22,12 @@ OUTPUT = ROOT / "tools/prefabs/opticks-four-display-pages.json"
 
 TEXT_BODY_ROWS = 48
 TEXT_LINE_HEIGHT = 0.50
-IMAGE_LINE_HEIGHT = 0.075
+IMAGE_RENDER_LINE_HEIGHT = 0.075
+# Live Brickadia captures show that an IosevkaTerm Braille row occupies about
+# 0.084 layout units after font metrics and outline are applied. Keep the
+# renderer's sharper 0.075 setting, but use the measured footprint for page
+# planning and for converting text rows to leading Braille rows.
+IMAGE_LAYOUT_LINE_HEIGHT = 0.084
 IMAGE_WIDTH_SCALE = 1.20
 IMAGE_OUTLINE_WIDTH = 4
 IMAGE_FONT = "IosevkaTerm"
@@ -257,6 +262,19 @@ def split_four_bands(page: str) -> tuple[list[str], list[list[int]]]:
     return values, ranges
 
 
+def reserved_text_rows(image_rows: int) -> int:
+    """Return the live-calibrated text rows needed by an image block."""
+    return math.ceil(
+        (image_rows * IMAGE_LAYOUT_LINE_HEIGHT + IMAGE_LAYER_OFFSET_DELTA)
+        / TEXT_LINE_HEIGHT
+    ) + 2
+
+
+def image_row_for_text(text_row: int) -> int:
+    """Align a Braille image row with a row on the overlaid prose display."""
+    return round(text_row * TEXT_LINE_HEIGHT / IMAGE_LAYOUT_LINE_HEIGHT)
+
+
 def main() -> None:
     lines = SOURCE.read_text("utf-8-sig").replace("\r\n", "\n").splitlines()
     lines = lines[lines.index("OPTICKS:"):next(i for i, line in enumerate(lines) if line.startswith("End of the Project Gutenberg EBook"))]
@@ -278,13 +296,11 @@ def main() -> None:
 
     def append_detail_page(detail: dict, overview_page: int) -> None:
         art = detail["art"]
-        reserve = math.ceil(
-            (len(art) * IMAGE_LINE_HEIGHT + IMAGE_LAYER_OFFSET_DELTA) / TEXT_LINE_HEIGHT
-        ) + 2
+        reserve = reserved_text_rows(len(art))
         if reserve > TEXT_BODY_ROWS:
             raise ValueError(f"Detail view {detail['name']} exceeds page height")
         page_number = len(text_pages) + 1
-        image_y = round(2 * TEXT_LINE_HEIGHT / IMAGE_LINE_HEIGHT)
+        image_y = image_row_for_text(2)
         art_width = max(map(len, art), default=0)
         image_x = max(0, (PAGE_IMAGE_COLUMNS - art_width) // 2)
         detail_canvas = [""] * (image_y + len(art))
@@ -331,13 +347,11 @@ def main() -> None:
 
     def place_figure(number: int, src: str, alt: str, art: list[str]) -> None:
         nonlocal body, image_canvas, queued_details
-        reserve = math.ceil(
-            (len(art) * IMAGE_LINE_HEIGHT + IMAGE_LAYER_OFFSET_DELTA) / TEXT_LINE_HEIGHT
-        ) + 2
+        reserve = reserved_text_rows(len(art))
         if len(body) + reserve > TEXT_BODY_ROWS:
             raise ValueError(f"Figure {number} does not fit reserved region")
         text_start = len(body)
-        image_y = round((2 + text_start) * TEXT_LINE_HEIGHT / IMAGE_LINE_HEIGHT)
+        image_y = image_row_for_text(2 + text_start)
         art_width = max(map(len, art), default=0)
         can_side_flow = art_width < 150 and len(art) < 80
         # Center figures that reserve their full rectangle. Small, short art is
@@ -429,9 +443,7 @@ def main() -> None:
                 flush()
             src, alt = parser.images[figure_index]
             art = convert_figure(HTML.parent / src)
-            reserve = math.ceil(
-                (len(art) * IMAGE_LINE_HEIGHT + IMAGE_LAYER_OFFSET_DELTA) / TEXT_LINE_HEIGHT
-            ) + 2
+            reserve = reserved_text_rows(len(art))
             if reserve > TEXT_BODY_ROWS:
                 raise ValueError(f"Figure {figure_index + 1} exceeds page height")
             if len(body) + reserve <= TEXT_BODY_ROWS:
@@ -499,7 +511,8 @@ def main() -> None:
         "layout": {
             "textBodyRows": TEXT_BODY_ROWS,
             "textLineHeight": TEXT_LINE_HEIGHT,
-            "imageLineHeight": IMAGE_LINE_HEIGHT,
+            "imageLineHeight": IMAGE_RENDER_LINE_HEIGHT,
+            "imageLayoutLineHeight": IMAGE_LAYOUT_LINE_HEIGHT,
             "textWidthScale": TEXT_WIDTH_SCALE,
             "imageWidthScale": IMAGE_WIDTH_SCALE,
             "imageOutlineWidth": IMAGE_OUTLINE_WIDTH,

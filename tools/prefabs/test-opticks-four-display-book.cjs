@@ -89,7 +89,7 @@ assert(Array.isArray(data.imagePages), 'Missing logical imagePages');
 assert(Array.isArray(data.textPages), 'Missing textPages');
 const pageCount = data.textPages.length;
 assert(pageCount > 0);
-assert.equal(pageCount, 223);
+assert.equal(pageCount, 226);
 assert.equal(data.imagePages.length, pageCount);
 for (const [index, pages] of bands.entries()) {
   assert.equal(pages.length, pageCount, `${BAND_KEYS[index]} page count`);
@@ -98,6 +98,7 @@ for (const [index, pages] of bands.entries()) {
 assert.equal(data.layout.cellMode, 'braille');
 assert.equal(data.layout.imageWidthScale, 1.2);
 assert(Math.abs(data.layout.imageLineHeight - 0.075) < 1e-9);
+assert(Math.abs(data.layout.imageLayoutLineHeight - 0.084) < 1e-9);
 assert.equal(data.layout.imageOutlineWidth, 4);
 assert.equal(data.layout.imageFont, 'IosevkaTerm');
 assert.equal(data.layout.imageKerning, -6);
@@ -126,7 +127,8 @@ const figure3 = one(data.placements.filter(item => item.source.endsWith('fig3-1.
 assert(figure3.columns >= 580, `Figure 3 only uses ${figure3.columns} of 600 columns`);
 assert(figure3.rows >= 90 && figure3.rows <= 100);
 assert.equal(figure3.page, 8);
-assert.equal(figure3.reservedTextRows, 21);
+assert.equal(figure3.reservedTextRows, 23);
+assert.equal(figure3.imageY, 83);
 assert(figure3.imageX >= 0 && figure3.imageX + figure3.columns <= data.layout.maximumImageColumns);
 const figure3Detail = data.detailViews[0];
 assert.equal(figure3Detail.parentFigure, 3);
@@ -135,15 +137,16 @@ assert.equal(figure3Detail.page, 9);
 assert.deepEqual(figure3Detail.crop, [550, 15, 980, 480]);
 assert.equal(figure3Detail.columns, 480);
 assert.equal(figure3Detail.rows, 249);
-assert.equal(figure3Detail.reservedTextRows, 44);
+assert.equal(figure3Detail.reservedTextRows, 48);
+assert.equal(figure3Detail.imageY, 12);
 assert.deepEqual(data.imageBandRanges[figure3Detail.page - 1], [
-  [0, 88], [88, 139], [139, 187], [187, 262],
+  [0, 87], [87, 138], [138, 186], [186, 261],
 ]);
 const detailTextRows = data.textPages[figure3Detail.page - 1].split('\r\n');
 const captionRow = detailTextRows.indexOf(figure3Detail.caption);
 assert(captionRow >= 0, 'Figure 3 detail caption is missing');
 const detailImageBottom = (figure3Detail.imageY + figure3Detail.rows)
-  * data.layout.imageLineHeight;
+  * data.layout.imageLayoutLineHeight;
 assert(detailImageBottom + 2 <= captionRow * data.layout.textLineHeight,
   'Figure 3 detail overlaps its caption');
 

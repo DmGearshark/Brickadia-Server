@@ -120,6 +120,12 @@ or normal-font label overlays. Exceptionally dense plates use narrow per-image
 caps, and adjacent figures start separate pages when their combined data would
 exceed an array value.
 
+Live Brickadia captures give the rendered IosevkaTerm rows an effective page
+footprint of 0.084 layout units. The generator uses that measured value for
+vertical reservations and leading image rows while leaving the TextDisplay
+`LineHeight` at the sharper 0.075 setting. This keeps tall art clear of its
+caption and prevents figures placed below prose from drifting downward.
+
 The image displays use Brickadia's bundled `IosevkaTerm` face. It contains all
 256 Braille patterns natively, with the same fixed advance for ASCII spaces and
 Braille cells. `RobotoMono` has no Braille glyphs: mixing its 0.600-em spaces

@@ -66,6 +66,8 @@ function assertPages(data) {
   }
   assert.equal(data.layout?.imageLineHeight, 0.075,
     'Four-display data must use the calibrated 0.075 image line height');
+  assert.equal(data.layout?.imageLayoutLineHeight, 0.084,
+    'Four-display data must use the live-calibrated 0.084 layout footprint');
   assert.equal(data.layout?.imageWidthScale, 1.2,
     'Four-display data must use the native Braille font width calibration');
   assert.equal(data.layout?.imageOutlineWidth, 4,
@@ -150,7 +152,7 @@ function build(input, dataFile = path.join(__dirname, 'opticks-four-display-page
       `image display ${band.name}`).component;
     display.data.Text = pages[0];
     display.data.WidthScale = data.layout.imageWidthScale;
-    display.data.LineHeight = 0.075;
+    display.data.LineHeight = data.layout.imageLineHeight;
     display.data.LineOffset = -5.5;
     display.data.Kerning = data.layout.imageKerning;
     display.data.Skew = 0;
@@ -209,8 +211,8 @@ function build(input, dataFile = path.join(__dirname, 'opticks-four-display-page
   for (const item of imageDisplays) item.component.data.Font = imageFont;
   textDisplay.data.Font = mono;
 
-  const name = 'Newton Opticks - Native Braille Detail Edition';
-  const description = 'Complete Opticks text with aligned native-font source-derived Unicode Braille figures, plus an enlarged Figure 3 center detail, distributed across four synchronized image arrays.';
+  const name = 'Newton Opticks - Live-Calibrated Braille Edition';
+  const description = 'Complete Opticks text with live-calibrated source-derived Unicode Braille figures, safe vertical spacing, and an enlarged Figure 3 center detail across four synchronized image arrays.';
   const generated = write(scene, { assets, name, description }).bytes;
   return {
     bytes: repack(generated, donor, { name, description, preserveThumbnail: false }),
