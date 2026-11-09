@@ -29,7 +29,7 @@ function build(input, pageData = path.join(__dirname, 'vendetta-pages.json')) {
   const scene = read(donorBytes);
   const { pages } = JSON.parse(fs.readFileSync(pageData, 'utf8'));
 
-  assert.equal(pages.length, 48, 'The supplied Global Grey edition has 48 story pages');
+  assert(pages.length > 48, 'Paragraph spacing requires repagination beyond the 48 PDF pages');
   pages.forEach((page, index) => {
     const number = index + 1;
     assert(page.startsWith(`${number}\r\n\r\n`), `Page ${number} label/CRLF prefix`);
@@ -37,6 +37,7 @@ function build(input, pageData = path.join(__dirname, 'vendetta-pages.json')) {
     assert(!page.includes('I\'m Julie'), `Page ${number} excludes publisher promotion`);
   });
   assert(pages.at(-1).endsWith('THE END'), 'Final page ends with the novel');
+  assert(pages.some(page => /\r\n\r\n[^\r\n]+\r\n\r\n/.test(page)), 'Pages retain visible paragraph spacing');
 
   const pageArray = only(components(scene, TYPES.array), 'page Array Var').component;
   const cycle = only(components(scene, TYPES.cycle), 'page Cycle').component;
@@ -45,9 +46,9 @@ function build(input, pageData = path.join(__dirname, 'vendetta-pages.json')) {
     .filter(({ component }) => /^1\r\n\r\nChapter I\. Prologue/.test(component.data.Text || '')),
   'visible page Text Display').component;
 
-  const originalFive = pageArray.data.Value.$array.slice().reverse();
-  assert.equal(originalFive.length, 5, 'Input contains the five partially entered pages');
-  assert.deepEqual(pages.slice(0, 5), originalFive, 'Preserve the user-entered first five pages exactly');
+  const originalPages = pageArray.data.Value.$array.slice().reverse();
+  assert(originalPages.length >= 5, 'Input contains the existing book text');
+  assert(/^1\r\n\r\nChapter I\. Prologue/.test(originalPages[0]), 'Input opens on Chapter I');
 
   pageArray.data.Value.$array = pages.slice().reverse();
   cycle.data.Count = pages.length;
@@ -57,7 +58,7 @@ function build(input, pageData = path.join(__dirname, 'vendetta-pages.json')) {
   getter.data.bOutOfBounds = false;
   pageDisplay.data.Text = pages[0];
 
-  const description = 'Complete 48-page text of The Vendetta by Honore de Balzac, using the original book controls and PDF page layout.';
+  const description = 'Complete text of The Vendetta by Honore de Balzac, repaginated with readable spacing between paragraphs.';
   const generated = write(scene, {
     name: 'The Vendetta - Complete Book',
     description,

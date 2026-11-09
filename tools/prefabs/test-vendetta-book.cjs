@@ -61,10 +61,10 @@ function test(input, output, pageData) {
   const { pages } = JSON.parse(fs.readFileSync(pageData, 'utf8'));
 
   assert.deepEqual(snapshot(after), snapshot(before), 'Geometry, wires, links, and component inventory are unchanged');
-  assert.equal(after.bricks.length, 72);
-  assert.equal(after.edges.length, 21);
-  assert.equal(after.links.length, 1);
-  assert.equal(after.joints.length, 0);
+  assert.equal(after.bricks.length, before.bricks.length);
+  assert.equal(after.edges.length, before.edges.length);
+  assert.equal(after.links.length, before.links.length);
+  assert.equal(after.joints.length, before.joints.length);
 
   const beforeData = componentDataByRole(before);
   const afterData = componentDataByRole(after);
@@ -77,7 +77,11 @@ function test(input, output, pageData) {
     const [, , type] = JSON.parse(key);
     const changedPageDisplay = type === 'Component_TextDisplay'
       && /^1\r\n\r\nChapter I\. Prologue/.test(data.Text || '');
-    if (!allowed.has(type) && !changedPageDisplay) {
+    if (changedPageDisplay) {
+      const updated = structuredClone(afterData.get(key));
+      updated.Text = data.Text;
+      assert.deepEqual(updated, data, 'Page display formatting and placement remain unchanged');
+    } else if (!allowed.has(type)) {
       assert.deepEqual(afterData.get(key), data, `Unrelated component data unchanged: ${key}`);
     }
   }
@@ -108,9 +112,11 @@ function test(input, output, pageData) {
   const donorBundle = JSON.parse(Buffer.from(before.r.fs.readFile('Meta/Bundle.json')));
   assert.equal(bundle.name, 'The Vendetta - Complete Book');
   assert.equal(bundle.gameVersion, donorBundle.gameVersion, 'Current donor game version retained');
-  assert.equal(pages.length, 48);
+  assert.equal(pages.length, 59);
   assert(pages.at(-1).endsWith('THE END'));
   assert(!pages.some(page => page.includes('I\'m Julie')));
+  assert(pages.reduce((sum, page) => sum + page.split('\r\n').filter(line => line === '').length, 0) > 500,
+    'Paragraph breaks are retained across the book');
   const canonicalStory = pages
     .map(page => page.replace(/^\d+\r\n\r\n/, ''))
     .join('\n')
