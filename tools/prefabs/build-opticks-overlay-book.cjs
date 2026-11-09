@@ -79,15 +79,11 @@ function build(input, dataFile = path.join(__dirname, 'opticks-overlay-pages.jso
   textDisplay.data.Font = mono;
 
   const quadrant = data.layout.cellMode === 'quadrant';
-  const hybrid = data.layout.glyphMode === 'hybrid';
   const name = quadrant ? 'Newton Opticks - Square Pixel Overlay Edition'
-    : hybrid ? 'Newton Opticks - Hybrid Line Overlay Edition'
-      : 'Newton Opticks - Refined Braille Overlay Edition';
+    : 'Newton Opticks - Pure Braille Overlay Edition';
   const description = quadrant
     ? 'Complete Opticks text with high-resolution Unicode quadrant-block figures split across two synchronized image arrays.'
-    : hybrid
-      ? 'Complete Opticks text with refined Braille figures and conservative Unicode line glyphs split across two synchronized image arrays.'
-      : 'Complete Opticks text with refined, label-cleaned Braille figures split across two synchronized image arrays.';
+    : 'Complete Opticks text with source lettering preserved inside pure-Braille figures split across two synchronized image arrays.';
   const generated = write(scene, { assets, name, description }).bytes;
   // The edited donor contains a 637 KB screenshot thumbnail. Omitting that
   // preview keeps the prefab well below the size that previously failed to

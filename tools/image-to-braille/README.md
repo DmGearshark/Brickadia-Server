@@ -25,7 +25,6 @@ Useful options:
 --mode dither         Site-compatible Atkinson error diffusion
 --mode auto           Recovered neural line-art preprocessing
 --mode technical      Conservative cleanup for scanned technical drawings
---glyphs hybrid       Replace confident straight cells with ─ │ ╱ ╲
 ```
 
 Auto mode requires `numpy`, `Pillow`, and `onnxruntime`. Its model is stored at
@@ -64,21 +63,14 @@ steps. The recovered Atkinson source is preserved under `vendor/dither.js`.
 Technical mode requires SciPy. It normalizes uneven paper, uses hysteresis to
 retain antialiased pixels adjacent to strong ink, and removes isolated JPEG
 speckles without the broad dilation that makes diagram intersections and small
-letters merge. Hybrid glyphs are experimental and conservative: curves and
-ambiguous cells remain Braille.
+letters merge. Engraved labels remain part of the source artwork and are packed
+into Braille with the surrounding geometry.
 
 For scanned diagrams, use:
 
 ```bash
 python convert.py input.jpg output.txt \
   --width 200 --max-rows 130 --threshold 0.72 --mode technical
-```
-
-To test the mixed Unicode line palette:
-
-```bash
-python convert.py input.jpg output.txt \
-  --width 200 --max-rows 130 --threshold 0.72 --mode technical --glyphs hybrid
 ```
 
 `direct` mode remains unchanged for exact reproduction of earlier conversions.

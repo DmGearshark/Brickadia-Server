@@ -179,54 +179,6 @@ def technical_mask(
     return enabled
 
 
-def hybridize(lines: list[str]) -> list[str]:
-    """Replace only unambiguous straight Braille cells with line glyphs.
-
-    Curves, dense intersections, and uncertain cells remain Braille. This is
-    intentionally conservative because font rendering varies between clients.
-    """
-    if not lines:
-        return []
-    width = max(map(len, lines))
-    grid = [line.ljust(width, BLANK) for line in lines]
-
-    def bits(char: str) -> np.ndarray:
-        value = ord(char) - 0x2800
-        cell = np.zeros((4, 2), dtype=bool)
-        for dx, dy, bit in DOTS:
-            cell[dy, dx] = bool(value & (1 << bit))
-        return cell
-
-    masks = [[bits(char) for char in row] for row in grid]
-    result = [list(row) for row in grid]
-    for y, row in enumerate(masks):
-        for x, cell in enumerate(row):
-            count = int(cell.sum())
-            if count < 2 or count > 5:
-                continue
-            left = bool(cell[:, 0].any())
-            right = bool(cell[:, 1].any())
-            top = bool(cell[0, :].any())
-            bottom = bool(cell[-1, :].any())
-            horizontal = int(cell.sum(axis=1).max()) == 2 and left and right
-            vertical = int(cell.sum(axis=0).max()) >= 3 and top and bottom
-            if horizontal and not vertical and 0 < x < width - 1:
-                if grid[y][x - 1] != BLANK and grid[y][x + 1] != BLANK:
-                    result[y][x] = "─"
-                    continue
-            if vertical and not horizontal and 0 < y < len(grid) - 1:
-                if grid[y - 1][x] != BLANK and grid[y + 1][x] != BLANK:
-                    result[y][x] = "│"
-                    continue
-            down = int(cell[0, 0]) + int(cell[1, 0]) + int(cell[2, 1]) + int(cell[3, 1])
-            up = int(cell[0, 1]) + int(cell[1, 1]) + int(cell[2, 0]) + int(cell[3, 0])
-            if down >= 3 and down >= up + 2:
-                result[y][x] = "╲"
-            elif up >= 3 and up >= down + 2:
-                result[y][x] = "╱"
-    return ["".join(row).rstrip(BLANK) for row in result]
-
-
 def crop(lines: list[str]) -> list[str]:
     if not lines or all(not line.replace(BLANK, "") for line in lines):
         return []
@@ -264,8 +216,6 @@ def convert(args: argparse.Namespace) -> str:
     elif args.mode == "technical":
         technical = technical_mask(image, width, args.max_rows, args.threshold)
     lines = encode_mask(technical) if technical is not None else encode_braille(image, width, args.threshold)
-    if args.glyphs == "hybrid":
-        lines = hybridize(lines)
     text = "\n".join(lines)
     return invert(text) if args.invert else text
 
@@ -279,7 +229,6 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--threshold", type=float, default=0.50)
     result.add_argument("--invert", action="store_true")
     result.add_argument("--mode", choices=("direct", "dither", "auto", "technical"), default="direct")
-    result.add_argument("--glyphs", choices=("braille", "hybrid"), default="braille")
     result.add_argument("--brightness", type=float, default=0.50)
     result.add_argument("--cutoff", type=float, default=0.80)
     result.add_argument("--sensitivity", type=int, default=9)

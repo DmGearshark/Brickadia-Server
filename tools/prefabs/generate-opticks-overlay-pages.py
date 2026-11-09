@@ -7,15 +7,13 @@ import html
 import importlib.util
 import json
 import math
-import os
 import re
-import subprocess
 import textwrap
 from html.parser import HTMLParser
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageOps
+from PIL import Image, ImageOps
 
 ROOT = Path("/workspace/Brickadia-Server")
 SOURCE = Path("/tmp/gitenberg-33504/33504.txt")
@@ -32,8 +30,6 @@ MAX_IMAGE_COLUMNS = 200
 MAX_IMAGE_ROWS = 130
 IMAGE_LAYER_OFFSET_DELTA = 2.0
 CELL_MODE = "braille"
-GLYPH_MODE = os.environ.get("OPTICKS_GLYPHS", "braille")
-assert GLYPH_MODE in {"braille", "hybrid"}
 BLANK = "\u2800"
 DOTS = (
     (0, 0, 0), (0, 1, 1), (0, 2, 2),
@@ -48,80 +44,6 @@ assert _converter_spec and _converter_spec.loader
 _converter = importlib.util.module_from_spec(_converter_spec)
 _converter_spec.loader.exec_module(_converter)
 
-# Hand-verified labels for the colour-composition circle. OCR cannot reliably
-# distinguish its small italic p/q/r/s/t/u/x labels from the engraved rays.
-# Coordinates are in the 400 x 385 source scan.
-MANUAL_LABELS = {
-    "fig1-1.jpg": [
-        ("P", 230, 30), ("A", 150, 150), ("D", 230, 139),
-        ("H", 283, 139), ("B", 310, 152), ("C", 230, 175),
-        ("R", 35, 181), ("S", 415, 181), ("M", 153, 198),
-        ("G", 222, 245), ("F", 222, 266), ("N", 306, 235),
-        ("E", 288, 261), ("Q", 230, 375),
-    ],
-    "fig2-1.jpg": [
-        ("d", 105, 30), ("C", 322, 70), ("E", 275, 150),
-        ("F", 360, 151), ("A", 260, 202), ("B", 365, 202),
-        ("D", 65, 238), ("G", 445, 205),
-    ],
-    "fig3-1.jpg": [
-        ("P", 20, 32), ("Q", 20, 108), ("R", 20, 184),
-        ("M", 294, 47), ("N", 320, 51), ("C", 304, 105),
-        ("E", 291, 126), ("D", 316, 125), ("K", 292, 158), ("B", 304, 181),
-        ("I", 488, 46), ("l", 490, 108), ("p", 490, 174),
-    ],
-    "fig4-1.jpg": [
-        ("A", 220, 28), ("C", 220, 118), ("B", 220, 220),
-        ("q", 22, 145), ("Q", 100, 145), ("q", 163, 145),
-        ("q", 297, 72), ("q", 365, 145),
-    ],
-    "fig5-1.jpg": [
-        ("Q", 22, 121), ("O", 202, 116), ("E", 319, 113),
-        ("q", 347, 113), ("T", 376, 112), ("C", 420, 91),
-        ("A", 404, 35), ("B", 404, 166),
-    ],
-    "fig6-1.jpg": [
-        ("Q", 13, 63), ("T", 150, 63), ("E", 246, 63),
-        ("A", 304, 19), ("C", 304, 55), ("B", 304, 100),
-        ("t", 391, 63), ("q", 480, 63),
-    ],
-    "fig7-1.jpg": [
-        ("Q", 15, 51), ("T", 190, 60), ("F", 193, 94),
-        ("A", 297, 15), ("E", 297, 79), ("B", 297, 135),
-        ("D", 320, 60), ("f", 405, 60), ("C", 405, 99), ("q", 480, 107),
-    ],
-    "fig8-1.jpg": [
-        ("P", 17, 30), ("Q", 17, 82), ("R", 17, 137),
-        ("F", 420, 80), ("E", 465, 31), ("A", 478, 43),
-        ("C", 461, 79), ("B", 478, 115), ("G", 465, 132),
-    ],
-    "fig9-1.jpg": [
-        ("A", 52, 70), ("E", 68, 199), ("F", 70, 239), ("G", 72, 278),
-        ("m", 225, 20), ("B", 226, 132), ("C", 226, 158),
-        ("D", 226, 190), ("n", 226, 301), ("a", 416, 70),
-    ],
-    "fig10-1.jpg": [
-        ("q", 49, 108), ("Q", 300, 99), ("A", 383, 34), ("B", 383, 159),
-    ],
-    "fig11-1.jpg": [
-        ("a", 68, 77), ("b", 35, 143), ("c", 91, 146),
-        ("A", 114, 181), ("B", 77, 235), ("C", 122, 254),
-        ("d", 278, 159), ("f", 308, 191), ("g", 330, 181), ("e", 346, 217),
-        ("D", 244, 286), ("H", 269, 286), ("F", 278, 311),
-        ("G", 290, 330), ("I", 279, 350), ("E", 305, 349),
-        ("M", 370, 17), ("N", 466, 444),
-    ],
-    "fig11-2.jpg": [
-        ("D", 38, 194), ("E", 116, 48), ("F", 206, 30), ("G", 313, 104),
-        ("A", 352, 265), ("B", 230, 359), ("C", 115, 339), ("O", 207, 194),
-        ("Z", 184, 126), ("p", 81, 119), ("q", 143, 61), ("r", 278, 69),
-        ("s", 337, 170), ("t", 300, 290), ("u", 178, 337), ("x", 74, 273),
-        ("Red", 55, 116), ("Orange", 150, 29), ("Yellow", 270, 47),
-        ("Green", 355, 155), ("Blue", 326, 302), ("Indigo", 183, 363),
-        ("Violet", 62, 292),
-    ],
-}
-
 
 class ImageParser(HTMLParser):
     def __init__(self) -> None:
@@ -135,82 +57,16 @@ class ImageParser(HTMLParser):
                 self.images.append((values["src"], html.unescape(values.get("alt") or "Illustration")))
 
 
-def extract_labels(path: Path, width: int, rows: int, crop_left: int, crop_top: int) -> list[dict]:
-    """Recover short diagram labels for the ordinary-text overlay.
-
-    Braille carries the geometry; normal glyphs carry letters, numbers and
-    colour names that become ambiguous at the corrected 1.0 width scale.
-    """
-    source = Image.open(path)
-    if path.name in MANUAL_LABELS:
-        return [{
-            "text": token,
-            "x": round(x * width / source.width - crop_left),
-            "y": round(y * rows / source.height - crop_top),
-            "confidence": 1000,
-        } for token, x, y in MANUAL_LABELS[path.name]]
-    result = subprocess.run(
-        ["tesseract", str(path), "stdout", "--psm", "11", "tsv"],
-        check=True, capture_output=True, text=True,
-    )
-    labels = []
-    for line in result.stdout.splitlines()[1:]:
-        fields = line.split("\t", 11)
-        if len(fields) != 12 or not fields[11].strip():
-            continue
-        try:
-            level, left, top, box_width, box_height, confidence = (
-                int(fields[0]), int(fields[6]), int(fields[7]),
-                int(fields[8]), int(fields[9]), float(fields[10]),
-            )
-        except ValueError:
-            continue
-        token = re.sub(r"[^A-Za-z0-9./'-]", "", fields[11])
-        if level != 5 or confidence < 60 or not token or len(token) > 12:
-            continue
-        # Keep compact technical labels and the colour names used by Newton.
-        if not (len(token) <= 2 or token.lower() in {
-            "red", "orange", "yellow", "green", "blue", "indigo", "violet",
-        }):
-            continue
-        x = round((left + box_width / 2) * width / source.width - crop_left)
-        y = round((top + box_height / 2) * rows / source.height - crop_top)
-        if 0 <= x < width and 0 <= y < rows:
-            labels.append({"text": token, "x": x, "y": y, "confidence": confidence})
-    return labels
-
-
-def erase_verified_labels(image: Image.Image, path: Path) -> Image.Image:
-    """Remove catalogued engraved glyphs before geometry conversion.
-
-    The clean text layer restores each label. Tight boxes avoid deleting more
-    ray geometry than the original engraved letter already obscured.
-    """
-    if path.name not in MANUAL_LABELS:
-        return image
-    cleaned = image.copy().convert("L")
-    draw = ImageDraw.Draw(cleaned)
-    for token, x, y in MANUAL_LABELS[path.name]:
-        half_width = max(5, 4 * len(token) + 2)
-        half_height = 9
-        draw.rectangle(
-            (x - half_width, y - half_height, x + half_width, y + half_height),
-            fill=255,
-        )
-    return cleaned
-
-
-def convert_figure(path: Path) -> tuple[list[str], list[dict]]:
+def convert_figure(path: Path) -> list[str]:
     original = Image.open(path).convert("L")
-    source = erase_verified_labels(original, path)
     enabled = _converter.technical_mask(
-        source, MAX_IMAGE_COLUMNS, MAX_IMAGE_ROWS, threshold=0.72
+        original, MAX_IMAGE_COLUMNS, MAX_IMAGE_ROWS, threshold=0.72
     )
 
     # Dense plates can lose dotted construction rays under background
     # normalization. Compare against a conservative direct mask and fall back
     # whenever the technical candidate retains too little source ink.
-    normalized = ImageOps.autocontrast(source, cutoff=1)
+    normalized = ImageOps.autocontrast(original, cutoff=1)
     direct_image = normalized.resize(
         (enabled.shape[1], enabled.shape[0]), Image.Resampling.LANCZOS
     )
@@ -218,17 +74,7 @@ def convert_figure(path: Path) -> tuple[list[str], list[dict]]:
     retained = enabled.sum() / max(1, direct.sum())
     if retained < 0.55 or enabled.mean() < 0.004:
         enabled = direct
-
-    rows, width = enabled.shape[0] // 4, enabled.shape[1] // 2
-    occupied = enabled.reshape(rows, 4, width, 2).any(axis=(1, 3))
-    ys, xs = np.where(occupied)
-    left = int(xs.min()) if len(xs) else 0
-    top = int(ys.min()) if len(ys) else 0
-    output = _converter.encode_mask(enabled)
-    if GLYPH_MODE == "hybrid":
-        output = _converter.hybridize(output)
-    labels = extract_labels(path, width, rows, left, top)
-    return output, labels
+    return _converter.encode_mask(enabled)
 
 
 def overlay_line(existing: str, art: str, x: int) -> str:
@@ -263,7 +109,7 @@ def main() -> None:
     image_canvas: list[str] = []
     side_slots: list[tuple[int, int]] = []
     figure_index = 0
-    pending_figure: tuple[int, str, str, list[str], list[dict]] | None = None
+    pending_figure: tuple[int, str, str, list[str]] | None = None
 
     def flush() -> None:
         nonlocal body, image_canvas, side_slots
@@ -278,7 +124,7 @@ def main() -> None:
         image_canvas = []
         side_slots = []
 
-    def place_figure(number: int, src: str, alt: str, art: list[str], labels: list[dict]) -> None:
+    def place_figure(number: int, src: str, alt: str, art: list[str]) -> None:
         nonlocal body, image_canvas
         reserve = math.ceil(
             (len(art) * IMAGE_LINE_HEIGHT + IMAGE_LAYER_OFFSET_DELTA) / TEXT_LINE_HEIGHT
@@ -298,26 +144,6 @@ def main() -> None:
         for row, art_line in enumerate(art):
             image_canvas[image_y + row] = overlay_line(image_canvas[image_y + row], art_line, image_x)
         body.extend([""] * (reserve - 1))
-        placed_labels = []
-        for label in sorted(labels, key=lambda item: (-item["confidence"], item["y"], item["x"])):
-            row = text_start + min(
-                reserve - 2,
-                round(label["y"] * IMAGE_LINE_HEIGHT / TEXT_LINE_HEIGHT),
-            )
-            # WidthScale differs between layers, so convert the label's image
-            # coordinate to the text display's character grid.
-            column = max(0, round((image_x + label["x"]) * IMAGE_ADVANCE_SCALE / TEXT_WIDTH_SCALE) - len(label["text"]) // 2)
-            current = body[row]
-            if len(current) < column:
-                current += " " * (column - len(current))
-            end = column + len(label["text"])
-            occupied = current[column:end].strip() if column < len(current) else ""
-            if occupied:
-                continue
-            if len(current) < end:
-                current += " " * (end - len(current))
-            body[row] = current[:column] + label["text"] + current[end:]
-            placed_labels.append({**label, "textRow": row, "textColumn": column})
         side_width = math.floor(image_x * IMAGE_ADVANCE_SCALE / TEXT_WIDTH_SCALE) - 2
         # Dense or tall figures need their complete rectangle. Side-flowing
         # prose beside these diagrams crossed long rays in the calibrated font.
@@ -336,7 +162,7 @@ def main() -> None:
             "columns": art_width,
             "rows": len(art),
             "sideTextColumns": max(0, side_width),
-            "labels": placed_labels,
+            "labels": [],
         })
 
     def flush_and_place_pending() -> None:
@@ -373,19 +199,19 @@ def main() -> None:
             if pending_figure is not None:
                 flush_and_place_pending()
             src, alt = parser.images[figure_index]
-            art, labels = convert_figure(HTML.parent / src)
+            art = convert_figure(HTML.parent / src)
             reserve = math.ceil(
                 (len(art) * IMAGE_LINE_HEIGHT + IMAGE_LAYER_OFFSET_DELTA) / TEXT_LINE_HEIGHT
             ) + 2
             if reserve > TEXT_BODY_ROWS:
                 raise ValueError(f"Figure {figure_index + 1} exceeds page height")
             if len(body) + reserve <= TEXT_BODY_ROWS:
-                place_figure(figure_index + 1, src, alt, art, labels)
+                place_figure(figure_index + 1, src, alt, art)
             else:
                 # Fill the current page with the prose following the marker.
                 # Once full, the deferred figure starts the next page and the
                 # remaining prose continues beneath its reserved void.
-                pending_figure = (figure_index + 1, src, alt, art, labels)
+                pending_figure = (figure_index + 1, src, alt, art)
             figure_index += 1
             if len(body) >= TEXT_BODY_ROWS:
                 flush_and_place_pending()
@@ -431,7 +257,7 @@ def main() -> None:
     assert max(len(page.encode("utf8")) for page in image_pages_a + image_pages_b) < 32767
     OUTPUT.write_text(json.dumps({
         "source": "Project Gutenberg ebook 33504, Opticks by Isaac Newton",
-        "representation": "Prose and contrast-normalized Unicode Braille figures in synchronized overlay arrays",
+        "representation": "Prose and source-preserving Unicode Braille figures in synchronized overlay arrays",
         "layout": {
             "textBodyRows": TEXT_BODY_ROWS,
             "textLineHeight": TEXT_LINE_HEIGHT,
@@ -442,7 +268,6 @@ def main() -> None:
             "maximumImageColumns": MAX_IMAGE_COLUMNS,
             "maximumImageRows": MAX_IMAGE_ROWS,
             "cellMode": CELL_MODE,
-            "glyphMode": GLYPH_MODE,
         },
         "placements": placements,
         "textPages": text_pages,

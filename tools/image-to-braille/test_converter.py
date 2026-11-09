@@ -4,7 +4,7 @@ from tempfile import TemporaryDirectory
 
 from PIL import Image, ImageDraw
 
-from convert import BLANK, DOTS, encode_braille, encode_mask, hybridize, invert, normalize_source, technical_mask
+from convert import BLANK, DOTS, encode_braille, encode_mask, invert, normalize_source, technical_mask
 
 
 def main() -> None:
@@ -16,7 +16,9 @@ def main() -> None:
     with TemporaryDirectory() as directory:
         path = Path(directory) / "circle.png"
         image = Image.new("RGB", (128, 128), "white")
-        ImageDraw.Draw(image).ellipse((12, 12, 115, 115), outline="black", width=2)
+        draw = ImageDraw.Draw(image)
+        draw.ellipse((12, 12, 115, 115), outline="black", width=2)
+        draw.text((52, 52), "A", fill="black")
         image.save(path)
         normalized = normalize_source(Image.open(path))
         first = encode_braille(normalized, 64, 0.5)
@@ -28,9 +30,7 @@ def main() -> None:
         mask = technical_mask(normalized, 64, threshold=0.72)
         technical = encode_mask(mask)
         assert technical and max(map(len, technical)) <= 64
-        hybrid = hybridize(technical)
-        assert len(hybrid) == len(technical)
-        assert any(char in "─│╱╲" for line in hybrid for char in line) or hybrid == technical
+        assert mask[50:64, 50:64].any(), "Source lettering disappeared from technical conversion"
 
     print("image-to-braille tests passed")
 

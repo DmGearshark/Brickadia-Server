@@ -55,7 +55,7 @@ assert.equal(data.textPages.length, data.imagePagesA.length);
 assert.equal(data.textPages.length, data.imagePagesB.length);
 assert.equal(data.placements.length, 57);
 assert(data.placements.every(item => item.columns <= 200 && item.rows <= 130));
-assert(data.placements.find(item => item.source.endsWith('fig11-2.jpg')).labels.length >= 23);
+assert.equal(data.placements.reduce((sum, item) => sum + item.labels.length, 0), 0);
 for (const page of [...data.textPages, ...data.imagePagesA, ...data.imagePagesB]) assert(Buffer.byteLength(page, 'utf8') < 32767);
 function rows(value) { return value.replaceAll('\u2800', ' ').split('\r\n'); }
 for (let page = 0; page < data.imagePages.length; page += 1) {
@@ -77,9 +77,7 @@ for (let page = 0; page < data.imagePages.length; page += 1) {
   }
   assert.deepEqual(merged, original.map(line => line.replace(/ +$/, '')), `Image split mismatch on page ${page + 1}`);
 }
-if (data.layout.glyphMode === 'hybrid') {
-  assert(data.imagePages.some(page => /[─│╱╲]/u.test(page)), 'Hybrid mode emitted no line glyphs');
-}
+assert(data.imagePages.every(page => /^[\u2800-\u28ff \r\n]*$/u.test(page)), 'Non-Braille glyph leaked into pure edition');
 
 const arrays = components(output, 'BrickComponentType_ArrayVar');
 for (const pages of [data.imagePagesA, data.imagePagesB, data.textPages]) {
