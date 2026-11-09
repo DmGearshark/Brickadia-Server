@@ -36,10 +36,12 @@ def main() -> None:
     }
     assert data["layout"]["figureMaskPolicies"] == {
         "fig3-1.jpg": {
-            "mode": "structure-aware",
+            "mode": "line-aware",
             "threshold": 0.50,
-            "coreDistance": 1.5,
-            "coreExpansion": 1,
+            "lineLength": 41,
+            "lineOccupancy": 0.88,
+            "angleStep": 5,
+            "compactSize": 3,
         },
     }
     assert data["layout"]["figureSourceCredits"]["fig3-1.jpg"]["record"] == (
@@ -71,9 +73,9 @@ def main() -> None:
         for character in figure3_cells
         if 0x2800 <= ord(character) <= 0x28FF
     )
-    assert 9000 <= occupied_cells <= 11000
-    assert 24000 <= raised_dots <= 30000
-    assert 2.4 <= raised_dots / occupied_cells <= 3.0
+    assert 8000 <= occupied_cells <= 9500
+    assert 19000 <= raised_dots <= 22000
+    assert 2.1 <= raised_dots / occupied_cells <= 2.5
 
     maximum_bytes = 0
     for page in range(page_count):

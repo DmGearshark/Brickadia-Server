@@ -290,6 +290,72 @@ def structure_aware_mask(
     return skeleton | (core & source)
 
 
+def _directional_line_kernel(length: int, angle: float) -> np.ndarray:
+    radius = length // 2
+    radians = math.radians(angle)
+    kernel = np.zeros((length, length), dtype=bool)
+    for distance in np.linspace(-radius, radius, length * 6 + 1):
+        y = round(radius + distance * math.sin(radians))
+        x = round(radius + distance * math.cos(radians))
+        if 0 <= x < length and 0 <= y < length:
+            kernel[y, x] = True
+    return kernel
+
+
+def line_aware_structure_mask(
+    enabled: np.ndarray,
+    line_length: int = 41,
+    line_occupancy: float = 0.88,
+    angle_step: int = 5,
+    compact_size: int = 3,
+) -> np.ndarray:
+    """Keep long geometry thin while restoring compact heavy source strokes.
+
+    A connected skeleton preserves every ray. Directional occupancy tests then
+    identify long straight runs, while a square opening identifies compact,
+    broad ink such as engraved labels. Only compact source pixels outside the
+    long-line mask are restored; no new ink is synthesized.
+    """
+    source = np.asarray(enabled, dtype=bool)
+    if source.ndim != 2:
+        raise ValueError("Line-aware cleanup requires a two-dimensional mask")
+    if line_length < 3 or line_length % 2 == 0:
+        raise ValueError("line_length must be an odd integer of at least 3")
+    if not 0 < line_occupancy <= 1:
+        raise ValueError("line_occupancy must be in the interval (0, 1]")
+    if angle_step <= 0:
+        raise ValueError("angle_step must be positive")
+    if compact_size < 1 or compact_size % 2 == 0:
+        raise ValueError("compact_size must be a positive odd integer")
+
+    try:
+        from scipy import ndimage
+    except ImportError as error:
+        raise RuntimeError("Line-aware cleanup requires: pip install scipy") from error
+
+    if not source.any():
+        return source.copy()
+    skeleton = zhang_suen_thin(source)
+    long_lines = np.zeros_like(source)
+    angles = sorted(set(range(-75, 76, angle_step)) | {0, 90})
+    for angle in angles:
+        kernel = _directional_line_kernel(line_length, angle)
+        score = ndimage.convolve(
+            source.astype(np.int32),
+            kernel.astype(np.int32),
+            mode="constant",
+        )
+        centers = score >= math.ceil(line_occupancy * int(kernel.sum()))
+        long_lines |= ndimage.binary_dilation(centers, structure=kernel)
+
+    compact_structure = np.ones((compact_size, compact_size), dtype=bool)
+    compact = ndimage.binary_opening(source, structure=compact_structure) & ~long_lines
+    adjacency = np.ones((3, 3), dtype=bool)
+    seed = compact & ndimage.binary_dilation(skeleton, structure=adjacency)
+    restored = ndimage.binary_propagation(seed, mask=compact, structure=adjacency)
+    return skeleton | restored
+
+
 def crop(lines: list[str]) -> list[str]:
     if not lines or all(not line.replace(BLANK, "") for line in lines):
         return []
@@ -312,8 +378,10 @@ def invert(text: str) -> str:
 
 
 def convert(args: argparse.Namespace) -> str:
-    if args.structure_aware and args.mode != "technical":
-        raise ValueError("--structure-aware requires --mode technical")
+    if args.structure_aware and args.line_aware:
+        raise ValueError("Choose only one structure cleanup mode")
+    if (args.structure_aware or args.line_aware) and args.mode != "technical":
+        raise ValueError("Structure cleanup requires --mode technical")
     source = Image.open(args.input)
     # Technical drawings benefit from being sampled directly from the best
     # available scan instead of first being capped at the recovered site's
@@ -338,6 +406,14 @@ def convert(args: argparse.Namespace) -> str:
                 core_distance=args.core_distance,
                 core_expansion=args.core_expansion,
             )
+        elif args.line_aware:
+            technical = line_aware_structure_mask(
+                technical,
+                line_length=args.line_length,
+                line_occupancy=args.line_occupancy,
+                angle_step=args.angle_step,
+                compact_size=args.compact_size,
+            )
     lines = encode_mask(technical) if technical is not None else encode_braille(image, width, args.threshold)
     text = "\n".join(lines)
     return invert(text) if args.invert else text
@@ -353,8 +429,13 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--invert", action="store_true")
     result.add_argument("--mode", choices=("direct", "dither", "auto", "technical"), default="direct")
     result.add_argument("--structure-aware", action="store_true")
+    result.add_argument("--line-aware", action="store_true")
     result.add_argument("--core-distance", type=float, default=1.5)
     result.add_argument("--core-expansion", type=int, default=1)
+    result.add_argument("--line-length", type=int, default=41)
+    result.add_argument("--line-occupancy", type=float, default=0.88)
+    result.add_argument("--angle-step", type=int, default=5)
+    result.add_argument("--compact-size", type=int, default=3)
     result.add_argument("--brightness", type=float, default=0.50)
     result.add_argument("--cutoff", type=float, default=0.80)
     result.add_argument("--sensitivity", type=int, default=9)

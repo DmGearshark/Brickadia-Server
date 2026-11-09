@@ -50,10 +50,12 @@ FIGURE_SOURCE_OVERRIDES = {
 }
 FIGURE_MASK_POLICIES = {
     "fig3-1.jpg": {
-        "mode": "structure-aware",
+        "mode": "line-aware",
         "threshold": 0.50,
-        "coreDistance": 1.5,
-        "coreExpansion": 1,
+        "lineLength": 41,
+        "lineOccupancy": 0.88,
+        "angleStep": 5,
+        "compactSize": 3,
     },
 }
 FIGURE_SOURCE_CREDITS = {
@@ -96,7 +98,7 @@ def convert_image(
     original: Image.Image,
     requested_columns: int,
     threshold: float = 0.72,
-    structure_policy: dict | None = None,
+    mask_policy: dict | None = None,
 ) -> list[str]:
     enabled = _converter.technical_mask(
         original, requested_columns, MAX_IMAGE_ROWS, threshold=threshold
@@ -113,8 +115,23 @@ def convert_image(
     retained = enabled.sum() / max(1, direct.sum())
     if retained < 0.55 or enabled.mean() < 0.004:
         enabled = direct
-    if structure_policy:
-        enabled = _converter.structure_aware_mask(enabled, **structure_policy)
+    mode = (mask_policy or {}).get("mode")
+    if mode == "structure-aware":
+        enabled = _converter.structure_aware_mask(
+            enabled,
+            core_distance=mask_policy["coreDistance"],
+            core_expansion=mask_policy["coreExpansion"],
+        )
+    elif mode == "line-aware":
+        enabled = _converter.line_aware_structure_mask(
+            enabled,
+            line_length=mask_policy["lineLength"],
+            line_occupancy=mask_policy["lineOccupancy"],
+            angle_step=mask_policy["angleStep"],
+            compact_size=mask_policy["compactSize"],
+        )
+    elif mode is not None:
+        raise ValueError(f"Unknown mask policy mode: {mode}")
     return _converter.encode_mask(enabled)
 
 
@@ -138,10 +155,7 @@ def convert_figure(path: Path) -> list[str]:
         original,
         requested_columns,
         mask_policy.get("threshold", 0.72),
-        {
-            "core_distance": mask_policy["coreDistance"],
-            "core_expansion": mask_policy["coreExpansion"],
-        } if mask_policy.get("mode") == "structure-aware" else None,
+        mask_policy,
     )
 
 
@@ -455,7 +469,7 @@ def main() -> None:
             "minimumFigureColumns": MIN_FIGURE_COLUMNS,
             "maximumImageColumns": PAGE_IMAGE_COLUMNS,
             "maximumImageRows": MAX_IMAGE_ROWS,
-            "samplingPolicy": "double calibrated display density with per-figure byte-budget caps and structure-aware cleanup for Figure 3",
+            "samplingPolicy": "double calibrated display density with per-figure byte-budget caps and line-aware compact-stroke cleanup for Figure 3",
             "cellMode": CELL_MODE,
             "imageArrayCount": 4,
             "bandStrategy": "byte-balanced contiguous rows",

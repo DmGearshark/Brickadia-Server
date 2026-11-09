@@ -27,14 +27,19 @@ Useful options:
 --mode auto           Recovered neural line-art preprocessing
 --mode technical      Conservative cleanup for scanned technical drawings
 --structure-aware     Thin narrow lines while retaining broad source strokes
+--line-aware          Thin long straight runs while retaining compact strokes
 --core-distance N     Minimum source-stroke radius restored after thinning
 --core-expansion N    Cross-shaped core expansion iterations (default 1)
+--line-length N       Directional run length used by line-aware cleanup
+--line-occupancy N    Required occupied fraction of a directional run
+--angle-step N        Degrees between line-aware directional tests
+--compact-size N      Opening size for compact-stroke restoration
 ```
 
 Auto mode requires `numpy`, `Pillow`, and `onnxruntime`. Its model is stored at
 `vendor/line-art-model.onnx`, so it does not need to be downloaded. Direct and
-dither modes require only `numpy` and `Pillow`. Technical and structure-aware
-conversion also require SciPy.
+dither modes require only `numpy` and `Pillow`. Technical, structure-aware, and
+line-aware conversion also require SciPy.
 
 ## Recovered generator algorithm
 
@@ -80,12 +85,26 @@ engraved lettering retain more weight than the crossing construction rays
 around it without OCR, replacement fonts, hybrid glyphs, or pixels outside the
 source mask.
 
+Line-aware cleanup also begins with the connected skeleton, then tests the
+source mask across many angles to identify long straight runs. A compact
+morphological opening restores broad engraved strokes outside those runs. This
+keeps ray thickness uniform while retaining source lettering, curves, and eye
+details. It remains source-only and does not need glyph regions or OCR.
+
 For scanned diagrams, use:
 
 ```bash
 python convert.py input.jpg output.txt \
   --width 200 --max-rows 130 --threshold 0.72 --mode technical \
   --structure-aware --core-distance 1.5
+```
+
+For dense straight-ray plates, use:
+
+```bash
+python convert.py input.png output.txt \
+  --width 600 --max-rows 260 --threshold 0.50 --mode technical \
+  --line-aware --line-length 41 --line-occupancy 0.88 --angle-step 5
 ```
 
 `direct` mode remains unchanged for exact reproduction of earlier conversions.
@@ -102,9 +121,9 @@ caps, and adjacent figures start separate pages when their combined data would
 exceed an array value.
 
 Figure 3 uses the sharper scan of the same original plate at
-`sources/bnf-opticks-1704-plate-i-figure-3.png`, then applies the structure-aware
-pass only to that figure. The tracked 1700-by-553 crop comes from PDF page 14 at
-LTRB `(370, 1042, 2070, 1595)`.
+`sources/bnf-opticks-1704-plate-i-figure-3.png`, then applies line-aware
+compact-stroke restoration only to that figure. The tracked 1700-by-553 crop
+comes from PDF page 14 at LTRB `(370, 1042, 2070, 1595)`.
 
 Source image: Isaac Newton, *Opticks* (London, 1704), Book I, Plate I,
 Figure 3, Bibliothèque nationale de France, Gallica,

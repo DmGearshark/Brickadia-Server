@@ -12,6 +12,7 @@ from convert import (
     encode_braille,
     encode_mask,
     invert,
+    line_aware_structure_mask,
     normalize_source,
     parser,
     structure_aware_mask,
@@ -69,6 +70,31 @@ def main() -> None:
     expect_value_error(lambda: zhang_suen_thin(np.zeros((2, 2, 2), dtype=bool)))
     expect_value_error(lambda: structure_aware_mask(square, core_distance=0))
 
+    diagram = np.zeros((31, 81), dtype=bool)
+    diagram[14:17, 5:76] = True
+    diagram[3:10, 35:42] = True
+    line_aware = line_aware_structure_mask(
+        diagram,
+        line_length=21,
+        line_occupancy=0.88,
+    )
+    assert not np.any(line_aware & ~diagram)
+    assert line_aware[3:10, 35:42].sum() == 49
+    assert line_aware[14:17, 5:76].sum() < diagram[14:17, 5:76].sum()
+    assert line_aware[14:17, 5:76].any(axis=0).sum() >= 68
+    coarse_line_aware = line_aware_structure_mask(
+        diagram,
+        line_length=21,
+        line_occupancy=0.88,
+        angle_step=30,
+    )
+    assert coarse_line_aware[14:17, 5:76].sum() < diagram[14:17, 5:76].sum()
+    assert coarse_line_aware[14:17, 5:76].any(axis=0).sum() >= 68
+    expect_value_error(lambda: line_aware_structure_mask(diagram, line_length=20))
+    expect_value_error(lambda: line_aware_structure_mask(diagram, line_occupancy=0))
+    expect_value_error(lambda: line_aware_structure_mask(diagram, angle_step=0))
+    expect_value_error(lambda: line_aware_structure_mask(diagram, compact_size=2))
+
     with TemporaryDirectory() as directory:
         path = Path(directory) / "circle.png"
         image = Image.new("RGB", (128, 128), "white")
@@ -94,6 +120,26 @@ def main() -> None:
             "--structure-aware",
         ])
         expect_value_error(lambda: convert(invalid))
+        conflicting = parser().parse_args([
+            str(path),
+            str(Path(directory) / "conflicting.txt"),
+            "--mode", "technical",
+            "--structure-aware",
+            "--line-aware",
+        ])
+        expect_value_error(lambda: convert(conflicting))
+        line_aware_args = parser().parse_args([
+            str(path),
+            str(Path(directory) / "line-aware.txt"),
+            "--mode", "technical",
+            "--width", "64",
+            "--line-aware",
+            "--line-length", "21",
+            "--angle-step", "30",
+            "--compact-size", "3",
+        ])
+        line_aware_text = convert(line_aware_args)
+        assert line_aware_text and all(line for line in line_aware_text.splitlines())
 
     print("image-to-braille tests passed")
 
