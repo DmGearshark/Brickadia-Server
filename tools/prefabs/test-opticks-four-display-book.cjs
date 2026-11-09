@@ -109,10 +109,10 @@ assert.deepEqual(data.layout.figureMaskPolicies, {
   'fig3-1.jpg': {
     mode: 'line-aware',
     threshold: 0.5,
-    lineLength: 41,
+    lineLength: 51,
     lineOccupancy: 0.88,
     angleStep: 5,
-    compactSize: 3,
+    compactSize: 1,
   },
 });
 assert.equal(data.layout.figureSourceCredits['fig3-1.jpg'].record,
@@ -143,10 +143,10 @@ for (let row = figure3.imageY; row < figure3.imageY + figure3.rows; row += 1) {
     }
   }
 }
-assert(figure3OccupiedCells >= 8000 && figure3OccupiedCells <= 9500);
-assert(figure3RaisedDots >= 19000 && figure3RaisedDots <= 22000);
-assert(figure3RaisedDots / figure3OccupiedCells >= 2.1
-  && figure3RaisedDots / figure3OccupiedCells <= 2.5);
+assert(figure3OccupiedCells >= 9200 && figure3OccupiedCells <= 9300);
+assert(figure3RaisedDots >= 22000 && figure3RaisedDots <= 22500);
+assert(figure3RaisedDots / figure3OccupiedCells >= 2.38
+  && figure3RaisedDots / figure3OccupiedCells <= 2.43);
 
 for (const [name, pages] of [['imagePages', data.imagePages], ...BAND_KEYS.map((key, index) => [key, bands[index]])]) {
   for (const [pageIndex, page] of pages.entries()) {

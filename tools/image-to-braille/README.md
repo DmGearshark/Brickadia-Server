@@ -121,9 +121,10 @@ caps, and adjacent figures start separate pages when their combined data would
 exceed an array value.
 
 Figure 3 uses the sharper scan of the same original plate at
-`sources/bnf-opticks-1704-plate-i-figure-3.png`, then applies line-aware
-compact-stroke restoration only to that figure. The tracked 1700-by-553 crop
-comes from PDF page 14 at LTRB `(370, 1042, 2070, 1595)`.
+`sources/bnf-opticks-1704-plate-i-figure-3.png`, then uses a 51-pixel line test
+and restores connected residual source ink outside the detected long runs only
+for that figure. The tracked 1700-by-553 crop comes from PDF page 14 at LTRB
+`(370, 1042, 2070, 1595)`.
 
 Source image: Isaac Newton, *Opticks* (London, 1704), Book I, Plate I,
 Figure 3, Bibliothèque nationale de France, Gallica,

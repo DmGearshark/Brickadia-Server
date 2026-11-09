@@ -38,10 +38,10 @@ def main() -> None:
         "fig3-1.jpg": {
             "mode": "line-aware",
             "threshold": 0.50,
-            "lineLength": 41,
+            "lineLength": 51,
             "lineOccupancy": 0.88,
             "angleStep": 5,
-            "compactSize": 3,
+            "compactSize": 1,
         },
     }
     assert data["layout"]["figureSourceCredits"]["fig3-1.jpg"]["record"] == (
@@ -73,9 +73,9 @@ def main() -> None:
         for character in figure3_cells
         if 0x2800 <= ord(character) <= 0x28FF
     )
-    assert 8000 <= occupied_cells <= 9500
-    assert 19000 <= raised_dots <= 22000
-    assert 2.1 <= raised_dots / occupied_cells <= 2.5
+    assert 9200 <= occupied_cells <= 9300
+    assert 22000 <= raised_dots <= 22500
+    assert 2.38 <= raised_dots / occupied_cells <= 2.43
 
     maximum_bytes = 0
     for page in range(page_count):

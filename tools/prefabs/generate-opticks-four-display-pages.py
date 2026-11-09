@@ -52,10 +52,10 @@ FIGURE_MASK_POLICIES = {
     "fig3-1.jpg": {
         "mode": "line-aware",
         "threshold": 0.50,
-        "lineLength": 41,
+        "lineLength": 51,
         "lineOccupancy": 0.88,
         "angleStep": 5,
-        "compactSize": 3,
+        "compactSize": 1,
     },
 }
 FIGURE_SOURCE_CREDITS = {
@@ -469,7 +469,7 @@ def main() -> None:
             "minimumFigureColumns": MIN_FIGURE_COLUMNS,
             "maximumImageColumns": PAGE_IMAGE_COLUMNS,
             "maximumImageRows": MAX_IMAGE_ROWS,
-            "samplingPolicy": "double calibrated display density with per-figure byte-budget caps and line-aware compact-stroke cleanup for Figure 3",
+            "samplingPolicy": "double calibrated display density with per-figure byte-budget caps and line-aware residual-source restoration for Figure 3",
             "cellMode": CELL_MODE,
             "imageArrayCount": 4,
             "bandStrategy": "byte-balanced contiguous rows",
