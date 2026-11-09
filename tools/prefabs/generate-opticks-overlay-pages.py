@@ -24,7 +24,7 @@ TEXT_BODY_ROWS = 48
 TEXT_LINE_HEIGHT = 0.50
 IMAGE_LINE_HEIGHT = 0.15
 IMAGE_WIDTH_SCALE = 1.00
-IMAGE_ADVANCE_SCALE = 0.30
+IMAGE_ADVANCE_SCALE = 0.23
 TEXT_WIDTH_SCALE = 0.82
 MAX_IMAGE_COLUMNS = 200
 MAX_IMAGE_ROWS = 130
@@ -41,6 +41,18 @@ DOTS = (
 # distinguish its small italic p/q/r/s/t/u/x labels from the engraved rays.
 # Coordinates are in the 400 x 385 source scan.
 MANUAL_LABELS = {
+    "fig1-1.jpg": [
+        ("P", 230, 30), ("A", 150, 150), ("D", 230, 139),
+        ("H", 283, 139), ("B", 310, 152), ("C", 230, 175),
+        ("R", 35, 181), ("S", 415, 181), ("M", 153, 198),
+        ("G", 222, 245), ("F", 222, 266), ("N", 306, 235),
+        ("E", 288, 261), ("Q", 230, 375),
+    ],
+    "fig2-1.jpg": [
+        ("d", 105, 30), ("C", 322, 70), ("E", 275, 150),
+        ("F", 360, 151), ("A", 260, 202), ("B", 365, 202),
+        ("D", 65, 238), ("G", 445, 205),
+    ],
     "fig3-1.jpg": [
         ("P", 20, 32), ("Q", 20, 108), ("R", 20, 184),
         ("M", 294, 47), ("N", 320, 51), ("C", 304, 105),
