@@ -56,6 +56,9 @@ function build(input, dataFile = path.join(__dirname, 'opticks-overlay-pages.jso
   textDisplay.data.Text = textPages[0];
   imageDisplay.data.WidthScale = data.layout.imageWidthScale;
   imageDisplay.data.LineHeight = data.layout.imageLineHeight;
+  // The old -60 horizontal offset belonged to a differently scaled image
+  // layer and places the art outside the paper. Share the prose origin.
+  imageDisplay.data.Offset.X = textDisplay.data.Offset.X;
   textDisplay.data.WidthScale = data.layout.textWidthScale;
   textDisplay.data.LineHeight = data.layout.textLineHeight;
 

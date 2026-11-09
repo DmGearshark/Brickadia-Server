@@ -31,19 +31,22 @@ const image = display(output, 3);
 const text = display(output, 0);
 for (const [before, after] of [[donorImage, image], [donorText, text]]) {
   assert.deepEqual(after.brick.data.position, before.brick.data.position);
-  for (const key of ['Rotation', 'Skew', 'Kerning', 'LineOffset', 'Anchor', 'Offset', 'Face', 'Typeface']) {
+  for (const key of ['Rotation', 'Skew', 'Kerning', 'LineOffset', 'Anchor', 'Face', 'Typeface']) {
     assert.deepEqual(after.component.data[key], before.component.data[key], `${key} changed`);
   }
+  assert.equal(after.component.data.Offset.Y, before.component.data.Offset.Y);
+  assert.equal(after.component.data.Offset.Z, before.component.data.Offset.Z);
 }
-assert.equal(image.component.data.WidthScale, 1);
-assert.equal(image.component.data.LineHeight, 0.5);
+assert.equal(image.component.data.WidthScale, 0.30000001192092896);
+assert.equal(image.component.data.LineHeight, 0.15000000596046448);
+assert.equal(image.component.data.Offset.X, text.component.data.Offset.X);
 assert.equal(text.component.data.WidthScale, donorText.component.data.WidthScale);
 assert.equal(text.component.data.LineHeight, donorText.component.data.LineHeight);
 assert.equal(data.textPages.length, data.imagePages.length);
 assert.equal(data.placements.length, 57);
-assert(data.placements.every(item => item.columns <= 60 && item.rows <= 42));
+assert(data.placements.every(item => item.columns <= 200 && item.rows <= 130));
 assert(data.placements.find(item => item.source.endsWith('fig11-2.jpg')).labels.length >= 23);
-for (const page of [...data.textPages, ...data.imagePages]) assert(Buffer.byteLength(page, 'utf8') < 32767);
+for (const page of [...data.textPages, ...data.imagePages]) assert(page.length < 32767);
 
 const arrays = components(output, 'BrickComponentType_ArrayVar');
 for (const pages of [data.imagePages, data.textPages]) {

@@ -22,11 +22,11 @@ OUTPUT = ROOT / "tools/prefabs/opticks-overlay-pages.json"
 
 TEXT_BODY_ROWS = 48
 TEXT_LINE_HEIGHT = 0.50
-IMAGE_LINE_HEIGHT = 0.50
-IMAGE_WIDTH_SCALE = 1.00
+IMAGE_LINE_HEIGHT = 0.15
+IMAGE_WIDTH_SCALE = 0.30
 TEXT_WIDTH_SCALE = 0.82
-MAX_IMAGE_COLUMNS = 60
-MAX_IMAGE_ROWS = 42
+MAX_IMAGE_COLUMNS = 200
+MAX_IMAGE_ROWS = 130
 BLANK = "\u2800"
 DOTS = (
     (0, 0, 0), (0, 1, 1), (0, 2, 2),
@@ -215,7 +215,10 @@ def main() -> None:
         body.extend([""] * (reserve - 1))
         placed_labels = []
         for label in sorted(labels, key=lambda item: (-item["confidence"], item["y"], item["x"])):
-            row = text_start + min(reserve - 2, label["y"])
+            row = text_start + min(
+                reserve - 2,
+                round(label["y"] * IMAGE_LINE_HEIGHT / TEXT_LINE_HEIGHT),
+            )
             # WidthScale differs between layers, so convert the label's image
             # coordinate to the text display's character grid.
             column = max(0, round((image_x + label["x"]) * IMAGE_WIDTH_SCALE / TEXT_WIDTH_SCALE) - len(label["text"]) // 2)
