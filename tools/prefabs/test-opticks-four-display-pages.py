@@ -31,7 +31,20 @@ def main() -> None:
     assert data["layout"]["maximumImageRows"] == 260
     assert data["layout"]["imageLineHeight"] == 0.075
     assert data["layout"]["imageOutlineWidth"] == 4
-    assert data["layout"]["figureThresholds"] == {"fig3-1.jpg": 0.50}
+    assert data["layout"]["figureSourceOverrides"] == {
+        "fig3-1.jpg": "tools/image-to-braille/sources/bnf-opticks-1704-plate-i-figure-3.png",
+    }
+    assert data["layout"]["figureMaskPolicies"] == {
+        "fig3-1.jpg": {
+            "mode": "structure-aware",
+            "threshold": 0.50,
+            "coreDistance": 1.5,
+            "coreExpansion": 1,
+        },
+    }
+    assert data["layout"]["figureSourceCredits"]["fig3-1.jpg"]["record"] == (
+        "https://gallica.bnf.fr/ark:/12148/bpt6k3362k"
+    )
 
     for placement in data["placements"]:
         assert 0 <= placement["imageX"]
@@ -40,7 +53,27 @@ def main() -> None:
 
     figure3 = next(item for item in data["placements"] if item["number"] == 3)
     assert figure3["columns"] >= 580
-    assert figure3["rows"] >= 95
+    assert 90 <= figure3["rows"] <= 100
+    assert figure3["page"] == 8
+    assert figure3["reservedTextRows"] == 21
+
+    figure3_rows = data["imagePages"][figure3["page"] - 1].split("\r\n")
+    figure3_cells: list[str] = []
+    for row_index in range(figure3["imageY"], figure3["imageY"] + figure3["rows"]):
+        row = figure3_rows[row_index] if row_index < len(figure3_rows) else ""
+        figure3_cells.extend(
+            row[figure3["imageX"]:figure3["imageX"] + figure3["columns"]]
+            .ljust(figure3["columns"], BRAILLE_BLANK)
+        )
+    occupied_cells = sum(character != BRAILLE_BLANK for character in figure3_cells)
+    raised_dots = sum(
+        (ord(character) - 0x2800).bit_count()
+        for character in figure3_cells
+        if 0x2800 <= ord(character) <= 0x28FF
+    )
+    assert 9000 <= occupied_cells <= 11000
+    assert 24000 <= raised_dots <= 30000
+    assert 2.4 <= raised_dots / occupied_cells <= 3.0
 
     maximum_bytes = 0
     for page in range(page_count):
@@ -79,6 +112,8 @@ def main() -> None:
             "page": figure3["page"],
             "columns": figure3["columns"],
             "rows": figure3["rows"],
+            "occupiedCells": occupied_cells,
+            "raisedDots": raised_dots,
         },
     }, indent=2))
 

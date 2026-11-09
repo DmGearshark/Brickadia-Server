@@ -102,13 +102,49 @@ assert.equal(data.layout.maximumImageColumns, 600);
 assert.equal(data.layout.maximumImageRows, 260);
 assert.equal(data.layout.imageArrayCount, 4);
 assert.equal(data.layout.bandStrategy, 'byte-balanced contiguous rows');
-assert.deepEqual(data.layout.figureThresholds, { 'fig3-1.jpg': 0.5 });
+assert.deepEqual(data.layout.figureSourceOverrides, {
+  'fig3-1.jpg': 'tools/image-to-braille/sources/bnf-opticks-1704-plate-i-figure-3.png',
+});
+assert.deepEqual(data.layout.figureMaskPolicies, {
+  'fig3-1.jpg': {
+    mode: 'structure-aware',
+    threshold: 0.5,
+    coreDistance: 1.5,
+    coreExpansion: 1,
+  },
+});
+assert.equal(data.layout.figureSourceCredits['fig3-1.jpg'].record,
+  'https://gallica.bnf.fr/ark:/12148/bpt6k3362k');
 assert.equal(data.placements.length, 57);
 assert.equal(data.detailViews.length, 0);
 const figure3 = one(data.placements.filter(item => item.source.endsWith('fig3-1.jpg')), 'Figure 3 placement');
 assert(figure3.columns >= 580, `Figure 3 only uses ${figure3.columns} of 600 columns`);
-assert(figure3.rows >= 95 && figure3.rows <= data.layout.maximumImageRows);
+assert(figure3.rows >= 90 && figure3.rows <= 100);
+assert.equal(figure3.page, 8);
+assert.equal(figure3.reservedTextRows, 21);
 assert(figure3.imageX >= 0 && figure3.imageX + figure3.columns <= data.layout.maximumImageColumns);
+
+const figure3Rows = data.imagePages[figure3.page - 1].split('\r\n');
+let figure3OccupiedCells = 0;
+let figure3RaisedDots = 0;
+for (let row = figure3.imageY; row < figure3.imageY + figure3.rows; row += 1) {
+  const value = figure3Rows[row] || '';
+  for (let column = figure3.imageX; column < figure3.imageX + figure3.columns; column += 1) {
+    const character = value[column] || BLANK;
+    if (character !== BLANK) figure3OccupiedCells += 1;
+    if (character >= '\u2800' && character <= '\u28ff') {
+      let mask = character.codePointAt(0) - 0x2800;
+      while (mask) {
+        figure3RaisedDots += mask & 1;
+        mask >>= 1;
+      }
+    }
+  }
+}
+assert(figure3OccupiedCells >= 9000 && figure3OccupiedCells <= 11000);
+assert(figure3RaisedDots >= 24000 && figure3RaisedDots <= 30000);
+assert(figure3RaisedDots / figure3OccupiedCells >= 2.4
+  && figure3RaisedDots / figure3OccupiedCells <= 3.0);
 
 for (const [name, pages] of [['imagePages', data.imagePages], ...BAND_KEYS.map((key, index) => [key, bands[index]])]) {
   for (const [pageIndex, page] of pages.entries()) {

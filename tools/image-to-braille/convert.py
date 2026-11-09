@@ -179,6 +179,117 @@ def technical_mask(
     return enabled
 
 
+def zhang_suen_thin(enabled: np.ndarray) -> np.ndarray:
+    """Reduce binary strokes to connected one-dot centerlines.
+
+    Zhang-Suen thinning removes boundary pixels in two simultaneous passes,
+    preserving endpoints and connectivity. The returned mask is always a
+    subset of the source mask.
+    """
+    source = np.asarray(enabled, dtype=bool)
+    if source.ndim != 2:
+        raise ValueError("Thinning requires a two-dimensional mask")
+
+    thinned = source.astype(np.uint8, copy=True)
+    if not thinned.any():
+        return thinned.astype(bool)
+    changed = True
+    while changed:
+        changed = False
+        for step in (0, 1):
+            padded = np.pad(thinned, 1, constant_values=0)
+            north = padded[:-2, 1:-1]
+            north_east = padded[:-2, 2:]
+            east = padded[1:-1, 2:]
+            south_east = padded[2:, 2:]
+            south = padded[2:, 1:-1]
+            south_west = padded[2:, :-2]
+            west = padded[1:-1, :-2]
+            north_west = padded[:-2, :-2]
+            neighbors = (
+                north + north_east + east + south_east
+                + south + south_west + west + north_west
+            )
+            transitions = sum(
+                ((left == 0) & (right == 1)).astype(np.uint8)
+                for left, right in (
+                    (north, north_east),
+                    (north_east, east),
+                    (east, south_east),
+                    (south_east, south),
+                    (south, south_west),
+                    (south_west, west),
+                    (west, north_west),
+                    (north_west, north),
+                )
+            )
+            if step == 0:
+                preserve = (
+                    (north * east * south == 0)
+                    & (east * south * west == 0)
+                )
+            else:
+                preserve = (
+                    (north * east * west == 0)
+                    & (north * south * west == 0)
+                )
+            remove = (
+                (thinned == 1)
+                & (neighbors >= 2)
+                & (neighbors <= 6)
+                & (transitions == 1)
+                & preserve
+            )
+            if remove.any():
+                thinned[remove] = 0
+                changed = True
+    return thinned.astype(bool)
+
+
+def structure_aware_mask(
+    enabled: np.ndarray,
+    core_distance: float = 1.5,
+    core_expansion: int = 1,
+) -> np.ndarray:
+    """Thin narrow geometry while retaining the cores of heavy source marks.
+
+    Scanned diagrams often combine one-pixel construction lines with thicker
+    engraved letters. Treating both alike overfills Braille cells where many
+    lines cross. This keeps a connected skeleton for every source stroke, then
+    restores pixels around regions whose distance from the paper exceeds
+    ``core_distance``. No pixels outside the source mask are introduced.
+    """
+    source = np.asarray(enabled, dtype=bool)
+    if source.ndim != 2:
+        raise ValueError("Structure-aware cleanup requires a two-dimensional mask")
+    if core_distance <= 0:
+        raise ValueError("core_distance must be positive")
+    if core_expansion < 0:
+        raise ValueError("core_expansion cannot be negative")
+
+    try:
+        from scipy import ndimage
+    except ImportError as error:
+        raise RuntimeError("Structure-aware cleanup requires: pip install scipy") from error
+
+    if not source.any():
+        return source.copy()
+    skeleton = zhang_suen_thin(source)
+    # Padding makes paper immediately outside an edge-touching mask count as
+    # background, keeping the distance field symmetric and bounded.
+    padded = np.pad(source, 1, constant_values=False)
+    distance = ndimage.distance_transform_edt(padded)[1:-1, 1:-1]
+    core = distance >= core_distance
+    if core_expansion:
+        cross = np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]], dtype=bool)
+        core = ndimage.binary_dilation(
+            core,
+            structure=cross,
+            iterations=core_expansion,
+        )
+    return skeleton | (core & source)
+
+
 def crop(lines: list[str]) -> list[str]:
     if not lines or all(not line.replace(BLANK, "") for line in lines):
         return []
@@ -201,7 +312,13 @@ def invert(text: str) -> str:
 
 
 def convert(args: argparse.Namespace) -> str:
-    image = normalize_source(Image.open(args.input))
+    if args.structure_aware and args.mode != "technical":
+        raise ValueError("--structure-aware requires --mode technical")
+    source = Image.open(args.input)
+    # Technical drawings benefit from being sampled directly from the best
+    # available scan instead of first being capped at the recovered site's
+    # 768-pixel browser canvas.
+    image = source.convert("RGB") if args.mode == "technical" else normalize_source(source)
     width = args.width
     if args.max_rows:
         width = min(width, max(1, math.floor(2 * args.max_rows * image.width / image.height)))
@@ -215,6 +332,12 @@ def convert(args: argparse.Namespace) -> str:
         image = Image.fromarray(atkinson(np.clip(gray, 0, 255)), "L").convert("RGB")
     elif args.mode == "technical":
         technical = technical_mask(image, width, args.max_rows, args.threshold)
+        if args.structure_aware:
+            technical = structure_aware_mask(
+                technical,
+                core_distance=args.core_distance,
+                core_expansion=args.core_expansion,
+            )
     lines = encode_mask(technical) if technical is not None else encode_braille(image, width, args.threshold)
     text = "\n".join(lines)
     return invert(text) if args.invert else text
@@ -229,6 +352,9 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--threshold", type=float, default=0.50)
     result.add_argument("--invert", action="store_true")
     result.add_argument("--mode", choices=("direct", "dither", "auto", "technical"), default="direct")
+    result.add_argument("--structure-aware", action="store_true")
+    result.add_argument("--core-distance", type=float, default=1.5)
+    result.add_argument("--core-expansion", type=int, default=1)
     result.add_argument("--brightness", type=float, default=0.50)
     result.add_argument("--cutoff", type=float, default=0.80)
     result.add_argument("--sensitivity", type=int, default=9)

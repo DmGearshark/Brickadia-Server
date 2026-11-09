@@ -5,7 +5,7 @@ This directory permanently records the image conversion method recovered from
 of that website and can generate Brickadia-ready text containing Unicode
 Braille characters (`U+2800` through `U+28FF`).
 
-## Direct conversion used by the Opticks book
+## Conversion
 
 ```bash
 python convert.py input.png output.txt --width 400 --threshold 0.50
@@ -26,11 +26,15 @@ Useful options:
 --mode dither         Site-compatible Atkinson error diffusion
 --mode auto           Recovered neural line-art preprocessing
 --mode technical      Conservative cleanup for scanned technical drawings
+--structure-aware     Thin narrow lines while retaining broad source strokes
+--core-distance N     Minimum source-stroke radius restored after thinning
+--core-expansion N    Cross-shaped core expansion iterations (default 1)
 ```
 
 Auto mode requires `numpy`, `Pillow`, and `onnxruntime`. Its model is stored at
 `vendor/line-art-model.onnx`, so it does not need to be downloaded. Direct and
-dither modes require only `numpy` and `Pillow`.
+dither modes require only `numpy` and `Pillow`. Technical and structure-aware
+conversion also require SciPy.
 
 ## Recovered generator algorithm
 
@@ -65,13 +69,23 @@ Technical mode requires SciPy. It normalizes uneven paper, uses hysteresis to
 retain antialiased pixels adjacent to strong ink, and removes isolated JPEG
 speckles without the broad dilation that makes diagram intersections and small
 letters merge. Engraved labels remain part of the source artwork and are packed
-into Braille with the surrounding geometry.
+into Braille with the surrounding geometry. Technical mode samples the original
+resolution directly; it does not apply the recovered site's 768-pixel source
+cap before fitting the requested Braille grid.
+
+The optional structure-aware pass applies Zhang-Suen thinning to preserve a
+connected one-dot centerline for narrow geometry. It then restores only pixels
+from thick source-stroke cores, as measured by a distance transform. This lets
+engraved lettering retain more weight than the crossing construction rays
+around it without OCR, replacement fonts, hybrid glyphs, or pixels outside the
+source mask.
 
 For scanned diagrams, use:
 
 ```bash
 python convert.py input.jpg output.txt \
-  --width 200 --max-rows 130 --threshold 0.72 --mode technical
+  --width 200 --max-rows 130 --threshold 0.72 --mode technical \
+  --structure-aware --core-distance 1.5
 ```
 
 `direct` mode remains unchanged for exact reproduction of earlier conversions.
@@ -86,6 +100,17 @@ bands of the same logical image. This keeps every array value below Brickadia's
 or normal-font label overlays. Exceptionally dense plates use narrow per-image
 caps, and adjacent figures start separate pages when their combined data would
 exceed an array value.
+
+Figure 3 uses the sharper scan of the same original plate at
+`sources/bnf-opticks-1704-plate-i-figure-3.png`, then applies the structure-aware
+pass only to that figure. The tracked 1700-by-553 crop comes from PDF page 14 at
+LTRB `(370, 1042, 2070, 1595)`.
+
+Source image: Isaac Newton, *Opticks* (London, 1704), Book I, Plate I,
+Figure 3, Bibliothèque nationale de France, Gallica,
+`ark:/12148/bpt6k3362k`. **Source gallica.bnf.fr / Bibliothèque nationale de
+France.** The underlying work is public domain; Gallica states that commercial
+reuse of its digital reproduction may require a BnF licence.
 
 Generate and validate the four-display book data with:
 

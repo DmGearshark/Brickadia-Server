@@ -42,11 +42,29 @@ FIGURE_COLUMN_CAPS = {
     "fig4-3.jpg": 520,
     "fig6-3.jpg": 375,
 }
-# Dense antialiased strokes in this plate become overfilled Braille cells at
-# the doubled sampling rate. A stricter source threshold keeps the engraved
-# labels and principal rays while discarding their resampled gray fringes.
-FIGURE_THRESHOLDS = {
-    "fig3-1.jpg": 0.50,
+# Figure 3's small Gutenberg derivative does not contain enough independent
+# samples to separate its engraved labels from the many crossing rays. Use the
+# same original plate from the sharper 1704 BnF scan for this one figure.
+FIGURE_SOURCE_OVERRIDES = {
+    "fig3-1.jpg": ROOT / "tools/image-to-braille/sources/bnf-opticks-1704-plate-i-figure-3.png",
+}
+FIGURE_MASK_POLICIES = {
+    "fig3-1.jpg": {
+        "mode": "structure-aware",
+        "threshold": 0.50,
+        "coreDistance": 1.5,
+        "coreExpansion": 1,
+    },
+}
+FIGURE_SOURCE_CREDITS = {
+    "fig3-1.jpg": {
+        "work": "Isaac Newton, Opticks (1704), Plate I",
+        "scanCredit": "Source gallica.bnf.fr / Bibliothèque nationale de France",
+        "record": "https://gallica.bnf.fr/ark:/12148/bpt6k3362k",
+        "crop": [370, 1042, 2070, 1595],
+        "workStatus": "Public domain",
+        "scanReuseNote": "Gallica commercial reuse may require a BnF licence",
+    },
 }
 DOTS = (
     (0, 0, 0), (0, 1, 1), (0, 2, 2),
@@ -78,6 +96,7 @@ def convert_image(
     original: Image.Image,
     requested_columns: int,
     threshold: float = 0.72,
+    structure_policy: dict | None = None,
 ) -> list[str]:
     enabled = _converter.technical_mask(
         original, requested_columns, MAX_IMAGE_ROWS, threshold=threshold
@@ -94,11 +113,15 @@ def convert_image(
     retained = enabled.sum() / max(1, direct.sum())
     if retained < 0.55 or enabled.mean() < 0.004:
         enabled = direct
+    if structure_policy:
+        enabled = _converter.structure_aware_mask(enabled, **structure_policy)
     return _converter.encode_mask(enabled)
 
 
 def convert_figure(path: Path) -> list[str]:
-    original = Image.open(path).convert("L")
+    conversion_path = FIGURE_SOURCE_OVERRIDES.get(path.name, path)
+    original = Image.open(conversion_path).convert("L")
+    mask_policy = FIGURE_MASK_POLICIES.get(path.name, {})
     # The displays render at half the old line height, so doubling the cell
     # width preserves each figure's physical size while giving its source
     # strokes twice as many rendered Braille cells. Small figures retain the
@@ -114,7 +137,11 @@ def convert_figure(path: Path) -> list[str]:
     return convert_image(
         original,
         requested_columns,
-        FIGURE_THRESHOLDS.get(path.name, 0.72),
+        mask_policy.get("threshold", 0.72),
+        {
+            "core_distance": mask_policy["coreDistance"],
+            "core_expansion": mask_policy["coreExpansion"],
+        } if mask_policy.get("mode") == "structure-aware" else None,
     )
 
 
@@ -415,7 +442,7 @@ def main() -> None:
     ]
     assert not oversized, oversized
     OUTPUT.write_text(json.dumps({
-        "source": "Project Gutenberg ebook 33504, Opticks by Isaac Newton",
+        "source": "Project Gutenberg ebook 33504, with Figure 3 sampled from a sharper scan of the 1704 BnF/Gallica plate",
         "representation": "Prose and double-density pure-Braille figures in four synchronized image arrays",
         "layout": {
             "textBodyRows": TEXT_BODY_ROWS,
@@ -428,13 +455,18 @@ def main() -> None:
             "minimumFigureColumns": MIN_FIGURE_COLUMNS,
             "maximumImageColumns": PAGE_IMAGE_COLUMNS,
             "maximumImageRows": MAX_IMAGE_ROWS,
-            "samplingPolicy": "double calibrated display density with per-figure byte-budget caps",
+            "samplingPolicy": "double calibrated display density with per-figure byte-budget caps and structure-aware cleanup for Figure 3",
             "cellMode": CELL_MODE,
             "imageArrayCount": 4,
             "bandStrategy": "byte-balanced contiguous rows",
             "forcedPageStarts": sorted(FORCE_NEW_PAGE_BEFORE),
             "figureColumnCaps": FIGURE_COLUMN_CAPS,
-            "figureThresholds": FIGURE_THRESHOLDS,
+            "figureSourceOverrides": {
+                name: str(path.relative_to(ROOT))
+                for name, path in FIGURE_SOURCE_OVERRIDES.items()
+            },
+            "figureMaskPolicies": FIGURE_MASK_POLICIES,
+            "figureSourceCredits": FIGURE_SOURCE_CREDITS,
         },
         "placements": placements,
         "detailViews": detail_views,
