@@ -42,6 +42,12 @@ FIGURE_COLUMN_CAPS = {
     "fig4-3.jpg": 520,
     "fig6-3.jpg": 375,
 }
+# Dense antialiased strokes in this plate become overfilled Braille cells at
+# the doubled sampling rate. A stricter source threshold keeps the engraved
+# labels and principal rays while discarding their resampled gray fringes.
+FIGURE_THRESHOLDS = {
+    "fig3-1.jpg": 0.50,
+}
 DOTS = (
     (0, 0, 0), (0, 1, 1), (0, 2, 2),
     (1, 0, 3), (1, 1, 4), (1, 2, 5),
@@ -68,9 +74,13 @@ class ImageParser(HTMLParser):
                 self.images.append((values["src"], html.unescape(values.get("alt") or "Illustration")))
 
 
-def convert_image(original: Image.Image, requested_columns: int) -> list[str]:
+def convert_image(
+    original: Image.Image,
+    requested_columns: int,
+    threshold: float = 0.72,
+) -> list[str]:
     enabled = _converter.technical_mask(
-        original, requested_columns, MAX_IMAGE_ROWS, threshold=0.72
+        original, requested_columns, MAX_IMAGE_ROWS, threshold=threshold
     )
 
     # Dense plates can lose dotted construction rays under background
@@ -80,7 +90,7 @@ def convert_image(original: Image.Image, requested_columns: int) -> list[str]:
     direct_image = normalized.resize(
         (enabled.shape[1], enabled.shape[0]), Image.Resampling.LANCZOS
     )
-    direct = np.asarray(direct_image, dtype=np.float32) < (255 * 0.72)
+    direct = np.asarray(direct_image, dtype=np.float32) < (255 * threshold)
     retained = enabled.sum() / max(1, direct.sum())
     if retained < 0.55 or enabled.mean() < 0.004:
         enabled = direct
@@ -101,7 +111,11 @@ def convert_figure(path: Path) -> list[str]:
         requested_columns,
         FIGURE_COLUMN_CAPS.get(path.name, PAGE_IMAGE_COLUMNS),
     )
-    return convert_image(original, requested_columns)
+    return convert_image(
+        original,
+        requested_columns,
+        FIGURE_THRESHOLDS.get(path.name, 0.72),
+    )
 
 
 def convert_detail(path: Path, crop: tuple[int, int, int, int], columns: int) -> list[str]:
@@ -420,6 +434,7 @@ def main() -> None:
             "bandStrategy": "byte-balanced contiguous rows",
             "forcedPageStarts": sorted(FORCE_NEW_PAGE_BEFORE),
             "figureColumnCaps": FIGURE_COLUMN_CAPS,
+            "figureThresholds": FIGURE_THRESHOLDS,
         },
         "placements": placements,
         "detailViews": detail_views,

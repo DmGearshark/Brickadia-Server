@@ -102,6 +102,7 @@ assert.equal(data.layout.maximumImageColumns, 600);
 assert.equal(data.layout.maximumImageRows, 260);
 assert.equal(data.layout.imageArrayCount, 4);
 assert.equal(data.layout.bandStrategy, 'byte-balanced contiguous rows');
+assert.deepEqual(data.layout.figureThresholds, { 'fig3-1.jpg': 0.5 });
 assert.equal(data.placements.length, 57);
 assert.equal(data.detailViews.length, 0);
 const figure3 = one(data.placements.filter(item => item.source.endsWith('fig3-1.jpg')), 'Figure 3 placement');
