@@ -30,6 +30,7 @@ function build(input, dataFile = path.join(__dirname, 'opticks-overlay-pages.jso
   assert.equal(textPages.length, imagePagesA.length);
   assert.equal(textPages.length, imagePagesB.length);
   assert.equal(data.placements.length, 57);
+  assert.equal(data.detailViews.length, 1);
 
   const arrays = components(scene, TYPES.array);
   const getters = components(scene, TYPES.get);
@@ -83,7 +84,7 @@ function build(input, dataFile = path.join(__dirname, 'opticks-overlay-pages.jso
     : 'Newton Opticks - Pure Braille Overlay Edition';
   const description = quadrant
     ? 'Complete Opticks text with high-resolution Unicode quadrant-block figures split across two synchronized image arrays.'
-    : 'Complete Opticks text with adaptively enlarged pure-Braille figures and source lettering preserved across two synchronized image arrays.';
+    : 'Complete Opticks text with adaptive pure-Braille figures and full-width source-derived detail views across two synchronized image arrays.';
   const generated = write(scene, { assets, name, description }).bytes;
   // The edited donor contains a 637 KB screenshot thumbnail. Omitting that
   // preview keeps the prefab well below the size that previously failed to
@@ -104,6 +105,7 @@ if (require.main === module) {
     bytes: result.bytes.length,
     pages: result.data.textPages.length,
     figures: result.data.placements.length,
+    detailViews: result.data.detailViews.length,
     mixedPages: result.data.imagePagesA.filter((page, index) => page || result.data.imagePagesB[index]).length,
   }, null, 2));
 }

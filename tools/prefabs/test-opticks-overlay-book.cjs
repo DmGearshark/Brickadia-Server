@@ -54,16 +54,30 @@ assert.equal(text.component.data.LineHeight, donorText.component.data.LineHeight
 assert.equal(data.textPages.length, data.imagePagesA.length);
 assert.equal(data.textPages.length, data.imagePagesB.length);
 assert.equal(data.placements.length, 57);
+assert.equal(data.detailViews.length, 1);
 assert.equal(data.layout.maximumImageColumns, 300);
-assert(data.placements.every(item => item.columns <= data.layout.maximumImageColumns
+const artwork = data.placements.concat(data.detailViews);
+assert(artwork.every(item => item.columns <= data.layout.maximumImageColumns
   && item.rows <= data.layout.maximumImageRows));
-assert(data.placements.every(item => item.imageX >= 0
+assert(artwork.every(item => item.imageX >= 0
   && item.imageX + item.columns <= data.layout.maximumImageColumns));
-assert(data.placements.filter(item => item.sideTextColumns === 0).every(item =>
+assert(artwork.filter(item => (item.sideTextColumns ?? 0) === 0).every(item =>
   Math.abs((2 * item.imageX + item.columns) - data.layout.maximumImageColumns) <= 1),
   'Full-region figures are not centered on the image canvas');
 assert(data.placements.find(item => item.source.endsWith('fig3-1.jpg')).columns >= 290,
   'Detailed figure 3 was not enlarged to use the page width');
+const figure3 = data.placements.find(item => item.source.endsWith('fig3-1.jpg'));
+const figure3Detail = data.detailViews[0];
+assert.equal(figure3Detail.parentFigure, 3);
+assert.equal(figure3Detail.overviewPage, figure3.page);
+assert.equal(figure3Detail.page, figure3.page + 1);
+assert(figure3Detail.columns >= 295 && figure3Detail.rows >= 95,
+  'Figure 3 detail crop is not large enough to improve legibility');
+assert(figure3Detail.imageX >= 0
+  && figure3Detail.imageX + figure3Detail.columns <= data.layout.maximumImageColumns);
+assert(Math.abs((2 * figure3Detail.imageX + figure3Detail.columns)
+  - data.layout.maximumImageColumns) <= 1);
+assert(data.textPages[figure3Detail.page - 1].includes(figure3Detail.caption));
 assert.equal(data.placements.reduce((sum, item) => sum + item.labels.length, 0), 0);
 for (const page of [...data.textPages, ...data.imagePagesA, ...data.imagePagesB]) assert(Buffer.byteLength(page, 'utf8') < 32767);
 function rows(value) { return value.replaceAll('\u2800', ' ').split('\r\n'); }
@@ -98,9 +112,10 @@ console.log(JSON.stringify({
   bytes: outputBytes.length,
   pages: data.textPages.length,
   figures: data.placements.length,
+  detailViews: data.detailViews.length,
   labels: data.placements.reduce((sum, item) => sum + item.labels.length, 0),
   imageWidthScale: images[0].component.data.WidthScale,
-  maximumColumns: Math.max(...data.placements.map(item => item.columns)),
-  maximumRows: Math.max(...data.placements.map(item => item.rows)),
+  maximumColumns: Math.max(...artwork.map(item => item.columns)),
+  maximumRows: Math.max(...artwork.map(item => item.rows)),
   strictPlacement: placement.strictOk,
 }, null, 2));

@@ -32,6 +32,14 @@ MAX_IMAGE_ROWS = 130
 IMAGE_LAYER_OFFSET_DELTA = 2.0
 CELL_MODE = "braille"
 BLANK = "\u2800"
+DETAIL_VIEWS = {
+    "fig3-1.jpg": ({
+        "name": "center",
+        "crop": (170, 15, 410, 205),
+        "columns": 300,
+        "caption": "Fig. 3. Enlarged central detail.",
+    },),
+}
 DOTS = (
     (0, 0, 0), (0, 1, 1), (0, 2, 2),
     (1, 0, 3), (1, 1, 4), (1, 2, 5),
@@ -58,15 +66,7 @@ class ImageParser(HTMLParser):
                 self.images.append((values["src"], html.unescape(values.get("alt") or "Illustration")))
 
 
-def convert_figure(path: Path) -> list[str]:
-    original = Image.open(path).convert("L")
-    # A Braille cell carries two horizontal dots. Preserve roughly one source
-    # pixel per dot for detailed scans, while keeping smaller figures at the
-    # proven 200-column resolution and respecting the physical page width.
-    requested_columns = min(
-        PAGE_IMAGE_COLUMNS,
-        max(MIN_FIGURE_COLUMNS, math.ceil(original.width / 2)),
-    )
+def convert_image(original: Image.Image, requested_columns: int) -> list[str]:
     enabled = _converter.technical_mask(
         original, requested_columns, MAX_IMAGE_ROWS, threshold=0.72
     )
@@ -83,6 +83,28 @@ def convert_figure(path: Path) -> list[str]:
     if retained < 0.55 or enabled.mean() < 0.004:
         enabled = direct
     return _converter.encode_mask(enabled)
+
+
+def convert_figure(path: Path) -> list[str]:
+    original = Image.open(path).convert("L")
+    # A Braille cell carries two horizontal dots. Preserve roughly one source
+    # pixel per dot for detailed scans, while keeping smaller figures at the
+    # proven 200-column resolution and respecting the physical page width.
+    requested_columns = min(
+        PAGE_IMAGE_COLUMNS,
+        max(MIN_FIGURE_COLUMNS, math.ceil(original.width / 2)),
+    )
+    return convert_image(original, requested_columns)
+
+
+def convert_detail(path: Path, crop: tuple[int, int, int, int], columns: int) -> list[str]:
+    original = Image.open(path).convert("L")
+    left, top, right, bottom = crop
+    if not 0 < columns <= PAGE_IMAGE_COLUMNS:
+        raise ValueError(f"Detail width {columns} exceeds the page canvas")
+    if not (0 <= left < right <= original.width and 0 <= top < bottom <= original.height):
+        raise ValueError(f"Detail crop {crop} falls outside {path.name} at {original.size}")
+    return convert_image(original.crop(crop), columns)
 
 
 def overlay_line(existing: str, art: str, x: int) -> str:
@@ -113,14 +135,49 @@ def main() -> None:
     text_pages: list[str] = []
     image_pages: list[str] = []
     placements: list[dict] = []
+    detail_views: list[dict] = []
     body: list[str] = []
     image_canvas: list[str] = []
     side_slots: list[tuple[int, int]] = []
+    queued_details: list[dict] = []
     figure_index = 0
     pending_figure: tuple[int, str, str, list[str]] | None = None
 
+    def append_detail_page(detail: dict, overview_page: int) -> None:
+        art = detail["art"]
+        reserve = math.ceil(
+            (len(art) * IMAGE_LINE_HEIGHT + IMAGE_LAYER_OFFSET_DELTA) / TEXT_LINE_HEIGHT
+        ) + 2
+        if reserve > TEXT_BODY_ROWS:
+            raise ValueError(f"Detail view {detail['name']} exceeds page height")
+        page_number = len(text_pages) + 1
+        image_y = round(2 * TEXT_LINE_HEIGHT / IMAGE_LINE_HEIGHT)
+        art_width = max(map(len, art), default=0)
+        image_x = max(0, (PAGE_IMAGE_COLUMNS - art_width) // 2)
+        detail_canvas = [""] * (image_y + len(art))
+        for row, art_line in enumerate(art):
+            detail_canvas[image_y + row] = overlay_line("", art_line, image_x)
+        detail_body = [""] * (reserve - 1) + [detail["caption"]]
+        text_pages.append(f"{page_number}\r\n\r\n" + "\r\n".join(detail_body))
+        image_pages.append("\r\n".join(detail_canvas))
+        detail_views.append({
+            "name": detail["name"],
+            "parentFigure": detail["parentFigure"],
+            "overviewPage": overview_page,
+            "source": detail["source"],
+            "crop": list(detail["crop"]),
+            "caption": detail["caption"],
+            "page": page_number,
+            "textStartRow": 0,
+            "reservedTextRows": reserve,
+            "imageX": image_x,
+            "imageY": image_y,
+            "columns": art_width,
+            "rows": len(art),
+        })
+
     def flush() -> None:
-        nonlocal body, image_canvas, side_slots
+        nonlocal body, image_canvas, side_slots, queued_details
         while body and body[-1] == "":
             body.pop()
         page_number = len(text_pages) + 1
@@ -131,9 +188,13 @@ def main() -> None:
         body = []
         image_canvas = []
         side_slots = []
+        details = queued_details
+        queued_details = []
+        for detail in details:
+            append_detail_page(detail, page_number)
 
     def place_figure(number: int, src: str, alt: str, art: list[str]) -> None:
-        nonlocal body, image_canvas
+        nonlocal body, image_canvas, queued_details
         reserve = math.ceil(
             (len(art) * IMAGE_LINE_HEIGHT + IMAGE_LAYER_OFFSET_DELTA) / TEXT_LINE_HEIGHT
         ) + 2
@@ -175,6 +236,18 @@ def main() -> None:
             "sideTextColumns": max(0, side_width) if can_side_flow else 0,
             "labels": [],
         })
+        for spec in DETAIL_VIEWS.get(Path(src).name, ()):
+            detail_art = convert_detail(
+                HTML.parent / src,
+                spec["crop"],
+                spec["columns"],
+            )
+            queued_details.append({
+                **spec,
+                "art": detail_art,
+                "source": src,
+                "parentFigure": number,
+            })
 
     def flush_and_place_pending() -> None:
         nonlocal pending_figure
@@ -248,6 +321,7 @@ def main() -> None:
     if body or image_canvas:
         flush()
     assert figure_index == 57
+    assert not queued_details
     assert len(text_pages) == len(image_pages)
     image_pages_a: list[str] = []
     image_pages_b: list[str] = []
@@ -268,7 +342,7 @@ def main() -> None:
     assert max(len(page.encode("utf8")) for page in image_pages_a + image_pages_b) < 32767
     OUTPUT.write_text(json.dumps({
         "source": "Project Gutenberg ebook 33504, Opticks by Isaac Newton",
-        "representation": "Prose and source-preserving Unicode Braille figures in synchronized overlay arrays",
+        "representation": "Prose, source-preserving Unicode Braille figures, and generated detail views in synchronized overlay arrays",
         "layout": {
             "textBodyRows": TEXT_BODY_ROWS,
             "textLineHeight": TEXT_LINE_HEIGHT,
@@ -283,6 +357,7 @@ def main() -> None:
             "cellMode": CELL_MODE,
         },
         "placements": placements,
+        "detailViews": detail_views,
         "textPages": text_pages,
         "imagePages": image_pages,
         "imagePagesA": image_pages_a,
@@ -292,12 +367,13 @@ def main() -> None:
         "output": str(OUTPUT),
         "pages": len(text_pages),
         "figures": len(placements),
+        "detailViews": len(detail_views),
         "pagesWithImages": sum(bool(page) for page in image_pages),
         "mixedPages": sum(bool(image_pages[i]) and len(text_pages[i].split("\r\n")) > placements[0]["reservedTextRows"] for i in range(len(text_pages))),
         "maxImageCharacters": max(map(len, image_pages)),
         "totalImageCharacters": sum(map(len, image_pages)),
-        "maxColumns": max(item["columns"] for item in placements),
-        "maxRows": max(item["rows"] for item in placements),
+        "maxColumns": max(item["columns"] for item in placements + detail_views),
+        "maxRows": max(item["rows"] for item in placements + detail_views),
     }, indent=2))
 
 

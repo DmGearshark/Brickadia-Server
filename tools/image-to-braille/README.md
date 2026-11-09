@@ -78,6 +78,8 @@ The Opticks book uses per-figure fallback: adaptive cleanup is accepted for
 sparse scans, while dense ray plates retain conservative direct thresholding.
 It also requests 200–300 Braille columns from each scan based on source width,
 preserving roughly one source pixel per Braille dot whenever page space allows.
+Crowded plates can define source-coordinate detail crops that are emitted as
+full-width follow-up pages through the same two synchronized image arrays.
 
 ## Verification
 
