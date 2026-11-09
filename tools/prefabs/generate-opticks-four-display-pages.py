@@ -39,6 +39,8 @@ MIN_FIGURE_COLUMNS = 400
 PAGE_IMAGE_COLUMNS = 600
 MAX_IMAGE_ROWS = 260
 IMAGE_LAYER_OFFSET_DELTA = 2.0
+SPECK_MAX_COMPONENT_DOTS = 12
+SPECK_ISOLATION_RADIUS = 24
 CELL_MODE = "braille"
 BLANK = "\u2800"
 DETAIL_VIEWS = {
@@ -155,7 +157,12 @@ def convert_image(
         )
     elif mode is not None:
         raise ValueError(f"Unknown mask policy mode: {mode}")
-    return _converter.encode_mask(enabled)
+    encoded = _converter.encode_mask(enabled)
+    return _converter.remove_isolated_braille_specks(
+        encoded,
+        max_component_dots=SPECK_MAX_COMPONENT_DOTS,
+        isolation_radius=SPECK_ISOLATION_RADIUS,
+    )
 
 
 def convert_figure(path: Path) -> list[str]:
@@ -508,7 +515,7 @@ def main() -> None:
     assert not oversized, oversized
     OUTPUT.write_text(json.dumps({
         "source": "Project Gutenberg ebook 33504, with Figure 3 sampled from a sharper scan of the 1704 BnF/Gallica plate",
-        "representation": "Prose and native-font double-density pure-Braille figures in four synchronized image arrays, with a source-derived Figure 3 detail page",
+        "representation": "Prose and fixed-bounds despeckled native-font double-density pure-Braille figures in four synchronized image arrays, with a source-derived Figure 3 detail page",
         "layout": {
             "textBodyRows": TEXT_BODY_ROWS,
             "textLineHeight": TEXT_LINE_HEIGHT,
@@ -523,7 +530,14 @@ def main() -> None:
             "minimumFigureColumns": MIN_FIGURE_COLUMNS,
             "maximumImageColumns": PAGE_IMAGE_COLUMNS,
             "maximumImageRows": MAX_IMAGE_ROWS,
-            "samplingPolicy": "double calibrated display density with per-figure byte-budget caps, line-aware residual-source restoration for Figure 3, and an enlarged source-derived center view",
+            "samplingPolicy": "double calibrated display density with per-figure byte-budget caps, line-aware residual-source restoration for Figure 3, an enlarged source-derived center view, and fixed-bounds isolated-speck removal",
+            "imageDespecklePolicy": {
+                "mode": "isolated-components",
+                "connectivity": 8,
+                "maximumComponentDots": SPECK_MAX_COMPONENT_DOTS,
+                "isolationRadius": SPECK_ISOLATION_RADIUS,
+                "preserveArtRectangle": True,
+            },
             "cellMode": CELL_MODE,
             "imageArrayCount": 4,
             "bandStrategy": "byte-balanced contiguous rows",

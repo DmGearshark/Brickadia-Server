@@ -102,6 +102,13 @@ assert(Math.abs(data.layout.imageLayoutLineHeight - 0.084) < 1e-9);
 assert.equal(data.layout.imageOutlineWidth, 4);
 assert.equal(data.layout.imageFont, 'IosevkaTerm');
 assert.equal(data.layout.imageKerning, -6);
+assert.deepEqual(data.layout.imageDespecklePolicy, {
+  mode: 'isolated-components',
+  connectivity: 8,
+  maximumComponentDots: 12,
+  isolationRadius: 24,
+  preserveArtRectangle: true,
+});
 assert.equal(data.layout.maximumImageColumns, 600);
 assert.equal(data.layout.maximumImageRows, 260);
 assert.equal(data.layout.imageArrayCount, 4);

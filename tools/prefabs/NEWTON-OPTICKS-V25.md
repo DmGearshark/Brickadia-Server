@@ -31,13 +31,20 @@ snapshot comes from GITenberg commit
 
 ## Exact regeneration
 
+Use the immutable `newton-opticks-v25-live-calibrated` tag for exact v25 code
+and page data. The original tag's requirements manifest accidentally omitted
+SciPy; install `scipy==1.17.0` explicitly if working directly from that tag.
+The current branch's corrected v25 manifest already includes it.
+
 The preserved run used Python 3.12.14, Node.js 24.19.0, `numpy==2.3.5`,
-`Pillow==12.3.0`, and `brs-js==4.0.4` from the tracked npm lockfile.
+`Pillow==12.3.0`, `scipy==1.17.0`, and `brs-js==4.0.4` from the tracked npm
+lockfile.
 
 ```sh
+git switch --detach newton-opticks-v25-live-calibrated
 python3 -m venv .venv-opticks-v25
 . .venv-opticks-v25/bin/activate
-python -m pip install -r tools/image-to-braille/requirements-opticks-v25.txt
+python -m pip install -r tools/image-to-braille/requirements-opticks-v25.txt scipy==1.17.0
 npm ci --prefix tools/prefabs
 
 sha256sum -c tools/image-to-braille/sources/gutenberg-33504/SHA256SUMS

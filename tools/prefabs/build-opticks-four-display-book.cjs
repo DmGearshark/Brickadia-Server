@@ -76,6 +76,13 @@ function assertPages(data) {
     'Four-display data must use a font with native fixed-advance Braille');
   assert.equal(data.layout?.imageKerning, -6,
     'Four-display data must retain the calibrated image kerning');
+  assert.deepEqual(data.layout?.imageDespecklePolicy, {
+    mode: 'isolated-components',
+    connectivity: 8,
+    maximumComponentDots: 12,
+    isolationRadius: 24,
+    preserveArtRectangle: true,
+  }, 'Four-display data must retain the fixed-bounds isolated-speck cleanup');
 }
 
 function build(input, dataFile = path.join(__dirname, 'opticks-four-display-pages.json')) {
@@ -211,8 +218,8 @@ function build(input, dataFile = path.join(__dirname, 'opticks-four-display-page
   for (const item of imageDisplays) item.component.data.Font = imageFont;
   textDisplay.data.Font = mono;
 
-  const name = 'Newton Opticks - Live-Calibrated Braille Edition';
-  const description = 'Complete Opticks text with live-calibrated source-derived Unicode Braille figures, safe vertical spacing, and an enlarged Figure 3 center detail across four synchronized image arrays.';
+  const name = 'Newton Opticks - Live-Calibrated Clean Braille Edition';
+  const description = 'Complete Opticks text with live-calibrated source-derived Unicode Braille figures, conservative isolated scan-speck cleanup, safe vertical spacing, and an enlarged Figure 3 center detail across four synchronized image arrays.';
   const generated = write(scene, { assets, name, description }).bytes;
   return {
     bytes: repack(generated, donor, { name, description, preserveThumbnail: false }),

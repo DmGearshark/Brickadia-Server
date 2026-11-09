@@ -143,6 +143,92 @@ def encode_mask(enabled: np.ndarray) -> list[str]:
     return crop(output)
 
 
+def remove_isolated_braille_specks(
+    lines: list[str],
+    max_component_dots: int = 12,
+    isolation_radius: int = 24,
+) -> list[str]:
+    """Remove tiny detached components without changing the art rectangle.
+
+    Components use eight-way connectivity at Braille-dot resolution. A small
+    component is removed only when the nearest dot belonging to any other
+    component is at least ``isolation_radius`` pixels away. The returned art
+    has exactly the same row count and per-row widths as ``lines`` so cleanup
+    cannot move, resize, or repaginate an already laid-out figure.
+    """
+    if max_component_dots < 1:
+        raise ValueError("max_component_dots must be positive")
+    if isolation_radius < 1:
+        raise ValueError("isolation_radius must be positive")
+    if not lines:
+        return []
+
+    try:
+        from scipy import ndimage
+    except ImportError as error:
+        raise RuntimeError("Braille despeckling requires: pip install scipy") from error
+
+    row_widths = [len(line) for line in lines]
+    cell_width = max(row_widths, default=0)
+    if cell_width == 0:
+        return lines.copy()
+
+    mask = np.zeros((len(lines) * 4, cell_width * 2), dtype=bool)
+    for cell_y, line in enumerate(lines):
+        for cell_x, character in enumerate(line):
+            codepoint = ord(character)
+            if character == " ":
+                value = 0
+            elif 0x2800 <= codepoint <= 0x28FF:
+                value = codepoint - 0x2800
+            else:
+                raise ValueError("Braille despeckling accepts only Braille cells and spaces")
+            for dx, dy, bit in DOTS:
+                if value & (1 << bit):
+                    mask[cell_y * 4 + dy, cell_x * 2 + dx] = True
+
+    labels, component_count = ndimage.label(
+        mask,
+        structure=np.ones((3, 3), dtype=bool),
+    )
+    if component_count:
+        sizes = np.bincount(labels.ravel(), minlength=component_count + 1)
+        remove: list[int] = []
+        height, width = mask.shape
+        for label, bounds in enumerate(ndimage.find_objects(labels), start=1):
+            if bounds is None or sizes[label] > max_component_dots:
+                continue
+            y_bounds, x_bounds = bounds
+            y0 = max(0, y_bounds.start - isolation_radius - 1)
+            y1 = min(height, y_bounds.stop + isolation_radius + 1)
+            x0 = max(0, x_bounds.start - isolation_radius - 1)
+            x1 = min(width, x_bounds.stop + isolation_radius + 1)
+            local_labels = labels[y0:y1, x0:x1]
+            component = local_labels == label
+            other = (local_labels != 0) & ~component
+            nearest = (
+                ndimage.distance_transform_edt(~other)[component].min()
+                if other.any()
+                else math.inf
+            )
+            if nearest >= isolation_radius:
+                remove.append(label)
+        if remove:
+            mask &= ~np.isin(labels, remove)
+
+    output: list[str] = []
+    for cell_y, row_width in enumerate(row_widths):
+        line: list[str] = []
+        for cell_x in range(row_width):
+            value = 0
+            for dx, dy, bit in DOTS:
+                if mask[cell_y * 4 + dy, cell_x * 2 + dx]:
+                    value |= 1 << bit
+            line.append(chr(0x2800 + value))
+        output.append("".join(line))
+    return output
+
+
 def technical_mask(
     image: Image.Image,
     width: int,

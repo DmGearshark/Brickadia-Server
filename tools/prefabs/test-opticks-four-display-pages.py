@@ -36,6 +36,13 @@ def main() -> None:
     assert data["layout"]["imageOutlineWidth"] == 4
     assert data["layout"]["imageFont"] == "IosevkaTerm"
     assert data["layout"]["imageKerning"] == -6
+    assert data["layout"]["imageDespecklePolicy"] == {
+        "mode": "isolated-components",
+        "connectivity": 8,
+        "maximumComponentDots": 12,
+        "isolationRadius": 24,
+        "preserveArtRectangle": True,
+    }
     assert data["layout"]["figureSourceOverrides"] == {
         "fig3-1.jpg": "tools/image-to-braille/sources/bnf-opticks-1704-plate-i-figure-3.png",
     }
