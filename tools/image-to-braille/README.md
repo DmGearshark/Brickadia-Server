@@ -11,8 +11,9 @@ Braille characters (`U+2800` through `U+28FF`).
 python convert.py input.png output.txt --width 400 --threshold 0.50
 ```
 
-The dual-layer Newton *Opticks* book uses this direct mode. It preserves
-technical diagrams and lettering better than the site's neural line-art mode.
+The Newton *Opticks* book uses this converter for its source-derived artwork.
+It preserves technical diagrams and engraved lettering better than the site's
+neural line-art mode.
 
 Useful options:
 
@@ -74,12 +75,23 @@ python convert.py input.jpg output.txt \
 ```
 
 `direct` mode remains unchanged for exact reproduction of earlier conversions.
-The Opticks book uses per-figure fallback: adaptive cleanup is accepted for
-sparse scans, while dense ray plates retain conservative direct thresholding.
-It also requests 200–300 Braille columns from each scan based on source width,
-preserving roughly one source pixel per Braille dot whenever page space allows.
-Crowded plates can define source-coordinate detail crops that are emitted as
-full-width follow-up pages through the same two synchronized image arrays.
+The current Opticks pipeline uses per-figure fallback: adaptive cleanup is
+accepted for sparse scans, while dense ray plates retain conservative direct
+thresholding. It requests 400–600 Braille columns and renders them at a 0.075
+line height, giving the artwork twice the previous cell density at the same
+physical size. Four coplanar TextDisplays carry disjoint, byte-balanced row
+bands of the same logical image. This keeps every array value below Brickadia's
+32,767-byte string limit without seams, duplicated dots, hybrid line glyphs,
+or normal-font label overlays. Exceptionally dense plates use narrow per-image
+caps, and adjacent figures start separate pages when their combined data would
+exceed an array value.
+
+Generate and validate the four-display book data with:
+
+```bash
+python tools/prefabs/generate-opticks-four-display-pages.py
+python tools/prefabs/test-opticks-four-display-pages.py
+```
 
 ## Verification
 
