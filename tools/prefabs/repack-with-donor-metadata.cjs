@@ -2,13 +2,13 @@
 const fs=require('fs');
 const zlib=require('zlib');
 const {WorldReader,brdb:b}=require('brs-js');
-function repack(generatedBytes,donorBytes,{name,description}={}){
+function repack(generatedBytes,donorBytes,{name,description,preserveThumbnail=true}={}){
  const generated=WorldReader.from(generatedBytes),donor=WorldReader.from(donorBytes);
  const replacements=new Map();
  const bundle=JSON.parse(Buffer.from(donor.fs.readFile('Meta/Bundle.json')).toString());
  if(name)bundle.name=name;if(description!=null)bundle.description=description;
  replacements.set('Meta/Bundle.json',Buffer.from(JSON.stringify(bundle,null,'\t')));
- if(donor.fs.listPaths().includes('Meta/Thumbnail.png'))replacements.set('Meta/Thumbnail.png',donor.fs.readFile('Meta/Thumbnail.png'));
+ if(preserveThumbnail&&donor.fs.listPaths().includes('Meta/Thumbnail.png'))replacements.set('Meta/Thumbnail.png',donor.fs.readFile('Meta/Thumbnail.png'));
  function tree(prefix=''){
   const replacementFiles=[...replacements].filter(([p])=>p.slice(0,p.lastIndexOf('/'))===prefix).map(([p])=>p.slice(p.lastIndexOf('/')+1));
   const depth=prefix?prefix.split('/').length:0;

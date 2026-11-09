@@ -7,6 +7,7 @@ import html
 import json
 import math
 import re
+import subprocess
 import textwrap
 from html.parser import HTMLParser
 from pathlib import Path
@@ -21,17 +22,32 @@ OUTPUT = ROOT / "tools/prefabs/opticks-overlay-pages.json"
 
 TEXT_BODY_ROWS = 48
 TEXT_LINE_HEIGHT = 0.50
-IMAGE_LINE_HEIGHT = 0.43
-IMAGE_WIDTH_SCALE = 0.30
+IMAGE_LINE_HEIGHT = 0.50
+IMAGE_WIDTH_SCALE = 1.00
 TEXT_WIDTH_SCALE = 0.82
-MAX_IMAGE_COLUMNS = 200
-MAX_IMAGE_ROWS = 28
+MAX_IMAGE_COLUMNS = 60
+MAX_IMAGE_ROWS = 42
 BLANK = "\u2800"
 DOTS = (
     (0, 0, 0), (0, 1, 1), (0, 2, 2),
     (1, 0, 3), (1, 1, 4), (1, 2, 5),
     (0, 3, 6), (1, 3, 7),
 )
+
+# Hand-verified labels for the colour-composition circle. OCR cannot reliably
+# distinguish its small italic p/q/r/s/t/u/x labels from the engraved rays.
+# Coordinates are in the 400 x 385 source scan.
+MANUAL_LABELS = {
+    "fig11-2.jpg": [
+        ("D", 38, 194), ("E", 116, 48), ("F", 206, 30), ("G", 313, 104),
+        ("A", 352, 265), ("B", 230, 359), ("C", 115, 339), ("O", 207, 194),
+        ("Z", 184, 126), ("p", 81, 119), ("q", 143, 61), ("r", 278, 69),
+        ("s", 337, 170), ("t", 300, 290), ("u", 178, 337), ("x", 74, 273),
+        ("Red", 55, 116), ("Orange", 150, 29), ("Yellow", 270, 47),
+        ("Green", 355, 155), ("Blue", 326, 302), ("Indigo", 183, 363),
+        ("Violet", 62, 292),
+    ],
+}
 
 
 class ImageParser(HTMLParser):
@@ -46,7 +62,52 @@ class ImageParser(HTMLParser):
                 self.images.append((values["src"], html.unescape(values.get("alt") or "Illustration")))
 
 
-def convert_figure(path: Path) -> list[str]:
+def extract_labels(path: Path, width: int, rows: int, crop_left: int, crop_top: int) -> list[dict]:
+    """Recover short diagram labels for the ordinary-text overlay.
+
+    Braille carries the geometry; normal glyphs carry letters, numbers and
+    colour names that become ambiguous at the corrected 1.0 width scale.
+    """
+    source = Image.open(path)
+    if path.name in MANUAL_LABELS:
+        return [{
+            "text": token,
+            "x": round(x * width / source.width - crop_left),
+            "y": round(y * rows / source.height - crop_top),
+            "confidence": 1000,
+        } for token, x, y in MANUAL_LABELS[path.name]]
+    result = subprocess.run(
+        ["tesseract", str(path), "stdout", "--psm", "11", "tsv"],
+        check=True, capture_output=True, text=True,
+    )
+    labels = []
+    for line in result.stdout.splitlines()[1:]:
+        fields = line.split("\t", 11)
+        if len(fields) != 12 or not fields[11].strip():
+            continue
+        try:
+            level, left, top, box_width, box_height, confidence = (
+                int(fields[0]), int(fields[6]), int(fields[7]),
+                int(fields[8]), int(fields[9]), float(fields[10]),
+            )
+        except ValueError:
+            continue
+        token = re.sub(r"[^A-Za-z0-9./'-]", "", fields[11])
+        if level != 5 or confidence < 60 or not token or len(token) > 12:
+            continue
+        # Keep compact technical labels and the colour names used by Newton.
+        if not (len(token) <= 2 or token.lower() in {
+            "red", "orange", "yellow", "green", "blue", "indigo", "violet",
+        }):
+            continue
+        x = round((left + box_width / 2) * width / source.width - crop_left)
+        y = round((top + box_height / 2) * rows / source.height - crop_top)
+        if 0 <= x < width and 0 <= y < rows:
+            labels.append({"text": token, "x": x, "y": y, "confidence": confidence})
+    return labels
+
+
+def convert_figure(path: Path) -> tuple[list[str], list[dict]]:
     source = Image.open(path).convert("L")
     # Scans vary greatly in darkness. Normalizing each figure independently
     # preserves faint construction lines while keeping the direct conversion
@@ -83,11 +144,14 @@ def convert_figure(path: Path) -> list[str]:
     left = min(len(line) - len(line.lstrip(BLANK)) for line in output)
     right = min(len(line) - len(line.rstrip(BLANK)) for line in output)
     output = [line[left:len(line) - right if right else len(line)] for line in output]
+    top = 0
     while output and not output[0].replace(BLANK, ""):
         output.pop(0)
+        top += 1
     while output and not output[-1].replace(BLANK, ""):
         output.pop()
-    return output
+    labels = extract_labels(path, width, rows, left, top)
+    return output, labels
 
 
 def overlay_line(existing: str, art: str, x: int) -> str:
@@ -116,7 +180,7 @@ def main() -> None:
     image_canvas: list[str] = []
     side_slots: list[tuple[int, int]] = []
     figure_index = 0
-    pending_figure: tuple[int, str, str, list[str]] | None = None
+    pending_figure: tuple[int, str, str, list[str], list[dict]] | None = None
 
     def flush() -> None:
         nonlocal body, image_canvas, side_slots
@@ -131,7 +195,7 @@ def main() -> None:
         image_canvas = []
         side_slots = []
 
-    def place_figure(number: int, src: str, alt: str, art: list[str]) -> None:
+    def place_figure(number: int, src: str, alt: str, art: list[str], labels: list[dict]) -> None:
         nonlocal body, image_canvas
         reserve = math.ceil(len(art) * IMAGE_LINE_HEIGHT / TEXT_LINE_HEIGHT) + 2
         if len(body) + reserve > TEXT_BODY_ROWS:
@@ -149,9 +213,26 @@ def main() -> None:
         for row, art_line in enumerate(art):
             image_canvas[image_y + row] = overlay_line(image_canvas[image_y + row], art_line, image_x)
         body.extend([""] * (reserve - 1))
+        placed_labels = []
+        for label in sorted(labels, key=lambda item: (-item["confidence"], item["y"], item["x"])):
+            row = text_start + min(reserve - 2, label["y"])
+            # WidthScale differs between layers, so convert the label's image
+            # coordinate to the text display's character grid.
+            column = max(0, round((image_x + label["x"]) * IMAGE_WIDTH_SCALE / TEXT_WIDTH_SCALE) - len(label["text"]) // 2)
+            current = body[row]
+            if len(current) < column:
+                current += " " * (column - len(current))
+            end = column + len(label["text"])
+            occupied = current[column:end].strip() if column < len(current) else ""
+            if occupied:
+                continue
+            if len(current) < end:
+                current += " " * (end - len(current))
+            body[row] = current[:column] + label["text"] + current[end:]
+            placed_labels.append({**label, "textRow": row, "textColumn": column})
         side_width = math.floor(image_x * IMAGE_WIDTH_SCALE / TEXT_WIDTH_SCALE) - 2
         if side_width >= 20:
-            side_slots.extend((text_start + row, side_width) for row in range(reserve - 1))
+            side_slots.extend((text_start + row, side_width) for row in range(reserve - 1) if not body[text_start + row].strip())
         body.append(alt.rstrip(".") + ".")
         placements.append({
             "number": number,
@@ -165,6 +246,7 @@ def main() -> None:
             "columns": art_width,
             "rows": len(art),
             "sideTextColumns": max(0, side_width),
+            "labels": placed_labels,
         })
 
     def flush_and_place_pending() -> None:
@@ -201,17 +283,17 @@ def main() -> None:
             if pending_figure is not None:
                 flush_and_place_pending()
             src, alt = parser.images[figure_index]
-            art = convert_figure(HTML.parent / src)
+            art, labels = convert_figure(HTML.parent / src)
             reserve = math.ceil(len(art) * IMAGE_LINE_HEIGHT / TEXT_LINE_HEIGHT) + 2
             if reserve > TEXT_BODY_ROWS:
                 raise ValueError(f"Figure {figure_index + 1} exceeds page height")
             if len(body) + reserve <= TEXT_BODY_ROWS:
-                place_figure(figure_index + 1, src, alt, art)
+                place_figure(figure_index + 1, src, alt, art, labels)
             else:
                 # Fill the current page with the prose following the marker.
                 # Once full, the deferred figure starts the next page and the
                 # remaining prose continues beneath its reserved void.
-                pending_figure = (figure_index + 1, src, alt, art)
+                pending_figure = (figure_index + 1, src, alt, art, labels)
             figure_index += 1
             if len(body) >= TEXT_BODY_ROWS:
                 flush_and_place_pending()

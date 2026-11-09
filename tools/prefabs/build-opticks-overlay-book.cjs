@@ -38,8 +38,10 @@ function build(input, dataFile = path.join(__dirname, 'opticks-overlay-pages.jso
   const textGet = only(getters.filter(item => item.brick.data.position[1] === -15), 'text getter').component;
   const cycle = only(components(scene, TYPES.cycle), 'cycle').component;
   const displays = components(scene, TYPES.text);
-  const imageDisplay = only(displays.filter(item => item.component.data.Text === 'Images on these arrays.'), 'image display').component;
-  const textDisplay = only(displays.filter(item => /^275\r\n/.test(item.component.data.Text || '')), 'text display').component;
+  const contentDisplays = displays.filter(item => item.component.data.Face === 0 || item.component.data.Face === 3);
+  const imageDisplay = only(contentDisplays.filter(item => item.component.data.Face === 3), 'image display').component;
+  const textDisplay = only(contentDisplays.filter(item => item.component.data.Face === 0
+    && String(item.component.data.Text || '').length > 100), 'text display').component;
 
   imageArray.data.Value.$array = imagePages.slice().reverse();
   textArray.data.Value.$array = textPages.slice().reverse();
@@ -69,7 +71,10 @@ function build(input, dataFile = path.join(__dirname, 'opticks-overlay-pages.jso
   const name = 'Newton Opticks - Braille Overlay Edition';
   const description = 'Complete Opticks text with contrast-normalized Braille figures overlaid into deliberately blank regions of the prose pages.';
   const generated = write(scene, { assets, name, description }).bytes;
-  return { bytes: repack(generated, donor, { name, description }), data };
+  // The edited donor contains a 637 KB screenshot thumbnail. Omitting that
+  // preview keeps the prefab well below the size that previously failed to
+  // place, without changing any brick, display or circuit data.
+  return { bytes: repack(generated, donor, { name, description, preserveThumbnail: false }), data };
 }
 
 module.exports = build;
