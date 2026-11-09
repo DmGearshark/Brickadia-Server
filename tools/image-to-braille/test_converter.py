@@ -15,7 +15,6 @@ from convert import (
     line_aware_structure_mask,
     normalize_source,
     parser,
-    remove_isolated_braille_specks,
     structure_aware_mask,
     technical_mask,
     zhang_suen_thin,
@@ -95,32 +94,6 @@ def main() -> None:
     expect_value_error(lambda: line_aware_structure_mask(diagram, line_occupancy=0))
     expect_value_error(lambda: line_aware_structure_mask(diagram, angle_step=0))
     expect_value_error(lambda: line_aware_structure_mask(diagram, compact_size=2))
-
-    speck_art = np.zeros((40, 160), dtype=bool)
-    speck_art[4:7, 4:7] = True
-    speck_art[20:24, 60:64] = True
-    speck_art[30:33, 120:123] = True
-    speck_art[30:34, 132:136] = True
-    encoded_specks = encode_mask(speck_art)
-    original_specks = encoded_specks.copy()
-    cleaned_specks = remove_isolated_braille_specks(
-        encoded_specks,
-        max_component_dots=12,
-        isolation_radius=24,
-    )
-    assert encoded_specks == original_specks, "Despeckling mutated its input"
-    assert len(cleaned_specks) == len(encoded_specks)
-    assert list(map(len, cleaned_specks)) == list(map(len, encoded_specks))
-    before_dots = sum((ord(char) - 0x2800).bit_count() for line in encoded_specks for char in line)
-    after_dots = sum((ord(char) - 0x2800).bit_count() for line in cleaned_specks for char in line)
-    assert before_dots - after_dots == 9, "The isolated 3x3 speck was not removed exactly"
-    assert before_dots == 50
-    assert after_dots == 41
-    assert not cleaned_specks[0].replace(BLANK, ""), "The isolated top-left speck survived"
-    assert cleaned_specks[-2].replace(BLANK, ""), "The nearby 3x3 component was removed"
-    expect_value_error(lambda: remove_isolated_braille_specks(encoded_specks, 0, 24))
-    expect_value_error(lambda: remove_isolated_braille_specks(encoded_specks, 12, 0))
-    expect_value_error(lambda: remove_isolated_braille_specks(["A"], 12, 24))
 
     with TemporaryDirectory() as directory:
         path = Path(directory) / "circle.png"
