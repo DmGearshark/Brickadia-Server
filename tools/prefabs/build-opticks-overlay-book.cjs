@@ -26,39 +26,46 @@ function build(input, dataFile = path.join(__dirname, 'opticks-overlay-pages.jso
   const donor = fs.readFileSync(input);
   const scene = read(donor);
   const data = JSON.parse(fs.readFileSync(dataFile, 'utf8'));
-  const { textPages, imagePages } = data;
-  assert.equal(textPages.length, imagePages.length);
+  const { textPages, imagePagesA, imagePagesB } = data;
+  assert.equal(textPages.length, imagePagesA.length);
+  assert.equal(textPages.length, imagePagesB.length);
   assert.equal(data.placements.length, 57);
 
   const arrays = components(scene, TYPES.array);
   const getters = components(scene, TYPES.get);
-  const imageArray = only(arrays.filter(item => item.brick.data.position[1] === -35), 'image array').component;
+  const imageArrayA = only(arrays.filter(item => item.brick.data.position[1] === -55), 'image array A').component;
+  const imageArrayB = only(arrays.filter(item => item.brick.data.position[1] === -35), 'image array B').component;
   const textArray = only(arrays.filter(item => item.brick.data.position[1] === -15), 'text array').component;
-  const imageGet = only(getters.filter(item => item.brick.data.position[1] === -35), 'image getter').component;
+  const imageGetA = only(getters.filter(item => item.brick.data.position[1] === -55), 'image getter A').component;
+  const imageGetB = only(getters.filter(item => item.brick.data.position[1] === -35), 'image getter B').component;
   const textGet = only(getters.filter(item => item.brick.data.position[1] === -15), 'text getter').component;
   const cycle = only(components(scene, TYPES.cycle), 'cycle').component;
   const displays = components(scene, TYPES.text);
   const contentDisplays = displays.filter(item => item.component.data.Face === 0 || item.component.data.Face === 3);
-  const imageDisplay = only(contentDisplays.filter(item => item.component.data.Face === 3), 'image display').component;
+  const imageDisplays = contentDisplays.filter(item => item.component.data.Face === 3)
+    .sort((a, b) => a.brick.data.position[2] - b.brick.data.position[2]);
+  assert.equal(imageDisplays.length, 2, `Expected two image displays, found ${imageDisplays.length}`);
   const textDisplay = only(contentDisplays.filter(item => item.component.data.Face === 0
     && String(item.component.data.Text || '').length > 100), 'text display').component;
 
-  imageArray.data.Value.$array = imagePages.slice().reverse();
+  imageArrayA.data.Value.$array = imagePagesA.slice().reverse();
+  imageArrayB.data.Value.$array = imagePagesB.slice().reverse();
   textArray.data.Value.$array = textPages.slice().reverse();
   cycle.data.Count = textPages.length;
   cycle.data.Value = textPages.length - 1;
-  for (const [getter, value] of [[imageGet, imagePages[0]], [textGet, textPages[0]]]) {
+  for (const [getter, value] of [[imageGetA, imagePagesA[0]], [imageGetB, imagePagesB[0]], [textGet, textPages[0]]]) {
     getter.data.Index = textPages.length - 1;
     getter.data.Value = { $variant: 'str', value };
     getter.data.bOutOfBounds = false;
   }
-  imageDisplay.data.Text = imagePages[0];
   textDisplay.data.Text = textPages[0];
-  imageDisplay.data.WidthScale = data.layout.imageWidthScale;
-  imageDisplay.data.LineHeight = data.layout.imageLineHeight;
-  // The old -60 horizontal offset belonged to a differently scaled image
-  // layer and places the art outside the paper. Share the prose origin.
-  imageDisplay.data.Offset.X = textDisplay.data.Offset.X;
+  for (const [index, item] of imageDisplays.entries()) {
+    item.component.data.Text = (index === 0 ? imagePagesA : imagePagesB)[0];
+    item.component.data.WidthScale = data.layout.imageWidthScale;
+    item.component.data.LineHeight = data.layout.imageLineHeight;
+    item.component.data.Offset.X = textDisplay.data.Offset.X;
+    item.component.data.Offset.Y = 20.5;
+  }
   textDisplay.data.WidthScale = data.layout.textWidthScale;
   textDisplay.data.LineHeight = data.layout.textLineHeight;
 
@@ -68,7 +75,7 @@ function build(input, dataFile = path.join(__dirname, 'opticks-overlay-pages.jso
     mono = assets.length;
     assets.push({ type: 'BrickFontDescriptor', name: 'RobotoMono' });
   }
-  imageDisplay.data.Font = mono;
+  for (const item of imageDisplays) item.component.data.Font = mono;
   textDisplay.data.Font = mono;
 
   const name = 'Newton Opticks - Braille Overlay Edition';
@@ -93,6 +100,6 @@ if (require.main === module) {
     bytes: result.bytes.length,
     pages: result.data.textPages.length,
     figures: result.data.placements.length,
-    mixedPages: result.data.imagePages.filter(Boolean).length,
+    mixedPages: result.data.imagePagesA.filter((page, index) => page || result.data.imagePagesB[index]).length,
   }, null, 2));
 }

@@ -22,11 +22,11 @@ OUTPUT = ROOT / "tools/prefabs/opticks-overlay-pages.json"
 
 TEXT_BODY_ROWS = 48
 TEXT_LINE_HEIGHT = 0.50
-IMAGE_LINE_HEIGHT = 0.25
-IMAGE_WIDTH_SCALE = 0.50
+IMAGE_LINE_HEIGHT = 0.15
+IMAGE_WIDTH_SCALE = 0.30
 TEXT_WIDTH_SCALE = 0.82
-MAX_IMAGE_COLUMNS = 120
-MAX_IMAGE_ROWS = 78
+MAX_IMAGE_COLUMNS = 200
+MAX_IMAGE_ROWS = 130
 BLANK = "\u2800"
 DOTS = (
     (0, 0, 0), (0, 1, 1), (0, 2, 2),
@@ -323,6 +323,23 @@ def main() -> None:
         flush()
     assert figure_index == 57
     assert len(text_pages) == len(image_pages)
+    image_pages_a: list[str] = []
+    image_pages_b: list[str] = []
+    for page in image_pages:
+        # ASCII and Braille blanks render identically. ASCII spaces save two
+        # bytes per empty cell and make a two-array 400-pixel page feasible.
+        rows = [line.replace(BLANK, " ") for line in page.split("\r\n")] if page else []
+        if not rows:
+            image_pages_a.append("")
+            image_pages_b.append("")
+            continue
+        best = min(range(len(rows) + 1), key=lambda split: max(
+            len("\r\n".join(rows[:split]).encode("utf8")),
+            len(("\r\n" * split + "\r\n".join(rows[split:])).encode("utf8")),
+        ))
+        image_pages_a.append("\r\n".join(rows[:best]))
+        image_pages_b.append("\r\n" * best + "\r\n".join(rows[best:]))
+    assert max(len(page.encode("utf8")) for page in image_pages_a + image_pages_b) < 32767
     OUTPUT.write_text(json.dumps({
         "source": "Project Gutenberg ebook 33504, Opticks by Isaac Newton",
         "representation": "Prose and contrast-normalized Braille figures in synchronized overlay arrays",
@@ -338,6 +355,8 @@ def main() -> None:
         "placements": placements,
         "textPages": text_pages,
         "imagePages": image_pages,
+        "imagePagesA": image_pages_a,
+        "imagePagesB": image_pages_b,
     }, ensure_ascii=False, indent=2) + "\n", "utf8")
     print(json.dumps({
         "output": str(OUTPUT),
