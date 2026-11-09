@@ -26,7 +26,8 @@ IMAGE_LINE_HEIGHT = 0.15
 IMAGE_WIDTH_SCALE = 1.00
 IMAGE_ADVANCE_SCALE = 0.23
 TEXT_WIDTH_SCALE = 0.82
-MAX_IMAGE_COLUMNS = 200
+MIN_FIGURE_COLUMNS = 200
+PAGE_IMAGE_COLUMNS = 300
 MAX_IMAGE_ROWS = 130
 IMAGE_LAYER_OFFSET_DELTA = 2.0
 CELL_MODE = "braille"
@@ -59,8 +60,15 @@ class ImageParser(HTMLParser):
 
 def convert_figure(path: Path) -> list[str]:
     original = Image.open(path).convert("L")
+    # A Braille cell carries two horizontal dots. Preserve roughly one source
+    # pixel per dot for detailed scans, while keeping smaller figures at the
+    # proven 200-column resolution and respecting the physical page width.
+    requested_columns = min(
+        PAGE_IMAGE_COLUMNS,
+        max(MIN_FIGURE_COLUMNS, math.ceil(original.width / 2)),
+    )
     enabled = _converter.technical_mask(
-        original, MAX_IMAGE_COLUMNS, MAX_IMAGE_ROWS, threshold=0.72
+        original, requested_columns, MAX_IMAGE_ROWS, threshold=0.72
     )
 
     # Dense plates can lose dotted construction rays under background
@@ -134,10 +142,13 @@ def main() -> None:
         text_start = len(body)
         image_y = round((2 + text_start) * TEXT_LINE_HEIGHT / IMAGE_LINE_HEIGHT)
         art_width = max(map(len, art), default=0)
-        # Right alignment exposes a rectangular text column on the left of
-        # narrow figures. The prose emitter below fills that space without
-        # writing into the physical area occupied by the Braille display.
-        image_x = max(0, MAX_IMAGE_COLUMNS - art_width)
+        can_side_flow = art_width < 150 and len(art) < 80
+        # Center figures that reserve their full rectangle. Small, short art is
+        # right aligned so prose can still use a clear column on its left.
+        if can_side_flow:
+            image_x = max(0, PAGE_IMAGE_COLUMNS - art_width)
+        else:
+            image_x = max(0, (PAGE_IMAGE_COLUMNS - art_width) // 2)
         needed = image_y + len(art)
         if len(image_canvas) < needed:
             image_canvas.extend([""] * (needed - len(image_canvas)))
@@ -147,7 +158,7 @@ def main() -> None:
         side_width = math.floor(image_x * IMAGE_ADVANCE_SCALE / TEXT_WIDTH_SCALE) - 2
         # Dense or tall figures need their complete rectangle. Side-flowing
         # prose beside these diagrams crossed long rays in the calibrated font.
-        if side_width >= 20 and art_width < 150 and len(art) < 80:
+        if side_width >= 20 and can_side_flow:
             side_slots.extend((text_start + row, side_width) for row in range(reserve - 1) if not body[text_start + row].strip())
         body.append(alt.rstrip(".") + ".")
         placements.append({
@@ -161,7 +172,7 @@ def main() -> None:
             "imageY": image_y,
             "columns": art_width,
             "rows": len(art),
-            "sideTextColumns": max(0, side_width),
+            "sideTextColumns": max(0, side_width) if can_side_flow else 0,
             "labels": [],
         })
 
@@ -265,8 +276,10 @@ def main() -> None:
             "textWidthScale": TEXT_WIDTH_SCALE,
             "imageWidthScale": IMAGE_WIDTH_SCALE,
             "imageAdvanceScale": IMAGE_ADVANCE_SCALE,
-            "maximumImageColumns": MAX_IMAGE_COLUMNS,
+            "minimumFigureColumns": MIN_FIGURE_COLUMNS,
+            "maximumImageColumns": PAGE_IMAGE_COLUMNS,
             "maximumImageRows": MAX_IMAGE_ROWS,
+            "samplingPolicy": "preserve one source pixel per Braille dot when page space allows",
             "cellMode": CELL_MODE,
         },
         "placements": placements,

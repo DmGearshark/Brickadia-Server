@@ -76,6 +76,8 @@ python convert.py input.jpg output.txt \
 `direct` mode remains unchanged for exact reproduction of earlier conversions.
 The Opticks book uses per-figure fallback: adaptive cleanup is accepted for
 sparse scans, while dense ray plates retain conservative direct thresholding.
+It also requests 200–300 Braille columns from each scan based on source width,
+preserving roughly one source pixel per Braille dot whenever page space allows.
 
 ## Verification
 
