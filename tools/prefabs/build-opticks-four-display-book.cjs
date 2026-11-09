@@ -211,8 +211,8 @@ function build(input, dataFile = path.join(__dirname, 'opticks-four-display-page
   for (const item of imageDisplays) item.component.data.Font = imageFont;
   textDisplay.data.Font = mono;
 
-  const name = 'Newton Opticks - Live-Calibrated Braille Edition';
-  const description = 'Complete Opticks text with live-calibrated source-derived Unicode Braille figures, safe vertical spacing, and an enlarged Figure 3 center detail across four synchronized image arrays.';
+  const name = data.name ?? 'Newton Opticks - Live-Calibrated Braille Edition';
+  const description = data.description ?? 'Complete Opticks text with live-calibrated source-derived Unicode Braille figures, safe vertical spacing, and an enlarged Figure 3 center detail across four synchronized image arrays.';
   const generated = write(scene, { assets, name, description }).bytes;
   return {
     bytes: repack(generated, donor, { name, description, preserveThumbnail: false }),
