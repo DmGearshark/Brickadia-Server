@@ -272,6 +272,7 @@ out FaceText: string = displayFace
 out StateText: string = displayState
 out MoodColor: color = displayColor
 out Purr: bool = seconds.Value < purrUntil.Value
+  || state.Value == RELAX && socialNeed.Value < 40.0 && fear.Value < 20.0
 @label("PURR AUDIO - select Purring")
 out PurrAudio = PURR_SOUND
 @label("MEOW AUDIO - select Cat Meow")
@@ -381,6 +382,12 @@ mod beginRoam(catPosition: vector) {
   setTarget(TARGET_NONE, null, center + wander, true)
 }
 
+mod setHungrySearchTarget(catPosition: vector) {
+  let center = if homeKnown then homePosition else catPosition
+  let wander = Random(Vec(-560.0, -560.0, 0.0), Vec(560.0, 560.0, 0.0))
+  setTarget(TARGET_NONE, null, center + wander, true)
+}
+
 mod requestChoice() {
   if !choicePending {
     choicePending = true
@@ -408,7 +415,8 @@ on chooseNextRequest {
   let relationBias = (nearestPlayerAffection - nearestPlayerIrritation) / 5.0
   let followChance = min(max(18.0 + followPreference + petPreference * 0.30
     + relationBias + (sociability - 1.0) * 30.0, 3.0), 48.0)
-  let toyAvailable = toyVisible && !targetCoolingDown(rememberedToyPosition)
+  let toyAvailable = toyKnown && rememberedToy != null
+    && !targetCoolingDown(rememberedToyPosition)
   let roamCutoff = min(max(82.0 + roamPreference, 68.0), 94.0)
   if relaxNeed >= 100.0 {
     beginState(RELAX, Random(5, 25))
@@ -419,7 +427,7 @@ on chooseNextRequest {
     && roll < followChance + playChance {
     beginState(STALK, 30)
     if toyAvailable {
-      setTarget(TARGET_TOY, rememberedToy, rememberedToyPosition, true)
+      setTarget(TARGET_TOY, rememberedToy, rememberedToyPosition, toyVisible)
     } else {
       setTarget(TARGET_PLAYER, nearestPlayer, nearestPlayerPosition, true)
     }
@@ -1014,7 +1022,7 @@ on Clock(interval = 1.0) {
       requestChoice()
     }
   } else if state == STALK {
-    if targetEntity == null || targetDistance > RADAR_RANGE || seconds >= stateUntil {
+    if targetEntity == null || targetDistance > 1200.0 || seconds >= stateUntil {
       failCurrentTarget()
     } else if targetDistance <= STALK_TO_CHASE {
       beginState(CHASE, Random(1, 3))
@@ -1028,7 +1036,13 @@ on Clock(interval = 1.0) {
       beginAngry(if playerNearby then nearestPlayerPosition else focusPosition)
     }
   } else if state == SEEK_FOOD || state == SEEK_TREAT {
-    if targetEntity == null {
+    if state == SEEK_FOOD && targetKind == TARGET_NONE {
+      if seconds >= stateUntil {
+        failCurrentTarget()
+      } else if targetDistance <= 75.0 {
+        setHungrySearchTarget(catPosition)
+      }
+    } else if targetEntity == null {
       failCurrentTarget()
     } else if mouthMatchingTarget {
       eatingTarget = targetEntity
@@ -1109,7 +1123,7 @@ on Clock(interval = 1.0) {
       } else if playerNearby {
         setTarget(TARGET_PLAYER, nearestPlayer, nearestPlayerPosition, true)
       } else {
-        beginRoam(catPosition)
+        setHungrySearchTarget(catPosition)
       }
     } else if sleepiness >= 95.0 && state != SLEEPY && state != SEEK_BED {
       beginState(SLEEPY, Random(4, 8))
@@ -1125,7 +1139,7 @@ on Clock(interval = 1.0) {
       } else if playerNearby {
         setTarget(TARGET_PLAYER, nearestPlayer, nearestPlayerPosition, true)
       } else {
-        beginRoam(catPosition)
+        setHungrySearchTarget(catPosition)
       }
     } else if calmState && sleepiness >= sleepThreshold {
       beginState(SLEEPY, Random(4, 8))
@@ -1134,11 +1148,13 @@ on Clock(interval = 1.0) {
       beginState(RETURN_HOME, 50)
       setTarget(TARGET_HOME, null, homePosition, true)
     } else if calmState && boredom >= playThreshold
-      && (toyVisible && !targetCoolingDown(rememberedToyPosition)
+      && (toyKnown && rememberedToy != null
+        && !targetCoolingDown(rememberedToyPosition)
         || playerNearby && nearestPlayerIrritation < 70) {
       beginState(STALK, 30)
-      if toyVisible && !targetCoolingDown(rememberedToyPosition) {
-        setTarget(TARGET_TOY, rememberedToy, rememberedToyPosition, true)
+      if toyKnown && rememberedToy != null
+        && !targetCoolingDown(rememberedToyPosition) {
+        setTarget(TARGET_TOY, rememberedToy, rememberedToyPosition, toyVisible)
       } else {
         setTarget(TARGET_PLAYER, nearestPlayer, nearestPlayerPosition, true)
       }
@@ -1268,6 +1284,7 @@ on Clock(interval = 0.2) {
         else if state == STALK then STALK_TO_CHASE
         else if state == CHASE then CHASE_CONTACT
         else if state == SEEK_FOOD && targetKind == TARGET_PLAYER then FOLLOW_STOP
+        else if state == SEEK_FOOD && targetKind == TARGET_NONE then 75.0
         else if state == SEEK_FOOD || state == SEEK_TREAT then FOOD_STOP
         else if state == SEEK_BED then BED_STOP
         else if state == ROAM || state == RETURN_HOME then 75.0
