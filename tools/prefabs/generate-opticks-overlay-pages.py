@@ -7,6 +7,7 @@ import html
 import json
 import math
 import re
+import textwrap
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -19,8 +20,8 @@ HTML = Path("/tmp/gitenberg-33504/33504-h/33504-h.htm")
 OUTPUT = ROOT / "tools/prefabs/opticks-overlay-pages.json"
 
 TEXT_BODY_ROWS = 48
-TEXT_LINE_HEIGHT = 0.42
-IMAGE_LINE_HEIGHT = 0.36
+TEXT_LINE_HEIGHT = 0.50
+IMAGE_LINE_HEIGHT = 0.43
 IMAGE_WIDTH_SCALE = 0.30
 TEXT_WIDTH_SCALE = 0.82
 MAX_IMAGE_COLUMNS = 200
@@ -61,6 +62,14 @@ def convert_figure(path: Path) -> list[str]:
     # 0.50. Autocontrast keeps the paper background white, so this does not
     # introduce the broad scan noise seen with neural line-art preprocessing.
     enabled = np.asarray(resized, dtype=np.float32) < (255 * 0.72)
+    # Reinforce single-pixel scan strokes into a two-pixel line. This is a
+    # restrained 2x2 dilation rather than the broad multi-step erosion used by
+    # Auto mode, which destroyed lettering in technical figures.
+    reinforced = enabled.copy()
+    reinforced[1:, :] |= enabled[:-1, :]
+    reinforced[:, 1:] |= enabled[:, :-1]
+    reinforced[1:, 1:] |= enabled[:-1, :-1]
+    enabled = reinforced
     output: list[str] = []
     for cell_y in range(rows):
         line = []
@@ -105,11 +114,12 @@ def main() -> None:
     placements: list[dict] = []
     body: list[str] = []
     image_canvas: list[str] = []
+    side_slots: list[tuple[int, int]] = []
     figure_index = 0
     pending_figure: tuple[int, str, str, list[str]] | None = None
 
     def flush() -> None:
-        nonlocal body, image_canvas
+        nonlocal body, image_canvas, side_slots
         while body and body[-1] == "":
             body.pop()
         page_number = len(text_pages) + 1
@@ -119,6 +129,7 @@ def main() -> None:
         image_pages.append("\r\n".join(image_canvas))
         body = []
         image_canvas = []
+        side_slots = []
 
     def place_figure(number: int, src: str, alt: str, art: list[str]) -> None:
         nonlocal body, image_canvas
@@ -127,13 +138,20 @@ def main() -> None:
             raise ValueError(f"Figure {number} does not fit reserved region")
         text_start = len(body)
         image_y = round((2 + text_start) * TEXT_LINE_HEIGHT / IMAGE_LINE_HEIGHT)
-        image_x = max(0, (MAX_IMAGE_COLUMNS - max(map(len, art), default=0)) // 2)
+        art_width = max(map(len, art), default=0)
+        # Right alignment exposes a rectangular text column on the left of
+        # narrow figures. The prose emitter below fills that space without
+        # writing into the physical area occupied by the Braille display.
+        image_x = max(0, MAX_IMAGE_COLUMNS - art_width)
         needed = image_y + len(art)
         if len(image_canvas) < needed:
             image_canvas.extend([""] * (needed - len(image_canvas)))
         for row, art_line in enumerate(art):
             image_canvas[image_y + row] = overlay_line(image_canvas[image_y + row], art_line, image_x)
         body.extend([""] * (reserve - 1))
+        side_width = math.floor(image_x * IMAGE_WIDTH_SCALE / TEXT_WIDTH_SCALE) - 2
+        if side_width >= 20:
+            side_slots.extend((text_start + row, side_width) for row in range(reserve - 1))
         body.append(alt.rstrip(".") + ".")
         placements.append({
             "number": number,
@@ -144,8 +162,9 @@ def main() -> None:
             "reservedTextRows": reserve,
             "imageX": image_x,
             "imageY": image_y,
-            "columns": max(map(len, art), default=0),
+            "columns": art_width,
             "rows": len(art),
+            "sideTextColumns": max(0, side_width),
         })
 
     def flush_and_place_pending() -> None:
@@ -154,6 +173,26 @@ def main() -> None:
         if pending_figure is not None:
             place_figure(*pending_figure)
             pending_figure = None
+
+    def emit_text(line: str) -> None:
+        """Flow one source line through figure-side slots, then full rows."""
+        nonlocal body, side_slots
+        remaining = line.strip()
+        while remaining:
+            if side_slots:
+                row, width = side_slots.pop(0)
+                wrapped = textwrap.wrap(
+                    remaining,
+                    width=width,
+                    break_long_words=False,
+                    break_on_hyphens=False,
+                )
+                piece = wrapped[0] if wrapped else remaining
+                body[row] = piece
+                remaining = remaining[len(piece):].lstrip()
+            else:
+                body.append(remaining)
+                remaining = ""
 
     for raw in lines:
         line = raw.rstrip().replace("_", "")
@@ -179,12 +218,14 @@ def main() -> None:
             continue
 
         if not line.strip():
-            if body and body[-1] != "":
+            if side_slots:
+                side_slots.pop(0)
+            elif body and body[-1] != "":
                 body.append("")
             continue
         if len(body) >= TEXT_BODY_ROWS:
             flush_and_place_pending()
-        body.append(line)
+        emit_text(line)
         if len(body) >= TEXT_BODY_ROWS:
             flush_and_place_pending()
 

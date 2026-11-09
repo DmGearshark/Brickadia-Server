@@ -54,6 +54,8 @@ function build(input, dataFile = path.join(__dirname, 'opticks-overlay-pages.jso
   textDisplay.data.Text = textPages[0];
   imageDisplay.data.WidthScale = data.layout.imageWidthScale;
   imageDisplay.data.LineHeight = data.layout.imageLineHeight;
+  textDisplay.data.WidthScale = data.layout.textWidthScale;
+  textDisplay.data.LineHeight = data.layout.textLineHeight;
 
   const assets = structuredClone(scene.r.externalAssets());
   let mono = assets.findIndex(asset => asset.type === 'BrickFontDescriptor' && asset.name === 'RobotoMono');
