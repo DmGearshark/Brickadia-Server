@@ -20,17 +20,21 @@ def main() -> None:
     data = json.loads(DATA.read_text("utf8"))
     bands = [data[f"imagePages{name}"] for name in "ABCD"]
     page_count = len(data["textPages"])
+    assert page_count == 223
     assert page_count == len(data["imagePages"])
     assert all(len(values) == page_count for values in bands)
     assert len(data["imageBandRanges"]) == page_count
     assert len(data["imageBandBytes"]) == page_count
     assert len(data["placements"]) == 57
-    assert not data["detailViews"]
+    assert len(data["detailViews"]) == 1
     assert data["layout"]["imageArrayCount"] == 4
     assert data["layout"]["maximumImageColumns"] == 600
     assert data["layout"]["maximumImageRows"] == 260
     assert data["layout"]["imageLineHeight"] == 0.075
+    assert data["layout"]["imageWidthScale"] == 1.2
     assert data["layout"]["imageOutlineWidth"] == 4
+    assert data["layout"]["imageFont"] == "IosevkaTerm"
+    assert data["layout"]["imageKerning"] == -6
     assert data["layout"]["figureSourceOverrides"] == {
         "fig3-1.jpg": "tools/image-to-braille/sources/bnf-opticks-1704-plate-i-figure-3.png",
     }
@@ -76,6 +80,72 @@ def main() -> None:
     assert 9200 <= occupied_cells <= 9300
     assert 22000 <= raised_dots <= 22500
     assert 2.38 <= raised_dots / occupied_cells <= 2.43
+
+    detail = data["detailViews"][0]
+    assert detail == {
+        "name": "center",
+        "parentFigure": 3,
+        "overviewPage": 8,
+        "source": "images/fig3-1.jpg",
+        "conversionSource": "tools/image-to-braille/sources/bnf-opticks-1704-plate-i-figure-3.png",
+        "crop": [550, 15, 980, 480],
+        "requestedColumns": 600,
+        "maskPolicy": {
+            "mode": "line-aware",
+            "threshold": 0.50,
+            "lineLength": 111,
+            "lineOccupancy": 0.88,
+            "angleStep": 5,
+            "compactSize": 1,
+        },
+        "caption": "Fig. 3. Enlarged central detail from the original plate.",
+        "page": 9,
+        "textStartRow": 0,
+        "reservedTextRows": 44,
+        "imageX": 60,
+        "imageY": 13,
+        "columns": 480,
+        "rows": 249,
+    }
+    detail_rows = data["imagePages"][detail["page"] - 1].split("\r\n")
+    detail_cells: list[str] = []
+    for row_index in range(detail["imageY"], detail["imageY"] + detail["rows"]):
+        row = detail_rows[row_index] if row_index < len(detail_rows) else ""
+        detail_cells.extend(
+            row[detail["imageX"]:detail["imageX"] + detail["columns"]]
+            .ljust(detail["columns"], BRAILLE_BLANK)
+        )
+    detail_occupied = sum(character != BRAILLE_BLANK for character in detail_cells)
+    detail_dots = sum(
+        (ord(character) - 0x2800).bit_count()
+        for character in detail_cells
+        if 0x2800 <= ord(character) <= 0x28FF
+    )
+    assert detail_occupied == 10349
+    assert detail_dots == 32415
+    assert data["imageBandBytes"][detail["page"] - 1] == [30747, 30569, 30915, 30953]
+    assert data["imageBandRanges"][detail["page"] - 1] == [
+        [0, 88], [88, 139], [139, 187], [187, 262],
+    ]
+    detail_text_rows = data["textPages"][detail["page"] - 1].split("\r\n")
+    caption_row = detail_text_rows.index(detail["caption"])
+    image_bottom = (
+        (detail["imageY"] + detail["rows"])
+        * data["layout"]["imageLineHeight"]
+    )
+    assert image_bottom + 2.0 <= caption_row * data["layout"]["textLineHeight"]
+    for name, (left, top, right, bottom), minimum in (
+        ("K", (205, 198, 267, 227), 100),
+        ("L", (322, 198, 384, 227), 100),
+        ("B", (266, 223, 334, 255), 200),
+    ):
+        dense_cells = 0
+        for row_index in range(top, bottom):
+            row = detail_rows[row_index] if row_index < len(detail_rows) else ""
+            for character in row[left:right].ljust(right - left, BRAILLE_BLANK):
+                if 0x2800 <= ord(character) <= 0x28FF:
+                    dense_cells += (ord(character) - 0x2800).bit_count() >= 5
+        assert dense_cells >= minimum, f"Detail lost {name}: {dense_cells} dense cells"
 
     maximum_bytes = 0
     for page in range(page_count):

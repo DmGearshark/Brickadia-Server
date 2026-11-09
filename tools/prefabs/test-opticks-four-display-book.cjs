@@ -89,15 +89,18 @@ assert(Array.isArray(data.imagePages), 'Missing logical imagePages');
 assert(Array.isArray(data.textPages), 'Missing textPages');
 const pageCount = data.textPages.length;
 assert(pageCount > 0);
+assert.equal(pageCount, 223);
 assert.equal(data.imagePages.length, pageCount);
 for (const [index, pages] of bands.entries()) {
   assert.equal(pages.length, pageCount, `${BAND_KEYS[index]} page count`);
 }
 
 assert.equal(data.layout.cellMode, 'braille');
-assert.equal(data.layout.imageWidthScale, 1);
+assert.equal(data.layout.imageWidthScale, 1.2);
 assert(Math.abs(data.layout.imageLineHeight - 0.075) < 1e-9);
 assert.equal(data.layout.imageOutlineWidth, 4);
+assert.equal(data.layout.imageFont, 'IosevkaTerm');
+assert.equal(data.layout.imageKerning, -6);
 assert.equal(data.layout.maximumImageColumns, 600);
 assert.equal(data.layout.maximumImageRows, 260);
 assert.equal(data.layout.imageArrayCount, 4);
@@ -118,13 +121,31 @@ assert.deepEqual(data.layout.figureMaskPolicies, {
 assert.equal(data.layout.figureSourceCredits['fig3-1.jpg'].record,
   'https://gallica.bnf.fr/ark:/12148/bpt6k3362k');
 assert.equal(data.placements.length, 57);
-assert.equal(data.detailViews.length, 0);
+assert.equal(data.detailViews.length, 1);
 const figure3 = one(data.placements.filter(item => item.source.endsWith('fig3-1.jpg')), 'Figure 3 placement');
 assert(figure3.columns >= 580, `Figure 3 only uses ${figure3.columns} of 600 columns`);
 assert(figure3.rows >= 90 && figure3.rows <= 100);
 assert.equal(figure3.page, 8);
 assert.equal(figure3.reservedTextRows, 21);
 assert(figure3.imageX >= 0 && figure3.imageX + figure3.columns <= data.layout.maximumImageColumns);
+const figure3Detail = data.detailViews[0];
+assert.equal(figure3Detail.parentFigure, 3);
+assert.equal(figure3Detail.overviewPage, 8);
+assert.equal(figure3Detail.page, 9);
+assert.deepEqual(figure3Detail.crop, [550, 15, 980, 480]);
+assert.equal(figure3Detail.columns, 480);
+assert.equal(figure3Detail.rows, 249);
+assert.equal(figure3Detail.reservedTextRows, 44);
+assert.deepEqual(data.imageBandRanges[figure3Detail.page - 1], [
+  [0, 88], [88, 139], [139, 187], [187, 262],
+]);
+const detailTextRows = data.textPages[figure3Detail.page - 1].split('\r\n');
+const captionRow = detailTextRows.indexOf(figure3Detail.caption);
+assert(captionRow >= 0, 'Figure 3 detail caption is missing');
+const detailImageBottom = (figure3Detail.imageY + figure3Detail.rows)
+  * data.layout.imageLineHeight;
+assert(detailImageBottom + 2 <= captionRow * data.layout.textLineHeight,
+  'Figure 3 detail overlaps its caption');
 
 const figure3Rows = data.imagePages[figure3.page - 1].split('\r\n');
 let figure3OccupiedCells = 0;
@@ -212,6 +233,13 @@ const imageDisplays = components(output, TYPES.text).filter(item => item.compone
   .sort((left, right) => left.brickIndex - right.brickIndex);
 assert.equal(imageDisplays.length, 4);
 assert.deepEqual(imageDisplays.map(item => item.brickIndex), [50, 51, 52, 53]);
+const externalAssets = output.r.externalAssets();
+const imageFontIndex = externalAssets.findIndex(asset => asset.type === 'BrickFontDescriptor'
+  && asset.name === 'IosevkaTerm');
+assert(imageFontIndex >= 0, 'Missing native Braille font asset');
+const proseFontIndex = externalAssets.findIndex(asset => asset.type === 'BrickFontDescriptor'
+  && asset.name === 'RobotoMono');
+assert(proseFontIndex >= 0, 'Missing prose font asset');
 
 const expectedZ = [10963, 10965, 10967, 10969];
 const expectedOffsetY = [24.5, 22.5, 20.5, 18.5];
@@ -221,12 +249,13 @@ for (let index = 0; index < imageDisplays.length; index += 1) {
   assert.deepEqual(item.brick.data, before.data, `Host brick ${50 + index} geometry changed`);
   assert.equal(item.brick.data.position[2], expectedZ[index]);
   assert.equal(item.component.data.Face, 3);
-  assert.equal(item.component.data.WidthScale, 1);
+  assert(Math.abs(item.component.data.WidthScale - 1.2) < 1e-6);
   assert(Math.abs(item.component.data.LineHeight - 0.075) < 1e-6);
   assert.equal(item.component.data.LineOffset, -5.5);
   assert.equal(item.component.data.Kerning, -6);
   assert.equal(item.component.data.Skew, 0);
   assert.equal(item.component.data.OutlineWidth, 4);
+  assert.equal(item.component.data.Font, imageFontIndex);
   assert.equal(item.component.data.Offset.X, -12);
   assert.equal(item.component.data.Offset.Y, expectedOffsetY[index]);
   assert.equal(item.component.data.Offset.Z, 9.5);
@@ -303,6 +332,7 @@ assert.equal(textValueEdge.q, 'Text');
 const proseDisplay = one(components(output, TYPES.text).filter(item => item.brick.key === textValueEdge.z), 'prose display');
 assert.equal(proseDisplay.component.data.Face, 0);
 assert.equal(proseDisplay.component.data.Text, data.textPages[0]);
+assert.equal(proseDisplay.component.data.Font, proseFontIndex);
 
 const triggerKey = JSON.parse(commonExecSource)[0];
 const trigger = one(components(output, TYPES.logicalOr).filter(item => item.brick.key === triggerKey), 'page-change trigger');

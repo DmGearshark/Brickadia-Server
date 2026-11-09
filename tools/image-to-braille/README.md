@@ -120,11 +120,26 @@ or normal-font label overlays. Exceptionally dense plates use narrow per-image
 caps, and adjacent figures start separate pages when their combined data would
 exceed an array value.
 
+The image displays use Brickadia's bundled `IosevkaTerm` face. It contains all
+256 Braille patterns natively, with the same fixed advance for ASCII spaces and
+Braille cells. `RobotoMono` has no Braille glyphs: mixing its 0.600-em spaces
+with 0.700-em glyphs from the symbol fallback made dense rows drift farther
+right than sparse rows. `IosevkaTerm` removes that content-dependent shear.
+Its width scale of 1.2 maps the 0.500-em native grid back to the calibrated
+0.600-em blank-cell footprint; prose remains in `RobotoMono`.
+
 Figure 3 uses the sharper scan of the same original plate at
 `sources/bnf-opticks-1704-plate-i-figure-3.png`, then uses a 51-pixel line test
 and restores connected residual source ink outside the detected long runs only
 for that figure. The tracked 1700-by-553 crop comes from PDF page 14 at LTRB
 `(370, 1042, 2070, 1595)`.
+
+The overview is followed by a source-derived center detail from crop
+`(550, 15, 980, 480)`. It uses a 111-pixel line test and fills 480 by 249
+Braille cells, making the original A/M/N/C/E/D/K/L/B engraving readable while
+preserving the lens and ray geometry. The detail remains pure Braille sampled
+from the scan; it does not use OCR, replacement letters, or another display
+array.
 
 Source image: Isaac Newton, *Opticks* (London, 1704), Book I, Plate I,
 Figure 3, Bibliothèque nationale de France, Gallica,

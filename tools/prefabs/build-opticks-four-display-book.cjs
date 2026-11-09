@@ -66,10 +66,14 @@ function assertPages(data) {
   }
   assert.equal(data.layout?.imageLineHeight, 0.075,
     'Four-display data must use the calibrated 0.075 image line height');
-  assert.equal(data.layout?.imageWidthScale, 1,
-    'Four-display data must keep image WidthScale at 1');
+  assert.equal(data.layout?.imageWidthScale, 1.2,
+    'Four-display data must use the native Braille font width calibration');
   assert.equal(data.layout?.imageOutlineWidth, 4,
     'Four-display data must retain the donor image outline weight');
+  assert.equal(data.layout?.imageFont, 'IosevkaTerm',
+    'Four-display data must use a font with native fixed-advance Braille');
+  assert.equal(data.layout?.imageKerning, -6,
+    'Four-display data must retain the calibrated image kerning');
 }
 
 function build(input, dataFile = path.join(__dirname, 'opticks-four-display-pages.json')) {
@@ -145,10 +149,10 @@ function build(input, dataFile = path.join(__dirname, 'opticks-four-display-page
     const display = only(imageDisplays.filter(item => item.brick.data.position[2] === band.displayZ),
       `image display ${band.name}`).component;
     display.data.Text = pages[0];
-    display.data.WidthScale = 1;
+    display.data.WidthScale = data.layout.imageWidthScale;
     display.data.LineHeight = 0.075;
     display.data.LineOffset = -5.5;
-    display.data.Kerning = -6;
+    display.data.Kerning = data.layout.imageKerning;
     display.data.Skew = 0;
     display.data.OutlineWidth = data.layout.imageOutlineWidth;
     display.data.Offset.X = -12;
@@ -191,16 +195,22 @@ function build(input, dataFile = path.join(__dirname, 'opticks-four-display-page
   }
 
   const assets = structuredClone(scene.r.externalAssets());
+  let imageFont = assets.findIndex(asset => asset.type === 'BrickFontDescriptor'
+    && asset.name === data.layout.imageFont);
+  if (imageFont < 0) {
+    imageFont = assets.length;
+    assets.push({ type: 'BrickFontDescriptor', name: data.layout.imageFont });
+  }
   let mono = assets.findIndex(asset => asset.type === 'BrickFontDescriptor' && asset.name === 'RobotoMono');
   if (mono < 0) {
     mono = assets.length;
     assets.push({ type: 'BrickFontDescriptor', name: 'RobotoMono' });
   }
-  for (const item of imageDisplays) item.component.data.Font = mono;
+  for (const item of imageDisplays) item.component.data.Font = imageFont;
   textDisplay.data.Font = mono;
 
-  const name = 'Newton Opticks - Four-Display Double-Density Braille Edition';
-  const description = 'Complete Opticks text with double-density source-derived pure Unicode Braille figures distributed across four synchronized image arrays.';
+  const name = 'Newton Opticks - Native Braille Detail Edition';
+  const description = 'Complete Opticks text with aligned native-font source-derived Unicode Braille figures, plus an enlarged Figure 3 center detail, distributed across four synchronized image arrays.';
   const generated = write(scene, { assets, name, description }).bytes;
   return {
     bytes: repack(generated, donor, { name, description, preserveThumbnail: false }),

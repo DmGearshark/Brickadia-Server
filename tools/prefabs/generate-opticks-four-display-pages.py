@@ -23,8 +23,10 @@ OUTPUT = ROOT / "tools/prefabs/opticks-four-display-pages.json"
 TEXT_BODY_ROWS = 48
 TEXT_LINE_HEIGHT = 0.50
 IMAGE_LINE_HEIGHT = 0.075
-IMAGE_WIDTH_SCALE = 1.00
+IMAGE_WIDTH_SCALE = 1.20
 IMAGE_OUTLINE_WIDTH = 4
+IMAGE_FONT = "IosevkaTerm"
+IMAGE_KERNING = -6
 IMAGE_ADVANCE_SCALE = 0.115
 TEXT_WIDTH_SCALE = 0.82
 MIN_FIGURE_COLUMNS = 400
@@ -33,7 +35,22 @@ MAX_IMAGE_ROWS = 260
 IMAGE_LAYER_OFFSET_DELTA = 2.0
 CELL_MODE = "braille"
 BLANK = "\u2800"
-DETAIL_VIEWS: dict[str, tuple[dict, ...]] = {}
+DETAIL_VIEWS = {
+    "fig3-1.jpg": ({
+        "name": "center",
+        "crop": (550, 15, 980, 480),
+        "columns": 600,
+        "caption": "Fig. 3. Enlarged central detail from the original plate.",
+        "maskPolicy": {
+            "mode": "line-aware",
+            "threshold": 0.50,
+            "lineLength": 111,
+            "lineOccupancy": 0.88,
+            "angleStep": 5,
+            "compactSize": 1,
+        },
+    },),
+}
 # Separating these pairs keeps a dense page from exhausting one array value.
 FORCE_NEW_PAGE_BEFORE = {32, 55}
 # Dense single plates can step down without lowering the page-wide grid.
@@ -159,14 +176,25 @@ def convert_figure(path: Path) -> list[str]:
     )
 
 
-def convert_detail(path: Path, crop: tuple[int, int, int, int], columns: int) -> list[str]:
+def convert_detail(
+    path: Path,
+    crop: tuple[int, int, int, int],
+    columns: int,
+    mask_policy: dict | None = None,
+) -> list[str]:
     original = Image.open(path).convert("L")
     left, top, right, bottom = crop
     if not 0 < columns <= PAGE_IMAGE_COLUMNS:
         raise ValueError(f"Detail width {columns} exceeds the page canvas")
     if not (0 <= left < right <= original.width and 0 <= top < bottom <= original.height):
         raise ValueError(f"Detail crop {crop} falls outside {path.name} at {original.size}")
-    return convert_image(original.crop(crop), columns)
+    mask_policy = mask_policy or {}
+    return convert_image(
+        original.crop(crop),
+        columns,
+        mask_policy.get("threshold", 0.72),
+        mask_policy,
+    )
 
 
 def overlay_line(existing: str, art: str, x: int) -> str:
@@ -270,7 +298,10 @@ def main() -> None:
             "parentFigure": detail["parentFigure"],
             "overviewPage": overview_page,
             "source": detail["source"],
+            "conversionSource": detail["conversionSource"],
             "crop": list(detail["crop"]),
+            "requestedColumns": detail["columns"],
+            "maskPolicy": detail["maskPolicy"],
             "caption": detail["caption"],
             "page": page_number,
             "textStartRow": 0,
@@ -342,15 +373,22 @@ def main() -> None:
             "labels": [],
         })
         for spec in DETAIL_VIEWS.get(Path(src).name, ()):
+            conversion_path = FIGURE_SOURCE_OVERRIDES.get(Path(src).name, HTML.parent / src)
+            try:
+                conversion_source = str(conversion_path.relative_to(ROOT))
+            except ValueError:
+                conversion_source = str(conversion_path)
             detail_art = convert_detail(
-                HTML.parent / src,
+                conversion_path,
                 spec["crop"],
                 spec["columns"],
+                spec.get("maskPolicy"),
             )
             queued_details.append({
                 **spec,
                 "art": detail_art,
                 "source": src,
+                "conversionSource": conversion_source,
                 "parentFigure": number,
             })
 
@@ -457,7 +495,7 @@ def main() -> None:
     assert not oversized, oversized
     OUTPUT.write_text(json.dumps({
         "source": "Project Gutenberg ebook 33504, with Figure 3 sampled from a sharper scan of the 1704 BnF/Gallica plate",
-        "representation": "Prose and double-density pure-Braille figures in four synchronized image arrays",
+        "representation": "Prose and native-font double-density pure-Braille figures in four synchronized image arrays, with a source-derived Figure 3 detail page",
         "layout": {
             "textBodyRows": TEXT_BODY_ROWS,
             "textLineHeight": TEXT_LINE_HEIGHT,
@@ -465,11 +503,13 @@ def main() -> None:
             "textWidthScale": TEXT_WIDTH_SCALE,
             "imageWidthScale": IMAGE_WIDTH_SCALE,
             "imageOutlineWidth": IMAGE_OUTLINE_WIDTH,
+            "imageFont": IMAGE_FONT,
+            "imageKerning": IMAGE_KERNING,
             "imageAdvanceScale": IMAGE_ADVANCE_SCALE,
             "minimumFigureColumns": MIN_FIGURE_COLUMNS,
             "maximumImageColumns": PAGE_IMAGE_COLUMNS,
             "maximumImageRows": MAX_IMAGE_ROWS,
-            "samplingPolicy": "double calibrated display density with per-figure byte-budget caps and line-aware residual-source restoration for Figure 3",
+            "samplingPolicy": "double calibrated display density with per-figure byte-budget caps, line-aware residual-source restoration for Figure 3, and an enlarged source-derived center view",
             "cellMode": CELL_MODE,
             "imageArrayCount": 4,
             "bandStrategy": "byte-balanced contiguous rows",
