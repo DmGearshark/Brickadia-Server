@@ -24,7 +24,7 @@ IMAGE_LINE_HEIGHT = 0.36
 IMAGE_WIDTH_SCALE = 0.30
 TEXT_WIDTH_SCALE = 0.82
 MAX_IMAGE_COLUMNS = 200
-MAX_IMAGE_ROWS = 44
+MAX_IMAGE_ROWS = 28
 BLANK = "\u2800"
 DOTS = (
     (0, 0, 0), (0, 1, 1), (0, 2, 2),
@@ -57,7 +57,10 @@ def convert_figure(path: Path) -> list[str]:
     )
     rows = math.ceil(width * source.height / source.width / 2)
     resized = source.resize((2 * width, 4 * rows), Image.Resampling.BILINEAR)
-    enabled = np.asarray(resized, dtype=np.float32) < 127.5
+    # A 0.72 cutoff retains pale antialiased strokes that were disappearing at
+    # 0.50. Autocontrast keeps the paper background white, so this does not
+    # introduce the broad scan noise seen with neural line-art preprocessing.
+    enabled = np.asarray(resized, dtype=np.float32) < (255 * 0.72)
     output: list[str] = []
     for cell_y in range(rows):
         line = []
@@ -103,6 +106,7 @@ def main() -> None:
     body: list[str] = []
     image_canvas: list[str] = []
     figure_index = 0
+    pending_figure: tuple[int, str, str, list[str]] | None = None
 
     def flush() -> None:
         nonlocal body, image_canvas
@@ -116,66 +120,79 @@ def main() -> None:
         body = []
         image_canvas = []
 
-    major_headings = {
-        "THE FIRST BOOK OF OPTICKS",
-        "THE SECOND BOOK OF OPTICKS",
-        "THE THIRD BOOK OF OPTICKS",
-    }
+    def place_figure(number: int, src: str, alt: str, art: list[str]) -> None:
+        nonlocal body, image_canvas
+        reserve = math.ceil(len(art) * IMAGE_LINE_HEIGHT / TEXT_LINE_HEIGHT) + 2
+        if len(body) + reserve > TEXT_BODY_ROWS:
+            raise ValueError(f"Figure {number} does not fit reserved region")
+        text_start = len(body)
+        image_y = round((2 + text_start) * TEXT_LINE_HEIGHT / IMAGE_LINE_HEIGHT)
+        image_x = max(0, (MAX_IMAGE_COLUMNS - max(map(len, art), default=0)) // 2)
+        needed = image_y + len(art)
+        if len(image_canvas) < needed:
+            image_canvas.extend([""] * (needed - len(image_canvas)))
+        for row, art_line in enumerate(art):
+            image_canvas[image_y + row] = overlay_line(image_canvas[image_y + row], art_line, image_x)
+        body.extend([""] * (reserve - 1))
+        body.append(alt.rstrip(".") + ".")
+        placements.append({
+            "number": number,
+            "source": src,
+            "alt": alt,
+            "page": len(text_pages) + 1,
+            "textStartRow": text_start,
+            "reservedTextRows": reserve,
+            "imageX": image_x,
+            "imageY": image_y,
+            "columns": max(map(len, art), default=0),
+            "rows": len(art),
+        })
+
+    def flush_and_place_pending() -> None:
+        nonlocal pending_figure
+        flush()
+        if pending_figure is not None:
+            place_figure(*pending_figure)
+            pending_figure = None
 
     for raw in lines:
         line = raw.rstrip().replace("_", "")
         marker = re.fullmatch(r"\[Illustration: (.+)\]", line.strip())
         if marker:
+            if pending_figure is not None:
+                flush_and_place_pending()
             src, alt = parser.images[figure_index]
             art = convert_figure(HTML.parent / src)
             reserve = math.ceil(len(art) * IMAGE_LINE_HEIGHT / TEXT_LINE_HEIGHT) + 2
-            # Start a new page only when the figure cannot coexist with the
-            # text already present. Text following it can use remaining rows.
-            if body and len(body) + reserve > TEXT_BODY_ROWS:
-                flush()
             if reserve > TEXT_BODY_ROWS:
                 raise ValueError(f"Figure {figure_index + 1} exceeds page height")
-
-            text_start = len(body)
-            image_y = round((2 + text_start) * TEXT_LINE_HEIGHT / IMAGE_LINE_HEIGHT)
-            image_x = max(0, (MAX_IMAGE_COLUMNS - max(map(len, art), default=0)) // 2)
-            needed = image_y + len(art)
-            if len(image_canvas) < needed:
-                image_canvas.extend([""] * (needed - len(image_canvas)))
-            for row, art_line in enumerate(art):
-                image_canvas[image_y + row] = overlay_line(image_canvas[image_y + row], art_line, image_x)
-
-            body.extend([""] * (reserve - 1))
-            body.append(alt.rstrip(".") + ".")
-            placements.append({
-                "number": figure_index + 1,
-                "source": src,
-                "alt": alt,
-                "page": len(text_pages) + 1,
-                "textStartRow": text_start,
-                "reservedTextRows": reserve,
-                "imageX": image_x,
-                "imageY": image_y,
-                "columns": max(map(len, art), default=0),
-                "rows": len(art),
-            })
+            if len(body) + reserve <= TEXT_BODY_ROWS:
+                place_figure(figure_index + 1, src, alt, art)
+            else:
+                # Fill the current page with the prose following the marker.
+                # Once full, the deferred figure starts the next page and the
+                # remaining prose continues beneath its reserved void.
+                pending_figure = (figure_index + 1, src, alt, art)
             figure_index += 1
             if len(body) >= TEXT_BODY_ROWS:
-                flush()
+                flush_and_place_pending()
             continue
 
-        if line.strip() in major_headings and body:
-            flush()
         if not line.strip():
             if body and body[-1] != "":
                 body.append("")
             continue
         if len(body) >= TEXT_BODY_ROWS:
-            flush()
+            flush_and_place_pending()
         body.append(line)
         if len(body) >= TEXT_BODY_ROWS:
-            flush()
+            flush_and_place_pending()
 
+    if pending_figure is not None:
+        if body or image_canvas:
+            flush()
+        place_figure(*pending_figure)
+        pending_figure = None
     if body or image_canvas:
         flush()
     assert figure_index == 57
