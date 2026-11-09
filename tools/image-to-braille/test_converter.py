@@ -4,7 +4,7 @@ from tempfile import TemporaryDirectory
 
 from PIL import Image, ImageDraw
 
-from convert import BLANK, DOTS, encode_braille, invert, normalize_source
+from convert import BLANK, DOTS, encode_braille, encode_mask, hybridize, invert, normalize_source, technical_mask
 
 
 def main() -> None:
@@ -25,6 +25,12 @@ def main() -> None:
         assert first and all(line for line in first)
         assert max(map(len, first)) <= 64
         assert len(first) <= 32
+        mask = technical_mask(normalized, 64, threshold=0.72)
+        technical = encode_mask(mask)
+        assert technical and max(map(len, technical)) <= 64
+        hybrid = hybridize(technical)
+        assert len(hybrid) == len(technical)
+        assert any(char in "─│╱╲" for line in hybrid for char in line) or hybrid == technical
 
     print("image-to-braille tests passed")
 

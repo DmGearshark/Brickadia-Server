@@ -4,8 +4,10 @@
 from __future__ import annotations
 
 import html
+import importlib.util
 import json
 import math
+import os
 import re
 import subprocess
 import textwrap
@@ -13,7 +15,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageOps
+from PIL import Image, ImageDraw, ImageOps
 
 ROOT = Path("/workspace/Brickadia-Server")
 SOURCE = Path("/tmp/gitenberg-33504/33504.txt")
@@ -30,12 +32,21 @@ MAX_IMAGE_COLUMNS = 200
 MAX_IMAGE_ROWS = 130
 IMAGE_LAYER_OFFSET_DELTA = 2.0
 CELL_MODE = "braille"
+GLYPH_MODE = os.environ.get("OPTICKS_GLYPHS", "braille")
+assert GLYPH_MODE in {"braille", "hybrid"}
 BLANK = "\u2800"
 DOTS = (
     (0, 0, 0), (0, 1, 1), (0, 2, 2),
     (1, 0, 3), (1, 1, 4), (1, 2, 5),
     (0, 3, 6), (1, 3, 7),
 )
+
+_converter_spec = importlib.util.spec_from_file_location(
+    "image_to_braille_converter", ROOT / "tools/image-to-braille/convert.py"
+)
+assert _converter_spec and _converter_spec.loader
+_converter = importlib.util.module_from_spec(_converter_spec)
+_converter_spec.loader.exec_module(_converter)
 
 # Hand-verified labels for the colour-composition circle. OCR cannot reliably
 # distinguish its small italic p/q/r/s/t/u/x labels from the engraved rays.
@@ -169,49 +180,53 @@ def extract_labels(path: Path, width: int, rows: int, crop_left: int, crop_top: 
     return labels
 
 
+def erase_verified_labels(image: Image.Image, path: Path) -> Image.Image:
+    """Remove catalogued engraved glyphs before geometry conversion.
+
+    The clean text layer restores each label. Tight boxes avoid deleting more
+    ray geometry than the original engraved letter already obscured.
+    """
+    if path.name not in MANUAL_LABELS:
+        return image
+    cleaned = image.copy().convert("L")
+    draw = ImageDraw.Draw(cleaned)
+    for token, x, y in MANUAL_LABELS[path.name]:
+        half_width = max(5, 4 * len(token) + 2)
+        half_height = 9
+        draw.rectangle(
+            (x - half_width, y - half_height, x + half_width, y + half_height),
+            fill=255,
+        )
+    return cleaned
+
+
 def convert_figure(path: Path) -> tuple[list[str], list[dict]]:
-    source = Image.open(path).convert("L")
-    # Scans vary greatly in darkness. Normalizing each figure independently
-    # preserves faint construction lines while keeping the direct conversion
-    # that worked best for lettering and technical diagrams.
-    source = ImageOps.autocontrast(source, cutoff=1)
-    width = min(
-        MAX_IMAGE_COLUMNS,
-        max(1, math.floor(2 * MAX_IMAGE_ROWS * source.width / source.height)),
+    original = Image.open(path).convert("L")
+    source = erase_verified_labels(original, path)
+    enabled = _converter.technical_mask(
+        source, MAX_IMAGE_COLUMNS, MAX_IMAGE_ROWS, threshold=0.72
     )
-    rows = math.ceil(width * source.height / source.width / 2)
-    resized = source.resize((2 * width, 4 * rows), Image.Resampling.BILINEAR)
-    # A 0.72 cutoff retains pale antialiased strokes that were disappearing at
-    # 0.50. Autocontrast keeps the paper background white, so this does not
-    # introduce the broad scan noise seen with neural line-art preprocessing.
-    enabled = np.asarray(resized, dtype=np.float32) < (255 * 0.72)
-    # Reinforce single-pixel scan strokes into a two-pixel line. This is a
-    # restrained 2x2 dilation rather than the broad multi-step erosion used by
-    # Auto mode, which destroyed lettering in technical figures.
-    reinforced = enabled.copy()
-    reinforced[1:, :] |= enabled[:-1, :]
-    reinforced[:, 1:] |= enabled[:, :-1]
-    reinforced[1:, 1:] |= enabled[:-1, :-1]
-    enabled = reinforced
-    output: list[str] = []
-    for cell_y in range(rows):
-        line = []
-        for cell_x in range(width):
-            mask = 0
-            for dx, dy, bit in DOTS:
-                if enabled[cell_y * 4 + dy, cell_x * 2 + dx]:
-                    mask |= 1 << bit
-            line.append(chr(0x2800 + mask))
-        output.append("".join(line))
-    left = min(len(line) - len(line.lstrip(BLANK)) for line in output)
-    right = min(len(line) - len(line.rstrip(BLANK)) for line in output)
-    output = [line[left:len(line) - right if right else len(line)] for line in output]
-    top = 0
-    while output and not output[0].replace(BLANK, ""):
-        output.pop(0)
-        top += 1
-    while output and not output[-1].replace(BLANK, ""):
-        output.pop()
+
+    # Dense plates can lose dotted construction rays under background
+    # normalization. Compare against a conservative direct mask and fall back
+    # whenever the technical candidate retains too little source ink.
+    normalized = ImageOps.autocontrast(source, cutoff=1)
+    direct_image = normalized.resize(
+        (enabled.shape[1], enabled.shape[0]), Image.Resampling.LANCZOS
+    )
+    direct = np.asarray(direct_image, dtype=np.float32) < (255 * 0.72)
+    retained = enabled.sum() / max(1, direct.sum())
+    if retained < 0.55 or enabled.mean() < 0.004:
+        enabled = direct
+
+    rows, width = enabled.shape[0] // 4, enabled.shape[1] // 2
+    occupied = enabled.reshape(rows, 4, width, 2).any(axis=(1, 3))
+    ys, xs = np.where(occupied)
+    left = int(xs.min()) if len(xs) else 0
+    top = int(ys.min()) if len(ys) else 0
+    output = _converter.encode_mask(enabled)
+    if GLYPH_MODE == "hybrid":
+        output = _converter.hybridize(output)
     labels = extract_labels(path, width, rows, left, top)
     return output, labels
 
@@ -221,9 +236,15 @@ def overlay_line(existing: str, art: str, x: int) -> str:
     cells = [BLANK] * width
     cells[:len(existing)] = existing
     for index, char in enumerate(art):
-        old_mask = ord(cells[x + index]) - 0x2800
-        new_mask = ord(char) - 0x2800
-        cells[x + index] = chr(0x2800 + (old_mask | new_mask))
+        if char in {BLANK, " "}:
+            continue
+        old = cells[x + index]
+        if old in {BLANK, " "}:
+            cells[x + index] = char
+        elif 0x2800 <= ord(old) <= 0x28FF and 0x2800 <= ord(char) <= 0x28FF:
+            old_mask = ord(old) - 0x2800
+            new_mask = ord(char) - 0x2800
+            cells[x + index] = chr(0x2800 + (old_mask | new_mask))
     return "".join(cells).rstrip(BLANK)
 
 
@@ -421,6 +442,7 @@ def main() -> None:
             "maximumImageColumns": MAX_IMAGE_COLUMNS,
             "maximumImageRows": MAX_IMAGE_ROWS,
             "cellMode": CELL_MODE,
+            "glyphMode": GLYPH_MODE,
         },
         "placements": placements,
         "textPages": text_pages,

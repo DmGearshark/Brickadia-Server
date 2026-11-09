@@ -57,6 +57,29 @@ assert.equal(data.placements.length, 57);
 assert(data.placements.every(item => item.columns <= 200 && item.rows <= 130));
 assert(data.placements.find(item => item.source.endsWith('fig11-2.jpg')).labels.length >= 23);
 for (const page of [...data.textPages, ...data.imagePagesA, ...data.imagePagesB]) assert(Buffer.byteLength(page, 'utf8') < 32767);
+function rows(value) { return value.replaceAll('\u2800', ' ').split('\r\n'); }
+for (let page = 0; page < data.imagePages.length; page += 1) {
+  const original = rows(data.imagePages[page]);
+  const a = rows(data.imagePagesA[page]);
+  const b = rows(data.imagePagesB[page]);
+  const merged = [];
+  for (let y = 0; y < Math.max(original.length, a.length, b.length); y += 1) {
+    const ar = a[y] || '';
+    const br = b[y] || '';
+    let line = '';
+    for (let x = 0; x < Math.max(ar.length, br.length); x += 1) {
+      const ac = ar[x] || ' ';
+      const bc = br[x] || ' ';
+      assert(ac === ' ' || bc === ' ' || ac === bc, `Image split collision on page ${page + 1}`);
+      line += ac !== ' ' ? ac : bc;
+    }
+    merged.push(line.replace(/ +$/, ''));
+  }
+  assert.deepEqual(merged, original.map(line => line.replace(/ +$/, '')), `Image split mismatch on page ${page + 1}`);
+}
+if (data.layout.glyphMode === 'hybrid') {
+  assert(data.imagePages.some(page => /[─│╱╲]/u.test(page)), 'Hybrid mode emitted no line glyphs');
+}
 
 const arrays = components(output, 'BrickComponentType_ArrayVar');
 for (const pages of [data.imagePagesA, data.imagePagesB, data.textPages]) {

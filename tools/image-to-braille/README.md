@@ -24,6 +24,8 @@ Useful options:
 --mode direct         No preprocessing (recommended for diagrams)
 --mode dither         Site-compatible Atkinson error diffusion
 --mode auto           Recovered neural line-art preprocessing
+--mode technical      Conservative cleanup for scanned technical drawings
+--glyphs hybrid       Replace confident straight cells with ─ │ ╱ ╲
 ```
 
 Auto mode requires `numpy`, `Pillow`, and `onnxruntime`. Its model is stored at
@@ -58,6 +60,30 @@ dither modes require only `numpy` and `Pillow`.
 The original site generated Auto variants at 60%, 100%, and 130% of the chosen
 width. Its defaults were cutoff 0.80, line sensitivity 9, and two erosion
 steps. The recovered Atkinson source is preserved under `vendor/dither.js`.
+
+Technical mode requires SciPy. It normalizes uneven paper, uses hysteresis to
+retain antialiased pixels adjacent to strong ink, and removes isolated JPEG
+speckles without the broad dilation that makes diagram intersections and small
+letters merge. Hybrid glyphs are experimental and conservative: curves and
+ambiguous cells remain Braille.
+
+For scanned diagrams, use:
+
+```bash
+python convert.py input.jpg output.txt \
+  --width 200 --max-rows 130 --threshold 0.72 --mode technical
+```
+
+To test the mixed Unicode line palette:
+
+```bash
+python convert.py input.jpg output.txt \
+  --width 200 --max-rows 130 --threshold 0.72 --mode technical --glyphs hybrid
+```
+
+`direct` mode remains unchanged for exact reproduction of earlier conversions.
+The Opticks book uses per-figure fallback: adaptive cleanup is accepted for
+sparse scans, while dense ray plates retain conservative direct thresholding.
 
 ## Verification
 
