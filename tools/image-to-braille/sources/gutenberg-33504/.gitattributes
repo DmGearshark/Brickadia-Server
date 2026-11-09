@@ -1,0 +1,4 @@
+# Preserve the upstream byte streams, including their original CRLF endings.
+33504.txt -text -diff
+LICENSE -text -diff
+33504-h/33504-h.htm -text -diff

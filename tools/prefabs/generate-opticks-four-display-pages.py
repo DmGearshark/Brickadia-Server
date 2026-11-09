@@ -15,9 +15,10 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageOps
 
-ROOT = Path("/workspace/Brickadia-Server")
-SOURCE = Path("/tmp/gitenberg-33504/33504.txt")
-HTML = Path("/tmp/gitenberg-33504/33504-h/33504-h.htm")
+ROOT = Path(__file__).resolve().parents[2]
+GUTENBERG_SOURCE = ROOT / "tools/image-to-braille/sources/gutenberg-33504"
+SOURCE = GUTENBERG_SOURCE / "33504.txt"
+HTML = GUTENBERG_SOURCE / "33504-h/33504-h.htm"
 OUTPUT = ROOT / "tools/prefabs/opticks-four-display-pages.json"
 
 TEXT_BODY_ROWS = 48

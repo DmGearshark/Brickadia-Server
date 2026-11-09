@@ -160,6 +160,10 @@ python tools/prefabs/generate-opticks-four-display-pages.py
 python tools/prefabs/test-opticks-four-display-pages.py
 ```
 
+The live-tested v25 artifact, pinned inputs, checksums, dependency versions,
+and complete recovery procedure are recorded in
+[`tools/prefabs/NEWTON-OPTICKS-V25.md`](../prefabs/NEWTON-OPTICKS-V25.md).
+
 ## Verification
 
 ```bash
