@@ -24,6 +24,7 @@ TEXT_BODY_ROWS = 48
 TEXT_LINE_HEIGHT = 0.50
 IMAGE_LINE_HEIGHT = 0.075
 IMAGE_WIDTH_SCALE = 1.00
+IMAGE_OUTLINE_WIDTH = 4
 IMAGE_ADVANCE_SCALE = 0.115
 TEXT_WIDTH_SCALE = 0.82
 MIN_FIGURE_COLUMNS = 400
@@ -408,6 +409,7 @@ def main() -> None:
             "imageLineHeight": IMAGE_LINE_HEIGHT,
             "textWidthScale": TEXT_WIDTH_SCALE,
             "imageWidthScale": IMAGE_WIDTH_SCALE,
+            "imageOutlineWidth": IMAGE_OUTLINE_WIDTH,
             "imageAdvanceScale": IMAGE_ADVANCE_SCALE,
             "minimumFigureColumns": MIN_FIGURE_COLUMNS,
             "maximumImageColumns": PAGE_IMAGE_COLUMNS,

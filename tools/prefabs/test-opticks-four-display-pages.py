@@ -30,6 +30,7 @@ def main() -> None:
     assert data["layout"]["maximumImageColumns"] == 600
     assert data["layout"]["maximumImageRows"] == 260
     assert data["layout"]["imageLineHeight"] == 0.075
+    assert data["layout"]["imageOutlineWidth"] == 4
 
     for placement in data["placements"]:
         assert 0 <= placement["imageX"]

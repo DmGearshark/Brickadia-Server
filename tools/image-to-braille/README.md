@@ -77,8 +77,9 @@ python convert.py input.jpg output.txt \
 `direct` mode remains unchanged for exact reproduction of earlier conversions.
 The current Opticks pipeline uses per-figure fallback: adaptive cleanup is
 accepted for sparse scans, while dense ray plates retain conservative direct
-thresholding. It requests 400–600 Braille columns and renders them at a 0.075
-line height, giving the artwork twice the previous cell density at the same
+thresholding. It requests 400–600 Braille columns, renders them at a 0.075
+line height, and retains the donor's outline width of 4 for readable dot
+weight. This gives the artwork twice the previous cell density at the same
 physical size. Four coplanar TextDisplays carry disjoint, byte-balanced row
 bands of the same logical image. This keeps every array value below Brickadia's
 32,767-byte string limit without seams, duplicated dots, hybrid line glyphs,

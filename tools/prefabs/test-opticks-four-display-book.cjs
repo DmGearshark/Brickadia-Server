@@ -97,6 +97,7 @@ for (const [index, pages] of bands.entries()) {
 assert.equal(data.layout.cellMode, 'braille');
 assert.equal(data.layout.imageWidthScale, 1);
 assert(Math.abs(data.layout.imageLineHeight - 0.075) < 1e-9);
+assert.equal(data.layout.imageOutlineWidth, 4);
 assert.equal(data.layout.maximumImageColumns, 600);
 assert.equal(data.layout.maximumImageRows, 260);
 assert.equal(data.layout.imageArrayCount, 4);
@@ -186,7 +187,7 @@ for (let index = 0; index < imageDisplays.length; index += 1) {
   assert.equal(item.component.data.LineOffset, -5.5);
   assert.equal(item.component.data.Kerning, -6);
   assert.equal(item.component.data.Skew, 0);
-  assert.equal(item.component.data.OutlineWidth, 2);
+  assert.equal(item.component.data.OutlineWidth, 4);
   assert.equal(item.component.data.Offset.X, -12);
   assert.equal(item.component.data.Offset.Y, expectedOffsetY[index]);
   assert.equal(item.component.data.Offset.Z, 9.5);

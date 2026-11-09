@@ -68,6 +68,8 @@ function assertPages(data) {
     'Four-display data must use the calibrated 0.075 image line height');
   assert.equal(data.layout?.imageWidthScale, 1,
     'Four-display data must keep image WidthScale at 1');
+  assert.equal(data.layout?.imageOutlineWidth, 4,
+    'Four-display data must retain the donor image outline weight');
 }
 
 function build(input, dataFile = path.join(__dirname, 'opticks-four-display-pages.json')) {
@@ -148,7 +150,7 @@ function build(input, dataFile = path.join(__dirname, 'opticks-four-display-page
     display.data.LineOffset = -5.5;
     display.data.Kerning = -6;
     display.data.Skew = 0;
-    display.data.OutlineWidth = 2;
+    display.data.OutlineWidth = data.layout.imageOutlineWidth;
     display.data.Offset.X = -12;
     display.data.Offset.Y = band.displayOffsetY;
     display.data.Offset.Z = 9.5;
