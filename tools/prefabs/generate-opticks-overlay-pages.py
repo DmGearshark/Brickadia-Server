@@ -24,9 +24,11 @@ TEXT_BODY_ROWS = 48
 TEXT_LINE_HEIGHT = 0.50
 IMAGE_LINE_HEIGHT = 0.15
 IMAGE_WIDTH_SCALE = 1.00
+IMAGE_ADVANCE_SCALE = 0.30
 TEXT_WIDTH_SCALE = 0.82
 MAX_IMAGE_COLUMNS = 200
 MAX_IMAGE_ROWS = 130
+IMAGE_LAYER_OFFSET_DELTA = 2.0
 CELL_MODE = "braille"
 BLANK = "\u2800"
 DOTS = (
@@ -39,6 +41,53 @@ DOTS = (
 # distinguish its small italic p/q/r/s/t/u/x labels from the engraved rays.
 # Coordinates are in the 400 x 385 source scan.
 MANUAL_LABELS = {
+    "fig3-1.jpg": [
+        ("P", 20, 32), ("Q", 20, 108), ("R", 20, 184),
+        ("M", 294, 47), ("N", 320, 51), ("C", 304, 105),
+        ("E", 291, 126), ("D", 316, 125), ("K", 292, 158), ("B", 304, 181),
+        ("I", 488, 46), ("l", 490, 108), ("p", 490, 174),
+    ],
+    "fig4-1.jpg": [
+        ("A", 220, 28), ("C", 220, 118), ("B", 220, 220),
+        ("q", 22, 145), ("Q", 100, 145), ("q", 163, 145),
+        ("q", 297, 72), ("q", 365, 145),
+    ],
+    "fig5-1.jpg": [
+        ("Q", 22, 121), ("O", 202, 116), ("E", 319, 113),
+        ("q", 347, 113), ("T", 376, 112), ("C", 420, 91),
+        ("A", 404, 35), ("B", 404, 166),
+    ],
+    "fig6-1.jpg": [
+        ("Q", 13, 63), ("T", 150, 63), ("E", 246, 63),
+        ("A", 304, 19), ("C", 304, 55), ("B", 304, 100),
+        ("t", 391, 63), ("q", 480, 63),
+    ],
+    "fig7-1.jpg": [
+        ("Q", 15, 51), ("T", 190, 60), ("F", 193, 94),
+        ("A", 297, 15), ("E", 297, 79), ("B", 297, 135),
+        ("D", 320, 60), ("f", 405, 60), ("C", 405, 99), ("q", 480, 107),
+    ],
+    "fig8-1.jpg": [
+        ("P", 17, 30), ("Q", 17, 82), ("R", 17, 137),
+        ("F", 420, 80), ("E", 465, 31), ("A", 478, 43),
+        ("C", 461, 79), ("B", 478, 115), ("G", 465, 132),
+    ],
+    "fig9-1.jpg": [
+        ("A", 52, 70), ("E", 68, 199), ("F", 70, 239), ("G", 72, 278),
+        ("m", 225, 20), ("B", 226, 132), ("C", 226, 158),
+        ("D", 226, 190), ("n", 226, 301), ("a", 416, 70),
+    ],
+    "fig10-1.jpg": [
+        ("q", 49, 108), ("Q", 300, 99), ("A", 383, 34), ("B", 383, 159),
+    ],
+    "fig11-1.jpg": [
+        ("a", 68, 77), ("b", 35, 143), ("c", 91, 146),
+        ("A", 114, 181), ("B", 77, 235), ("C", 122, 254),
+        ("d", 278, 159), ("f", 308, 191), ("g", 330, 181), ("e", 346, 217),
+        ("D", 244, 286), ("H", 269, 286), ("F", 278, 311),
+        ("G", 290, 330), ("I", 279, 350), ("E", 305, 349),
+        ("M", 370, 17), ("N", 466, 444),
+    ],
     "fig11-2.jpg": [
         ("D", 38, 194), ("E", 116, 48), ("F", 206, 30), ("G", 313, 104),
         ("A", 352, 265), ("B", 230, 359), ("C", 115, 339), ("O", 207, 194),
@@ -198,7 +247,9 @@ def main() -> None:
 
     def place_figure(number: int, src: str, alt: str, art: list[str], labels: list[dict]) -> None:
         nonlocal body, image_canvas
-        reserve = math.ceil(len(art) * IMAGE_LINE_HEIGHT / TEXT_LINE_HEIGHT) + 2
+        reserve = math.ceil(
+            (len(art) * IMAGE_LINE_HEIGHT + IMAGE_LAYER_OFFSET_DELTA) / TEXT_LINE_HEIGHT
+        ) + 2
         if len(body) + reserve > TEXT_BODY_ROWS:
             raise ValueError(f"Figure {number} does not fit reserved region")
         text_start = len(body)
@@ -222,7 +273,7 @@ def main() -> None:
             )
             # WidthScale differs between layers, so convert the label's image
             # coordinate to the text display's character grid.
-            column = max(0, round((image_x + label["x"]) * IMAGE_WIDTH_SCALE / TEXT_WIDTH_SCALE) - len(label["text"]) // 2)
+            column = max(0, round((image_x + label["x"]) * IMAGE_ADVANCE_SCALE / TEXT_WIDTH_SCALE) - len(label["text"]) // 2)
             current = body[row]
             if len(current) < column:
                 current += " " * (column - len(current))
@@ -234,8 +285,10 @@ def main() -> None:
                 current += " " * (end - len(current))
             body[row] = current[:column] + label["text"] + current[end:]
             placed_labels.append({**label, "textRow": row, "textColumn": column})
-        side_width = math.floor(image_x * IMAGE_WIDTH_SCALE / TEXT_WIDTH_SCALE) - 2
-        if side_width >= 20:
+        side_width = math.floor(image_x * IMAGE_ADVANCE_SCALE / TEXT_WIDTH_SCALE) - 2
+        # Dense or tall figures need their complete rectangle. Side-flowing
+        # prose beside these diagrams crossed long rays in the calibrated font.
+        if side_width >= 20 and art_width < 150 and len(art) < 80:
             side_slots.extend((text_start + row, side_width) for row in range(reserve - 1) if not body[text_start + row].strip())
         body.append(alt.rstrip(".") + ".")
         placements.append({
@@ -288,7 +341,9 @@ def main() -> None:
                 flush_and_place_pending()
             src, alt = parser.images[figure_index]
             art, labels = convert_figure(HTML.parent / src)
-            reserve = math.ceil(len(art) * IMAGE_LINE_HEIGHT / TEXT_LINE_HEIGHT) + 2
+            reserve = math.ceil(
+                (len(art) * IMAGE_LINE_HEIGHT + IMAGE_LAYER_OFFSET_DELTA) / TEXT_LINE_HEIGHT
+            ) + 2
             if reserve > TEXT_BODY_ROWS:
                 raise ValueError(f"Figure {figure_index + 1} exceeds page height")
             if len(body) + reserve <= TEXT_BODY_ROWS:
@@ -350,6 +405,7 @@ def main() -> None:
             "imageLineHeight": IMAGE_LINE_HEIGHT,
             "textWidthScale": TEXT_WIDTH_SCALE,
             "imageWidthScale": IMAGE_WIDTH_SCALE,
+            "imageAdvanceScale": IMAGE_ADVANCE_SCALE,
             "maximumImageColumns": MAX_IMAGE_COLUMNS,
             "maximumImageRows": MAX_IMAGE_ROWS,
             "cellMode": CELL_MODE,
