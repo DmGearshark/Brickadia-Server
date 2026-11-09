@@ -27,14 +27,13 @@ IMAGE_WIDTH_SCALE = 1.00
 TEXT_WIDTH_SCALE = 0.82
 MAX_IMAGE_COLUMNS = 200
 MAX_IMAGE_ROWS = 130
-CELL_MODE = "quadrant"
-BLANK = " "
-DOTS = ((0, 0, 0), (1, 0, 1), (0, 1, 2), (1, 1, 3))
-QUADRANTS = (
-    " ", "▘", "▝", "▀", "▖", "▌", "▞", "▛",
-    "▗", "▚", "▐", "▜", "▄", "▙", "▟", "█",
+CELL_MODE = "braille"
+BLANK = "\u2800"
+DOTS = (
+    (0, 0, 0), (0, 1, 1), (0, 2, 2),
+    (1, 0, 3), (1, 1, 4), (1, 2, 5),
+    (0, 3, 6), (1, 3, 7),
 )
-CHAR_TO_MASK = {char: mask for mask, char in enumerate(QUADRANTS)}
 
 # Hand-verified labels for the colour-composition circle. OCR cannot reliably
 # distinguish its small italic p/q/r/s/t/u/x labels from the engraved rays.
@@ -119,11 +118,8 @@ def convert_figure(path: Path) -> tuple[list[str], list[dict]]:
         MAX_IMAGE_COLUMNS,
         max(1, math.floor(2 * MAX_IMAGE_ROWS * source.width / source.height)),
     )
-    rows = math.ceil(width * source.height / source.width)
-    if rows > MAX_IMAGE_ROWS:
-        rows = MAX_IMAGE_ROWS
-        width = max(1, math.floor(rows * source.width / source.height))
-    resized = source.resize((2 * width, 2 * rows), Image.Resampling.BILINEAR)
+    rows = math.ceil(width * source.height / source.width / 2)
+    resized = source.resize((2 * width, 4 * rows), Image.Resampling.BILINEAR)
     # A 0.72 cutoff retains pale antialiased strokes that were disappearing at
     # 0.50. Autocontrast keeps the paper background white, so this does not
     # introduce the broad scan noise seen with neural line-art preprocessing.
@@ -142,9 +138,9 @@ def convert_figure(path: Path) -> tuple[list[str], list[dict]]:
         for cell_x in range(width):
             mask = 0
             for dx, dy, bit in DOTS:
-                if enabled[cell_y * 2 + dy, cell_x * 2 + dx]:
+                if enabled[cell_y * 4 + dy, cell_x * 2 + dx]:
                     mask |= 1 << bit
-            line.append(QUADRANTS[mask])
+            line.append(chr(0x2800 + mask))
         output.append("".join(line))
     left = min(len(line) - len(line.lstrip(BLANK)) for line in output)
     right = min(len(line) - len(line.rstrip(BLANK)) for line in output)
@@ -164,9 +160,9 @@ def overlay_line(existing: str, art: str, x: int) -> str:
     cells = [BLANK] * width
     cells[:len(existing)] = existing
     for index, char in enumerate(art):
-        old_mask = CHAR_TO_MASK[cells[x + index]]
-        new_mask = CHAR_TO_MASK[char]
-        cells[x + index] = QUADRANTS[old_mask | new_mask]
+        old_mask = ord(cells[x + index]) - 0x2800
+        new_mask = ord(char) - 0x2800
+        cells[x + index] = chr(0x2800 + (old_mask | new_mask))
     return "".join(cells).rstrip(BLANK)
 
 
@@ -331,7 +327,9 @@ def main() -> None:
     image_pages_a: list[str] = []
     image_pages_b: list[str] = []
     for page in image_pages:
-        rows = page.split("\r\n") if page else []
+        # ASCII and Braille blanks render identically, while ASCII spaces save
+        # two bytes per empty cell in the stored array values.
+        rows = [line.replace(BLANK, " ") for line in page.split("\r\n")] if page else []
         if not rows:
             image_pages_a.append("")
             image_pages_b.append("")
@@ -345,7 +343,7 @@ def main() -> None:
     assert max(len(page.encode("utf8")) for page in image_pages_a + image_pages_b) < 32767
     OUTPUT.write_text(json.dumps({
         "source": "Project Gutenberg ebook 33504, Opticks by Isaac Newton",
-        "representation": "Prose and contrast-normalized Unicode quadrant-block figures in synchronized overlay arrays",
+        "representation": "Prose and contrast-normalized Unicode Braille figures in synchronized overlay arrays",
         "layout": {
             "textBodyRows": TEXT_BODY_ROWS,
             "textLineHeight": TEXT_LINE_HEIGHT,

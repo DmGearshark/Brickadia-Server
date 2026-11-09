@@ -35,7 +35,7 @@ assert.equal(donorImages.length, 2);
 assert.equal(images.length, 2);
 for (const [before, after] of [[donorText, text], ...donorImages.map((item, index) => [item, images[index]])]) {
   assert.deepEqual(after.brick.data.position, before.brick.data.position);
-  for (const key of ['Rotation', 'Skew', 'Kerning', 'LineOffset', 'Anchor', 'Face', 'Typeface']) {
+  for (const key of ['Rotation', 'Anchor', 'Face', 'Typeface']) {
     assert.deepEqual(after.component.data[key], before.component.data[key], `${key} changed`);
   }
   if (after.component.data.Face === 0) assert.equal(after.component.data.Offset.Y, before.component.data.Offset.Y);
@@ -44,6 +44,9 @@ for (const [before, after] of [[donorText, text], ...donorImages.map((item, inde
 for (const image of images) {
   assert.equal(image.component.data.WidthScale, 1);
   assert.equal(image.component.data.LineHeight, 0.15000000596046448);
+  assert.equal(image.component.data.LineOffset, -5.5);
+  assert.equal(image.component.data.Kerning, -6);
+  assert.equal(image.component.data.Skew, 0);
 }
 assert.deepEqual(images.map(item => item.component.data.Offset.Y), donorImages.map(item => item.component.data.Offset.Y));
 assert.equal(text.component.data.WidthScale, donorText.component.data.WidthScale);
