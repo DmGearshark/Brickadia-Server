@@ -148,22 +148,30 @@ def technical_mask(
     width: int,
     max_rows: int | None = None,
     threshold: float = 0.72,
+    row_scale: float = 1.0,
 ) -> np.ndarray:
     """Produce a conservative line mask for scanned technical drawings.
 
     Unlike the recovered site's Auto mode, this does not broadly dilate every
     stroke. It normalizes uneven paper, keeps antialiased pixels only when they
-    touch strong ink, and removes isolated JPEG speckles.
+    touch strong ink, and removes isolated JPEG speckles. ``row_scale`` permits
+    a renderer-specific vertical sampling correction without changing source
+    width or the default conversion.
     """
     try:
         from scipy import ndimage
     except ImportError as error:
         raise RuntimeError("Technical mode requires: pip install scipy") from error
 
+    if row_scale <= 0:
+        raise ValueError("row_scale must be positive")
     gray = ImageOps.autocontrast(image.convert("L"), cutoff=1)
     if max_rows:
-        width = min(width, max(1, math.floor(2 * max_rows * gray.width / gray.height)))
-    rows = math.ceil(width * gray.height / gray.width / 2)
+        width = min(
+            width,
+            max(1, math.floor(2 * max_rows * gray.width / gray.height / row_scale)),
+        )
+    rows = math.ceil(width * gray.height / gray.width / 2 * row_scale)
     resized = gray.resize((2 * width, 4 * rows), Image.Resampling.LANCZOS)
     pixels = np.asarray(resized, dtype=np.float32)
     sigma = max(2.0, min(pixels.shape) / 36.0)

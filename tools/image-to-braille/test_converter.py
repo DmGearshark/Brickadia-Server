@@ -113,6 +113,11 @@ def main() -> None:
         technical = encode_mask(mask)
         assert technical and max(map(len, technical)) <= 64
         assert mask[50:64, 50:64].any(), "Source lettering disappeared from technical conversion"
+        live_mask = technical_mask(normalized, 64, threshold=0.72, row_scale=0.70)
+        assert live_mask.shape == (92, 128)
+        assert live_mask.shape[1] == mask.shape[1]
+        assert live_mask.shape[0] < mask.shape[0]
+        expect_value_error(lambda: technical_mask(normalized, 64, row_scale=0))
         invalid = parser().parse_args([
             str(path),
             str(Path(directory) / "invalid.txt"),

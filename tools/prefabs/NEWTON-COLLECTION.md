@@ -9,6 +9,9 @@ The machine-readable preservation record is
 [`newton-collection-manifest.json`](newton-collection-manifest.json). The exact
 Opticks checkpoint remains the Git tag `newton-opticks-v25-live-calibrated` and
 is documented separately in [`NEWTON-OPTICKS-V25.md`](NEWTON-OPTICKS-V25.md).
+The optional geometry-corrected successor is documented in
+[`NEWTON-OPTICKS-V27.md`](NEWTON-OPTICKS-V27.md); it does not replace the
+preserved v25 artifact in this collection manifest.
 
 ## Included volumes
 

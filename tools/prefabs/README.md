@@ -8,6 +8,10 @@ tracks the exact public-domain sources, generated arrays, output hashes, and
 regression checks. The original live-tested Opticks checkpoint remains locked
 at the `newton-opticks-v25-live-calibrated` Git tag.
 
+The later [Opticks v27 live-geometry candidate](NEWTON-OPTICKS-V27.md)
+corrects the measured Braille-cell aspect and gives tightly packed figures a
+safe page boundary while retaining v25 unchanged.
+
 ## User's labeled display
 
 To generate the selector inside the supplied nine-brick layout:

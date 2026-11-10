@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import html
 import importlib.util
 import json
@@ -41,6 +42,9 @@ MAX_IMAGE_ROWS = 260
 IMAGE_LAYER_OFFSET_DELTA = 2.0
 CELL_MODE = "braille"
 BLANK = "\u2800"
+LIVE_BRAILLE_ROW_ASPECT = 1.0
+REVISION_NAME: str | None = None
+REVISION_DESCRIPTION: str | None = None
 DETAIL_VIEWS = {
     "fig3-1.jpg": ({
         "name": "center",
@@ -123,8 +127,16 @@ def convert_image(
     threshold: float = 0.72,
     mask_policy: dict | None = None,
 ) -> list[str]:
+    # Keep the v25 horizontal sampling caps. The live correction changes only
+    # the number of Braille rows, so labels and long rays retain the same
+    # source resolution and page width.
+    max_rows = max(1, round(MAX_IMAGE_ROWS * LIVE_BRAILLE_ROW_ASPECT))
     enabled = _converter.technical_mask(
-        original, requested_columns, MAX_IMAGE_ROWS, threshold=threshold
+        original,
+        requested_columns,
+        max_rows,
+        threshold=threshold,
+        row_scale=LIVE_BRAILLE_ROW_ASPECT,
     )
 
     # Dense plates can lose dotted construction rays under background
@@ -271,6 +283,11 @@ def reserved_text_rows(image_rows: int) -> int:
     ) + 2
 
 
+def layout_rows_for_art(image_rows: int) -> int:
+    """Preserve v25 prose pagination while rendering corrected geometry."""
+    return max(1, round(image_rows / LIVE_BRAILLE_ROW_ASPECT))
+
+
 def image_row_for_text(text_row: int) -> int:
     """Align a Braille image row with a row on the overlaid prose display."""
     return round(text_row * TEXT_LINE_HEIGHT / IMAGE_LAYOUT_LINE_HEIGHT)
@@ -297,7 +314,8 @@ def main() -> None:
 
     def append_detail_page(detail: dict, overview_page: int) -> None:
         art = detail["art"]
-        reserve = reserved_text_rows(len(art))
+        layout_rows = layout_rows_for_art(len(art))
+        reserve = reserved_text_rows(layout_rows)
         if reserve > TEXT_BODY_ROWS:
             raise ValueError(f"Detail view {detail['name']} exceeds page height")
         page_number = len(text_pages) + 1
@@ -327,6 +345,7 @@ def main() -> None:
             "imageY": image_y,
             "columns": art_width,
             "rows": len(art),
+            **({"layoutRows": layout_rows} if LIVE_BRAILLE_ROW_ASPECT != 1.0 else {}),
         })
 
     def flush() -> None:
@@ -348,7 +367,8 @@ def main() -> None:
 
     def place_figure(number: int, src: str, alt: str, art: list[str]) -> None:
         nonlocal body, image_canvas, queued_details
-        reserve = reserved_text_rows(len(art))
+        layout_rows = layout_rows_for_art(len(art))
+        reserve = reserved_text_rows(layout_rows)
         if len(body) + reserve > TEXT_BODY_ROWS:
             raise ValueError(f"Figure {number} does not fit reserved region")
         text_start = len(body)
@@ -384,6 +404,7 @@ def main() -> None:
             "imageY": image_y,
             "columns": art_width,
             "rows": len(art),
+            **({"layoutRows": layout_rows} if LIVE_BRAILLE_ROW_ASPECT != 1.0 else {}),
             "sideTextColumns": max(0, side_width) if can_side_flow else 0,
             "labels": [],
         })
@@ -444,7 +465,7 @@ def main() -> None:
                 flush()
             src, alt = parser.images[figure_index]
             art = convert_figure(HTML.parent / src)
-            reserve = reserved_text_rows(len(art))
+            reserve = reserved_text_rows(layout_rows_for_art(len(art)))
             if reserve > TEXT_BODY_ROWS:
                 raise ValueError(f"Figure {figure_index + 1} exceeds page height")
             if len(body) + reserve <= TEXT_BODY_ROWS:
@@ -506,36 +527,44 @@ def main() -> None:
         if max(sizes) >= 32767
     ]
     assert not oversized, oversized
-    OUTPUT.write_text(json.dumps({
+    layout = {
+        "textBodyRows": TEXT_BODY_ROWS,
+        "textLineHeight": TEXT_LINE_HEIGHT,
+        "imageLineHeight": IMAGE_RENDER_LINE_HEIGHT,
+        "imageLayoutLineHeight": IMAGE_LAYOUT_LINE_HEIGHT,
+        "textWidthScale": TEXT_WIDTH_SCALE,
+        "imageWidthScale": IMAGE_WIDTH_SCALE,
+        "imageOutlineWidth": IMAGE_OUTLINE_WIDTH,
+        "imageFont": IMAGE_FONT,
+        "imageKerning": IMAGE_KERNING,
+        "imageAdvanceScale": IMAGE_ADVANCE_SCALE,
+        "minimumFigureColumns": MIN_FIGURE_COLUMNS,
+        "maximumImageColumns": PAGE_IMAGE_COLUMNS,
+        "maximumImageRows": MAX_IMAGE_ROWS,
+        "samplingPolicy": "double calibrated display density with per-figure byte-budget caps, line-aware residual-source restoration for Figure 3, and an enlarged source-derived center view",
+        "cellMode": CELL_MODE,
+        "imageArrayCount": 4,
+        "bandStrategy": "byte-balanced contiguous rows",
+        "forcedPageStarts": sorted(FORCE_NEW_PAGE_BEFORE),
+        "figureColumnCaps": FIGURE_COLUMN_CAPS,
+        "figureSourceOverrides": {
+            name: str(path.relative_to(ROOT))
+            for name, path in FIGURE_SOURCE_OVERRIDES.items()
+        },
+        "figureMaskPolicies": FIGURE_MASK_POLICIES,
+        "figureSourceCredits": FIGURE_SOURCE_CREDITS,
+    }
+    if LIVE_BRAILLE_ROW_ASPECT != 1.0:
+        layout["liveBrailleRowAspect"] = LIVE_BRAILLE_ROW_ASPECT
+        layout["samplingPolicy"] = (
+            "Opticks v25 live calibration with source geometry vertically "
+            "sampled at the measured Brickadia Braille-cell aspect"
+        )
+
+    result = {
         "source": "Project Gutenberg ebook 33504, with Figure 3 sampled from a sharper scan of the 1704 BnF/Gallica plate",
         "representation": "Prose and native-font double-density pure-Braille figures in four synchronized image arrays, with a source-derived Figure 3 detail page",
-        "layout": {
-            "textBodyRows": TEXT_BODY_ROWS,
-            "textLineHeight": TEXT_LINE_HEIGHT,
-            "imageLineHeight": IMAGE_RENDER_LINE_HEIGHT,
-            "imageLayoutLineHeight": IMAGE_LAYOUT_LINE_HEIGHT,
-            "textWidthScale": TEXT_WIDTH_SCALE,
-            "imageWidthScale": IMAGE_WIDTH_SCALE,
-            "imageOutlineWidth": IMAGE_OUTLINE_WIDTH,
-            "imageFont": IMAGE_FONT,
-            "imageKerning": IMAGE_KERNING,
-            "imageAdvanceScale": IMAGE_ADVANCE_SCALE,
-            "minimumFigureColumns": MIN_FIGURE_COLUMNS,
-            "maximumImageColumns": PAGE_IMAGE_COLUMNS,
-            "maximumImageRows": MAX_IMAGE_ROWS,
-            "samplingPolicy": "double calibrated display density with per-figure byte-budget caps, line-aware residual-source restoration for Figure 3, and an enlarged source-derived center view",
-            "cellMode": CELL_MODE,
-            "imageArrayCount": 4,
-            "bandStrategy": "byte-balanced contiguous rows",
-            "forcedPageStarts": sorted(FORCE_NEW_PAGE_BEFORE),
-            "figureColumnCaps": FIGURE_COLUMN_CAPS,
-            "figureSourceOverrides": {
-                name: str(path.relative_to(ROOT))
-                for name, path in FIGURE_SOURCE_OVERRIDES.items()
-            },
-            "figureMaskPolicies": FIGURE_MASK_POLICIES,
-            "figureSourceCredits": FIGURE_SOURCE_CREDITS,
-        },
+        "layout": layout,
         "placements": placements,
         "detailViews": detail_views,
         "textPages": text_pages,
@@ -546,7 +575,12 @@ def main() -> None:
         "imagePagesD": image_page_bands[3],
         "imageBandRanges": image_band_ranges,
         "imageBandBytes": image_band_bytes,
-    }, ensure_ascii=False, indent=2) + "\n", "utf8")
+    }
+    if REVISION_NAME is not None:
+        result["name"] = REVISION_NAME
+    if REVISION_DESCRIPTION is not None:
+        result["description"] = REVISION_DESCRIPTION
+    OUTPUT.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", "utf8")
     print(json.dumps({
         "output": str(OUTPUT),
         "pages": len(text_pages),
@@ -563,4 +597,23 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output", type=Path, default=OUTPUT)
+    parser.add_argument(
+        "--live-row-aspect",
+        type=float,
+        default=1.0,
+        help="Vertical source-sampling factor measured from live Brickadia Braille cells",
+    )
+    parser.add_argument("--force-new-page-before", type=int, action="append", default=[])
+    parser.add_argument("--name")
+    parser.add_argument("--description")
+    arguments = parser.parse_args()
+    if not 0.5 <= arguments.live_row_aspect <= 1.0:
+        parser.error("--live-row-aspect must be between 0.5 and 1.0")
+    OUTPUT = arguments.output
+    LIVE_BRAILLE_ROW_ASPECT = arguments.live_row_aspect
+    FORCE_NEW_PAGE_BEFORE.update(arguments.force_new_page_before)
+    REVISION_NAME = arguments.name
+    REVISION_DESCRIPTION = arguments.description
     main()
