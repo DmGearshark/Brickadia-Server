@@ -23,7 +23,6 @@ module.exports = function testAutoZoneFrameIntegrationV1(context) {
   };
   const marked = (scene, prefix, label) => one(scene.bricks.filter(brick =>
     component(brick, C.Interact.NAME)?.data.Message === `${prefix}${label}`), `${prefix}${label}`);
-  const variant = value => value?.value;
 
   const playerPlacement = validatePlacement(context.playerBytes);
   const cartridgePlacement = validatePlacement(context.cartridgeBytes);
@@ -37,24 +36,18 @@ module.exports = function testAutoZoneFrameIntegrationV1(context) {
   assert.equal(zoneData.bDetectPlayers1, false);
   assert.equal(zoneData.bDetectPlayers2, false);
   assert.equal(zoneData.bDetectPlayers3, false);
-  assert.equal(zoneData.TagFilter, constants.TAG);
+  assert.equal(constants.TAG, '');
+  assert.equal(zoneData.TagFilter, '', 'Physics-root intake uses object-protocol discovery');
   const entered = one(bricksOf(player, C.EntityZoneEvent_Entered.NAME), 'one entity-enter event');
-  assert.equal(component(entered, C.EntityZoneEvent_Entered.NAME).data.TagFilter, constants.TAG);
+  assert.equal(component(entered, C.EntityZoneEvent_Entered.NAME).data.TagFilter, '');
   assert(edge(player, zone, C.AttachedZone.NAME, 'ZoneRef', entered,
     C.EntityZoneEvent_Entered.NAME, 'Zone'));
   const arrival = one(outgoing(player, entered, C.EntityZoneEvent_Entered.NAME, 'Entity')
     .filter(candidate => candidate.q === 'DataIn1')
     .map(candidate => player.bricks.find(brick => brick.key === candidate.z)), 'arrival snapshot');
   assert.equal(component(arrival, C.QueueTicks.NAME).data.TicksToWait, 1);
-  const getTag = one(outgoing(player, arrival, C.QueueTicks.NAME, 'DataOut1')
-    .filter(candidate => candidate.q === 'Entity')
-    .map(candidate => player.bricks.find(brick => brick.key === candidate.z)), 'tag query');
-  assert(component(getTag, C.Exec_Entity_GetTag.NAME));
-  const exactCompare = one(compOf(player, C.Expr_CompareEqual.NAME).filter(({brick, comp}) =>
-    variant(comp.data.InputB) === constants.TAG
-    && edge(player, getTag, C.Exec_Entity_GetTag.NAME, 'Tag', brick, C.Expr_CompareEqual.NAME, 'InputA')),
-  'exact tag comparison');
-  assert(exactCompare);
+  assert.equal(bricksOf(player, C.Exec_Entity_GetTag.NAME).length, 0,
+    'Root discovery relies on the object-scoped protocol rather than an unavailable baked root tag');
 
   const request = one(compOf(player, C.Exec_SendCustomEventGlobal.NAME)
     .filter(({comp}) => comp.data.EventName === 'SQM1.Request'), 'one SQM1 request sender').brick;
@@ -158,11 +151,21 @@ module.exports = function testAutoZoneFrameIntegrationV1(context) {
   assert(outerInputs.every(({brick}) => outgoing(player, brick, C.MicrochipInput.NAME, 'RER_Output').length >= 1));
   assert(outerOutputs.every(({brick}) => incoming(player, brick, C.MicrochipOutput.NAME, 'RER_Input').length === 1));
 
-  const tagEntities = [...cartridge.r.entities()].filter(entity =>
-    entity.typeName === 'Entity_DynamicBrickGrid' && entity.data.EntityTag === constants.TAG);
-  const cartridgeEntity = one(tagEntities, 'one tagged cartridge entity');
-  assert.equal(cartridgeEntity.data.bDetectableByAnyone, true);
-  assert.equal(cartridgeEntity.frozen, false);
+  const cartridgePrefab = cartridge.r.prefabJson();
+  assert.equal(cartridgePrefab.bIsPhysicsGrid, true,
+    'Cartridge global grid must become the PrefabSpawner root');
+  assert.equal(cartridgePrefab.bFreezePhysicsGrid, false);
+  assert.equal([...cartridge.r.entities()].filter(entity =>
+    entity.typeName === 'Entity_DynamicBrickGrid').length, 0,
+  'Cartridge must not hide its visible body in a child dynamic entity');
+  const rootBricks = cartridge.bricks.filter(brick => brick.g === 1);
+  assert.equal(rootBricks.length, 2, 'Physics root contains the supplied title plate and chip');
+  const cartridgeRootChip = one(rootBricks.filter(brick => component(brick, C.Microchip.NAME)),
+    'physics-root cartridge chip');
+  const rootPlate = one(rootBricks.filter(brick => component(brick, C.TextDisplay.NAME)),
+    'physics-root cartridge title plate');
+  assert.equal(cartridge.links.filter(link => link.key === cartridgeRootChip.key).length, 1,
+    'Root chip reaches the object-scoped receiver in its nested logic grid');
   const cartridgeRequest = one(compOf(cartridge, C.Event_CustomGlobal.NAME)
     .filter(({comp}) => comp.data.EventName === 'SQM1.Request'), 'cartridge request receiver');
   const cartridgeAck = one(compOf(cartridge, C.Event_CustomGlobal.NAME)
@@ -185,8 +188,7 @@ module.exports = function testAutoZoneFrameIntegrationV1(context) {
     .filter(candidate => candidate.q === 'Input')
     .map(candidate => cartridge.bricks.find(brick => brick.key === candidate.z)), 'automatic offer wait');
   assert.equal(component(autoWait, C.BufferTicks.NAME).data.TicksToWait, 1);
-  const cartridgeTitle = one(bricksOf(cartridge, C.TextDisplay.NAME), 'cartridge title label');
-  assert.equal(component(cartridgeTitle, C.TextDisplay.NAME).data.Text,
+  assert.equal(component(rootPlate, C.TextDisplay.NAME).data.Text,
     'SQM1 two-voice load/play test');
 
   const uniqueTargets = new Set();
@@ -196,7 +198,7 @@ module.exports = function testAutoZoneFrameIntegrationV1(context) {
     uniqueTargets.add(`${scene === player ? 'p' : 'c'}:${target}`);
   }
 
-  console.log('SQM1 auto-zone frame V1 checks passed: supplied shell, exact tagged intake, '
+  console.log('SQM1 auto-zone frame V1 checks passed: supplied shell, physics-root intake, '
     + 'random object-targeted transaction, direct ArrayVarRef copy, commit-gated consumption, '
     + 'frame controls/displays, exposed ports, two voices, layered Sine instruments and auto-offer cartridge.');
 };

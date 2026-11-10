@@ -15,13 +15,18 @@ The original V4 and V1 files remain unchanged.
 
 ## Automatic intake
 
-The existing frame zone detects the paired cartridge's tagged DynamicBrickGrid
-child, `SQM1.Cartridge`. It snapshots the detected entity for one tick, rechecks
-the tag and sends that exact entity an object-targeted `SQM1.Request` with a
-random transaction nonce. The cartridge's Request and Ack receivers are
-object-scoped. Its Offer remains global so the live-proven same-callback
-`ArrayVarRef -> CopyFrom` path is preserved. A request with no matching offer
-releases its candidate after two seconds.
+The existing frame zone detects entities and snapshots the exact entrant for
+one tick. It sends only that entity an object-targeted `SQM1.Request` with a
+random transaction nonce. An unrelated entity has no compatible object receiver
+and is retained when the request times out after two seconds. The cartridge's
+Request and Ack receivers are object-scoped. Its Offer remains global so the
+live-proven same-callback `ArrayVarRef -> CopyFrom` path is preserved.
+
+The visible cartridge plate and its chip are on the cartridge prefab's global
+physics grid. Prefab Spawner therefore returns the same root entity that enters
+the zone, receives the request and is passed to `DestroySpawnedPrefab`. This
+corrects the earlier child-entity layout, which loaded successfully but could
+not delete the complete cartridge prefab.
 
 The cartridge offers automatically one tick after accepting a request. The
 player consumes it only after staging validation, ActiveScore commit validation

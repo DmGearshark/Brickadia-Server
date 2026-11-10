@@ -9,7 +9,10 @@ const {read, write} = require('./reskin-loadboard.cjs');
 const FRAME_DEFAULT = path.join(__dirname, 'sources', 'music-player-frame-and-cartridge.brz');
 const PLAYER_DEFAULT = 'prefabs/sqm1-auto-zone-music-player-frame-v1.brz';
 const CARTRIDGE_DEFAULT = 'prefabs/sqm1-auto-zone-test-cartridge-v1.brz';
-const TAG = 'SQM1.Cartridge';
+// A conventional physics-prefab root has no serialized EntityTag field. The
+// dock therefore probes the exact zone entity with an object-scoped request;
+// only a compatible cartridge can answer and reach the validated commit path.
+const TAG = '';
 const PLAYER_GRID = 1398956;
 const OUTER_GRID = 1392400;
 const CARTRIDGE_ENTITY = 1399355;
@@ -216,21 +219,17 @@ function playerLogic() {
     harmonics.push({voice, resolvedProfile, smoothing, layers: voiceHarmonics});
   }
 
-  // The paired cartridge has a tagged DynamicBrickGrid child. Exact filtering
-  // avoids selecting an implicit untagged prefab-spawn root before that child.
-  // The entity output is still snapshotted for one tick before use.
+  // Snapshot the exact physics-prefab root reported by the zone. The request
+  // is object-scoped, so an unrelated entity simply times out and is retained.
   const candidate = c.v(O(null));
   const autoPulse = c.v(false);
   const entered = c.n('EntityZoneEvent_Entered', {Zone: R(zone, 'ZoneRef'), TagFilter: TAG});
   const arrival = c.n('QueueTicks', {TicksToWait: 1, DataIn1: O(null)});
   c.bind(arrival, 'DataIn1', R(entered, 'Entity'));
   c.link(entered, arrival, 'Exec', 'ExecIn');
-  const getTag = c.n('Exec_Entity_GetTag', {Entity: R(arrival, 'DataOut1')});
-  c.link(arrival, getTag, 'ExecOut');
-  const tagReady = c.wait(getTag, 1);
-  const exactTag = c.cmp('Equal', R(getTag, 'Tag'), S(TAG));
+  const arrivalReady = c.wait(arrival, 1, 'ExecOut');
   const idle = c.and(c.not(R(context.waiting)), c.not(R(context.copyBusy)));
-  const acceptArrival = c.branch(tagReady, c.and(exactTag, idle), 'Output');
+  const acceptArrival = c.branch(arrivalReady, idle, 'Output');
   const saveCandidate = c.set(candidate, R(arrival, 'DataOut1'));
   c.link(acceptArrival, saveCandidate, 'ExecOutA');
   const candidatePublished = c.wait(saveCandidate, 1);
@@ -308,7 +307,7 @@ function playerLogic() {
     'Intermediate proven SQM1 V4 graph with automatic zone intake and frame-control proxies.');
   return {context, bytes, controls, zone, pitchState, speedState, volumeState, steps,
     timbre, timbreName, timbrePrevious, timbreNext, harmonics, candidate, autoPulse, entered,
-    arrival, getTag, randomNonce, saveRandomNonce, offerTimeout, consume,
+    arrival, arrivalReady, randomNonce, saveRandomNonce, offerTimeout, consume,
     statusText, displays, countAck};
 }
 
@@ -538,11 +537,6 @@ function build(frameFile = FRAME_DEFAULT) {
   expandedOuter.data.PlaneCenter = {X: 0, Y: 25, Z: 0};
   expandedOuter.data.PlaneExtent = {X: 85, Y: 55, Z: 0};
   frame.entityOverrides.set(OUTER_GRID, expandedOuter);
-  const taggedCartridge = entityClone(cartridgeEntity);
-  taggedCartridge.data.EntityTag = TAG;
-  taggedCartridge.data.bDetectableByAnyone = true;
-  taggedCartridge.frozen = false;
-  frame.entityOverrides.set(CARTRIDGE_ENTITY, taggedCartridge);
 
   const playerEntityIds = new Set([OUTER_GRID, PLAYER_GRID, 1392429, FUNCTION_GRID]);
   const playerSceneOut = {...frame,
@@ -558,22 +552,41 @@ function build(frameFile = FRAME_DEFAULT) {
     description: 'Supplied music-player frame with proven SQM1 V4 two-voice Sine playback, automatic object-targeted cartridge loading, commit-gated consumption, physical controls, sine-envelope presets and exposed control/status ports.',
   });
 
-  const cartridgeEntityIds = new Set([CARTRIDGE_ENTITY, CARTRIDGE_GRID]);
-  const standaloneCartridge = entityClone(taggedCartridge);
-  standaloneCartridge.location = {X: 0, Y: 0, Z: 0};
+  // Re-root the supplied plate and its chip onto global grid 1. With
+  // bIsPhysicsGrid enabled below, Brickadia turns this exact grid into the
+  // PrefabSpawner root entity. The zone candidate, object-event target and
+  // DestroySpawnedPrefab argument are therefore the same entity.
+  const cartridgeRootKeyMap = new Map();
+  const cartridgeRootBricks = frame.bricks
+    .filter(brick => brick.g === CARTRIDGE_ENTITY)
+    .map(brick => {
+      const copy = clone(brick);
+      copy.key = `azroot:${brick.key}`;
+      copy.g = 1;
+      cartridgeRootKeyMap.set(brick.key, copy.key);
+      return copy;
+    });
+  assert.equal(cartridgeRootBricks.length, 2, 'Supplied cartridge plate and root chip');
+  const cartridgeLogicBricks = frame.bricks.filter(brick => brick.g === CARTRIDGE_GRID);
+  const cartridgeRootLinks = frame.links
+    .filter(link => link.grid === CARTRIDGE_GRID && cartridgeRootKeyMap.has(link.key))
+    .map(link => ({key: cartridgeRootKeyMap.get(link.key), grid: link.grid}));
+  assert.equal(cartridgeRootLinks.length, 1, 'Physics-root cartridge chip link');
   const cartridgeSceneOut = {...frame,
-    r: proxyReader(frame.r, entity => cartridgeEntityIds.has(entity.persistentIndex)),
-    bricks: frame.bricks.filter(brick => brick.g === CARTRIDGE_ENTITY || brick.g === CARTRIDGE_GRID),
+    r: proxyReader(frame.r, entity => entity.persistentIndex === CARTRIDGE_GRID),
+    bricks: [...cartridgeRootBricks, ...cartridgeLogicBricks],
     edges: frame.edges.filter(edge => String(edge.a).startsWith('azc:') && String(edge.z).startsWith('azc:')),
-    links: frame.links.filter(link => link.grid === CARTRIDGE_GRID),
+    links: cartridgeRootLinks,
     extraEntities: [], extraGridIds: new Set(),
-    entityOverrides: new Map([[CARTRIDGE_ENTITY, standaloneCartridge],
-      [CARTRIDGE_GRID, frame.entityOverrides.get(CARTRIDGE_GRID)]]),
+    entityOverrides: new Map([[CARTRIDGE_GRID, frame.entityOverrides.get(CARTRIDGE_GRID)]]),
   };
+  const cartridgePrefab = metadata({x: 20, y: 20, z: 10});
+  cartridgePrefab.bIsPhysicsGrid = true;
+  cartridgePrefab.bFreezePhysicsGrid = false;
   const cartridgeOut = write(cartridgeSceneOut, {assets,
-    prefab: metadata({x: 20, y: 20, z: 10}),
+    prefab: cartridgePrefab,
     name: 'SQM1 Auto-Offer Test Cartridge V1',
-    description: 'Separate tagged dynamic cartridge for the auto-zone player. A targeted request automatically offers the proven 46-Quaternion two-voice test score; a targeted acknowledgment is retained before the player consumes the spawn.',
+    description: 'Physics-root cartridge for the auto-zone player. An object-targeted request automatically offers the proven 46-Quaternion two-voice test score; after a validated commit, the player consumes this exact PrefabSpawner root.',
   });
 
   return {playerBytes: playerOut.bytes, cartridgeBytes: cartridgeOut.bytes,
