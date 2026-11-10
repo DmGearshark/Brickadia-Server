@@ -75,7 +75,14 @@ engine; merely replacing this cartridge's array will be rejected.
 5. Use the music-note panels to compare the eight instrument modes.
 
 The generated pair passes strict placement and saved-graph structural checks.
-The new automatic zone and consumption path still needs its first live test.
+
+## Observed live result
+
+On 2026-11-10, the corrected physics-root pair was confirmed working in
+Brickadia with a cartridge created by a Prefab Spawner. The player detected the
+nearby cartridge, loaded and retained its song, played it, and removed the
+spawned cartridge after the validated commit. This confirms the complete
+zone-entry, request, copy, acknowledgment and root-prefab consumption path.
 
 ```sh
 node tools/prefabs/build-sqm1-auto-zone-frame-integration-v1.cjs
