@@ -34,6 +34,32 @@ remaining query and pure-condition boundaries explicit.
 The exact returned V2 state is preserved in
 [`gate-reference/sqm1-wireless-sine-player-integration-v2-validation-observed.json`](gate-reference/sqm1-wireless-sine-player-integration-v2-validation-observed.json).
 
+## Returned V3 unwired-input observation
+
+The returned V3 player passed every load boundary: its staging and active
+arrays both contained the exact 46-record score, validation passed, `Loaded`
+was true and Ack `1` was sent. Play also reached both lanes. Each wired
+Quaternion Function call completed once with the exact first record and
+outputs, neither call aborted or read out of bounds, both first notes armed and
+both emitter-enable signals rose.
+
+The two enabled emitters nevertheless retained volume `0` and pitch `0.1`,
+the engine floor. Both Dampen targets and values were `0`. Meanwhile the
+Stopwatch advanced from the retained playback start at `42.52` seconds to
+`59.99` seconds while both voices remained on their first record. Together
+these values establish that the unwired numeric MicrochipInput outputs were
+zero in the placed world: speed `0` froze musical time, volume `0` silenced the
+enabled emitters and pitch `0` reached the floor. `CallableDefault` and
+`CallableMirror` remained serialized as `1`, `1` and `0.08`, but did not supply
+those values to an unwired world output.
+
+The successor must select internal defaults whenever raw pitch, speed or
+volume is not positive. This preserves optional positive external control
+while making all physical buttons sufficient by themselves.
+
+[`gate-reference/sqm1-wireless-sine-player-integration-v3-unwired-inputs-observed.json`](gate-reference/sqm1-wireless-sine-player-integration-v3-unwired-inputs-observed.json)
+records the exact retained result without storing the user's complete save.
+
 ## Files
 
 - Player: `prefabs/sqm1-wireless-sine-player-integration-v3.brz`

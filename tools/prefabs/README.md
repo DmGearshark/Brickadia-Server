@@ -41,6 +41,13 @@ wired Function call and each decoder acceptance condition before branching.
 It preserves V2's transport and audio graph while making every remaining
 load-to-sound publication boundary explicit.
 
+[SQM1-WIRELESS-LOAD-PLAY-INTEGRATION-V4.md](SQM1-WIRELESS-LOAD-PLAY-INTEGRATION-V4.md)
+adds standing-world defaults for the optional numeric inputs after the returned
+V3 save proved that unwired `MicrochipInput` outputs are zero despite their
+callable defaults. Positive pitch, speed and volume values override internal
+defaults `1`, `1` and `0.08`; zero or unwired ports select those defaults. V3's
+wireless, validation, decoder, replay and Sine topology remains unchanged.
+
 ## Isaac Newton book collection
 
 [NEWTON-COLLECTION.md](NEWTON-COLLECTION.md) documents the complete preserved

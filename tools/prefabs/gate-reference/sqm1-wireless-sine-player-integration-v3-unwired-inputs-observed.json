@@ -1,0 +1,69 @@
+{
+  "sourceArtifact": "prefabs/sqm1-wireless-sine-player-integration-v3.brz",
+  "sourceSha256": "88722961a44b30d5d98048eae1bc28b631b639646d328955e5e5f0fa3f64d57f",
+  "returnedFile": "results.brz (returned by user)",
+  "returnedSha256": "05de5fd5154673abaea33e20bb35f8b14983d36d62245c2dbcef17d715e4a920",
+  "observedDate": "2026-11-10",
+  "counts": {
+    "bricks": 513,
+    "components": 611,
+    "wires": 748,
+    "linkedGrids": 2
+  },
+  "placement": {
+    "strictOk": true,
+    "warnings": 0,
+    "playerGraphIntact": true,
+    "cartridgeAbsentFromExport": true
+  },
+  "wirelessLoad": {
+    "requestsSent": 1,
+    "offersReceived": 1,
+    "offersAccepted": 1,
+    "offersRejected": 0,
+    "stagingScoreExact": true,
+    "activeScoreExact": true,
+    "validationPassed": true,
+    "loaded": true,
+    "acknowledgments": 1
+  },
+  "playback": {
+    "starts": 1,
+    "finished": 0,
+    "running": true,
+    "notesArmed": 2,
+    "notesFinished": 0,
+    "voiceDecodeCalls": [1, 1],
+    "voiceDecodeCompleted": [1, 1],
+    "voiceFailures": [0, 0],
+    "emitterEnableRises": [1, 1]
+  },
+  "runtime": {
+    "stopwatchTime": 59.99246023595333,
+    "playbackStartTime": 42.51806580647826,
+    "emittersEnabled": [true, true],
+    "emitterVolumes": [0, 0],
+    "emitterPitches": [0.10000000149011612, 0.10000000149011612],
+    "dampenTargets": [0, 0],
+    "dampenValues": [0, 0]
+  },
+  "functionPath": {
+    "wiredQuatInputsPassed": true,
+    "firstRecordsExact": true,
+    "firstOutputsExact": true,
+    "oneIterationEach": true,
+    "aborts": 0,
+    "outOfBounds": 0
+  },
+  "conclusion": {
+    "cause": "Unwired numeric MicrochipInput RER outputs are zero in the placed world even though CallableDefault and CallableMirror retain nonzero values.",
+    "speedZeroFrozeMusicalTime": true,
+    "volumeZeroSilencedEnabledEmitters": true,
+    "pitchZeroReachedEmitterFloor": true,
+    "wirelessAndLocalCopiesPassed": true,
+    "functionDecoderPassed": true,
+    "emitterEnablePathPassed": true,
+    "userPasteWasStructurallyCorrect": true,
+    "requiredFix": "Select internal defaults when raw pitch, speed or volume input is not positive."
+  }
+}

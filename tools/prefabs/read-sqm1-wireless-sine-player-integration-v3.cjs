@@ -640,6 +640,58 @@ const graph = {
   passed: Boolean(graphPassed),
 };
 const passed = loadPassed && playbackPassed && graph.passed;
+const stopwatches = bricksOf(C.Stopwatch.NAME);
+const dampens = bricksOf(C.Dampen.NAME);
+const runtimeStopwatch = stopwatches.length === 1
+  ? component(stopwatches[0], C.Stopwatch.NAME).data : null;
+const runtimeEmitters = emitters.map(emitter => {
+  const data = component(emitter, C.AudioEmitter.NAME).data;
+  return {
+    enabled: data.bEnabled,
+    volume: data.VolumeMultiplier,
+    pitch: data.PitchMultiplier,
+  };
+});
+const runtimeDampens = dampens.map(dampen => {
+  const data = component(dampen, C.Dampen.NAME).data;
+  return {target: unwrap(data.Target), value: unwrap(data.Value)};
+});
+const firstRecords = [score[34], score[42]];
+const expectedRawFor = note => [
+  (note.W / 127) ** 1.4,
+  2 ** ((note.Z - 69) / 12),
+  note.Y,
+  note.X,
+];
+const firstDecodePassed = voices.every((voice, index) => {
+  const expectedRaw = expectedRawFor(firstRecords[index]);
+  return voice.calls === 1 && voice.completed === 1 && voice.failures === 0
+    && voice.abortedCount === 0 && voice.lastAborted === false
+    && voice.lastIterations === 1 && voice.outOfBoundsCount === 0
+    && voice.lastOutOfBounds === false && voice.notesArmed === 1
+    && voice.notesFinished === 0 && voice.enableRises === 1
+    && voice.enableFalls === 0 && voice.cursor === [34, 42][index]
+    && voice.finished === false && voice.noteLoaded === true
+    && sameQuat(voice.lastNote, firstRecords[index])
+    && voice.rawOutputs.every((value, output) => sameNumber(value, expectedRaw[output]));
+});
+const silentEnabledEmitters = runtimeEmitters.length === 2
+  && runtimeEmitters.every(emitter => emitter.enabled === true
+    && sameNumber(emitter.volume, 0) && sameNumber(emitter.pitch, 0.1));
+const zeroDampens = runtimeDampens.length === 2
+  && runtimeDampens.every(dampen => sameNumber(dampen.target, 0)
+    && sameNumber(dampen.value, 0));
+const stopwatchAdvanced = runtimeStopwatch?.bRunning === true
+  && Number.isFinite(runtimeStopwatch.Time)
+  && Number.isFinite(values['playback.start.time'])
+  && runtimeStopwatch.Time > values['playback.start.time'] + 1;
+const unwiredNumericInputsZero = Boolean(graph.passed && loadPassed
+  && Number(values['playback.started']) === 1
+  && Number(values['playback.finished']) === 0
+  && values.running === true && values['playback.starting'] === false
+  && Number(values['notes.armed']) === 2
+  && Number(values['notes.finished']) === 0
+  && firstDecodePassed && silentEnabledEmitters && zeroDampens && stopwatchAdvanced);
 let interpretation;
 if (passed) {
   interpretation = 'PASS: the wireless score was copied exactly into staging and active storage, acknowledged, then all 12 notes were fetched from ActiveScore, decoded through the shared Function and completed without abort or bounds errors. Confirm separately that the cartridge was deleted before Play and the duet was audible.';
@@ -647,6 +699,8 @@ if (passed) {
   interpretation = 'PLAYER EXPORT INCLUDES CARTRIDGE CONTENT: delete the complete cartridge and export only the player so local-copy independence can be established.';
 } else if (!graph.passed) {
   interpretation = 'PLAYER GRAPH INCOMPLETE: the returned save does not retain the complete staging/active, decoder and continuous-audio topology; inspect placement warnings and export the whole player.';
+} else if (unwiredNumericInputsZero) {
+  interpretation = 'UNWIRED NUMERIC INPUTS OUTPUT ZERO: wireless loading, ActiveScore, the wired Quaternion Function calls, first-note scheduling and both emitter-enable paths all passed. The stopwatch advanced, but speed 0 froze musical time, volume 0 silenced both enabled emitters and pitch 0 reached the emitter floor of 0.1. CallableDefault does not supply a world value to these unwired ports; use internal positive-value fallbacks.';
 } else if (loadPassed) {
   interpretation = 'LOAD PASS / PLAYBACK INCOMPLETE: the independent ActiveScore is exact. Delete the cartridge, press PLAY LOCAL COPY, wait ten seconds, then export the complete player again.';
 } else if (Number(values['request.sent'] ?? 0) === 0) {
@@ -681,6 +735,19 @@ console.log(JSON.stringify({
     starting: values['playback.starting'], running: values.running,
     notesArmed: values['notes.armed'],
     notesFinished: values['notes.finished'], voices,
+  },
+  runtime: {
+    stopwatch: runtimeStopwatch ? {
+      time: runtimeStopwatch.Time,
+      running: runtimeStopwatch.bRunning,
+      playbackStart: values['playback.start.time'],
+      advancedAfterStart: stopwatchAdvanced,
+    } : null,
+    emitters: runtimeEmitters,
+    dampens: runtimeDampens,
+    firstDecodePassed,
+    silentEnabledEmitters,
+    unwiredNumericInputsZero,
   },
   graph,
   retainedFields: Object.keys(values).sort(),
