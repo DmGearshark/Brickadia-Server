@@ -1,5 +1,25 @@
 # Prefab generator
 
+## Single-array MIDI system
+
+[SINGLE-ARRAY-MIDI.md](SINGLE-ARRAY-MIDI.md) documents the proven all-sine
+player, its one-Quat-array score format, converter and retained General MIDI
+program data. [MIDI-DECODE-FUNCTION-PROBE.md](MIDI-DECODE-FUNCTION-PROBE.md)
+records the live-tested shared note decoder.
+
+The next generic player is specified in
+[GENERIC-WIRELESS-GM-MIDI-ARCHITECTURE.md](GENERIC-WIRELESS-GM-MIDI-ARCHITECTURE.md).
+Its two live-engine prerequisites are independent, versioned prefabs:
+
+- [MIDI-WIRELESS-CARTRIDGE-COPY-PROBE-V1.md](MIDI-WIRELESS-CARTRIDGE-COPY-PROBE-V1.md)
+  tests direct cross-chip array copying and wireless `ArrayVarRef` transport;
+- [MIDI-WAVEFORM-AUDITION-PROBE-V1.md](MIDI-WAVEFORM-AUDITION-PROBE-V1.md)
+  tests four continuous synth descriptors through one runtime selector, with a
+  direct Sine baseline.
+
+Both builders run exact save round-trip checks and strict zero-warning
+placement validation before writing their `.brz` artifacts.
+
 ## Isaac Newton book collection
 
 [NEWTON-COLLECTION.md](NEWTON-COLLECTION.md) documents the complete preserved

@@ -101,6 +101,27 @@ The numeric pins retain their defaults when unwired. Holding Play high causes
 the song to restart when it reaches the end; use a short button pulse for a
 single playthrough.
 
+## Generic wireless and multi-instrument path
+
+The known-good per-song Sine player remains the regression baseline. The
+generic successor will accept the same array format from a wireless cartridge,
+copy it into player-owned storage, and offer both the current `Sine Studio`
+sound and an optional `GM Color` family approximation. It is fully specified in
+[GENERIC-WIRELESS-GM-MIDI-ARCHITECTURE.md](GENERIC-WIRELESS-GM-MIDI-ARCHITECTURE.md).
+
+Two live engine boundaries are isolated before they are merged into that
+player:
+
+- [MIDI-WIRELESS-CARTRIDGE-COPY-PROBE-V1.md](MIDI-WIRELESS-CARTRIDGE-COPY-PROBE-V1.md)
+  compares a hardwired cross-chip `CopyFrom` control with the same ArrayVar
+  reference sent through a broadcast event;
+- [MIDI-WAVEFORM-AUDITION-PROBE-V1.md](MIDI-WAVEFORM-AUDITION-PROBE-V1.md)
+  compares a direct static Sine emitter with Sine, Triangle, Square and
+  Sawtooth descriptors selected dynamically into one emitter.
+
+Keeping these probes separate makes either failure actionable while allowing
+both parts of the final design to advance together.
+
 ## MIDI handling
 
 The converter supports format 0 and format 1 files, PPQ and SMPTE timing,
