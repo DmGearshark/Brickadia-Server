@@ -32,6 +32,15 @@ matching offer arrived only after the window closed. The matching request now
 stays open until a valid cartridge offer is accepted; the transport, local
 copy, shared decoder and two continuous Sine voices remain unchanged.
 
+[SQM1-WIRELESS-LOAD-PLAY-INTEGRATION-V3.md](SQM1-WIRELESS-LOAD-PLAY-INTEGRATION-V3.md)
+adds one-tick publication barriers before the staging-header, active-length and
+active-header validation branches. The returned V2 save contained the exact
+46-record staging score and exact retained headers but false-failed validation
+in the final setter's tick. V3 also publishes each ActiveScore read before its
+wired Function call and each decoder acceptance condition before branching.
+It preserves V2's transport and audio graph while making every remaining
+load-to-sound publication boundary explicit.
+
 ## Isaac Newton book collection
 
 [NEWTON-COLLECTION.md](NEWTON-COLLECTION.md) documents the complete preserved

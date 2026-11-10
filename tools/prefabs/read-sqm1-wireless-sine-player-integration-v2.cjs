@@ -81,6 +81,11 @@ const envelopeExact = envelope.magic === 7702001 && envelope.channel === 1
   && envelope.mode === 0 && envelope.format === 1;
 const stagingExact = exactScore(arrays['player.staging']);
 const activeExact = exactScore(arrays['player.active']);
+const stagingHeaderIndices = [0, 1, 2, 3, 33];
+const stagingHeaders = Object.fromEntries(stagingHeaderIndices.map(index =>
+  [`q${index}`, values[`header.q${index}`]]));
+const stagingHeadersExact = stagingHeaderIndices.every(index =>
+  sameQuat(stagingHeaders[`q${index}`], score[index]));
 const loadPassed = Number(values['request.sent']) >= 1
   && Number(values['offer.received']) >= 1
   && Number(values['offer.accepted']) >= 1
@@ -474,6 +479,18 @@ const graph = {
   passed: Boolean(graphPassed),
 };
 const passed = loadPassed && playbackPassed && graph.passed;
+const validationPublicationRace = envelopeExact && stagingExact && stagingHeadersExact
+  && Number(values['offer.accepted'] ?? 0) >= 1
+  && Number(values['offer.rejected'] ?? 0) === 0
+  && Number(values['staging.copy.completed'] ?? 0) >= 1
+  && values['staging.length'] === 46
+  && Number(values['validation.completed'] ?? 0) >= 1
+  && values['validation.passed'] === false
+  && values['validation.result'] === -3
+  && Number(values['active.copy.completed'] ?? 0) === 0
+  && values.loaded === false
+  && Number(values['ack.sent'] ?? 0) === 0
+  && Number(values['playback.started'] ?? 0) === 0;
 let interpretation;
 if (passed) {
   interpretation = 'PASS: the wireless score was copied exactly into staging and active storage, acknowledged, then all 12 notes were fetched from ActiveScore, decoded through the shared Function and completed without abort or bounds errors. Confirm separately that the cartridge was deleted before Play and the duet was audible.';
@@ -481,6 +498,8 @@ if (passed) {
   interpretation = 'PLAYER EXPORT INCLUDES CARTRIDGE CONTENT: delete the complete cartridge and export only the player so local-copy independence can be established.';
 } else if (!graph.passed) {
   interpretation = 'PLAYER GRAPH INCOMPLETE: the returned save does not retain the complete staging/active, decoder and continuous-audio topology; inspect placement warnings and export the whole player.';
+} else if (validationPublicationRace) {
+  interpretation = 'VALIDATION PUBLICATION RACE: the exact 46-record score and all five exact headers reached staging, but V2 evaluated its pure header comparisons in the same tick as the final saved header. The false -3 result blocked ActiveScore, Loaded, acknowledgment and playback; no audio path ran.';
 } else if (loadPassed) {
   interpretation = 'LOAD PASS / PLAYBACK INCOMPLETE: the independent ActiveScore is exact. Delete the cartridge, press PLAY LOCAL COPY, wait ten seconds, then export the complete player again.';
 } else if (Number(values['request.sent'] ?? 0) === 0) {
@@ -498,6 +517,8 @@ console.log(JSON.stringify({
     activeLength: arrays['player.active']?.$array?.length ?? null,
     stagingExact,
     activeExact,
+    stagingHeaders,
+    stagingHeadersExact,
   },
   load: {
     requests: values['request.sent'], received: values['offer.received'],
@@ -506,6 +527,7 @@ console.log(JSON.stringify({
     stagingCopies: values['staging.copy.completed'], stagingLength: values['staging.length'],
     validationCompleted: values['validation.completed'],
     validationPassed: values['validation.passed'], validationResult: values['validation.result'],
+    validationPublicationRace,
     activeCopies: values['active.copy.completed'], activeLength: values['active.length'],
     loaded: values.loaded, acknowledgments: values['ack.sent'], title: values.title,
   },

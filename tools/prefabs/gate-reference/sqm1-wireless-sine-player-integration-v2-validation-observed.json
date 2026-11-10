@@ -1,0 +1,54 @@
+{
+  "sourceArtifact": "prefabs/sqm1-wireless-sine-player-integration-v2.brz",
+  "sourceSha256": "a988c68d8f5d74d68a3e82ec614234d681e719bf44a298a1321de8f2ac989194",
+  "returnedFile": "results.brz (returned by user)",
+  "returnedSha256": "e4e8383244556ee14bc823e281269fcd875bf93acec0b4871c390dda17ef645c",
+  "observedDate": "2026-11-10",
+  "counts": {
+    "bricks": 506,
+    "components": 604,
+    "wires": 741,
+    "linkedGrids": 2
+  },
+  "placement": {
+    "strictOk": true,
+    "warnings": 0,
+    "playerGraphIntact": true,
+    "cartridgeAbsentFromExport": true
+  },
+  "wirelessLoad": {
+    "requestsSent": 4,
+    "offersReceived": 1,
+    "offersAccepted": 1,
+    "offersRejected": 0,
+    "offerEnvelopeExact": true,
+    "stagingCopies": 1,
+    "stagingLength": 46,
+    "stagingScoreExact": true,
+    "savedHeadersExact": true
+  },
+  "validation": {
+    "completed": 1,
+    "passed": false,
+    "result": -3,
+    "activeCopies": 0,
+    "loaded": false,
+    "acknowledgments": 0
+  },
+  "playback": {
+    "starts": 0,
+    "decoderCalls": 0,
+    "notesArmed": 0,
+    "emitterEnableRises": 0,
+    "audioPathExecuted": false
+  },
+  "conclusion": {
+    "cause": "V2 evaluated its pure header comparisons in the same tick as the final staging header setter, before the comparison tree republished.",
+    "remoteArrayCopyPassed": true,
+    "stagingDataWasValid": true,
+    "activeCopyAttempted": false,
+    "silenceExpected": true,
+    "userPasteWasStructurallyCorrect": true,
+    "requiredFix": "Buffer one tick before staging validation, active-length validation and active-header validation."
+  }
+}

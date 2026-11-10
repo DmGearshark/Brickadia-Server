@@ -55,6 +55,29 @@ The save can prove wireless transfer, independent local storage, both decoder
 lanes, note timing and replay. The operator must separately report whether both
 Sine voices were audible in both playthroughs.
 
+## Returned V2 validation observation
+
+The returned V2 player retained the complete strict-placement graph and proves
+that the timeout correction worked. It accepted one exact offer and copied all
+46 Quaternions into staging. The staging array and all five saved validation
+headers matched the cartridge exactly.
+
+V2 nevertheless recorded validation result `-3`, made zero active copies and
+left `Loaded` false. Its validation branch executes in the same tick as the
+final header setter, before the pure Split/Compare/AND tree republishes the new
+header values. The saved values are exact afterward, establishing a publication
+race rather than corrupt wireless data. The active-length and active-header
+checks use the same immediate pattern and require the same one-tick boundary.
+
+No Play, decoder, note or emitter counter advanced because the failed validation
+correctly blocked playback. Silence in this return does not establish an audio
+failure. The corrected successor adds one tick before each of the three commit
+validation branches.
+
+[sqm1-wireless-sine-player-integration-v2-validation-observed.json](gate-reference/sqm1-wireless-sine-player-integration-v2-validation-observed.json)
+records the source and returned hashes and exact retained state without storing
+the user's complete returned save.
+
 ## Rebuild and validation
 
 ```sh
