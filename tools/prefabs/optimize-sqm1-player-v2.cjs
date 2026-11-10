@@ -84,8 +84,11 @@ function optimizeSqm1PlayerV2(scene) {
   const voiceIndices = [...markers.keys()]
     .map(label => /^voice(\d+)\.cursor$/.exec(label))
     .filter(Boolean).map(match => Number(match[1])).sort((a, b) => a - b);
-  assert.deepEqual(voiceIndices, Array.from({length: 18}, (_, index) => index),
-    'V5 fixed voice set');
+  const voiceCount = voiceIndices.length;
+  assert(voiceCount >= 1 && voiceCount <= 32,
+    `V5 voice count must be within the 32-record header capacity; got ${voiceCount}`);
+  assert.deepEqual(voiceIndices, Array.from({length: voiceCount}, (_, index) => index),
+    'V5 contiguous voice set');
 
   let oobBranches = 0;
   let enableEdges = 0;
@@ -116,8 +119,8 @@ function optimizeSqm1PlayerV2(scene) {
     removeKeys.add(edgeKey);
     enableEdges++;
   }
-  assert.equal(oobBranches, 18);
-  assert.equal(enableEdges, 18);
+  assert.equal(oobBranches, voiceCount);
+  assert.equal(enableEdges, voiceCount);
 
   // The control patch repurposes all five inherited input bricks for clamps
   // and shared emitter settings. Only the two superseded inner outputs remain.
@@ -205,6 +208,7 @@ function optimizeSqm1PlayerV2(scene) {
       hiddenMarkers: markers.size,
       markersStrippedFromRetainedBricks: strippedMarkers,
     },
+    voiceCount,
     logicGrid,
     runningKey: running.key,
     stopwatchKey: clock.key,

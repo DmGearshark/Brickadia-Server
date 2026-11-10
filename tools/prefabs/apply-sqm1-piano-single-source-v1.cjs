@@ -6,7 +6,6 @@ const {C, N, S, B} = require('./loadboard-lib.cjs');
 
 const schema = brdb.embeddedSchema('BRSavedComponentChunkSoA_max');
 const PREFIX = 'MWSP5:';
-const VOICES = 18;
 const BASS_PITCH_THRESHOLD = 0.75;
 const BASS_SCALE = 2;
 const SLOW_GAIN_BASE = 0.25;
@@ -31,7 +30,9 @@ function primaryType(brick) {
 }
 
 function prepare(scene, pianoPreparation) {
-  assert.equal(pianoPreparation?.voices?.length, VOICES, 'prepared V4 piano voices');
+  const voiceCount = pianoPreparation?.voices?.length;
+  assert(Number.isInteger(voiceCount) && voiceCount > 0 && voiceCount <= 32,
+    'prepared V4 piano voices');
   const markers = new Map();
   for (const brick of scene.bricks) {
     const message = component(brick, C.Interact.NAME)?.data.Message;
@@ -46,21 +47,23 @@ function prepare(scene, pianoPreparation) {
     assert(brick, `missing ${PREFIX}${label}`);
     return brick;
   };
-  const voices = Array.from({length: VOICES}, (_, voice) => {
+  const voices = Array.from({length: voiceCount}, (_, voice) => {
     const pitchHold = marked(`voice${voice}.note.pitch`);
     assert(component(pitchHold, C.Var.NAME), `voice ${voice} raw pitch-ratio Var`);
     return {voice, pitchHoldKey: pitchHold.key};
   });
-  assert.equal(new Set(voices.map(voice => voice.pitchHoldKey)).size, VOICES,
+  assert.equal(new Set(voices.map(voice => voice.pitchHoldKey)).size, voiceCount,
     'distinct raw pitch-ratio Vars');
   return {logicGrid: pianoPreparation.logicGrid, voices};
 }
 
 function apply(scene, preparation, pianoPatch, releasePatch, decayPatch) {
-  assert.equal(preparation?.voices?.length, VOICES, 'prepared V7 raw pitch ratios');
-  assert.equal(pianoPatch?.voices?.length, VOICES, 'applied V4 piano graph');
-  assert.equal(releasePatch?.voices?.length, VOICES, 'applied V5 release graph');
-  assert.equal(decayPatch?.voices?.length, VOICES, 'applied V6 decay graph');
+  const voiceCount = preparation?.voices?.length;
+  assert(Number.isInteger(voiceCount) && voiceCount > 0 && voiceCount <= 32,
+    'prepared V7 raw pitch ratios');
+  assert.equal(pianoPatch?.voices?.length, voiceCount, 'applied V4 piano graph');
+  assert.equal(releasePatch?.voices?.length, voiceCount, 'applied V5 release graph');
+  assert.equal(decayPatch?.voices?.length, voiceCount, 'applied V6 decay graph');
   const byKey = new Map(scene.bricks.map(brick => [brick.key, brick]));
   const incoming = (brick, type, port) => scene.edges.filter(edge => edge.z === brick.key
     && (!type || edge.zt === type) && (!port || edge.q === port));
@@ -262,8 +265,8 @@ function apply(scene, preparation, pianoPatch, releasePatch, decayPatch) {
     });
   }
 
-  assert.equal(slot, VOICES * 9, 'nine V7 expression gates per voice');
-  assert.equal(removedEdges.length, VOICES * 6, 'six rerouted wires per voice');
+  assert.equal(slot, voiceCount * 9, 'nine V7 expression gates per voice');
+  assert.equal(removedEdges.length, voiceCount * 6, 'six rerouted wires per voice');
   return {
     voices,
     addedBricks: slot,
@@ -273,7 +276,7 @@ function apply(scene, preparation, pianoPatch, releasePatch, decayPatch) {
     rows: Math.ceil(slot / 16),
     logicGrid: preparation.logicGrid,
     constants: {
-      VOICES,
+      VOICES: voiceCount,
       BASS_PITCH_THRESHOLD,
       BASS_SCALE,
       SLOW_GAIN_BASE,

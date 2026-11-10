@@ -35,6 +35,18 @@ const INPUT_SPECS = Object.freeze([
 
 const component = (brick, type) => brick?.comps.find(candidate => candidate.type === type);
 
+function inferVoiceCount(scene) {
+  const indices = scene.bricks.flatMap(brick => brick.comps
+    .filter(item => item.type === C.Interact.NAME)
+    .map(item => /^MWSP5:voice(\d+)\.cursor$/.exec(item.data.Message ?? '')))
+    .filter(Boolean).map(match => Number(match[1])).sort((a, b) => a - b);
+  assert(indices.length >= 1 && indices.length <= 32,
+    `Player voice count must be within the 32-record header capacity; got ${indices.length}`);
+  assert.deepEqual(indices, Array.from({length: indices.length}, (_, index) => index),
+    'Player voice markers are contiguous');
+  return indices.length;
+}
+
 function one(items, label) {
   assert.equal(items.length, 1, label);
   return items[0];
@@ -182,7 +194,7 @@ function repurposeUnusedInput(scene, label, marker, value) {
   return brick;
 }
 
-function addSharedEmitterControls(scene) {
+function addSharedEmitterControls(scene, voiceCount) {
   const innerRadius = repurposeUnusedInput(scene, 'Play (Pulse)',
     'SQM1CFG:Inner Radius', N(400));
   const maxDistance = repurposeUnusedInput(scene, 'Stop (Pulse)',
@@ -190,7 +202,8 @@ function addSharedEmitterControls(scene) {
   const directional = repurposeUnusedInput(scene, 'Volume (0=.08)',
     'SQM1CFG:Directional', {$variant: 'Bool', value: false});
   const emitters = scene.bricks.filter(brick => component(brick, C.AudioEmitter.NAME));
-  assert.equal(emitters.length, 54, 'V2 has 54 Sine emitters');
+  assert.equal(emitters.length, voiceCount * 3,
+    `V2 has three Sine emitters for each of ${voiceCount} voices`);
   const controls = [
     {brick: innerRadius, port: 'InnerRadius', value: 400},
     {brick: maxDistance, port: 'MaxDistance', value: 4000},
@@ -210,18 +223,25 @@ function addSharedEmitterControls(scene) {
 }
 
 function build(sourceFile = SOURCE_DEFAULT, options = {}) {
-  assert(fs.existsSync(sourceFile), `Player source not found: ${sourceFile}`);
-  const sourceBytes = fs.readFileSync(sourceFile);
+  const sourceIsBuffer = Buffer.isBuffer(sourceFile);
+  if (!sourceIsBuffer) assert(fs.existsSync(sourceFile), `Player source not found: ${sourceFile}`);
+  const sourceBytes = sourceIsBuffer ? Buffer.from(sourceFile) : fs.readFileSync(sourceFile);
+  const sourceLabel = sourceIsBuffer ? (options.sourceName ?? '<buffer>') : sourceFile;
   const scene = read(sourceBytes);
+  const voiceCount = inferVoiceCount(scene);
+  if (options.maxVoices !== undefined) {
+    assert.equal(options.maxVoices, voiceCount,
+      `Requested ${options.maxVoices} voices but source contains ${voiceCount}`);
+  }
   const originalUi = structuredClone(scene.bricks.filter(brick => brick.g === 1));
   const byKey = new Map(scene.bricks.map(brick => [brick.key, brick]));
   const steps = CONTROL_SPECS.map(spec => patchStep(scene, byKey, spec));
   const external = INPUT_SPECS.map(spec => patchExternalClamp(scene, byKey, spec));
   const volumeInput = patchVolumeInput(scene, byKey);
-  const sharedEmitterControls = addSharedEmitterControls(scene);
+  const sharedEmitterControls = addSharedEmitterControls(scene, voiceCount);
   const extensionPreparation = options.beforeOptimize?.(scene, {
-    sourceBytes, sourceFile, originalUi, byKey, steps, external, volumeInput,
-    sharedEmitterControls,
+    sourceBytes, sourceFile: sourceLabel, originalUi, byKey, steps, external, volumeInput,
+    sharedEmitterControls, voiceCount,
   });
   const optimization = optimizePlayer(scene);
   const baselineResult = options.afterOptimize ? write(scene, {
@@ -233,8 +253,8 @@ function build(sourceFile = SOURCE_DEFAULT, options = {}) {
       + 'Idle clock updates and diagnostic-only note bookkeeping are removed without changing transport.',
   }) : null;
   const extension = options.afterOptimize?.(scene, extensionPreparation, {
-    sourceBytes, sourceFile, originalUi, byKey, steps, external, volumeInput,
-    sharedEmitterControls, optimization,
+    sourceBytes, sourceFile: sourceLabel, originalUi, byKey, steps, external, volumeInput,
+    sharedEmitterControls, optimization, voiceCount,
   });
   const result = write(scene, {
     name: options.name ?? 'SQM1 Auto-Zone Music Player - Custom UI Optimized V3',
@@ -247,7 +267,7 @@ function build(sourceFile = SOURCE_DEFAULT, options = {}) {
   return {
     bytes: result.bytes,
     sourceBytes,
-    sourceFile,
+    sourceFile: sourceLabel,
     scene,
     outputScene: read(result.bytes),
     originalUi,
@@ -255,6 +275,7 @@ function build(sourceFile = SOURCE_DEFAULT, options = {}) {
     external,
     volumeInput,
     sharedEmitterControls,
+    voiceCount,
     optimization,
     extensionPreparation,
     extension,
@@ -265,6 +286,7 @@ function build(sourceFile = SOURCE_DEFAULT, options = {}) {
 }
 
 module.exports = build;
+module.exports.inferVoiceCount = inferVoiceCount;
 
 if (require.main === module) {
   const [sourceFile = SOURCE_DEFAULT, outputFile = OUTPUT_DEFAULT] = process.argv.slice(2);

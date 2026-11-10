@@ -6,7 +6,6 @@ const {C, N, S, B} = require('./loadboard-lib.cjs');
 
 const schema = brdb.embeddedSchema('BRSavedComponentChunkSoA_max');
 const PREFIX = 'MWSP5:';
-const VOICES = 18;
 
 const component = (brick, type) => brick?.comps.find(candidate => candidate.type === type);
 const scalar = value => value && typeof value === 'object' && 'value' in value
@@ -39,7 +38,17 @@ function prepare(scene) {
     return brick;
   };
   const running = marked('running');
-  const voices = Array.from({length: VOICES}, (_, voice) => ({
+  const voiceIndices = [...markers.keys()]
+    .map(label => /^voice(\d+)\.note\.active$/.exec(label))
+    .filter(Boolean)
+    .map(match => Number(match[1]))
+    .sort((a, b) => a - b);
+  assert(voiceIndices.length > 0 && voiceIndices.length <= 32,
+    'player exposes between one and thirty-two voices');
+  assert.deepEqual(voiceIndices,
+    Array.from({length: voiceIndices.length}, (_, voice) => voice),
+    'player voice markers are contiguous from zero');
+  const voices = voiceIndices.map(voice => ({
     voice,
     noteActiveKey: marked(`voice${voice}.note.active`).key,
     velocityHoldKey: marked(`voice${voice}.note.velocity`).key,
@@ -52,7 +61,9 @@ function prepare(scene) {
 }
 
 function apply(scene, preparation) {
-  assert(preparation?.voices?.length === VOICES, 'prepared eighteen-voice graph');
+  const voiceCount = preparation?.voices?.length;
+  assert(Number.isInteger(voiceCount) && voiceCount > 0 && voiceCount <= 32,
+    'prepared one-to-thirty-two-voice graph');
   const byKey = new Map(scene.bricks.map(brick => [brick.key, brick]));
   const incoming = (brick, type, port) => scene.edges.filter(edge => edge.z === brick.key
     && (!type || edge.zt === type) && (!port || edge.q === port));
@@ -336,9 +347,10 @@ function apply(scene, preparation) {
     });
   }
 
-  assert.equal(new Set(patchVoices.map(voice => voice.isPiano.key)).size, VOICES,
+  assert.equal(new Set(patchVoices.map(voice => voice.isPiano.key)).size, voiceCount,
     'one resolved piano profile check per voice');
-  assert.equal(scene.bricks.filter(brick => component(brick, C.Dampen.NAME)).length, 54,
+  assert.equal(scene.bricks.filter(brick => component(brick, C.Dampen.NAME)).length,
+    voiceCount * 3,
     'one body and two harmonic Dampens per voice');
   return {
     voices: patchVoices,

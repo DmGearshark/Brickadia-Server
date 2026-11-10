@@ -73,9 +73,11 @@ function oneEdge(edges, target, port) {
   return matches[0];
 }
 
-function playerLogic() {
+function playerLogic(options = {}) {
   const baseBuilder = require('./build-sqm1-wireless-sine-player-integration-v5.cjs');
-  const {context, finish} = unfinished(baseBuilder);
+  const maxVoices = options.maxVoices
+    ?? baseBuilder.constants?.DEFAULT_MAX_VOICES ?? 18;
+  const {context, finish} = unfinished(() => baseBuilder({maxVoices}));
   const {b, c} = context;
 
   const controls = {
@@ -395,10 +397,10 @@ function addIoBrick(scene, kind, key, position, label, order, value) {
   return key;
 }
 
-function build(frameFile = FRAME_DEFAULT) {
+function build(frameFile = FRAME_DEFAULT, options = {}) {
   assert(fs.existsSync(frameFile), `Frame source not found: ${frameFile}`);
   const frame = read(fs.readFileSync(frameFile));
-  const player = playerLogic();
+  const player = playerLogic(options);
   const cartridge = cartridgeLogic();
   const playerScene = read(player.bytes);
   const cartridgeScene = read(cartridge.bytes);
@@ -561,9 +563,11 @@ function build(frameFile = FRAME_DEFAULT) {
     links: frame.links.filter(link => link.grid !== CARTRIDGE_GRID && !String(link.key).startsWith(`[${CARTRIDGE_ENTITY},`)),
     entityOverrides: new Map([...frame.entityOverrides].filter(([id]) => playerEntityIds.has(id))),
   };
+  const voiceLabel = player.context.constants.MAX_VOICES === 18
+    ? 'eighteen' : String(player.context.constants.MAX_VOICES);
   const playerOut = write(playerSceneOut, {assets,
     name: 'SQM1 Auto-Zone Music Player Frame V2',
-    description: 'Supplied music-player frame with SQM1 V5 eighteen-voice Sine playback, generic 34-record score-header validation, automatic object-targeted cartridge loading, commit-gated consumption, physical controls, sine-envelope presets and exposed control/status ports.',
+    description: `Supplied music-player frame with SQM1 V5 ${voiceLabel}-voice Sine playback, generic 34-record score-header validation, automatic object-targeted cartridge loading, commit-gated consumption, physical controls, sine-envelope presets and exposed control/status ports.`,
   });
 
   // Re-root the supplied plate and its chip onto global grid 1. With
@@ -606,11 +610,16 @@ function build(frameFile = FRAME_DEFAULT) {
   return {playerBytes: playerOut.bytes, cartridgeBytes: cartridgeOut.bytes,
     frameFile, player, cartridge, playerScene: read(playerOut.bytes),
     cartridgeScene: read(cartridgeOut.bytes), constants: {TAG, PLAYER_GRID, OUTER_GRID,
-      CARTRIDGE_ENTITY, CARTRIDGE_GRID, FUNCTION_GRID}, physical,
+      CARTRIDGE_ENTITY, CARTRIDGE_GRID, FUNCTION_GRID,
+      MAX_VOICES: player.context.constants.MAX_VOICES}, physical,
     io: {inputs, outputs}, assets};
 }
 
 module.exports = build;
+build.constants = {
+  DEFAULT_MAX_VOICES: 18,
+  MAX_HEADER_VOICES: 32,
+};
 
 if (require.main === module) {
   const [frameFile = FRAME_DEFAULT, playerFile = PLAYER_DEFAULT, cartridgeFile = CARTRIDGE_DEFAULT] = process.argv.slice(2);

@@ -5,7 +5,6 @@ const {brdb} = require('brs-js');
 const {C, N, S, B} = require('./loadboard-lib.cjs');
 
 const schema = brdb.embeddedSchema('BRSavedComponentChunkSoA_max');
-const VOICES = 18;
 const BODY_FAST_RATE = -4;
 const BODY_FAST_GAIN = 0.75;
 const BODY_SLOW_RATE = -0.5;
@@ -31,8 +30,10 @@ function primaryType(brick) {
 }
 
 function apply(scene, pianoPatch, releasePatch) {
-  assert.equal(pianoPatch?.voices?.length, VOICES, 'applied V4 piano graph');
-  assert.equal(releasePatch?.voices?.length, VOICES, 'applied V5 release graph');
+  const voiceCount = pianoPatch?.voices?.length;
+  assert(Number.isInteger(voiceCount) && voiceCount > 0 && voiceCount <= 32,
+    'applied V4 piano graph');
+  assert.equal(releasePatch?.voices?.length, voiceCount, 'applied V5 release graph');
   const byKey = new Map(scene.bricks.map(brick => [brick.key, brick]));
   const incoming = (brick, type, port) => scene.edges.filter(edge => edge.z === brick.key
     && (!type || edge.zt === type) && (!port || edge.q === port));
@@ -169,7 +170,7 @@ function apply(scene, pianoPatch, releasePatch) {
     voices.push({...voice, body: {...voice.body, slowExponent, slowDecay, slowScaled}, harmonics});
   }
 
-  assert.equal(removedCurveKeys.size, VOICES * 2, 'two harmonic floor Adds per voice');
+  assert.equal(removedCurveKeys.size, voiceCount * 2, 'two harmonic floor Adds per voice');
   for (const key of removedCurveKeys) {
     assert(!scene.edges.some(edge => edge.a === key || edge.z === key),
       `removed harmonic curve ${key} is disconnected`);
@@ -186,7 +187,7 @@ function apply(scene, pianoPatch, releasePatch) {
     rows: Math.ceil(slot / 16),
     logicGrid: pianoPatch.logicGrid,
     constants: {
-      VOICES,
+      VOICES: voiceCount,
       BODY_FAST_RATE,
       BODY_FAST_GAIN,
       BODY_SLOW_RATE,

@@ -10,7 +10,8 @@ const SCORE_MAGIC = 7701001;
 const CHANNEL = 1;
 const SCORE_FORMAT = 1;
 const HEADER_LENGTH = 34;
-const MAX_VOICES = 18;
+const DEFAULT_MAX_VOICES = 18;
+const MAX_HEADER_VOICES = HEADER_LENGTH - 2;
 const MAX_SCORE_LENGTH = 65536;
 const NULL_COMPONENT_REF = Object.freeze({
   Brick: Object.freeze({GridPersistentIndex: 0,
@@ -27,7 +28,11 @@ function wireValue(value) {
   return value;
 }
 
-module.exports = function buildMidiWirelessSinePlayerIntegrationV5() {
+function buildMidiWirelessSinePlayerIntegrationV5(options = {}) {
+  const maxVoices = options.maxVoices ?? DEFAULT_MAX_VOICES;
+  assert(Number.isInteger(maxVoices)
+    && maxVoices >= 1 && maxVoices <= MAX_HEADER_VOICES,
+  `maxVoices must be an integer in 1..${MAX_HEADER_VOICES}`);
   const assets = [
     {type: 'BrickFontDescriptor', name: 'GlacialIndifferencePlus'},
     {type: 'BrickAudioDescriptor', name: 'BA_Synth_Basic_Sine'},
@@ -208,7 +213,7 @@ module.exports = function buildMidiWirelessSinePlayerIntegrationV5() {
   const clearValidation = c.set(validationPassed, false);
   c.link(markWaiting, clearValidation);
   const request = c.send('SQM1.Request', [
-    N(TRANSPORT_MAGIC), N(CHANNEL), R(nonce), N(0), N(MAX_VOICES),
+    N(TRANSPORT_MAGIC), N(CHANNEL), R(nonce), N(0), N(maxVoices),
     N(MAX_SCORE_LENGTH), N(SCORE_FORMAT), N(3),
   ]);
   c.link(clearValidation, request, 'ExecOut', 'ExecIn');
@@ -293,7 +298,7 @@ module.exports = function buildMidiWirelessSinePlayerIntegrationV5() {
   function genericHeaderChecks(splits, length) {
     const global = splits[0];
     const format = splits[1];
-    const voiceCountIsInteger = c.or(...Array.from({length: MAX_VOICES}, (_, index) =>
+    const voiceCountIsInteger = c.or(...Array.from({length: maxVoices}, (_, index) =>
       c.cmp('Equal', R(global, 'Z'), N(index + 1))));
     const checks = [
       c.cmp('Equal', R(global, 'X'), N(SCORE_MAGIC)),
@@ -307,7 +312,7 @@ module.exports = function buildMidiWirelessSinePlayerIntegrationV5() {
       c.cmp('LessOrEqual', R(format, 'W'), N(127)),
       c.cmp('LessOrEqual', R(format, 'Z'), R(format, 'W')),
     ];
-    for (let voice = 0; voice < MAX_VOICES; voice++) {
+    for (let voice = 0; voice < maxVoices; voice++) {
       const header = splits[voice + 2];
       const active = c.cmp('Less', N(voice), R(global, 'Z'));
       const end = c.math('Add', R(header, 'X'), R(header, 'Y'));
@@ -333,7 +338,7 @@ module.exports = function buildMidiWirelessSinePlayerIntegrationV5() {
       const lastActive = c.cmp('Equal', R(global, 'Z'), N(voice + 1));
       checks.push(c.or(c.not(lastActive), c.cmp('Equal', end, length)));
     }
-    for (let voice = MAX_VOICES; voice < HEADER_LENGTH - 2; voice++) {
+    for (let voice = maxVoices; voice < HEADER_LENGTH - 2; voice++) {
       const header = splits[voice + 2];
       checks.push(c.and(
         c.cmp('Equal', R(header, 'X'), length),
@@ -464,7 +469,7 @@ module.exports = function buildMidiWirelessSinePlayerIntegrationV5() {
     InputA: R(activeHeaderSplits[1], 'Y'), InputB: N(0.08),
   });
   const voiceBuilds = [];
-  for (let voiceIndex = 0; voiceIndex < MAX_VOICES; voiceIndex++) {
+  for (let voiceIndex = 0; voiceIndex < maxVoices; voiceIndex++) {
     const header = activeHeaderSplits[voiceIndex + 2];
     const index = saved(`voice${voiceIndex}.cursor`, -1);
     const noteLoaded = saved(`voice${voiceIndex}.note.loaded`, false);
@@ -746,7 +751,7 @@ module.exports = function buildMidiWirelessSinePlayerIntegrationV5() {
       + 'internal pitch 1, speed 1 and volume 0.08 defaults; positive values override them. '
       + 'It copies a remote score '
       + 'into staging, validates and commits an independent active array, then drives up to '
-      + `${MAX_VOICES} Sine voices through wired ArrayGet-to-DecodeNote Function calls after `
+      + `${maxVoices} Sine voices through wired ArrayGet-to-DecodeNote Function calls after `
       + 'the disk is removed.');
 
   return {bytes, b, c, shell, records, buttons: {requestButton, playButton, stopButton},
@@ -764,8 +769,14 @@ module.exports = function buildMidiWirelessSinePlayerIntegrationV5() {
     copyActive, ack, decode, audibleReleaseTail, voiceBuilds,
     setStarting, startPublication, clearStarting,
     constants: {PREFIX, TRANSPORT_MAGIC, SCORE_MAGIC, SCORE_FORMAT, CHANNEL,
-      HEADER_LENGTH, MAX_VOICES, MAX_SCORE_LENGTH}};
+      HEADER_LENGTH, MAX_VOICES: maxVoices, MAX_SCORE_LENGTH}};
+}
+
+buildMidiWirelessSinePlayerIntegrationV5.constants = {
+  DEFAULT_MAX_VOICES,
+  MAX_HEADER_VOICES,
 };
+module.exports = buildMidiWirelessSinePlayerIntegrationV5;
 
 if (require.main === module) {
   const output = process.argv[2];

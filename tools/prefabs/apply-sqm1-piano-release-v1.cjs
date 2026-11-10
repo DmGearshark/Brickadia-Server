@@ -6,7 +6,6 @@ const {C, N, S, B} = require('./loadboard-lib.cjs');
 
 const schema = brdb.embeddedSchema('BRSavedComponentChunkSoA_max');
 const PREFIX = 'MWSP5:';
-const VOICES = 18;
 const MINIMUM_RELEASE_TAIL = 0.001;
 
 const component = (brick, type) => brick?.comps.find(candidate => candidate.type === type);
@@ -23,7 +22,9 @@ function primaryType(brick) {
 }
 
 function prepare(scene, pianoPreparation) {
-  assert.equal(pianoPreparation?.voices?.length, VOICES, 'prepared V4 piano voices');
+  const voiceCount = pianoPreparation?.voices?.length;
+  assert(Number.isInteger(voiceCount) && voiceCount > 0 && voiceCount <= 32,
+    'prepared V4 piano voices');
   const markers = new Map();
   for (const brick of scene.bricks) {
     const message = component(brick, C.Interact.NAME)?.data.Message;
@@ -41,7 +42,7 @@ function prepare(scene, pianoPreparation) {
   return {
     logicGrid: pianoPreparation.logicGrid,
     runningKey: marked('running').key,
-    voices: Array.from({length: VOICES}, (_, voice) => ({
+    voices: Array.from({length: voiceCount}, (_, voice) => ({
       voice,
       startHoldKey: marked(`voice${voice}.note.start`).key,
       endHoldKey: marked(`voice${voice}.note.end`).key,
@@ -51,8 +52,10 @@ function prepare(scene, pianoPreparation) {
 }
 
 function apply(scene, preparation, pianoPatch) {
-  assert.equal(preparation?.voices?.length, VOICES, 'prepared release voices');
-  assert.equal(pianoPatch?.voices?.length, VOICES, 'applied V4 piano graph');
+  const voiceCount = preparation?.voices?.length;
+  assert(Number.isInteger(voiceCount) && voiceCount > 0 && voiceCount <= 32,
+    'prepared release voices');
+  assert.equal(pianoPatch?.voices?.length, voiceCount, 'applied V4 piano graph');
   const byKey = new Map(scene.bricks.map(brick => [brick.key, brick]));
   const incoming = (brick, type, port) => scene.edges.filter(edge => edge.z === brick.key
     && (!type || edge.zt === type) && (!port || edge.q === port));
