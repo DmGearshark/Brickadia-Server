@@ -209,7 +209,7 @@ function addSharedEmitterControls(scene) {
   return {innerRadius, maxDistance, directional, emitters};
 }
 
-function build(sourceFile = SOURCE_DEFAULT) {
+function build(sourceFile = SOURCE_DEFAULT, options = {}) {
   assert(fs.existsSync(sourceFile), `Player source not found: ${sourceFile}`);
   const sourceBytes = fs.readFileSync(sourceFile);
   const scene = read(sourceBytes);
@@ -219,14 +219,30 @@ function build(sourceFile = SOURCE_DEFAULT) {
   const external = INPUT_SPECS.map(spec => patchExternalClamp(scene, byKey, spec));
   const volumeInput = patchVolumeInput(scene, byKey);
   const sharedEmitterControls = addSharedEmitterControls(scene);
+  const extensionPreparation = options.beforeOptimize?.(scene, {
+    sourceBytes, sourceFile, originalUi, byKey, steps, external, volumeInput,
+    sharedEmitterControls,
+  });
   const optimization = optimizePlayer(scene);
-  const result = write(scene, {
+  const baselineResult = options.afterOptimize ? write(scene, {
     name: 'SQM1 Auto-Zone Music Player - Custom UI Optimized V3',
     description: 'User-adjusted V2 frame with its swapped instrument buttons and resized text preserved. '
       + 'Pitch steps by 0.1 in 0.25..2, speed steps by 0.1 in 0.1..2 and volume steps by 0.1 in 1..2. '
       + 'Positive outer numeric inputs use the same clamps; zero keeps the retained buttons active. '
       + 'Three editable shared Vars drive every emitter radius, distance and directional setting. '
       + 'Idle clock updates and diagnostic-only note bookkeeping are removed without changing transport.',
+  }) : null;
+  const extension = options.afterOptimize?.(scene, extensionPreparation, {
+    sourceBytes, sourceFile, originalUi, byKey, steps, external, volumeInput,
+    sharedEmitterControls, optimization,
+  });
+  const result = write(scene, {
+    name: options.name ?? 'SQM1 Auto-Zone Music Player - Custom UI Optimized V3',
+    description: options.description ?? ('User-adjusted V2 frame with its swapped instrument buttons and resized text preserved. '
+      + 'Pitch steps by 0.1 in 0.25..2, speed steps by 0.1 in 0.1..2 and volume steps by 0.1 in 1..2. '
+      + 'Positive outer numeric inputs use the same clamps; zero keeps the retained buttons active. '
+      + 'Three editable shared Vars drive every emitter radius, distance and directional setting. '
+      + 'Idle clock updates and diagnostic-only note bookkeeping are removed without changing transport.'),
   });
   return {
     bytes: result.bytes,
@@ -240,6 +256,10 @@ function build(sourceFile = SOURCE_DEFAULT) {
     volumeInput,
     sharedEmitterControls,
     optimization,
+    extensionPreparation,
+    extension,
+    baselineBytes: baselineResult?.bytes ?? null,
+    baselineScene: baselineResult ? read(baselineResult.bytes) : null,
     constants: {SOURCE_DEFAULT, OUTPUT_DEFAULT, CONTROL_SPECS, INPUT_SPECS},
   };
 }
