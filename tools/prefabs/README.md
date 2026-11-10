@@ -1,5 +1,13 @@
 # Prefab generator
 
+## Isaac Newton book collection
+
+[NEWTON-COLLECTION.md](NEWTON-COLLECTION.md) documents the complete preserved
+four-display pipeline and six independent Newton book prefabs. The collection
+tracks the exact public-domain sources, generated arrays, output hashes, and
+regression checks. The original live-tested Opticks checkpoint remains locked
+at the `newton-opticks-v25-live-calibrated` Git tag.
+
 ## User's labeled display
 
 To generate the selector inside the supplied nine-brick layout:

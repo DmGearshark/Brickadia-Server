@@ -1,0 +1,34 @@
+_repo: The-Chronology-of-Ancient-Kingdoms-AmendedAlexander-the-Great_15784
+_version: 0.1.0
+covers:
+- cover_type: generated
+  image_path: cover.png
+creator:
+  author:
+    agent_name: Newton, Isaac
+    alias: Newton, Sir Isaac
+    birthdate: 1642
+    deathdate: 1727
+    gutenberg_agent_id: '6288'
+    url: http://www.gutenberg.org/2009/agents/6288
+    wikipedia: http://en.wikipedia.org/wiki/Isaac_Newton
+description: ''
+edition_identifiers:
+  edition_id: http://www.gutenberg.org/ebooks/15784#The-Chronology-of-Ancient-Kingdoms-AmendedAlexander-the-Great
+gutenberg_issued: '2005-05-07'
+gutenberg_type: Text
+identifiers:
+  gutenberg: '15784'
+language: en
+publisher: Project Gutenberg
+rights: Public domain in the USA.
+rights_url: http://creativecommons.org/about/pdm
+subjects:
+- !lcsh 'History, Ancient -- Chronology'
+- !lcc 'D'
+- !lcsh 'Bible -- Chronology'
+- GITenberg
+title: "The Chronology of Ancient Kingdoms Amended\r\nTo which is Prefix'd, A Short\
+  \ Chronicle from the First Memory of Things in Europe, to the Conquest of Persia\
+  \ by Alexander the Great"
+url: http://www.gutenberg.org/ebooks/15784

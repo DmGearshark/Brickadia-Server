@@ -1,0 +1,32 @@
+_repo: Observations-upon-the-Prophecies-of-Daniel-and-the-Apocalypse-of-St.-John_16878
+_version: 0.1.0
+covers:
+- cover_type: generated
+  image_path: cover.png
+creator:
+  author:
+    agent_name: Newton, Isaac
+    alias: Newton, Sir Isaac
+    birthdate: 1642
+    deathdate: 1727
+    gutenberg_agent_id: '6288'
+    url: http://www.gutenberg.org/2009/agents/6288
+    wikipedia: http://en.wikipedia.org/wiki/Isaac_Newton
+description: ''
+edition_identifiers:
+  edition_id: http://www.gutenberg.org/ebooks/16878#Observations-upon-the-Prophecies-of-Daniel-and-the-Apocalypse-of-St.-John
+gutenberg_issued: '2005-10-15'
+gutenberg_type: Text
+identifiers:
+  gutenberg: '16878'
+language: en
+publisher: Project Gutenberg
+rights: Public domain in the USA.
+rights_url: http://creativecommons.org/about/pdm
+subjects:
+- !lcc 'BS'
+- !lcsh 'Bible. Daniel -- Prophecies'
+- !lcsh 'Bible. Revelation -- Prophecies'
+- GITenberg
+title: Observations upon the Prophecies of Daniel, and the Apocalypse of St. John
+url: http://www.gutenberg.org/ebooks/16878

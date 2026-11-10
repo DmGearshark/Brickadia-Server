@@ -1,0 +1,8 @@
+# Generated Newton page arrays are reproducible artifacts and can be tens of
+# megabytes; review the generator, manifest, and tests instead of a text diff.
+tools/prefabs/newton-*-four-display-pages.json -diff
+prefabs/newton-*.brz binary
+
+# Gutenberg snapshots are preserved byte-for-byte, including upstream CRLF
+# endings and trailing spaces.
+tools/image-to-braille/sources/** -whitespace
