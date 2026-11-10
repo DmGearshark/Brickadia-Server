@@ -10,7 +10,7 @@ const TRANSPORT_MAGIC = 7702001;
 const SCORE_MAGIC = 7701001;
 const SCORE_FORMAT = 1;
 const CHANNEL = 1;
-const TITLE = 'SQM1 two-voice load/play test';
+const DEFAULT_TITLE = 'SQM1 two-voice load/play test';
 const PREFERRED_MODE = 0;
 const REQUEST_EVENT = 'SQM1.Request';
 const OFFER_EVENT = 'SQM1.Offer';
@@ -42,7 +42,23 @@ function makeScore() {
   return Object.freeze(values.map(value => Object.freeze(value)));
 }
 
-const SCORE = makeScore();
+const DEFAULT_SCORE = makeScore();
+
+function normalizedScore(source) {
+  assert(Array.isArray(source) && source.length >= 34,
+    'SQM1 cartridge score must contain the 34-Quaternion header');
+  const values = source.map((value, index) => {
+    assert(value && ['X', 'Y', 'Z', 'W'].every(field => Number.isFinite(value[field])),
+      `SQM1 cartridge score q${index} must contain finite X/Y/Z/W fields`);
+    return Object.freeze({X: value.X, Y: value.Y, Z: value.Z, W: value.W});
+  });
+  assert.equal(values[0].X, SCORE_MAGIC, 'SQM1 cartridge score magic');
+  assert.equal(values[0].Y, SCORE_FORMAT, 'SQM1 cartridge score format');
+  assert(Number.isInteger(values[0].Z) && values[0].Z >= 1 && values[0].Z <= 32,
+    'SQM1 cartridge active voice count must be 1..32');
+  assert.equal(values[1].X, 34, 'SQM1 cartridge header length');
+  return Object.freeze(values);
+}
 
 function wireValue(value) {
   if (typeof value === 'boolean') return B(value);
@@ -51,8 +67,20 @@ function wireValue(value) {
   return value;
 }
 
-module.exports = function buildMidiWirelessIntegrationCartridgeV1() {
-  const b = new Build('SQM1 Two-Voice Test Cartridge V1', FONT);
+module.exports = function buildMidiWirelessIntegrationCartridgeV1(options = {}) {
+  const SCORE = options.score ? normalizedScore(options.score) : DEFAULT_SCORE;
+  const TITLE = options.title ?? DEFAULT_TITLE;
+  const PREFERRED_MODE = options.preferredMode ?? 0;
+  const buildName = options.buildName ?? 'SQM1 Two-Voice Test Cartridge V1';
+  const sendLabel = options.sendLabel ?? 'Send SQM1 test song';
+  const description = options.description
+    ?? ('Standalone SQM1 wireless MIDI cartridge with a deterministic two-voice, twelve-note '
+      + 'C-major test. It latches a compatible player request, offers its Quat ArrayVar by '
+      + 'reference on the green button, and retains the player acknowledgment.');
+  assert.equal(typeof TITLE, 'string', 'SQM1 cartridge title must be a string');
+  assert(Number.isInteger(PREFERRED_MODE) && PREFERRED_MODE >= 0 && PREFERRED_MODE <= 2,
+    'SQM1 cartridge preferred mode must be 0, 1 or 2');
+  const b = new Build(buildName, FONT);
   const shell = b.w.addMicrochip({position: [48, -120, 4], color: [45, 155, 90]});
   const disk = b.circuit(shell.grid, 'cartridge');
   const records = [];
@@ -136,7 +164,7 @@ module.exports = function buildMidiWirelessIntegrationCartridgeV1() {
   const requestEligible = disk.and(
     disk.cmp('Equal', R(request, 'DataOut1'), N(TRANSPORT_MAGIC)),
     disk.cmp('Equal', R(request, 'DataOut2'), N(CHANNEL)),
-    disk.cmp('GreaterOrEqual', R(request, 'DataOut5'), N(2)),
+    disk.cmp('GreaterOrEqual', R(request, 'DataOut5'), N(SCORE[0].Z)),
     disk.cmp('GreaterOrEqual', R(request, 'DataOut6'), N(SCORE.length)),
     disk.cmp('Equal', R(request, 'DataOut7'), N(SCORE_FORMAT)),
     disk.cmp('GreaterOrEqual', R(request, 'DataOut8'), N(1)),
@@ -163,7 +191,7 @@ module.exports = function buildMidiWirelessIntegrationCartridgeV1() {
     pos: [-48, -120, 4],
     grid: undefined,
     data: {
-      PromptCustomLabel: 'Send SQM1 test song',
+      PromptCustomLabel: sendLabel,
       bAllowNearbyInteraction: true,
       bHiddenInteraction: false,
     },
@@ -277,18 +305,13 @@ module.exports = function buildMidiWirelessIntegrationCartridgeV1() {
   const requestDisplay = addDisplay('request_status', [0, 0, 52], [1, 140, 14],
     requestStatus, [255, 225, 125]);
   const ackStatusText = disk.fmt(
-    'ACKS received {A} | accepted {B} | rejected {C}\r\nResult {D} | copied {E}/46 | mode {F} | awaiting {G}',
+    `ACKS received {A} | accepted {B} | rejected {C}\r\nResult {D} | copied {E}/${SCORE.length} | mode {F} | awaiting {G}`,
     R(ackReceived), R(ackAccepted), R(ackRejected), R(ackResult),
     R(ackCopiedLength), R(ackMode), R(awaitingAck));
   const ackDisplay = addDisplay('ack_status', [0, 0, 16], [1, 140, 12],
     ackStatusText, [170, 255, 180]);
 
-  const bytes = b.finish(
-    {x: 155, y: 145, z: 115},
-    'Standalone SQM1 wireless MIDI cartridge with a deterministic two-voice, twelve-note '
-      + 'C-major test. It latches a compatible player request, offers its Quat ArrayVar by '
-      + 'reference on the green button, and retains the player acknowledgment.',
-  );
+  const bytes = b.finish({x: 155, y: 145, z: 115}, description);
   return {
     bytes, b, disk, records, shell, song, sendButton, sendEdge, request, offer, ack,
     requestReceived, requestAccepted, requestRejected, requestValid, requestNonce, requestMode,
@@ -301,7 +324,8 @@ module.exports = function buildMidiWirelessIntegrationCartridgeV1() {
   };
 };
 
-module.exports.SCORE = SCORE;
+module.exports.SCORE = DEFAULT_SCORE;
+module.exports.normalizedScore = normalizedScore;
 
 if (require.main === module) {
   const output = process.argv[2];
