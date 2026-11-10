@@ -101,4 +101,30 @@ placement validation requires empty invalid, confirmed-overlap,
 uncertain-overlap and warning lists. Offline checks prove the exact ports,
 event mapping, two button paths, direct reference topology, empty initial
 caches, retained diagnostics and wire endpoint survival. Live Brickadia is
-still required to prove component-reference transport through the global event.
+required to prove component-reference transport through the global event; the
+returned result below establishes that final boundary.
+
+## Returned V1 result
+
+The user returned a clean in-game save after running both controls once. It
+retained all 218 bricks, 261 components, 309 wires and both linked grids, with
+strict placement and no warnings.
+
+The orange hardwired control completed one cross-chip copy. Its player-owned
+cache contained all 36 Quaternions exactly, reported length 36, matched every
+sampled record and set its engine result to true.
+
+The green wireless path sent and received one event, accepted it once, rejected
+zero events and completed one copy. The retained envelope contained magic
+`7701001`, channel `1`, the exact title and declared length `36`. Its independent
+player-owned cache also contained the exact complete score, and every sampled
+header and note record matched with no out-of-bounds result.
+
+This proves that the tested Brickadia runtime can carry an `ArrayVarRef` through
+a broadcast global custom event and use it synchronously as
+`Exec_ArrayVar_CopyFrom.SourceRef`. The reference required no Var, Function or
+tick buffer. Production can therefore copy a wireless cartridge into local
+staging storage instead of streaming individual note records.
+
+Exact hashes, counters and retained values are recorded in
+[midi-wireless-cartridge-copy-observed.json](gate-reference/midi-wireless-cartridge-copy-observed.json).

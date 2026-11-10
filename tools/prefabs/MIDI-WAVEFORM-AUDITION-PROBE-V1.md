@@ -104,9 +104,13 @@ duplicate input wires, and checks the safe audio settings.
 ## Remaining schema boundary
 
 `brs-js` round-trips all four `AudioReference.Asset` indices, all three generic
-object selectors and the wired emitter. As expected, the dynamic emitter's
-saved local `AudioDescriptor` is `null`; its sole descriptor wire supplies the
-runtime object. The direct emitter retains asset index `1`.
+object selectors and the wired emitter. In the generated artifact, the dynamic
+emitter's saved local `AudioDescriptor` is `null`; its sole descriptor wire
+supplies the runtime object. A live Brickadia re-export may snapshot the
+currently resolved descriptor into that local field and reorder external asset
+indices while retaining the wire. The returned-save reader therefore
+identifies the dynamic and direct emitters by their descriptor-wire topology
+rather than by the local fallback field.
 
 Offline tooling has no Brickadia audio simulator or runtime pin-type metadata.
 It therefore cannot prove that the game accepts generic `WireValue` object

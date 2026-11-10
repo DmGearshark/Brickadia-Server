@@ -47,11 +47,18 @@ for (const brick of scene.bricks) {
   if (emitter) emitters.push({brick, component: emitter});
 }
 
-const directEmitter = emitters.find(({component}) => Number.isInteger(component.data.AudioDescriptor));
-const dynamicEmitter = emitters.find(({component}) => component.data.AudioDescriptor === null);
-const dynamicDescriptorWires = dynamicEmitter ? scene.edges.filter(edge =>
-  edge.z === dynamicEmitter.brick.key && edge.zt === C.AudioEmitter.NAME
-    && edge.q === 'AudioDescriptor') : [];
+// A fresh procedural save retains null in a wired AudioDescriptor field. A
+// live Brickadia re-export snapshots the currently resolved asset index into
+// that same field while preserving the wire. Identify the dynamic emitter by
+// topology rather than by its local fallback value so both forms read alike.
+const descriptorWires = ({brick}) => scene.edges.filter(edge =>
+  edge.z === brick.key && edge.zt === C.AudioEmitter.NAME
+    && edge.q === 'AudioDescriptor');
+const dynamicCandidates = emitters.filter(emitter => descriptorWires(emitter).length > 0);
+const directCandidates = emitters.filter(emitter => descriptorWires(emitter).length === 0);
+const dynamicEmitter = dynamicCandidates.length === 1 ? dynamicCandidates[0] : null;
+const directEmitter = directCandidates.length === 1 ? directCandidates[0] : null;
+const dynamicDescriptorWires = dynamicEmitter ? descriptorWires(dynamicEmitter) : [];
 const dynamicEnableWires = dynamicEmitter ? scene.edges.filter(edge =>
   edge.z === dynamicEmitter.brick.key && edge.zt === C.AudioEmitter.NAME
     && edge.q === 'bEnabled') : [];
@@ -64,6 +71,8 @@ const expectedNames = expectedWaves.slice().sort();
 const structureIntact = references.length === 4
   && JSON.stringify(referenceNames) === JSON.stringify(expectedNames)
   && emitters.length === 2
+  && dynamicCandidates.length === 1
+  && directCandidates.length === 1
   && directEmitter?.component.data.AudioDescriptor != null
   && assets[directEmitter.component.data.AudioDescriptor]?.name === 'BA_Synth_Basic_Sine'
   && dynamicDescriptorWires.length === 1
@@ -89,6 +98,8 @@ if (!structureIntact) {
   interpretation = 'The exact five-press dynamic sequence ran, finished on Sine, and the object-valued descriptor selector changed at least four times. Combine this with the audible report: direct Sine and dynamic Sine should match, while Triangle, Square and Sawtooth should differ.';
 } else if (Number.isFinite(presses) && presses >= 5 && !objectSwitchingObserved) {
   interpretation = 'Buttons executed, but the post-selector object change counter did not establish descriptor switching. If direct Sine sounded and dynamic buttons did not, treat AudioReference/Expr_Select object selection as the failing boundary.';
+} else if (objectSwitchingObserved && selectedIndex === 0) {
+  interpretation = `The selector changed at least four times and finished on Sine, but only ${presses} dynamic presses were retained instead of the requested five. Run Dynamic Sine, Triangle, Square, Sawtooth, Sine again with a full release between buttons, then report which controls were audible and whether Direct Sine matched Dynamic Sine.`;
 } else {
   interpretation = 'The exact dynamic test sequence is incomplete. Hold direct Sine, then dynamic Sine, Triangle, Square, Sawtooth and Sine, releasing each before the next; export the whole assembly again.';
 }
@@ -101,7 +112,11 @@ console.log(JSON.stringify({
   state: {...state, selectedName},
   buttons: buttonLabels.sort(),
   references,
-  emitters: emitters.map(({component}) => ({
+  emitters: emitters.map((emitter) => ({
+    role: emitter === dynamicEmitter ? 'dynamic' : emitter === directEmitter ? 'direct' : 'unknown',
+    component: emitter.component,
+  })).map(({role, component}) => ({
+    role,
     descriptorIndex: component.data.AudioDescriptor,
     descriptor: Number.isInteger(component.data.AudioDescriptor)
       ? assets[component.data.AudioDescriptor] : 'wired Expr_Select output',

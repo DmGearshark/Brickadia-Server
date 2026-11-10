@@ -1,0 +1,62 @@
+{
+  "sourceArtifact": "prefabs/midi-wireless-cartridge-copy-probe-v1.brz",
+  "sourceSha256": "a2e31fb0267381425824c451e16520af7adbc7b7cc3f6cfb9cdf5d3e24f5f936",
+  "returnedFile": "probe-results .brz (returned by user)",
+  "returnedSha256": "7aa3d2c0fdf9d25f49e86b0eb16df0d4260f84c67112497f9004b24a5299d236",
+  "observedDate": "2026-11-10",
+  "counts": {
+    "bricks": 218,
+    "components": 261,
+    "wires": 309,
+    "linkedGrids": 2
+  },
+  "placement": {
+    "strictOk": true,
+    "invalidBricks": 0,
+    "confirmedOverlaps": 0,
+    "uncertainOverlaps": 0,
+    "warnings": 0
+  },
+  "eventEnvelope": {
+    "sent": 1,
+    "received": 1,
+    "accepted": 1,
+    "rejected": 0,
+    "magic": 7701001,
+    "channel": 1,
+    "title": "Wireless probe: two-note sine score",
+    "declaredLength": 36
+  },
+  "directCopy": {
+    "copiesCompleted": 1,
+    "observedLength": 36,
+    "cacheLength": 36,
+    "cacheExact": true,
+    "selectedRecordsExact": true,
+    "engineChecksPassed": true,
+    "passed": true
+  },
+  "wirelessCopy": {
+    "copiesCompleted": 1,
+    "observedLength": 36,
+    "cacheLength": 36,
+    "cacheExact": true,
+    "selectedRecordsExact": true,
+    "engineChecksPassed": true,
+    "passed": true
+  },
+  "selectedRecords": {
+    "q0": [7701001, 1, 1, 2],
+    "q1": [34, 0.125, 60, 64],
+    "q2": [34, 2, 0, 0],
+    "q34": [0, 0.75, 60, 100],
+    "q35": [0.875, 1.5, 64, 80]
+  },
+  "conclusion": {
+    "hardwiredCrossChipArrayVarRefCopyWorks": true,
+    "globalEventTransportsArrayVarRef": true,
+    "sameCallbackEventRefToCopyFromWorks": true,
+    "wirelessCacheMatchesDiskExactly": true,
+    "componentReferenceNeededNoVarOrTickBuffer": true
+  }
+}

@@ -12,14 +12,13 @@ tested separately.
 | Boundary | Current evidence | Production requirement |
 | --- | --- | --- |
 | Shared pure note decoder | Passed in Brickadia with two same-tick callers; output slots and one-tick retention are recorded in `gate-reference/midi-decode-function-observed.json` | Also exercise a wired `ArrayVar Get.Value -> FunctionCall.Input0` path and a 32-caller same-tick stress case |
-| Hardwired cross-chip Quat `CopyFrom` | Exact serialized control path exists in `midi-wireless-cartridge-copy-probe-v1.brz` | Returned in-game probe must report the direct path passed |
-| Global-event `ArrayVarRef` transport | Exact direct event-to-`CopyFrom.SourceRef` path serializes and round-trips | Returned in-game probe must report the wireless path passed |
+| Hardwired cross-chip Quat `CopyFrom` | Passed in Brickadia: one copy produced an exact independent 36-Quaternion cache | Retain the direct path as a regression control |
+| Global-event `ArrayVarRef` transport | Passed in Brickadia: one broadcast was accepted and copied the exact 36-Quaternion score through `DataOut3 -> CopyFrom.SourceRef` | Preserve the same-callback reference path; exact evidence is in `gate-reference/midi-wireless-cartridge-copy-observed.json` |
 | Dynamic synth descriptor | Four `AudioReference` objects, three generic selects, and a wired continuous emitter serialize and round-trip | In-game audition must prove Dynamic Sine matches Direct Sine and Triangle, Square, and Sawtooth are audible |
 
-Offline serialization is necessary but does not establish the two live engine
-boundaries above. The generic production player should not claim wireless or
-dynamic-waveform support until the corresponding returned saves pass their
-readers.
+The returned wireless save establishes both array-copy boundaries above. The
+dynamic-waveform boundary still needs its audible report and returned-save
+analysis before the generic production player claims GM Color support.
 
 ## Score and disk format
 
@@ -352,8 +351,8 @@ comparisons and three selects, plus four one-time AudioReferences.
 
 1. Keep `build-single-quat-midi-player.cjs`, its tests, and the committed Viva
    prefab unchanged as the regression oracle.
-2. Obtain returned live results for both V1 probes and record their observations
-   beside the existing DecodeNote observation.
+2. Preserve the passed wireless V1 observation and finish the waveform V1
+   audible/returned-save observation beside the existing DecodeNote evidence.
 3. Add a disk builder and a new generic player builder with transactional
    wireless copy, fixed 32 lanes, and Sine Studio only.
 4. Integrate the shared DecodeNote Function and stress wired inputs with 32
