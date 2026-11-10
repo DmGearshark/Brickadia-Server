@@ -20,6 +20,12 @@ Its two live-engine prerequisites are independent, versioned prefabs:
 Both builders run exact save round-trip checks and strict zero-warning
 placement validation before writing their `.brz` artifacts.
 
+[SQM1-WIRELESS-LOAD-PLAY-INTEGRATION-V1.md](SQM1-WIRELESS-LOAD-PLAY-INTEGRATION-V1.md)
+joins the passed wireless transport to a two-voice Sine player. Its cartridge
+and player are separate prefabs; the live procedure loads the song, deletes
+the cartridge, and plays the retained local copy twice through two callers
+sharing the verified `DecodeNote` Function.
+
 ## Isaac Newton book collection
 
 [NEWTON-COLLECTION.md](NEWTON-COLLECTION.md) documents the complete preserved

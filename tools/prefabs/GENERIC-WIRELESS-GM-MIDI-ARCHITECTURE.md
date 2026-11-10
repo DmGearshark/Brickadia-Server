@@ -20,6 +20,12 @@ The returned wireless save establishes both array-copy boundaries above. The
 dynamic-waveform boundary still needs its audible report and returned-save
 analysis before the generic production player claims GM Color support.
 
+The next combined live boundary is packaged as two independently pasted
+prefabs and documented in
+[SQM1-WIRELESS-LOAD-PLAY-INTEGRATION-V1.md](SQM1-WIRELESS-LOAD-PLAY-INTEGRATION-V1.md).
+It tests request/offer/ack, staging and active copies, direct wired Function
+inputs, two overlapping Sine schedulers and replay after cartridge deletion.
+
 ## Score and disk format
 
 The disk contains one immutable Quat array in the existing format. The score
