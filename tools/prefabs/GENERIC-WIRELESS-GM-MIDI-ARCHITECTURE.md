@@ -11,20 +11,24 @@ tested separately.
 
 | Boundary | Current evidence | Production requirement |
 | --- | --- | --- |
-| Shared pure note decoder | Passed in Brickadia with two same-tick callers; output slots and one-tick retention are recorded in `gate-reference/midi-decode-function-observed.json` | Also exercise a wired `ArrayVar Get.Value -> FunctionCall.Input0` path and a 32-caller same-tick stress case |
+| Shared pure note decoder | Passed with two same-tick saved inputs, then V3 passed two wired `ArrayVar Get.Value -> FunctionCall.Input0` calls with exact first records and outputs; evidence is in `gate-reference/midi-decode-function-observed.json` and `gate-reference/sqm1-wireless-sine-player-integration-v3-unwired-inputs-observed.json` | Exercise a 32-caller same-tick stress case |
 | Hardwired cross-chip Quat `CopyFrom` | Passed in Brickadia: one copy produced an exact independent 36-Quaternion cache | Retain the direct path as a regression control |
 | Global-event `ArrayVarRef` transport | Passed in Brickadia: one broadcast was accepted and copied the exact 36-Quaternion score through `DataOut3 -> CopyFrom.SourceRef` | Preserve the same-callback reference path; exact evidence is in `gate-reference/midi-wireless-cartridge-copy-observed.json` |
+| End-to-end retained wireless playback | User confirmed V4 loaded wirelessly, retained the song after the complete cartridge was deleted, and produced audible music from the independent player | Preserve V4 as the live two-voice Sine baseline; a successful returned save is still needed for per-voice and two-replay counter proof |
 | Dynamic synth descriptor | Four `AudioReference` objects, three generic selects, and a wired continuous emitter serialize and round-trip | In-game audition must prove Dynamic Sine matches Direct Sine and Triangle, Square, and Sawtooth are audible |
 
-The returned wireless save establishes both array-copy boundaries above. The
-dynamic-waveform boundary still needs its audible report and returned-save
-analysis before the generic production player claims GM Color support.
+The returned wireless saves establish both array-copy boundaries and the wired
+Function path. The user's V4 report additionally establishes audible playback
+from an independent local copy after cartridge deletion. The dynamic-waveform
+boundary still needs its audible report and returned-save analysis before the
+generic production player claims GM Color support.
 
-The next combined live boundary is packaged as two independently pasted
-prefabs and documented in
-[SQM1-WIRELESS-LOAD-PLAY-INTEGRATION-V1.md](SQM1-WIRELESS-LOAD-PLAY-INTEGRATION-V1.md).
-It tests request/offer/ack, staging and active copies, direct wired Function
-inputs, two overlapping Sine schedulers and replay after cartridge deletion.
+The passed combined baseline is packaged as two independently pasted prefabs
+and documented in
+[SQM1-WIRELESS-LOAD-PLAY-INTEGRATION-V4.md](SQM1-WIRELESS-LOAD-PLAY-INTEGRATION-V4.md).
+It covers request/offer/ack, staging and active copies, direct wired Function
+inputs, cartridge-independent storage, optional-control defaults and audible
+Sine playback after cartridge deletion.
 
 ## Score and disk format
 
@@ -357,11 +361,12 @@ comparisons and three selects, plus four one-time AudioReferences.
 
 1. Keep `build-single-quat-midi-player.cjs`, its tests, and the committed Viva
    prefab unchanged as the regression oracle.
-2. Preserve the passed wireless V1 observation and finish the waveform V1
-   audible/returned-save observation beside the existing DecodeNote evidence.
-3. Add a disk builder and a new generic player builder with transactional
-   wireless copy, fixed 32 lanes, and Sine Studio only.
-4. Integrate the shared DecodeNote Function and stress wired inputs with 32
+2. Preserve the passed V4 end-to-end wireless Sine baseline and finish the
+   waveform V1 audible/returned-save observation beside the DecodeNote and V4
+   evidence.
+3. Scale the V4 cartridge/player path to the generic disk builder, fixed 32
+   lanes, transactional wireless copy, and Sine Studio only.
+4. Scale the shared DecodeNote Function and stress wired inputs with 32
    simultaneous calls.
 5. Add the two profile arrays and dynamic waveform selection.
 6. Add strict staging validation, lazy record skipping, nonce-keyed watchdogs,

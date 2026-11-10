@@ -64,6 +64,18 @@ The returned save can prove the exact wireless and local copies, both decoder
 lanes, note timing, emitter transitions, replay, and the numeric fallback
 topology. The operator must separately report whether both voices were audible.
 
+## Observed V4 result
+
+On 2026-11-10, the user confirmed that V4 worked in game: after loading the
+song wirelessly, deleting the complete cartridge entity did not remove the
+song, and the independent player produced audible music. This establishes the
+core request/offer/copy/delete/play path end to end.
+
+No returned player save was supplied for this successful run. The report does
+not by itself establish that both voices were separately audible, that two
+complete replays finished, or the final retained counters; those remain part
+of the full diagnostic procedure above.
+
 ## Rebuild and validation
 
 ```sh

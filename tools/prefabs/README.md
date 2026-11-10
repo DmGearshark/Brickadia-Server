@@ -46,7 +46,10 @@ adds standing-world defaults for the optional numeric inputs after the returned
 V3 save proved that unwired `MicrochipInput` outputs are zero despite their
 callable defaults. Positive pitch, speed and volume values override internal
 defaults `1`, `1` and `0.08`; zero or unwired ports select those defaults. V3's
-wireless, validation, decoder, replay and Sine topology remains unchanged.
+wireless, validation, decoder, replay and Sine topology remains unchanged. The
+user subsequently confirmed audible playback from the retained local song
+after deleting the complete cartridge entity; detailed per-voice and two-replay
+counters still need a successful returned V4 save.
 
 ## Isaac Newton book collection
 
