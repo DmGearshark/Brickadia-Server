@@ -64,6 +64,13 @@ quiet, faster-decaying stretched octave. Other programs still use the same sine
 descriptor, with one sustained layer. The included player therefore remains
 all-sine while retaining the MIDI's program data.
 
+Two details are required for a working saved graph. `Expr_MathPow` stores its
+unwired constants as raw `f64` fields, unlike the WireValue fields on the other
+arithmetic gates. The base `2` and velocity exponent `1.4` must therefore be
+saved as plain numbers. Note-on is also bounded to `start <= time < end`; if an
+expired record is allowed to re-arm after key-off, its cursor can never reach
+the advance path. The builder's round-trip checks cover both invariants.
+
 The exposed defaults are master pitch `1`, master volume `0.06`, and playback
 speed `1`. `PLAY` always restarts from the beginning; `STOP` mutes immediately.
 
@@ -90,12 +97,12 @@ The user-supplied piano/violin arrangement produced:
 - 18 allocated voices with a 0.2-second release reservation
 - one array containing 3,464 quaternions
 - 50 continuous sine emitters and zero one-shot emitters
-- 1,367 components and 2,107 uniquely driven wires
+- 1,385 components and 2,143 uniquely driven wires
 
 The source MIDI SHA-256 is
 `a4f6ac10e617b39d89ff478ff1c6b88aabd08d561e592d5d30486112f54c2e06`.
 The generated prefab SHA-256 is
-`ea6bf3a0e1080e3d9b89e65135d48f050cfa790b074af9c2d9222db0cde93a40`.
+`0ac5d80e550102ce0594ee4ca5372e1433248ee4e86997ea5bb945e25665097f`.
 
 The committed source MIDI is intentionally omitted; the canonical converted
 array is `viva-la-vida-single-quat-score.json`, and the built artifact is
@@ -114,6 +121,7 @@ node tools/prefabs/build-single-quat-midi-player.cjs \
 The builder rereads the saved prefab and verifies the exact array, one shared
 array source, one getter per voice, continuous sine descriptor resolution,
 zero one-shot emitters, unique input drivers, legal pitch multipliers, buffered
-voice advancement, and strict brick placement. Perceived envelope quality and
-overall loudness still require an in-game listen because the save tooling does
-not execute Brickadia audio.
+voice advancement, finite raw power constants, bounded note-on windows, and
+strict brick placement. Perceived envelope quality and overall loudness still
+require an in-game listen because the save tooling does not execute Brickadia
+audio.

@@ -393,19 +393,27 @@ function build(score) {
     wire(split, 'Y', end, 'InputB');
     const inactive = unary('Expr_LogicalNOT', active, 'Value', 'bInput');
     const canPlay = binary('Expr_LogicalAND', running, 'Value', loaded, 'Value');
-    const due = binary('Expr_LogicalAND', begin, 'bOutput', canPlay, 'bOutput');
-    const fire = binary('Expr_LogicalAND', due, 'bOutput', inactive, 'bOutput');
+    // Edge note-on only while the loaded record is inside [start, end). Using
+    // only `begin && !active` re-arms an expired record immediately after its
+    // key-off setter runs, so release/advance never sees an inactive voice.
+    const beforeEnd = node('Expr_CompareLess');
+    wire(musicalTime, 'Output', beforeEnd, 'InputA');
+    wire(split, 'Y', beforeEnd, 'InputB');
+    const due = binary('Expr_LogicalAND', begin, 'bOutput', beforeEnd, 'bOutput');
+    const fire = binary('Expr_LogicalAND', due, 'bOutput', canPlay, 'bOutput');
     const on = unary('Expr_EdgeDetectorExec', fire, 'bOutput', 'Input');
 
     const semitone = node('Expr_MathSubtract', {InputB: N(69)});
     wire(split, 'Z', semitone, 'InputA');
     const octave = node('Expr_MathDivide', {InputB: N(12)});
     wire(semitone, 'Output', octave, 'InputA');
-    const pitchRatio = node('Expr_MathPow', {Input: N(2)});
+    // MathPow is exceptional among numeric expression gates: its saved Input
+    // and Exponent fields are bare f64 values, not WireValue variants.
+    const pitchRatio = node('Expr_MathPow', {Input: 2});
     wire(octave, 'Output', pitchRatio, 'Exponent');
     const velocityUnit = node('Expr_MathDivide', {InputB: N(127)});
     wire(split, 'W', velocityUnit, 'InputA');
-    const velocityCurve = node('Expr_MathPow', {Exponent: N(1.4)});
+    const velocityCurve = node('Expr_MathPow', {Exponent: 1.4});
     wire(velocityUnit, 'Output', velocityCurve, 'Input');
 
     const setPitch = setter(pitchHold, N(voice.notes[0].pitch));
@@ -519,7 +527,7 @@ function build(score) {
         VolumeMultiplier: 0,
         PitchMultiplier: voice.notes[0].pitch * layer.pitchScale,
         InnerRadius: 400,
-        MaxDistance: 400,
+        MaxDistance: 4000,
         bSpatialization: false,
         FocusAzimuth: 360,
         NonFocusAzimuth: 360,
@@ -538,7 +546,8 @@ function build(score) {
 
     voiceBuilds.push({
       voice, layers, index, active, loaded, get, split, setPitch, setVelocity,
-      setStart, ready, on, setOn, age, deferred, branch, enabledWindow, emitters,
+      setStart, ready, beforeEnd, due, fire, canPlay, on, setOn, age, deferred,
+      branch, enabledWindow, emitters,
     });
   }
 
@@ -566,6 +575,8 @@ function verify(score, built) {
   let splits = 0;
   let buffers = 0;
   let ageClamps = 0;
+  let pitchPowers = 0;
+  let velocityPowers = 0;
   let wires = 0;
   let savedEnabledWires = 0;
   let savedSharedArrayWires = 0;
@@ -586,6 +597,8 @@ function verify(score, built) {
             emitters++;
             assert.equal(component.data.bEnabled, false,
               'Continuous emitters must default off until their note-window wire enables them');
+            assert.equal(component.data.MaxDistance, 4000,
+              'Continuous emitters need an audition-safe maximum distance');
             const descriptor = reader.externalAssets()[component.data.AudioDescriptor];
             assert.deepEqual(descriptor,
               {type: 'BrickAudioDescriptor', name: 'BA_Synth_Basic_Sine'},
@@ -596,6 +609,13 @@ function verify(score, built) {
           if (component.typeName === C.Expr_SplitQuaternion.NAME) splits++;
           if (component.typeName === C.BufferTicks.NAME) buffers++;
           if (component.typeName === C.Expr_MathMax.NAME) ageClamps++;
+          if (component.typeName === C.Expr_MathPow.NAME) {
+            assert(Number.isFinite(component.data.Input), 'MathPow Input must serialize as a finite raw f64');
+            assert(Number.isFinite(component.data.Exponent),
+              'MathPow Exponent must serialize as a finite raw f64');
+            if (component.data.Input === 2) pitchPowers++;
+            if (component.data.Exponent === 1.4) velocityPowers++;
+          }
         }
       }
       if (chunk.numWires) {
@@ -629,6 +649,10 @@ function verify(score, built) {
   assert.equal(splits, score.activeVoices, 'Each voice needs exactly one quaternion splitter');
   assert.equal(buffers, score.activeVoices, 'Each voice needs exactly one safe advancement buffer');
   assert.equal(ageClamps, score.activeVoices, 'Each voice needs one nonnegative note-age clamp');
+  assert.equal(pitchPowers, score.activeVoices,
+    'Each voice needs one correctly serialized base-2 pitch power');
+  assert.equal(velocityPowers, score.activeVoices,
+    'Each voice needs one correctly serialized velocity-curve power');
   assert.equal(savedEnabledWires, emitters,
     'Every serialized AudioEmitter needs one explicit bEnabled note-window wire');
   assert.equal(savedSharedArrayWires, score.activeVoices,
@@ -657,6 +681,15 @@ function verify(score, built) {
     assert(built.links.some(link => link.source === voiceBuild.on.id && link.output === 'OnRisingEdge'
       && link.target === voiceBuild.setOn.id && link.input === 'Exec'),
     'Note-on does not arm the already-latched voice');
+    assert(built.links.some(link => link.source === voiceBuild.beforeEnd.id && link.output === 'bOutput'
+      && link.target === voiceBuild.due.id && link.input === 'bInputB'),
+    'Note-on is not bounded by the current record end');
+    assert(built.links.some(link => link.source === voiceBuild.due.id && link.output === 'bOutput'
+      && link.target === voiceBuild.fire.id && link.input === 'bInputA'),
+    'The bounded note window does not drive note-on');
+    assert(built.links.some(link => link.source === voiceBuild.canPlay.id && link.output === 'bOutput'
+      && link.target === voiceBuild.fire.id && link.input === 'bInputB'),
+    'Note-on is not gated by running and loaded');
     for (const emitter of voiceBuild.emitters) {
       assert(built.links.some(link => link.source === voiceBuild.enabledWindow.id
         && link.target === emitter.id && link.input === 'bEnabled'),
