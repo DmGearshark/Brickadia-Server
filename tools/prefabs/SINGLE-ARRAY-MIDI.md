@@ -16,7 +16,7 @@ python3 tools/prefabs/convert-midi-single-array.py \
 
 node tools/prefabs/build-single-quat-midi-player.cjs \
   /tmp/song-single-quat-score.json \
-  prefabs/song-single-array-sine-player.brz
+  prefabs/song-single-array-sine-player-chip.brz
 ```
 
 The converter fails instead of silently stealing a held note. It also fails on
@@ -71,8 +71,20 @@ saved as plain numbers. Note-on is also bounded to `start <= time < end`; if an
 expired record is allowed to re-arm after key-off, its cursor can never reach
 the advance path. The builder's round-trip checks cover both invariants.
 
-The exposed defaults are master pitch `1`, master volume `0.06`, and playback
-speed `1`. `PLAY` always restarts from the beginning; `STOP` mutes immediately.
+The complete player, including every sine emitter, is stored inside one
+microchip. The outer prefab contains only its chip shell. Wire into these pins:
+
+| Port | Type | Unwired default | Behavior |
+| --- | --- | --- | --- |
+| `Play (Pulse)` | Bool | `false` | A rising pulse starts from the beginning |
+| `Stop (Pulse)` | Bool | `false` | A rising pulse mutes playback |
+| `Pitch Multiplier` | Number | `1` | Multiplies every oscillator pitch |
+| `Speed Multiplier` | Number | `1` | Multiplies playback time |
+| `Master Volume` | Number | `0.06` | Multiplies every voice envelope |
+
+The numeric pins retain their defaults when unwired. Holding Play high causes
+the song to restart when it reaches the end; use a short button pulse for a
+single playthrough.
 
 ## MIDI handling
 
@@ -97,16 +109,17 @@ The user-supplied piano/violin arrangement produced:
 - 18 allocated voices with a 0.2-second release reservation
 - one array containing 3,464 quaternions
 - 50 continuous sine emitters and zero one-shot emitters
-- 1,385 components and 2,143 uniquely driven wires
+- one outer microchip brick; every control, speaker, and logic component is inside it
+- 1,378 components and 2,143 uniquely driven wires
 
 The source MIDI SHA-256 is
 `a4f6ac10e617b39d89ff478ff1c6b88aabd08d561e592d5d30486112f54c2e06`.
 The generated prefab SHA-256 is
-`0ac5d80e550102ce0594ee4ca5372e1433248ee4e86997ea5bb945e25665097f`.
+`6d6293215cc577e3d910c77f9d596c76f1f340915d950b1e25998edaac35835a`.
 
 The committed source MIDI is intentionally omitted; the canonical converted
 array is `viva-la-vida-single-quat-score.json`, and the built artifact is
-`prefabs/viva-la-vida-single-array-sine-player.brz`.
+`prefabs/viva-la-vida-single-array-sine-player-chip.brz`.
 
 ## Verification
 
@@ -115,13 +128,15 @@ python3 tools/prefabs/test-convert-midi-single-array.py
 node tools/prefabs/test-single-quat-midi-player.cjs
 node tools/prefabs/build-single-quat-midi-player.cjs \
   tools/prefabs/viva-la-vida-single-quat-score.json \
-  /tmp/viva-la-vida-single-array-sine-player.brz
+  /tmp/viva-la-vida-single-array-sine-player-chip.brz
 ```
 
 The builder rereads the saved prefab and verifies the exact array, one shared
 array source, one getter per voice, continuous sine descriptor resolution,
 zero one-shot emitters, unique input drivers, legal pitch multipliers, buffered
 voice advancement, finite raw power constants, bounded note-on windows, and
-strict brick placement. Perceived envelope quality and overall loudness still
+strict brick placement. It also requires microchip-prefab metadata, one outer
+chip shell, the five ordered input pins with their defaults, and every emitter
+on the internal grid. Perceived envelope quality and overall loudness still
 require an in-game listen because the save tooling does not execute Brickadia
 audio.

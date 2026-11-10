@@ -59,6 +59,15 @@ withScore(fixture(), file => {
   assert.equal(checked.emitters, 4, 'three piano sine layers plus one second-instrument sine');
   assert.equal(checked.getters, 2);
   assert.equal(checked.splits, 2);
+  assert.equal(checked.isMicrochipPrefab, true);
+  assert.equal(checked.mainBricks, 1);
+  assert.deepEqual(checked.microchipInputs, [
+    'Play (Pulse)',
+    'Stop (Pulse)',
+    'Pitch Multiplier',
+    'Speed Multiplier',
+    'Master Volume',
+  ]);
   assert.equal(checked.placement.strictOk, true);
   assert.deepEqual(first.externalAssets, [
     {type: 'BrickAudioDescriptor', name: 'BA_Synth_Basic_Sine'},

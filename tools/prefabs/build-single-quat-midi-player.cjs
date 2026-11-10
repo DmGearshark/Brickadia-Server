@@ -237,10 +237,13 @@ function build(score) {
 
   function speakerPosition(index) {
     const columns = 8;
-    return [-42 + (index % columns) * 12, 20 + Math.floor(index / columns) * 12, 2];
+    // Keep the internal speaker bank left of the gate lattice (which starts at
+    // x=5). Speakers used to share these coordinates safely only because they
+    // were placed on the outer grid.
+    return [-138 + (index % columns) * 12, 5 + Math.floor(index / columns) * 12, 2];
   }
 
-  function node(kind, data = {}, main = false, position) {
+  function node(kind, data = {}, position) {
     const component = C[kind];
     assert(component, `Unknown component ${kind}`);
     const isEmitter = kind === 'AudioEmitter';
@@ -250,7 +253,7 @@ function build(score) {
       position: position || (isEmitter ? speakerPosition(emitterIndex++) : nextGatePosition()),
       color: isEmitter ? [85, 105, 150] : [65, 100, 145],
       components: [{type: component.NAME, data}],
-    }, main ? undefined : chip.grid);
+    }, chip.grid);
     const result = {brick, kind, id: nodes.length, data};
     nodes.push(result);
     return result;
@@ -290,42 +293,26 @@ function build(score) {
     return result;
   }
 
-  function button(label, x, color) {
-    const brick = w.addBrick({
-      asset: 'PB_DefaultMicroBrick',
-      size: [12, 8, 2],
-      position: [x, -18, 2],
-      color,
-      components: [
-        {type: C.Button.NAME, data: {PromptCustomLabel: label}},
-        {type: C.TextDisplay.NAME, data: {Text: label, Face: 4, LineHeight: 6}},
-      ],
-    });
-    const result = {brick, kind: 'Button', id: nodes.length};
-    nodes.push(result);
-    return result;
-  }
-
-  function label(text, x, y, width = 20) {
-    w.addBrick({
-      asset: 'PB_DefaultMicroBrick',
-      size: [width, 5, 1],
-      position: [x, y, 1],
-      color: [25, 30, 40],
-      components: [{type: C.TextDisplay.NAME, data: {Text: text, Face: 4, LineHeight: 3}}],
-    });
-  }
-
-  const play = button('PLAY', -17, [30, 150, 70]);
-  const stop = button('STOP', 17, [180, 45, 40]);
-  const tune = node('Var', {Value: N(1)}, true, [-24, -38, 2]);
-  const volume = node('Var', {Value: N(0.06)}, true, [0, -38, 2]);
-  const speed = node('Var', {Value: N(1)}, true, [24, -38, 2]);
-  label('PITCH x1', -34, -50, 15);
-  label('VOLUME x0.06', 0, -50, 17);
-  label('SPEED x1', 34, -50, 15);
-  label(`${score.title} / ${score.activeVoices} VOICES`, 0, -64, 45);
-  label('ONE SHARED QUAT SCORE ARRAY', 0, -76, 40);
+  const play = node('MicrochipInput', {
+    PortLabel: 'Play (Pulse)', PortOrder: 1,
+    CallableDefault: B(false), CallableMirror: B(false),
+  });
+  const stop = node('MicrochipInput', {
+    PortLabel: 'Stop (Pulse)', PortOrder: 2,
+    CallableDefault: B(false), CallableMirror: B(false),
+  });
+  const tune = node('MicrochipInput', {
+    PortLabel: 'Pitch Multiplier', PortOrder: 3,
+    CallableDefault: N(1), CallableMirror: N(1),
+  });
+  const speed = node('MicrochipInput', {
+    PortLabel: 'Speed Multiplier', PortOrder: 4,
+    CallableDefault: N(1), CallableMirror: N(1),
+  });
+  const volume = node('MicrochipInput', {
+    PortLabel: 'Master Volume', PortOrder: 5,
+    CallableDefault: N(0.06), CallableMirror: N(0.06),
+  });
 
   const sharedArray = node('ArrayVar', {
     Value: {$elementType: 'Quat', $array: score.values.map(value => ({...value}))},
@@ -338,10 +325,10 @@ function build(score) {
   wire(start, 'Value', elapsed, 'InputB');
   const musicalTime = node('Expr_MathMultiply');
   wire(elapsed, 'Output', musicalTime, 'InputA');
-  wire(speed, 'Value', musicalTime, 'InputB');
+  wire(speed, 'RER_Output', musicalTime, 'InputB');
 
   const idle = unary('Expr_LogicalNOT', running, 'Value', 'bInput');
-  const allowed = binary('Expr_LogicalAND', play, 'bHeld', idle, 'bOutput');
+  const allowed = binary('Expr_LogicalAND', play, 'RER_Output', idle, 'bOutput');
   const playEdge = unary('Expr_EdgeDetectorExec', allowed, 'bOutput', 'Input');
   const capture = node('Exec_Var_Set');
   wire(start, 'VarRef', capture, 'VarRef');
@@ -353,7 +340,7 @@ function build(score) {
   const finish = node('Expr_CompareGreaterOrEqual', {InputB: N(score.duration + Math.max(0.25, score.releaseTail))});
   wire(musicalTime, 'Output', finish, 'InputA');
   const finishPlaying = binary('Expr_LogicalAND', finish, 'bOutput', running, 'Value');
-  const stopSignal = binary('Expr_LogicalOR', stop, 'bHeld', finishPlaying, 'bOutput');
+  const stopSignal = binary('Expr_LogicalOR', stop, 'RER_Output', finishPlaying, 'bOutput');
   const stopEdge = unary('Expr_EdgeDetectorExec', stopSignal, 'bOutput', 'Input');
   const halt = setter(running, B(false));
   wire(stopEdge, 'OnRisingEdge', halt, 'Exec');
@@ -490,7 +477,7 @@ function build(score) {
     wire(bodySource, isPiano ? 'Output' : 'Value', activeBody, 'InputB');
     const bodyMaster = node('Expr_MathMultiply');
     wire(activeBody, 'Output', bodyMaster, 'InputA');
-    wire(volume, 'Value', bodyMaster, 'InputB');
+    wire(volume, 'RER_Output', bodyMaster, 'InputB');
     const smoothTime = node('Expr_Select', {InputA: N(0.06), InputB: N(0.015)});
     wire(active, 'Value', smoothTime, 'bSelectB');
     const bodyDampen = node('Dampen');
@@ -511,14 +498,14 @@ function build(score) {
     wire(harmonicAmp, 'Output', activeHarmonic, 'InputB');
     const harmonicMaster = node('Expr_MathMultiply');
     wire(activeHarmonic, 'Output', harmonicMaster, 'InputA');
-    wire(volume, 'Value', harmonicMaster, 'InputB');
+    wire(volume, 'RER_Output', harmonicMaster, 'InputB');
     const harmonicDampen = node('Dampen');
     wire(harmonicMaster, 'Output', harmonicDampen, 'Target');
     wire(smoothTime, 'Output', harmonicDampen, 'SmoothTime');
 
     const masterPitch = node('Expr_MathMultiply');
     wire(pitchHold, 'Value', masterPitch, 'InputA');
-    wire(tune, 'Value', masterPitch, 'InputB');
+    wire(tune, 'RER_Output', masterPitch, 'InputB');
     const emitters = [];
     for (const layer of layers) {
       const emitter = node('AudioEmitter', {
@@ -532,7 +519,7 @@ function build(score) {
         FocusAzimuth: 360,
         NonFocusAzimuth: 360,
         NonFocusVolumeAttenuation: 1,
-      }, true);
+      });
       const layerPitch = node('Expr_MathMultiply', {InputB: N(layer.pitchScale)});
       wire(masterPitch, 'Output', layerPitch, 'InputA');
       wire(layerPitch, 'Output', emitter, 'PitchMultiplier');
@@ -552,22 +539,27 @@ function build(score) {
   }
 
   assert.equal(emitterIndex, emitterTotal, 'Emitter layout count mismatch');
-  w.makePrefab({snap: 10});
+  w.makePrefab({snap: 10, isMicrochipPrefab: true});
   const bytes = w.toBrz({
     bundle: {
       name: score.title,
-      description: `${score.totalNotes} MIDI notes in one shared quaternion ArrayVar; ${score.activeVoices} independent voices, continuous built-in synth oscillators, velocity curve, piano decay and release smoothing.`,
+      description: `${score.totalNotes} MIDI notes in one internal quaternion ArrayVar; ${score.activeVoices} independent voices and ${emitterTotal} continuous sine emitters inside one callable chip. Inputs: Play, Stop, Pitch, Speed, Volume.`,
     },
     externalAssets,
   });
 
-  return {bytes, nodes, links, inputs, sharedArray, voiceBuilds, emitterTotal, externalAssets};
+  return {
+    bytes, nodes, links, inputs, sharedArray, voiceBuilds, emitterTotal, externalAssets,
+    controls: {play, stop, tune, speed, volume},
+  };
 }
 
 function verify(score, built) {
   const reader = WorldReader.from(built.bytes);
+  const gridIds = reader.gridIds();
   let components = 0;
   let bricks = 0;
+  let mainBricks = 0;
   let arrays = 0;
   let emitters = 0;
   let oneShotEmitters = 0;
@@ -582,18 +574,33 @@ function verify(score, built) {
   let savedSharedArrayWires = 0;
   let decodedArray;
   const decodedInputs = new Set();
+  const mainComponentTypes = [];
+  const controlInputs = [];
+  let legacyExteriorComponents = 0;
 
-  for (const grid of reader.gridIds()) {
-    bricks += [...reader.bricks(grid)].length;
+  for (const grid of gridIds) {
+    const gridBricks = [...reader.bricks(grid)];
+    bricks += gridBricks.length;
+    if (grid === 1) mainBricks += gridBricks.length;
     for (const chunk of reader.brickChunkIndex(grid)) {
       if (chunk.numComponents) {
         for (const component of reader.componentChunk(grid, chunk.index).components) {
           components++;
+          if (grid === 1) mainComponentTypes.push(component.typeName);
+          if (component.typeName === C.Button.NAME || component.typeName === C.TextDisplay.NAME) {
+            legacyExteriorComponents++;
+          }
+          if (component.typeName === C.MicrochipInput.NAME) {
+            assert.notEqual(grid, 1, 'Microchip input was serialized outside the chip');
+            controlInputs.push(component.data);
+          }
           if (component.typeName === C.ArrayVar.NAME) {
+            assert.notEqual(grid, 1, 'Shared score array was serialized outside the chip');
             arrays++;
             decodedArray = component.data.Value;
           }
           if (component.typeName === C.AudioEmitter.NAME) {
+            assert.notEqual(grid, 1, 'AudioEmitter was serialized outside the chip');
             emitters++;
             assert.equal(component.data.bEnabled, false,
               'Continuous emitters must default off until their note-window wire enables them');
@@ -639,6 +646,21 @@ function verify(score, built) {
     }
   }
 
+  assert.deepEqual(gridIds, [1, 2], 'Player must contain one shell grid and one chip circuit grid');
+  assert.equal(reader.prefabJson().bIsMicrochipPrefab, true,
+    'Player must serialize as an externally callable microchip prefab');
+  assert.equal(mainBricks, 1, 'The outer prefab must contain only the microchip shell');
+  assert.deepEqual(mainComponentTypes, [C.Microchip.NAME],
+    'The outer grid contains controls, speakers, or components beyond the microchip shell');
+  assert.equal(legacyExteriorComponents, 0, 'Legacy buttons or display labels remain in the player');
+  controlInputs.sort((a, z) => a.PortOrder - z.PortOrder);
+  assert.deepEqual(controlInputs, [
+    {PortLabel: 'Play (Pulse)', PortOrder: 1, CallableDefault: B(false), CallableMirror: B(false)},
+    {PortLabel: 'Stop (Pulse)', PortOrder: 2, CallableDefault: B(false), CallableMirror: B(false)},
+    {PortLabel: 'Pitch Multiplier', PortOrder: 3, CallableDefault: N(1), CallableMirror: N(1)},
+    {PortLabel: 'Speed Multiplier', PortOrder: 4, CallableDefault: N(1), CallableMirror: N(1)},
+    {PortLabel: 'Master Volume', PortOrder: 5, CallableDefault: N(0.06), CallableMirror: N(0.06)},
+  ], 'Microchip control inputs or defaults changed');
   assert.equal(arrays, 1, 'Prefab must contain exactly one ArrayVar');
   assert(decodedArray, 'Shared ArrayVar was not decoded');
   assert.equal(decodedArray.$elementType, 'Quat', 'Shared ArrayVar must be Quat');
@@ -664,6 +686,17 @@ function verify(score, built) {
   assert.equal(sharedSources.length, score.activeVoices, 'Every voice must read the shared ArrayVar');
   assert.equal(new Set(sharedSources.map(link => link.target)).size, score.activeVoices,
     'Shared ArrayVar must feed distinct voice getters');
+  const controlFanout = new Map(Object.entries(built.controls).map(([name, control]) => [
+    name,
+    built.links.filter(link => link.source === control.id && link.output === 'RER_Output').length,
+  ]));
+  assert.deepEqual(Object.fromEntries(controlFanout), {
+    play: 1,
+    stop: 1,
+    tune: score.activeVoices,
+    speed: 1,
+    volume: score.activeVoices * 2,
+  }, 'One or more exposed control pins do not drive the player');
   for (const voiceBuild of built.voiceBuilds) {
     assert(built.links.some(link => link.source === voiceBuild.deferred.id
       && link.target === voiceBuild.branch.id && link.input === 'Exec'), 'Voice advancement is not buffered');
@@ -723,7 +756,12 @@ function verify(score, built) {
     warnings: placement.warnings,
   })}`);
 
-  return {components, bricks, arrays, emitters, getters, splits, buffers, wires, placement};
+  return {
+    components, bricks, arrays, emitters, getters, splits, buffers, wires, placement,
+    mainBricks,
+    microchipInputs: controlInputs.map(input => input.PortLabel),
+    isMicrochipPrefab: reader.prefabJson().bIsMicrochipPrefab,
+  };
 }
 
 function main() {
@@ -743,6 +781,9 @@ function main() {
     durationSeconds: score.duration,
     sharedArrays: verified.arrays,
     arrayElementType: 'Quat',
+    isMicrochipPrefab: verified.isMicrochipPrefab,
+    outerBricks: verified.mainBricks,
+    inputs: verified.microchipInputs,
     emitters: verified.emitters,
     components: verified.components,
     bricks: verified.bricks,
