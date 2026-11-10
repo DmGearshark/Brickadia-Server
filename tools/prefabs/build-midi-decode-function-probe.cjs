@@ -5,7 +5,7 @@ const assert = require('assert/strict');
 const {Build, C, R, N, B, S} = require('./loadboard-lib.cjs');
 
 const FONT = [{type: 'BrickFontDescriptor', name: 'GlacialIndifferencePlus'}];
-const PREFIX = 'MDFP1';
+const PREFIX = 'MDFP2';
 const NOTES = Object.freeze({
   a: Object.freeze({X: 3.125, Y: 7.875, Z: 81, W: 127}),
   b: Object.freeze({X: 13.25, Y: 16.625, Z: 57, W: 64}),
@@ -21,14 +21,16 @@ const EXPECTED = Object.freeze({a: decodeExpected(NOTES.a), b: decodeExpected(NO
 const Q = value => ({$variant: 'Quat', value: {...value}});
 
 module.exports = function buildMidiDecodeFunctionProbe() {
-  const b = new Build('MIDI DecodeNote function probe', FONT);
-  const ordinary = b.w.addMicrochip({position: [0, -35, 4], color: [55, 125, 185]});
+  const b = new Build('MIDI DecodeNote function probe V2', FONT);
+  const ordinary = b.w.addMicrochip({position: [0, -120, 4], color: [55, 125, 185]});
   const c = b.circuit(ordinary.grid, 'probe');
   const records = [];
 
   function saved(label, value) {
     const i = c.i++;
-    const pos = [(i % 8) * 48, Math.floor(i / 8) * 48, 2];
+    // Keep the exact same allocator as Circuit.n. Both helpers advance c.i, so
+    // differing column counts would assign distinct IDs to identical positions.
+    const pos = [(i % 16) * 48, Math.floor(i / 16) * 48, 2];
     const wireValue = typeof value === 'boolean' ? B(value)
       : typeof value === 'string' ? S(value) : N(value);
     const node = {id: `saved_${label}`, type: C.Var.NAME, pos, grid: c.grid, data: {Value: wireValue}};
@@ -107,7 +109,7 @@ module.exports = function buildMidiDecodeFunctionProbe() {
   // The exact candidate for the production player: one packed note record in,
   // four scalar values out.  Stateful voice logic and ArrayVar references stay
   // outside this callable.
-  const fn = callableShell([0, -75, 4]);
+  const fn = callableShell([48, -120, 4]);
   const fc = fn.circuit;
   const entry = fc.n('CallableEntry_Function');
   const input = fc.n('FunctionInput', {
@@ -144,7 +146,7 @@ module.exports = function buildMidiDecodeFunctionProbe() {
   const button = {
     id: 'run_button',
     type: C.Button.NAME,
-    pos: [-48, 0, 34],
+    pos: [-48, -120, 4],
     data: {PromptCustomLabel: 'Run DecodeNote probe once', bAllowNearbyInteraction: false},
   };
   b.add(button, {
@@ -214,31 +216,23 @@ module.exports = function buildMidiDecodeFunctionProbe() {
 
   // Four deliberately distinct expected values make the observed output-slot
   // permutation unambiguous after the in-game re-export.
-  addDisplay('title', [0, 0, 74], [1, 78, 10],
+  addDisplay('title', [0, 0, 100], [1, 78, 10],
     'MIDI DecodeNote FUNCTION PROBE', [115, 225, 255]);
-  addDisplay('instructions', [0, 0, 59], [1, 78, 13],
+  addDisplay('instructions', [0, 0, 76], [1, 78, 13],
     'Click the blue button exactly once, wait 3 seconds, then export/copy this WHOLE assembly.\r\nSend the exported .brz back. No rewiring or opening chips is needed.');
-  addDisplay('values_a', [0, 0, 39], [1, 61, 15], c.fmt(
+  addDisplay('values_a', [0, 0, 47], [1, 61, 15], c.fmt(
     'CALL A input (3.125, 7.875, 81, 127)\r\nExpected: Start 3.125 | End 7.875 | Pitch 2 | Velocity 1\r\nImmediate raw: O0 {A} | O1 {B} | O2 {C} | O3 {D}',
     ...callers.a.rawImmediate.map(node => R(node))));
-  addDisplay('values_b', [0, 0, 20], [1, 61, 15], c.fmt(
+  addDisplay('values_b', [0, 0, 16], [1, 61, 15], c.fmt(
     'CALL B input (13.25, 16.625, 57, 64)\r\nExpected: Start 13.25 | End 16.625 | Pitch 0.5 | Velocity 0.3831128812\r\nImmediate raw: O0 {A} | O1 {B} | O2 {C} | O3 {D}',
     ...callers.b.rawImmediate.map(node => R(node))));
-  addDisplay('status', [0, 0, 3], [1, 61, 10], c.fmt(
+  addDisplay('status', [0, 0, -10], [1, 61, 10], c.fmt(
     'Runs {A} | A: done {B}, iter {C}, abort {D} | B: done {E}, iter {F}, abort {G}',
     R(runs), R(callers.a.completed), R(callers.a.iterations), R(callers.a.aborted),
     R(callers.b.completed), R(callers.b.iterations), R(callers.b.aborted)), [255, 225, 125]);
 
-  b.w.addBrick({
-    asset: 'PB_DefaultBrick',
-    size: [2, 88, 57],
-    position: [2, 0, 39],
-    color: [8, 12, 20],
-    material: 'BMC_Glow',
-  });
-
   const bytes = b.finish(
-    {x: 65, y: 95, z: 100},
+    {x: 80, y: 145, z: 125},
     'One-button in-game probe for two same-tick callers sharing a pure MIDI DecodeNote '
       + 'Quaternion function. Retains immediate and +1 tick raw output slots.',
   );

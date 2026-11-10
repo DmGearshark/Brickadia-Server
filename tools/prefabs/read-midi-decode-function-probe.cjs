@@ -6,15 +6,16 @@ const {C} = require('./loadboard-lib.cjs');
 
 const file = process.argv[2];
 if (!file) throw new Error('Usage: node read-midi-decode-function-probe.cjs <returned.brz>');
+const PREFIX = 'MDFP2:';
 
 const scene = read(fs.readFileSync(file));
 const results = {};
 const calls = [];
 for (const brick of scene.bricks) {
   const marker = brick.comps.find(component => component.type === C.Interact.NAME
-    && component.data.Message?.startsWith('MDFP1:'));
+    && component.data.Message?.startsWith(PREFIX));
   const variable = brick.comps.find(component => component.type === C.Var.NAME);
-  if (marker && variable) results[marker.data.Message.slice('MDFP1:'.length)] = variable.data.Value;
+  if (marker && variable) results[marker.data.Message.slice(PREFIX.length)] = variable.data.Value;
   const native = brick.comps.find(component => component.type === C.FunctionCall.NAME);
   if (native) calls.push(native.data);
 }

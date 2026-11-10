@@ -3,10 +3,21 @@
 const assert = require('assert/strict');
 const {read} = require('./reskin-loadboard.cjs');
 const {C} = require('./loadboard-lib.cjs');
+const validatePlacement = require('./validate-placement.cjs');
 
 module.exports = function testMidiDecodeFunctionProbe(ctx) {
   const scene = read(ctx.bytes);
   const components = scene.bricks.flatMap(brick => brick.comps);
+  const placement = validatePlacement(ctx.bytes);
+  assert.equal(placement.invalidBricks.length, 0,
+    `Invalid probe bricks: ${JSON.stringify(placement.invalidBricks)}`);
+  assert.equal(placement.confirmedPairs.length, 0,
+    `Confirmed probe overlaps: ${JSON.stringify(placement.confirmedPairs)}`);
+  assert.equal(placement.uncertainPairs.length, 0,
+    `Uncertain probe overlaps: ${JSON.stringify(placement.uncertainPairs)}`);
+  assert.equal(placement.warnings.length, 0,
+    `Probe placement warnings: ${JSON.stringify(placement.warnings)}`);
+  assert.equal(placement.strictOk, true, 'Probe placement must pass strict validation');
 
   assert.equal(components.filter(component => component.type === C.Button.NAME).length, 1,
     'Probe must have exactly one run button');
@@ -44,12 +55,12 @@ module.exports = function testMidiDecodeFunctionProbe(ctx) {
     'Velocity power must retain raw exponent 1.4');
 
   const labels = components
-    .filter(component => component.type === C.Interact.NAME && component.data.Message?.startsWith('MDFP1:'))
+    .filter(component => component.type === C.Interact.NAME && component.data.Message?.startsWith('MDFP2:'))
     .map(component => component.data.Message);
   assert.equal(new Set(labels).size, labels.length, 'Saved-result labels must be unique');
   for (const {label, node} of ctx.records) {
     const brick = scene.bricks.find(candidate => candidate.comps.some(component =>
-      component.type === C.Interact.NAME && component.data.Message === `MDFP1:${label}`));
+      component.type === C.Interact.NAME && component.data.Message === `MDFP2:${label}`));
     assert(brick, `Missing saved result ${label}`);
     assert.deepEqual(brick.comps.find(component => component.type === C.Var.NAME).data.Value,
       node.data.Value, `Saved result ${label} changed during serialization`);

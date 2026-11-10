@@ -1,6 +1,10 @@
-# MIDI DecodeNote Function probe
+# MIDI DecodeNote Function probe V2
 
-`midi-decode-function-probe.brz` tests the exact pure helper proposed for the
+`midi-decode-function-probe-v2.brz` replaces the initial placement-broken
+artifact. It passes strict placement validation with no invalid bricks,
+confirmed overlaps or uncertain overlaps.
+
+The probe tests the exact pure helper proposed for the
 generic MIDI player. Two same-tick FunctionCall gates share one definition.
 Each receives a packed note Quaternion and returns start time, end time, pitch
 ratio and velocity curve. This also checks that concurrent voices retain
@@ -48,7 +52,7 @@ Rebuild and run offline serialization checks with:
 
 ```sh
 cd tools/prefabs
-node build-midi-decode-function-probe.cjs ../../prefabs/midi-decode-function-probe.brz
+node build-midi-decode-function-probe.cjs ../../prefabs/midi-decode-function-probe-v2.brz
 ```
 
 Offline checks validate the serialized Quaternion, ports, wire endpoints,
