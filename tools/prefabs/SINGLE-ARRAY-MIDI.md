@@ -71,6 +71,21 @@ saved as plain numbers. Note-on is also bounded to `start <= time < end`; if an
 expired record is allowed to re-arm after key-off, its cursor can never reach
 the advance path. The builder's round-trip checks cover both invariants.
 
+### Verified shared note decoder
+
+An in-game probe ran two same-tick Function Calls through one pure
+`DecodeNote(Quaternion)` definition. Both calls completed once without abort,
+returned distinct correct values immediately and retained them after one tick.
+For the tested four outputs, the verified slots are `Output3 = start`,
+`Output2 = end`, `Output1 = pitch ratio` and `Output0 = velocity curve`.
+
+This supports sharing the split/pitch/velocity calculation while leaving each
+voice's cursor, active state, envelope, Dampen gates and emitters independent.
+The probe used each Function Call's saved Quaternion override; the generic
+player's wired `ArrayVar Get -> FunctionCall.Input0` path still needs its normal
+integration test. Exact observations are recorded in
+[midi-decode-function-observed.json](gate-reference/midi-decode-function-observed.json).
+
 The complete player, including every sine emitter, is stored inside one
 microchip. The outer prefab contains only its chip shell. Wire into these pins:
 

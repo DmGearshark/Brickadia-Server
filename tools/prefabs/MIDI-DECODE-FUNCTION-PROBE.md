@@ -58,3 +58,26 @@ node build-midi-decode-function-probe.cjs ../../prefabs/midi-decode-function-pro
 Offline checks validate the serialized Quaternion, ports, wire endpoints,
 result labels and callable-local references. Only an in-game run can establish
 execution and the actual Function output ordering.
+
+## Returned V2 result
+
+The user returned a clean in-game save after pressing the button once and
+waiting more than three seconds. It retained all 83 bricks, 115 components,
+102 wires and both linked grids. Both Function Calls completed once in the same
+tick, reported one iteration, did not abort and retained independent results
+both immediately and after one tick.
+
+The observed mapping for this exact definition is:
+
+| Meaning | Function Call slot |
+| --- | --- |
+| start | `Output3` |
+| end | `Output2` |
+| pitch ratio | `Output1` |
+| velocity curve | `Output0` |
+
+The engine therefore orders these four outputs in the reverse of their
+declared `PortOrder`. Production code must use the observed slots explicitly.
+[midi-decode-function-observed.json](gate-reference/midi-decode-function-observed.json)
+records the source/return hashes and exact retained values without committing
+the user's complete returned save.

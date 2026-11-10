@@ -1,0 +1,51 @@
+{
+  "sourceArtifact": "prefabs/midi-decode-function-probe-v2.brz",
+  "sourceSha256": "e4a0d32d110c48fa327e516e2235d982b3c300d8f5990b2dfa23584e536130fb",
+  "returnedFile": "The Probe.brz (returned by user)",
+  "returnedSha256": "d5220f5291354a68ca617c8c1087b8254d7d7988b667cb2efa0572b86c28db90",
+  "observedDate": "2026-11-10",
+  "counts": {
+    "bricks": 83,
+    "components": 115,
+    "wires": 102,
+    "linkedGrids": 2
+  },
+  "placement": {
+    "strictOk": true,
+    "invalidBricks": 0,
+    "confirmedOverlaps": 0,
+    "uncertainOverlaps": 0,
+    "warnings": 0
+  },
+  "runs": 1,
+  "slotMapping": {
+    "start": "Output3",
+    "end": "Output2",
+    "pitchRatio": "Output1",
+    "velocityCurve": "Output0"
+  },
+  "callA": {
+    "input": [3.125, 7.875, 81, 127],
+    "immediateOutputs0Through3": [1, 2, 7.875, 3.125],
+    "afterOneTickOutputs0Through3": [1, 2, 7.875, 3.125],
+    "completed": 1,
+    "iterationsExecuted": 1,
+    "aborted": false,
+    "abortReason": 0
+  },
+  "callB": {
+    "input": [13.25, 16.625, 57, 64],
+    "immediateOutputs0Through3": [0.3831128811637326, 0.5, 16.625, 13.25],
+    "afterOneTickOutputs0Through3": [0.3831128811637326, 0.5, 16.625, 13.25],
+    "completed": 1,
+    "iterationsExecuted": 1,
+    "aborted": false,
+    "abortReason": 0
+  },
+  "conclusion": {
+    "twoSameTickCallersCompleted": true,
+    "independentOutputsRetained": true,
+    "immediateOutputsMatchedExpected": true,
+    "oneTickOutputsMatchedImmediate": true
+  }
+}
