@@ -217,7 +217,8 @@ report protocol, transaction, decoder, scheduler and graph verdicts separately.
 3. Press the player's blue **LOAD / LISTEN** button once.
 4. Wait about one second. The cartridge should show one accepted request and a
    ready state.
-5. Press the cartridge's green **Send SQM1 test song** button once.
+5. Press the cartridge's green **Send SQM1 test song** button once, before the
+   player's V1 ten-second request window closes.
 6. Wait three seconds. The player should show `Loaded true`, staging and active
    lengths `46`, validation true and one acknowledgment sent. The cartridge
    should show acknowledgment result `1`.
@@ -232,6 +233,26 @@ report protocol, transaction, decoder, scheduler and graph verdicts separately.
 
 If the cartridge cannot show its acknowledgment before deletion, export both
 assemblies first for diagnosis and do not interpret the audio result yet.
+
+## Returned V1 timeout observation
+
+The first returned player save retained all 511 bricks, 609 components, 751
+wires and both linked grids with a strict placement result. It sent one request
+and received one offer whose magic, channel, nonce, length, title, mode and
+format all matched exactly. The player nevertheless recorded one rejection,
+zero copies and zero playback starts because `request.waiting` was already
+false when the offer arrived. `copy.busy` was false, so the ten-second request
+timeout was the only failed acceptance term.
+
+The two Sine emitters and all audio-control wires were intact. No audio path ran
+because `Loaded` remained false, so silence in this return does not establish an
+emitter or decoder failure. The unexecuted FunctionCall inputs saved as scalar
+placeholders while the Function definition retained its Quaternion input type;
+the wired Quaternion decoder path therefore also remains untested.
+
+[sqm1-wireless-sine-player-integration-v1-timeout-observed.json](gate-reference/sqm1-wireless-sine-player-integration-v1-timeout-observed.json)
+records the source and returned hashes and the retained counters without storing
+the user's complete returned save.
 
 ## Pass criteria
 

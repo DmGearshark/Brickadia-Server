@@ -180,6 +180,11 @@ const cartridgeMarkers = scene.bricks.flatMap(brick => brick.comps)
     && candidate.data.Message?.startsWith('MWIC1:')).length;
 const calls = bricksOf(C.FunctionCall.NAME);
 const definitions = bricksOf(C.Microchip_FunctionDefinition.NAME);
+const functionInputs = bricksOf(C.FunctionInput.NAME);
+const functionInputType = functionInputs.length === 1
+  && component(functionInputs[0], C.FunctionInput.NAME).data.DefaultValue?.$variant === 'Quat';
+const callInputVariants = calls.map(call =>
+  component(call, C.FunctionCall.NAME).data.Input0?.$variant ?? null);
 const nonceBrick = markedBrick('request.nonce');
 const activeLengthBrick = markedBrick('active.length');
 const titleBrick = markedBrick('title');
@@ -250,7 +255,6 @@ const voiceDecodeTopology = [0, 1].every(index => {
     edge(candidate, C.Exec_ArrayVar_Get.NAME, 'Value', call, C.FunctionCall.NAME, 'Input0'));
   const native = component(call, C.FunctionCall.NAME);
   if (!getter || JSON.stringify(native.data.InputSources) !== '[1,0,0,0,0,0,0,0]'
-    || native.data.Input0?.$variant !== 'Quat'
     || !edge(holds.cursor, C.Var.NAME, 'Value', getter, C.Exec_ArrayVar_Get.NAME, 'Index')) {
     return false;
   }
@@ -266,6 +270,7 @@ const voiceDecodeTopology = [0, 1].every(index => {
     && setterConnects(call, C.FunctionCall.NAME, 'Output0', holds.velocity));
 });
 const decodeTopology = calls.length === 2 && definitions.length === 1
+  && functionInputType
   && activeGets.length === 7 && playbackGets.length === 2 && activeHeaderGets.length === 5
   && JSON.stringify(activeHeaderIndices) === '[0,1,2,3,33]'
   && voiceDecodeTopology
@@ -415,6 +420,8 @@ const graph = {
   activeHeaderGetters: activeHeaderGets.length,
   activeHeaderIndices,
   playbackGetters: playbackGets.length,
+  functionInputType,
+  callInputVariants,
   decodeTopology,
   voiceDecodeTopology,
   copyTopology: Boolean(stagingCopy && activeCopy && copies.length === 2),
@@ -428,6 +435,16 @@ const graph = {
   passed: Boolean(graphPassed),
 };
 const passed = loadPassed && playbackPassed && graph.passed;
+const requestWindowExpired = envelopeExact
+  && Number(values['request.sent'] ?? 0) >= 1
+  && Number(values['offer.received'] ?? 0) >= 1
+  && Number(values['offer.accepted'] ?? 0) === 0
+  && Number(values['offer.rejected'] ?? 0) >= 1
+  && values['request.waiting'] === false
+  && values['copy.busy'] === false
+  && Number(values['staging.copy.completed'] ?? 0) === 0
+  && Number(values['active.copy.completed'] ?? 0) === 0
+  && values.loaded === false;
 let interpretation;
 if (passed) {
   interpretation = 'PASS: the wireless score was copied exactly into staging and active storage, acknowledged, then all 12 notes were fetched from ActiveScore, decoded through the shared Function and completed without abort or bounds errors. Confirm separately that the cartridge was deleted before Play and the duet was audible.';
@@ -435,6 +452,8 @@ if (passed) {
   interpretation = 'PLAYER EXPORT INCLUDES CARTRIDGE CONTENT: delete the complete cartridge and export only the player so local-copy independence can be established.';
 } else if (!graph.passed) {
   interpretation = 'PLAYER GRAPH INCOMPLETE: the returned save does not retain the complete staging/active, decoder and continuous-audio topology; inspect placement warnings and export the whole player.';
+} else if (requestWindowExpired) {
+  interpretation = 'REQUEST WINDOW EXPIRED: the player sent one request and received an exact matching cartridge offer, but the offer arrived after the V1 ten-second waiting window closed. No array was copied and playback correctly stayed blocked. Press LOAD / LISTEN again, then press SEND SONG on the cartridge within ten seconds.';
 } else if (loadPassed) {
   interpretation = 'LOAD PASS / PLAYBACK INCOMPLETE: the independent ActiveScore is exact. Delete the cartridge, press PLAY LOCAL COPY, wait ten seconds, then export the complete player again.';
 } else if (Number(values['request.sent'] ?? 0) === 0) {
@@ -456,6 +475,8 @@ console.log(JSON.stringify({
   load: {
     requests: values['request.sent'], received: values['offer.received'],
     accepted: values['offer.accepted'], rejected: values['offer.rejected'],
+    waiting: values['request.waiting'], copyBusy: values['copy.busy'],
+    requestWindowExpired,
     stagingCopies: values['staging.copy.completed'], stagingLength: values['staging.length'],
     validationCompleted: values['validation.completed'],
     validationPassed: values['validation.passed'], validationResult: values['validation.result'],

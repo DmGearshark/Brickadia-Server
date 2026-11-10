@@ -1,0 +1,53 @@
+{
+  "sourceArtifact": "prefabs/sqm1-wireless-sine-player-integration-v1.brz",
+  "sourceSha256": "cdacd3f9870a33ac7d806ed3484bc7fb0c565948cfcd5e1276e4b09468afefeb",
+  "returnedFile": "results.brz (returned by user)",
+  "returnedSha256": "5b3062709c6d5b26eb1521f8d0542e9a3482b8a7c70f659e1b0debc2baade45c",
+  "observedDate": "2026-11-10",
+  "counts": {
+    "bricks": 511,
+    "components": 609,
+    "wires": 751,
+    "linkedGrids": 2
+  },
+  "placement": {
+    "strictOk": true,
+    "warnings": 0,
+    "playerGraphIntact": true,
+    "cartridgeAbsentFromExport": true
+  },
+  "load": {
+    "requestsSent": 1,
+    "offersReceived": 1,
+    "offerEnvelopeExact": true,
+    "requestWaitingAtSave": false,
+    "copyBusyAtSave": false,
+    "offersAccepted": 0,
+    "offersRejected": 1,
+    "stagingCopies": 0,
+    "activeCopies": 0,
+    "loaded": false
+  },
+  "playback": {
+    "starts": 0,
+    "notesArmed": 0,
+    "sineEmitterTopologyIntact": true,
+    "audioPathExecuted": false
+  },
+  "functionPath": {
+    "definitionInputDefault": "Quat",
+    "savedUnexecutedCallInputVariants": [
+      "f64",
+      "f64"
+    ],
+    "wiresAndDefinitionLinksIntact": true,
+    "wiredQuatDecodeExecuted": false
+  },
+  "conclusion": {
+    "cause": "The exact matching offer arrived after V1's ten-second request window had closed.",
+    "transportReachedPlayer": true,
+    "arrayCopyAttempted": false,
+    "silenceExpected": true,
+    "userPasteWasStructurallyCorrect": true
+  }
+}

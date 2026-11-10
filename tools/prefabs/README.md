@@ -26,6 +26,12 @@ and player are separate prefabs; the live procedure loads the song, deletes
 the cartridge, and plays the retained local copy twice through two callers
 sharing the verified `DecodeNote` Function.
 
+[SQM1-WIRELESS-LOAD-PLAY-INTEGRATION-V2.md](SQM1-WIRELESS-LOAD-PLAY-INTEGRATION-V2.md)
+removes V1's ten-second request timeout after the returned save proved that a
+matching offer arrived only after the window closed. The matching request now
+stays open until a valid cartridge offer is accepted; the transport, local
+copy, shared decoder and two continuous Sine voices remain unchanged.
+
 ## Isaac Newton book collection
 
 [NEWTON-COLLECTION.md](NEWTON-COLLECTION.md) documents the complete preserved
