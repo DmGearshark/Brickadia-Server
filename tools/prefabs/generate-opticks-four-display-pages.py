@@ -36,6 +36,13 @@ IMAGE_FONT = "IosevkaTerm"
 IMAGE_KERNING = -6
 IMAGE_ADVANCE_SCALE = 0.115
 TEXT_WIDTH_SCALE = 0.82
+# The large two-page shell scales generated text geometry by 1.6.  These
+# compact-only values therefore become 0.875 line height and preserve the
+# existing horizontal advance (0.546875 * 0.75 * 1.6 = 0.65625) while making
+# the prose visibly taller.
+COMPACT_TEXT_BODY_ROWS = 44
+COMPACT_TEXT_LINE_HEIGHT = 0.546875
+COMPACT_TEXT_WIDTH_SCALE = 0.75
 MIN_FIGURE_COLUMNS = 400
 PAGE_IMAGE_COLUMNS = 600
 MAX_IMAGE_ROWS = 260
@@ -653,6 +660,10 @@ if __name__ == "__main__":
     LIVE_BRAILLE_ROW_ASPECT = arguments.live_row_aspect
     FORCE_NEW_PAGE_BEFORE.update(arguments.force_new_page_before)
     COMPACT_LIVE_LAYOUT = arguments.compact_live_layout
+    if COMPACT_LIVE_LAYOUT:
+        TEXT_BODY_ROWS = COMPACT_TEXT_BODY_ROWS
+        TEXT_LINE_HEIGHT = COMPACT_TEXT_LINE_HEIGHT
+        TEXT_WIDTH_SCALE = COMPACT_TEXT_WIDTH_SCALE
     REVISION_NAME = arguments.name
     REVISION_DESCRIPTION = arguments.description
     main()

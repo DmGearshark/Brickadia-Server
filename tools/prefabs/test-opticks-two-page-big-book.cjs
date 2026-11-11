@@ -31,6 +31,7 @@ const MUTABLE_DISPLAY_PATHS = [
   'LineOffset',
   'Kerning',
   'Skew',
+  'Outline',
   'OutlineWidth',
   'Offset.Y',
   'Offset.Z',
@@ -263,8 +264,8 @@ function approx(actual, expected, description) {
 }
 
 function validateData(data) {
-  assert.equal(data.textPages.length, 219,
-    'Expected the compact 219-page large-leaf Opticks data');
+  assert.equal(data.textPages.length, 237,
+    'Expected the enlarged-type 237-page large-leaf Opticks data');
   for (const key of PAGE_KEYS) {
     assert(Array.isArray(data[key]), `Missing ${key}`);
     assert.equal(data[key].length, data.textPages.length, `${key} page count`);
@@ -277,6 +278,9 @@ function validateData(data) {
   assert.equal(data.layout.imageArrayCount, 4);
   assert.equal(data.layout.imageFont, 'IosevkaTerm');
   assert.equal(data.layout.compactLiveLayout, true);
+  assert.equal(data.layout.textBodyRows, 44);
+  approx(data.layout.textLineHeight, 0.546875, 'Compact text LineHeight');
+  approx(data.layout.textWidthScale, 0.75, 'Compact text WidthScale');
   assert.equal(data.layout.figureTopMarginTextRows, 1);
   assert.equal(data.layout.maximumActiveImageBottom, 240);
   assert.deepEqual(data.layout.forcedPageStarts, [32, 55]);
@@ -342,7 +346,7 @@ function test(donorPath, outputPath, dataPath) {
   const arrays = components(output, TYPES.array, outputGrid.inner);
   const getters = components(output, TYPES.get, outputGrid.inner);
   const spreadCount = Math.ceil(data.textPages.length / 2);
-  assert.equal(spreadCount, 110);
+  assert.equal(spreadCount, 119);
   assert.equal(cycle.component.data.Count, spreadCount);
   assert.equal(cycle.component.data.Value, spreadCount - 1);
   assert.equal(refresh.component.data.bInputA, false);
@@ -383,6 +387,7 @@ function test(donorPath, outputPath, dataPath) {
       `${side.name} prose WidthScale`);
     approx(roles.prose.component.data.LineHeight, data.layout.textLineHeight * DISPLAY_SCALE,
       `${side.name} prose LineHeight`);
+    assert.equal(roles.prose.component.data.Outline, 2);
     assert.equal(roles.prose.component.data.OutlineWidth, 2);
     approx(roles.prose.component.data.Offset.Y, -3, `${side.name} prose Offset.Y`);
     approx(roles.prose.component.data.Offset.Z, 1, `${side.name} prose Offset.Z`);
@@ -399,6 +404,7 @@ function test(donorPath, outputPath, dataPath) {
         `${side.name} image ${index + 1} LineOffset`);
       assert.equal(display.component.data.Kerning, data.layout.imageKerning);
       assert.equal(display.component.data.Skew, 0);
+      assert.equal(display.component.data.Outline, 2);
       approx(display.component.data.OutlineWidth, data.layout.imageOutlineWidth,
         `${side.name} image ${index + 1} OutlineWidth`);
       approx(display.component.data.Offset.Z, 1,
@@ -485,7 +491,7 @@ function test(donorPath, outputPath, dataPath) {
   }
   assert.match(sidePages(data.textPages, 'left')[0], /^1\r?\n/);
   assert.match(sidePages(data.textPages, 'right')[0], /^2\r?\n/);
-  assert.match(sidePages(data.textPages, 'left').at(-1), /^219\r?\n/);
+  assert.match(sidePages(data.textPages, 'left').at(-1), /^237\r?\n/);
 
   const buttons = components(output, TYPES.button, outputGrid.outer);
   const turnRight = one(buttons.filter(item => /right/i.test(item.component.data.PromptCustomLabel || '')),
@@ -514,7 +520,7 @@ function test(donorPath, outputPath, dataPath) {
   assert.equal(edgesFrom(output, refresh, 'bOutput').length, 10);
 
   // With reversed arrays, the highest index is spread 1, the next index is
-  // spread 2, and index 0 is the final 219/blank spread. The native Cycle
+  // spread 2, and index 0 is the final 237/blank spread. The native Cycle
   // wraps at both ends, matching the approved single-page controller.
   for (let index = 0; index < spreadCount; index += 1) {
     const logicalSpread = spreadCount - 1 - index;

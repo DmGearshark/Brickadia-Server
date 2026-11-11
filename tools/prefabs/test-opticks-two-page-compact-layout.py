@@ -131,13 +131,24 @@ def main() -> None:
     layout = compact["layout"]
 
     assert len(v27["textPages"]) == 227
-    assert len(compact["textPages"]) == 219
+    assert len(compact["textPages"]) == 237
     assert len(compact["placements"]) == len(v27["placements"]) == 57
     assert len(compact["detailViews"]) == len(v27["detailViews"]) == 1
-    assert all(len(compact[key]) == 219 for key in ("imagePages", *BAND_KEYS))
+    assert all(len(compact[key]) == 237 for key in ("imagePages", *BAND_KEYS))
     assert compact["source"] == v27["source"]
     assert compact["representation"] == v27["representation"]
-    assert immutable_layout(layout) == immutable_layout(v27["layout"])
+    compact_layout = immutable_layout(layout)
+    source_layout = immutable_layout(v27["layout"])
+    for key in ("textBodyRows", "textLineHeight", "textWidthScale"):
+        compact_layout.pop(key)
+        source_layout.pop(key)
+    assert compact_layout == source_layout
+    assert layout["textBodyRows"] == 44
+    assert layout["textLineHeight"] == 0.546875
+    assert layout["textWidthScale"] == 0.75
+    assert max(
+        len(page.split("\r\n")) for page in compact["textPages"]
+    ) == layout["textBodyRows"] + 2
     assert layout["compactLiveLayout"] is True
     assert layout["forcedPageStarts"] == [32, 55]
     assert layout["figureTopMarginTextRows"] == 1
@@ -217,12 +228,12 @@ def main() -> None:
 
     figure12 = new_figures[12]
     figure13 = new_figures[13]
-    assert figure12["page"] == figure13["page"] == 20
-    assert figure12["imageY"] + figure12["rows"] == 100
-    assert figure13["imageY"] + figure13["rows"] == 206
+    assert figure12["page"] == figure13["page"] == 22
+    assert figure12["imageY"] + figure12["rows"] == 102
+    assert figure13["imageY"] + figure13["rows"] == 213
 
     maximum_band_bytes = assert_four_band_reconstruction(compact)
-    assert maximum_bottom == 237
+    assert maximum_bottom == 238
     assert maximum_band_bytes == max(max(values) for values in compact["imageBandBytes"])
 
     print(json.dumps({
