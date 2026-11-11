@@ -7,8 +7,8 @@ geometry; the book logic and source content are complete.
 ## Behavior
 
 - 227 source pages are arranged as 114 spreads: 1/2, 3/4, through 227/blank.
-- The left page's **Turn page Right** control moves to the previous spread.
-- The right page's **Turn page Left** control moves to the next spread.
+- **Turn page Right** advances to the next spread.
+- **Turn page Left** returns to the previous spread.
 - A single 114-state Cycle drives both leaves.
 - Each leaf has one prose array and four byte-balanced Unicode Braille image
   arrays, for ten arrays and ten getters total.
@@ -32,7 +32,7 @@ other source geometry keep the corrected v27 aspect.
   `2dddde496c47f345d936c0e366867da9aaf49c9eec92e0a43475ee7313766fb3`
 - Output: `prefabs/newton-opticks-large-two-page-v1.brz`
 - Output SHA-256:
-  `93ffd656e4f2af029f30bc1d42fa195d9e85613358e6c772af21d00c393ce223`
+  `dd2a857a13b3f4db4bf05e741cb008658afa66c69428a5dbe92324d9d4ec121c`
 
 The v27 dataset retains the original scan dirt selected for the final
 single-page book. It contains all 227 prose pages, 57 source-derived figures,
@@ -61,8 +61,8 @@ origins, shell preservation, metadata, and strict zero-warning placement.
 1. Paste the prefab and confirm that the placement report has no blocked,
    invalid, or unconnectable parts.
 2. Confirm page 1 is on the left and page 2 is on the right.
-3. Use the right-hand control once and confirm the spread becomes pages 3/4;
-   use the left-hand control to return to pages 1/2.
+3. Use **Turn page Right** once and confirm the spread becomes pages 3/4;
+   use **Turn page Left** to return to pages 1/2.
 4. Advance to pages 7/8 and 9/10 to inspect the wide Figure 3 plate and its
    enlarged detail page. The four Braille bands should form one seamless image.
 5. Capture a full spread and a close view of one image page. Those views are

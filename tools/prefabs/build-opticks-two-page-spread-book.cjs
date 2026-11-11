@@ -85,9 +85,9 @@ function build(input, dataFile = DATA_FILE) {
   assert.equal(displays.length, 12, 'Expected six displays on each physical page');
   const buttons = components(scene, TYPES.button);
   assert.equal(buttons.length, 2, 'Expected the shell page-turn buttons');
-  const leftButton = one(buttons.filter(item => /right/i.test(item.component.data.PromptCustomLabel || '')),
+  const turnPageRight = one(buttons.filter(item => /right/i.test(item.component.data.PromptCustomLabel || '')),
     'Turn page Right button');
-  const rightButton = one(buttons.filter(item => /left/i.test(item.component.data.PromptCustomLabel || '')),
+  const turnPageLeft = one(buttons.filter(item => /left/i.test(item.component.data.PromptCustomLabel || '')),
     'Turn page Left button');
 
   const externalAssets = structuredClone(scene.r.externalAssets());
@@ -134,7 +134,9 @@ function build(input, dataFile = DATA_FILE) {
 
   const sideState = {};
   for (const [sideIndex, side] of ['left', 'right'].entries()) {
-    const hostX = side === 'left' ? -20 : 20;
+    // Live viewing established that the shell's +X leaf is visually left and
+    // its -X leaf is visually right from the reader's side of the open book.
+    const hostX = side === 'left' ? 20 : -20;
     const sideDisplays = displays.filter(item => item.brick.data.position[0] === hostX);
     assert.equal(sideDisplays.length, 6, `${side} page display count`);
     const background = one(sideDisplays.filter(item => item.component.data.Text === '■'),
@@ -203,13 +205,13 @@ function build(input, dataFile = DATA_FILE) {
     });
   }
 
-  // The outer-left control turns its page right to the previous spread. The
-  // outer-right control turns its page left to the next spread, matching the
-  // shell's existing interaction labels and the proven single-page cycle.
-  wire(leftButton, 'bHeld', cycle, 'Exec');
-  wire(rightButton, 'bHeld', cycle, 'ExecDown');
-  wire(leftButton, 'bHeld', refresh, 'bInputA');
-  wire(rightButton, 'bHeld', refresh, 'bInputB');
+  // Live testing confirmed the interaction label is the intended direction:
+  // Turn page Right advances, while Turn page Left returns to the prior
+  // spread. Reversed arrays advance through Cycle.ExecDown.
+  wire(turnPageLeft, 'bHeld', cycle, 'Exec');
+  wire(turnPageRight, 'bHeld', cycle, 'ExecDown');
+  wire(turnPageLeft, 'bHeld', refresh, 'bInputA');
+  wire(turnPageRight, 'bHeld', refresh, 'bInputB');
 
   for (const side of ['left', 'right']) {
     const state = sideState[side];

@@ -19,8 +19,9 @@ const TYPES = {
 const PAGE_KEYS = ['textPages', 'imagePagesA', 'imagePagesB', 'imagePagesC', 'imagePagesD'];
 const DISPLAY_SCALE = 1.6;
 const SIDE_SPECS = [
-  { name: 'left', x: -20 },
-  { name: 'right', x: 20 },
+  // The live reader view mirrors the shell's local X axis.
+  { name: 'left', x: 20 },
+  { name: 'right', x: -20 },
 ];
 const MUTABLE_DISPLAY_PATHS = [
   'Text',
@@ -489,12 +490,12 @@ function test(donorPath, outputPath, dataPath) {
   const cycleUp = one(edgesTo(output, cycle, 'Exec'), 'previous-spread Cycle wire');
   const cycleDown = one(edgesTo(output, cycle, 'ExecDown'), 'next-spread Cycle wire');
   assert.equal(endpoint(cycleUp), endpoint({
-    a: turnRight.brick.key,
+    a: turnLeft.brick.key,
     at: TYPES.button,
     p: 'bHeld',
   }));
   assert.equal(endpoint(cycleDown), endpoint({
-    a: turnLeft.brick.key,
+    a: turnRight.brick.key,
     at: TYPES.button,
     p: 'bHeld',
   }));
