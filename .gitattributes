@@ -3,6 +3,7 @@
 tools/prefabs/newton-*-four-display-pages.json -diff
 tools/prefabs/opticks-four-display-pages-v*.json -diff
 prefabs/newton-*.brz binary
+tools/prefabs/sources/big-book-two-page-shell.brz binary
 
 # Gutenberg snapshots are preserved byte-for-byte, including upstream CRLF
 # endings and trailing spaces.
