@@ -165,6 +165,37 @@ def main() -> None:
         assert immutable_figure(new) == immutable_figure(old), number
         assert art_rectangle(compact, new) == art_rectangle(v27, old), number
 
+    # Preserve the reader-oriented editorial layout. Closely related simple
+    # diagrams share a leaf, while all other figures keep an unshared image
+    # canvas. This prevents a future facsimile-style repagination from
+    # shrinking the plates back into their historical copperplate groupings.
+    figures_by_page: dict[int, list[int]] = defaultdict(list)
+    for item in compact["placements"]:
+        figures_by_page[item["page"]].append(item["number"])
+    expected_groups = {
+        11: [4, 5],
+        12: [6, 7],
+        16: [9, 10],
+        22: [12, 13],
+        34: [18, 19],
+    }
+    actual_groups = {
+        page: numbers
+        for page, numbers in figures_by_page.items()
+        if len(numbers) > 1
+    }
+    assert actual_groups == expected_groups
+    assert all(
+        current["page"] > previous["page"]
+        or (
+            current["page"] == previous["page"]
+            and current["textStartRow"] >= previous["textStartRow"]
+        )
+        for previous, current in zip(
+            compact["placements"], compact["placements"][1:]
+        )
+    )
+
     old_detail = v27["detailViews"][0]
     detail = compact["detailViews"][0]
     assert immutable_figure(detail) == immutable_figure(old_detail)

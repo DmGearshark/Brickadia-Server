@@ -64,9 +64,12 @@ corrects the measured Braille-cell aspect and gives tightly packed figures a
 safe page boundary while retaining v25 unchanged.
 
 [Opticks large two-page v1](NEWTON-OPTICKS-TWO-PAGE-V1.md) repaginates that
-exact v27 content into 219 compact pages for the supplied open-book shell. One
-page turn advances a synchronized two-page spread; the tracked shell, builder,
-output, hashes, and live-calibration procedure make the format reproducible.
+exact v27 content into 237 enlarged-type pages for the supplied open-book
+shell. Its reader-oriented layout keeps all 57 illustrations beside their
+related passages, groups only simple neighbouring diagrams, and gives dense
+plates dedicated space. One page turn advances a synchronized two-page spread;
+the tracked shell, builder, output, hashes, and live-calibration procedure make
+the format reproducible.
 
 ## User's labeled display
 

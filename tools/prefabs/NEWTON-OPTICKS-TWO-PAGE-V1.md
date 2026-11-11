@@ -57,6 +57,28 @@ The source dataset retains the original scan dirt selected for the final
 single-page book. The compact layout contains all prose, 57 source-derived
 figures, and the enlarged Figure 3 detail page.
 
+## Illustration placement
+
+This is the reader-oriented layout. It follows the illustration markers in
+the 1730 fourth-edition transcription, so diagrams stay with the experiments,
+axioms, and observations that refer to them. It does not reproduce the
+original printer's folded copperplate sheets as miniature page images.
+
+Simple neighbouring diagrams share a leaf when they remain legible: generated
+figures 4/5, 6/7, 9/10, 12/13, and 18/19. Dense ray networks and label-heavy
+plates retain their own space. Figure 3 has both its complete overview and a
+facing enlarged centre detail because its intersecting rays lose information
+at the overview scale. This policy gives the illustrations their historical
+sequence while adapting their scale to Brickadia's text displays.
+
+The matching illustrated original is Isaac Newton, *Opticks*, fourth edition,
+corrected (London: William Innys, 1730), Internet Archive item
+[`opticksoratreat00newtgoog`](https://archive.org/details/opticksoratreat00newtgoog).
+Its diagrams are bound as separate engraved plate leaves; scan leaf 114, for
+example, groups Book I Part I Figures 2, 3, 5, and 7. The in-game prose comes
+from Project Gutenberg ebook 33504. The sharper Figure 3 conversion source is
+the credited 1704 BnF/Gallica plate recorded in the generated layout metadata.
+
 ## Regeneration and checks
 
 ```sh
