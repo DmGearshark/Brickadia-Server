@@ -63,10 +63,10 @@ The later [Opticks v27 live-geometry candidate](NEWTON-OPTICKS-V27.md)
 corrects the measured Braille-cell aspect and gives tightly packed figures a
 safe page boundary while retaining v25 unchanged.
 
-[Opticks large two-page v1](NEWTON-OPTICKS-TWO-PAGE-V1.md) places that exact
-227-page v27 edition into the supplied open-book shell. One page turn advances
-a synchronized two-page spread; the tracked shell, builder, output, hashes, and
-live-calibration procedure make the new format reproducible.
+[Opticks large two-page v1](NEWTON-OPTICKS-TWO-PAGE-V1.md) repaginates that
+exact v27 content into 219 compact pages for the supplied open-book shell. One
+page turn advances a synchronized two-page spread; the tracked shell, builder,
+output, hashes, and live-calibration procedure make the format reproducible.
 
 ## User's labeled display
 

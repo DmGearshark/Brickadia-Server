@@ -15,7 +15,7 @@ const TYPES = {
   text: 'Component_TextDisplay',
 };
 
-const DATA_FILE = path.join(__dirname, 'opticks-four-display-pages-v27-live-geometry.json');
+const DATA_FILE = path.join(__dirname, 'opticks-four-display-pages-v28-two-page-compact.json');
 const LOGIC_DONOR = path.join(__dirname, '../../prefabs/newton-opticks-pure-braille-v27-live-geometry.brz');
 const PAGE_KEYS = ['textPages', 'imagePagesA', 'imagePagesB', 'imagePagesC', 'imagePagesD'];
 
@@ -65,6 +65,8 @@ function validateData(data) {
   }
   assert.equal(data.layout?.imageFont, 'IosevkaTerm');
   assert.equal(data.layout?.imageArrayCount, 4);
+  assert.equal(data.layout?.compactLiveLayout, true,
+    'Two-page data must use compact live-art reservations');
 }
 
 function build(input, dataFile = DATA_FILE) {
@@ -224,8 +226,8 @@ function build(input, dataFile = DATA_FILE) {
     }
   }
 
-  const name = 'Newton Opticks - Large Two-Page Live Geometry Edition';
-  const description = 'Complete Isaac Newton Opticks text and source-derived live-geometry Braille figures in a large synchronized two-page spread. Each page turn advances two source pages.';
+  const name = 'Newton Opticks - Large Two-Page Compact Edition';
+  const description = 'Complete Isaac Newton Opticks text and retained-dirt live-geometry Braille figures, repaginated with compact art reservations and protected prose clearance for the large two-page shell.';
   const generated = write(scene, { assets: externalAssets, name, description }).bytes;
   return {
     bytes: repack(generated, donorBytes, { name, description }),

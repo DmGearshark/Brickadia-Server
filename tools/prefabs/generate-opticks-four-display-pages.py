@@ -39,10 +39,12 @@ TEXT_WIDTH_SCALE = 0.82
 MIN_FIGURE_COLUMNS = 400
 PAGE_IMAGE_COLUMNS = 600
 MAX_IMAGE_ROWS = 260
+COMPACT_MAX_ACTIVE_IMAGE_BOTTOM = 240
 IMAGE_LAYER_OFFSET_DELTA = 2.0
 CELL_MODE = "braille"
 BLANK = "\u2800"
 LIVE_BRAILLE_ROW_ASPECT = 1.0
+COMPACT_LIVE_LAYOUT = False
 REVISION_NAME: str | None = None
 REVISION_DESCRIPTION: str | None = None
 DETAIL_VIEWS = {
@@ -288,6 +290,14 @@ def layout_rows_for_art(image_rows: int) -> int:
     return max(1, round(image_rows / LIVE_BRAILLE_ROW_ASPECT))
 
 
+def reservation_rows_for_art(image_rows: int) -> int:
+    """Choose the source-compatible or compact live-art reservation height."""
+    planning_rows = image_rows if COMPACT_LIVE_LAYOUT else layout_rows_for_art(image_rows)
+    # Compact figures move down by one prose row. Carry their caption down by
+    # the same row so the added top clearance cannot consume the bottom buffer.
+    return reserved_text_rows(planning_rows) + (1 if COMPACT_LIVE_LAYOUT else 0)
+
+
 def image_row_for_text(text_row: int) -> int:
     """Align a Braille image row with a row on the overlaid prose display."""
     return round(text_row * TEXT_LINE_HEIGHT / IMAGE_LAYOUT_LINE_HEIGHT)
@@ -315,7 +325,7 @@ def main() -> None:
     def append_detail_page(detail: dict, overview_page: int) -> None:
         art = detail["art"]
         layout_rows = layout_rows_for_art(len(art))
-        reserve = reserved_text_rows(layout_rows)
+        reserve = reservation_rows_for_art(len(art))
         if reserve > TEXT_BODY_ROWS:
             raise ValueError(f"Detail view {detail['name']} exceeds page height")
         page_number = len(text_pages) + 1
@@ -368,11 +378,17 @@ def main() -> None:
     def place_figure(number: int, src: str, alt: str, art: list[str]) -> None:
         nonlocal body, image_canvas, queued_details
         layout_rows = layout_rows_for_art(len(art))
-        reserve = reserved_text_rows(layout_rows)
+        reserve = reservation_rows_for_art(len(art))
         if len(body) + reserve > TEXT_BODY_ROWS:
             raise ValueError(f"Figure {number} does not fit reserved region")
         text_start = len(body)
-        image_y = image_row_for_text(2 + text_start)
+        # The compact large-leaf edition keeps one complete prose row between
+        # prior text and a figure. The original path stays byte-for-byte stable.
+        top_margin = 1 if COMPACT_LIVE_LAYOUT else 0
+        image_y = image_row_for_text(2 + text_start + top_margin)
+        if (COMPACT_LIVE_LAYOUT
+                and image_y + len(art) > COMPACT_MAX_ACTIVE_IMAGE_BOTTOM):
+            raise ValueError(f"Figure {number} exceeds compact image canvas")
         art_width = max(map(len, art), default=0)
         can_side_flow = art_width < 150 and len(art) < 80
         # Center figures that reserve their full rectangle. Small, short art is
@@ -465,10 +481,16 @@ def main() -> None:
                 flush()
             src, alt = parser.images[figure_index]
             art = convert_figure(HTML.parent / src)
-            reserve = reserved_text_rows(layout_rows_for_art(len(art)))
+            reserve = reservation_rows_for_art(len(art))
             if reserve > TEXT_BODY_ROWS:
                 raise ValueError(f"Figure {figure_index + 1} exceeds page height")
-            if len(body) + reserve <= TEXT_BODY_ROWS:
+            top_margin = 1 if COMPACT_LIVE_LAYOUT else 0
+            image_y = image_row_for_text(2 + len(body) + top_margin)
+            fits_image_canvas = (
+                not COMPACT_LIVE_LAYOUT
+                or image_y + len(art) <= COMPACT_MAX_ACTIVE_IMAGE_BOTTOM
+            )
+            if len(body) + reserve <= TEXT_BODY_ROWS and fits_image_canvas:
                 place_figure(figure_index + 1, src, alt, art)
             else:
                 # Fill the current page with the prose following the marker.
@@ -554,6 +576,14 @@ def main() -> None:
         "figureMaskPolicies": FIGURE_MASK_POLICIES,
         "figureSourceCredits": FIGURE_SOURCE_CREDITS,
     }
+    if COMPACT_LIVE_LAYOUT:
+        layout["compactLiveLayout"] = True
+        layout["paginationPolicy"] = (
+            "actual live-art row reservations, one prose-row figure clearance, "
+            "and guarded 240-row active image region"
+        )
+        layout["figureTopMarginTextRows"] = 1
+        layout["maximumActiveImageBottom"] = COMPACT_MAX_ACTIVE_IMAGE_BOTTOM
     if LIVE_BRAILLE_ROW_ASPECT != 1.0:
         layout["liveBrailleRowAspect"] = LIVE_BRAILLE_ROW_ASPECT
         layout["samplingPolicy"] = (
@@ -606,6 +636,14 @@ if __name__ == "__main__":
         help="Vertical source-sampling factor measured from live Brickadia Braille cells",
     )
     parser.add_argument("--force-new-page-before", type=int, action="append", default=[])
+    parser.add_argument(
+        "--compact-live-layout",
+        action="store_true",
+        help=(
+            "Reserve corrected live art rows instead of v25 source-height rows, "
+            "with one text-row clearance and a guarded image canvas"
+        ),
+    )
     parser.add_argument("--name")
     parser.add_argument("--description")
     arguments = parser.parse_args()
@@ -614,6 +652,7 @@ if __name__ == "__main__":
     OUTPUT = arguments.output
     LIVE_BRAILLE_ROW_ASPECT = arguments.live_row_aspect
     FORCE_NEW_PAGE_BEFORE.update(arguments.force_new_page_before)
+    COMPACT_LIVE_LAYOUT = arguments.compact_live_layout
     REVISION_NAME = arguments.name
     REVISION_DESCRIPTION = arguments.description
     main()

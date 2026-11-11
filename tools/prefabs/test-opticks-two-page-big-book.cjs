@@ -263,7 +263,8 @@ function approx(actual, expected, description) {
 }
 
 function validateData(data) {
-  assert.equal(data.textPages.length, 227, 'Expected the approved 227-page Opticks v27 data');
+  assert.equal(data.textPages.length, 219,
+    'Expected the compact 219-page large-leaf Opticks data');
   for (const key of PAGE_KEYS) {
     assert(Array.isArray(data[key]), `Missing ${key}`);
     assert.equal(data[key].length, data.textPages.length, `${key} page count`);
@@ -275,6 +276,10 @@ function validateData(data) {
   }
   assert.equal(data.layout.imageArrayCount, 4);
   assert.equal(data.layout.imageFont, 'IosevkaTerm');
+  assert.equal(data.layout.compactLiveLayout, true);
+  assert.equal(data.layout.figureTopMarginTextRows, 1);
+  assert.equal(data.layout.maximumActiveImageBottom, 240);
+  assert.deepEqual(data.layout.forcedPageStarts, [32, 55]);
 }
 
 function test(donorPath, outputPath, dataPath) {
@@ -337,7 +342,7 @@ function test(donorPath, outputPath, dataPath) {
   const arrays = components(output, TYPES.array, outputGrid.inner);
   const getters = components(output, TYPES.get, outputGrid.inner);
   const spreadCount = Math.ceil(data.textPages.length / 2);
-  assert.equal(spreadCount, 114);
+  assert.equal(spreadCount, 110);
   assert.equal(cycle.component.data.Count, spreadCount);
   assert.equal(cycle.component.data.Value, spreadCount - 1);
   assert.equal(refresh.component.data.bInputA, false);
@@ -480,7 +485,7 @@ function test(donorPath, outputPath, dataPath) {
   }
   assert.match(sidePages(data.textPages, 'left')[0], /^1\r?\n/);
   assert.match(sidePages(data.textPages, 'right')[0], /^2\r?\n/);
-  assert.match(sidePages(data.textPages, 'left').at(-1), /^227\r?\n/);
+  assert.match(sidePages(data.textPages, 'left').at(-1), /^219\r?\n/);
 
   const buttons = components(output, TYPES.button, outputGrid.outer);
   const turnRight = one(buttons.filter(item => /right/i.test(item.component.data.PromptCustomLabel || '')),
@@ -508,9 +513,9 @@ function test(donorPath, outputPath, dataPath) {
   assert.equal(edgesFrom(output, cycle, 'Output').length, 10);
   assert.equal(edgesFrom(output, refresh, 'bOutput').length, 10);
 
-  // With reversed arrays, Cycle index 113 is spread 1, index 112 is spread 2,
-  // and index 0 is the final 227/blank spread. The native Cycle wraps at both
-  // ends, matching the approved single-page controller.
+  // With reversed arrays, the highest index is spread 1, the next index is
+  // spread 2, and index 0 is the final 219/blank spread. The native Cycle
+  // wraps at both ends, matching the approved single-page controller.
   for (let index = 0; index < spreadCount; index += 1) {
     const logicalSpread = spreadCount - 1 - index;
     assert(logicalSpread >= 0 && logicalSpread < spreadCount);
@@ -525,9 +530,9 @@ function test(donorPath, outputPath, dataPath) {
     'Donor external assets changed or moved');
   const donorBundle = JSON.parse(Buffer.from(donor.r.fs.readFile('Meta/Bundle.json')));
   const outputBundle = JSON.parse(Buffer.from(output.r.fs.readFile('Meta/Bundle.json')));
-  assert.equal(outputBundle.name, 'Newton Opticks - Large Two-Page Live Geometry Edition');
+  assert.equal(outputBundle.name, 'Newton Opticks - Large Two-Page Compact Edition');
   assert.equal(outputBundle.description,
-    'Complete Isaac Newton Opticks text and source-derived live-geometry Braille figures in a large synchronized two-page spread. Each page turn advances two source pages.');
+    'Complete Isaac Newton Opticks text and retained-dirt live-geometry Braille figures, repaginated with compact art reservations and protected prose clearance for the large two-page shell.');
   const normalizedBundle = structuredClone(outputBundle);
   normalizedBundle.name = donorBundle.name;
   normalizedBundle.description = donorBundle.description;
