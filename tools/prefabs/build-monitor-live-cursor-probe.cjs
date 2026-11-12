@@ -6,7 +6,7 @@ const validate=require('./validate-placement.cjs');
 const {C,N,R}=require('./loadboard-lib.cjs');
 
 function one(items,label){assert.equal(items.length,1,`Expected one ${label}, found ${items.length}`);return items[0];}
-function build(input,{debug=false}={}){
+function build(input,{debug=false,rayDebug=false}={}){
  const donor=fs.readFileSync(input),scene=read(donor);
  const link=one(scene.links,'microchip link'),chip=one(scene.bricks.filter(b=>b.key===link.key),'microchip');
  const grid=link.grid;
@@ -29,6 +29,40 @@ function build(input,{debug=false}={}){
  wire(spawned,'Character',aim,'Character');wire(clock,'Pulse',aim,'Exec');
  const origin=node('Expr_SplitVector');wire(aim,'Origin',origin,'Input');
  const direction=node('Expr_SplitVector');wire(aim,'Direction',direction,'Input');
+
+ if(rayDebug){
+  const negX=node('Expr_MathMultiply',{InputB:N(-1)});wire(direction,'X',negX,'InputA');
+  const negY=node('Expr_MathMultiply',{InputB:N(-1)});wire(direction,'Y',negY,'InputA');
+  const negZ=node('Expr_MathMultiply',{InputB:N(-1)});wire(direction,'Z',negZ,'InputA');
+  const reversed=node('Expr_MakeVector');wire(negX,'Output',reversed,'X');wire(negY,'Output',reversed,'Y');wire(negZ,'Output',reversed,'Z');
+  const sweepData={Origin:{X:0,Y:0,Z:0},Direction:{X:1,Y:0,Z:0},Distance:1000,Radius:0,bRelative:false,bIgnoreOwningGrid:false,CollisionChannel:8,bDetectBricks:true,bDetectPlayers1:false,bDetectPlayers2:false,bDetectPlayers3:false,bDetectPlayers4:false,bDetectPhysics:false,bDetectMap:false};
+  const direct=node('Exec_Sweep',structuredClone(sweepData));
+  const reverse=node('Exec_Sweep',structuredClone(sweepData));
+  wire(aim,'Origin',direct,'Origin');wire(aim,'Direction',direct,'Direction');wire(aim,'ExecOut',direct,'Exec');
+  wire(aim,'Origin',reverse,'Origin');wire(reversed,'Output',reverse,'Direction');wire(aim,'ExecOut',reverse,'Exec');
+  const directHit=node('Var',{Value:{$variant:'Bool',value:false}}),reverseHit=node('Var',{Value:{$variant:'Bool',value:false}});
+  function setFlag(sweep,port,target,value){const set=node('Exec_Var_Set',{Value:{$variant:'Bool',value},bChangeType:false});wire(target,'VarRef',set,'VarRef');wire(sweep,port,set,'Exec');}
+  setFlag(direct,'Hit',directHit,true);setFlag(direct,'Miss',directHit,false);
+  setFlag(reverse,'Hit',reverseHit,true);setFlag(reverse,'Miss',reverseHit,false);
+  const directLoc=node('Expr_SplitVector');wire(direct,'HitLocation',directLoc,'Input');
+  const reverseLoc=node('Expr_SplitVector');wire(reverse,'HitLocation',reverseLoc,'Input');
+  const directText=node('Expr_String_FormatText',{FormatString:'AIM DIRECTION  Hit {A}\r\nDistance {B}\r\nX {C}\r\nY {D}\r\nZ {E}'});
+  wire(directHit,'Value',directText,'InputA');wire(direct,'HitDistance',directText,'InputB');wire(directLoc,'X',directText,'InputC');wire(directLoc,'Y',directText,'InputD');wire(directLoc,'Z',directText,'InputE');
+  const reverseText=node('Expr_String_FormatText',{FormatString:'REVERSED  Hit {A}\r\nDistance {B}\r\nX {C}\r\nY {D}\r\nZ {E}'});
+  wire(reverseHit,'Value',reverseText,'InputA');wire(reverse,'HitDistance',reverseText,'InputB');wire(reverseLoc,'X',reverseText,'InputC');wire(reverseLoc,'Y',reverseText,'InputD');wire(reverseLoc,'Z',reverseText,'InputE');
+  const combined=node('Expr_String_FormatText',{FormatString:'RAYCAST TEST\r\n\r\n{A}\r\n\r\n{B}'});wire(directText,'Output',combined,'InputA');wire(reverseText,'Output',combined,'InputB');
+  wire(combined,'Output',{key:display.key,type:C.TextDisplay.NAME},'Text');
+  const displayComp=display.comps.find(c=>c.type===C.TextDisplay.NAME);
+  displayComp.data.Text='RAYCAST TEST';displayComp.data.Kerning=2;displayComp.data.LineHeight=1.15;displayComp.data.WidthScale=1;
+  const entity=one([...scene.r.entities()].filter(e=>e.persistentIndex===grid),'microchip entity');
+  scene.entityOverrides=new Map([[grid,{...entity,data:{...structuredClone(entity.data),bCollapsed:true,PlaneCenter:{X:120,Y:72,Z:2},PlaneExtent:{X:160,Y:110,Z:8}}}]]);
+  const name='Monitor Frame - Aim Raycast Diagnostic';
+  const description='Tests both Get Aim directions against the physical monitor buttons with owning-grid collision enabled.';
+  const generated=write(scene,{assets:scene.r.externalAssets(),name,description}).bytes;
+  const bytes=repack(generated,donor,{name,description});
+  const placement=validate(bytes);assert(placement.strictOk,JSON.stringify(placement,null,2));
+  return {bytes,scene,nodes,placement,summary:{bricks:scene.bricks.length,gates:nodes.length,wires:scene.edges.length,buttons:buttons.length,updateHz:20,sha256:crypto.createHash('sha256').update(bytes).digest('hex')}};
+ }
 
  // Get Aim uses the same full world-coordinate scale as the saved monitor.
  const planeDelta=node('Expr_MathSubtract',{InputA:N(-75049)});wire(origin,'Y',planeDelta,'InputB');
@@ -92,4 +126,4 @@ function build(input,{debug=false}={}){
  return {bytes,scene,nodes,placement,summary:{bricks:scene.bricks.length,gates:nodes.length,wires:scene.edges.length,buttons:buttons.length,rows:7,columns:9,updateHz:20,sha256:crypto.createHash('sha256').update(bytes).digest('hex')}};
 }
 module.exports=build;
-if(require.main===module){const [input,output,flag]=process.argv.slice(2);if(!input||!output)throw Error('Usage: node build-monitor-live-cursor-probe.cjs input.brz output.brz [--debug]');const result=build(input,{debug:flag==='--debug'});fs.writeFileSync(output,result.bytes);console.log(JSON.stringify({output,debug:flag==='--debug',bytes:result.bytes.length,...result.summary,strictPlacement:result.placement.strictOk,warnings:result.placement.warnings||[]},null,2));}
+if(require.main===module){const [input,output,flag]=process.argv.slice(2);if(!input||!output)throw Error('Usage: node build-monitor-live-cursor-probe.cjs input.brz output.brz [--debug|--ray-debug]');const opts={debug:flag==='--debug',rayDebug:flag==='--ray-debug'};const result=build(input,opts);fs.writeFileSync(output,result.bytes);console.log(JSON.stringify({output,...opts,bytes:result.bytes.length,...result.summary,strictPlacement:result.placement.strictOk,warnings:result.placement.warnings||[]},null,2));}
