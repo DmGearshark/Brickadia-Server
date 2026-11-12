@@ -6,7 +6,7 @@ const validate=require('./validate-placement.cjs');
 const {C,N,R}=require('./loadboard-lib.cjs');
 
 function one(items,label){assert.equal(items.length,1,`Expected one ${label}, found ${items.length}`);return items[0];}
-function build(input,{debug=false,rayDebug=false}={}){
+function build(input,{debug=false,rayDebug=false,rayCursor=false}={}){
  const donor=fs.readFileSync(input),scene=read(donor);
  const link=one(scene.links,'microchip link'),chip=one(scene.bricks.filter(b=>b.key===link.key),'microchip');
  const grid=link.grid;
@@ -29,6 +29,46 @@ function build(input,{debug=false,rayDebug=false}={}){
  wire(spawned,'Character',aim,'Character');wire(clock,'Pulse',aim,'Exec');
  const origin=node('Expr_SplitVector');wire(aim,'Origin',origin,'Input');
  const direction=node('Expr_SplitVector');wire(aim,'Direction',direction,'Input');
+
+ if(rayCursor){
+  const sweep=node('Exec_Sweep',{Origin:{X:0,Y:0,Z:0},Direction:{X:1,Y:0,Z:0},Distance:1000,Radius:0,bRelative:false,bIgnoreOwningGrid:false,CollisionChannel:8,bDetectBricks:true,bDetectPlayers1:false,bDetectPlayers2:false,bDetectPlayers3:false,bDetectPlayers4:false,bDetectPhysics:false,bDetectMap:false});
+  wire(aim,'Origin',sweep,'Origin');wire(aim,'Direction',sweep,'Direction');wire(aim,'ExecOut',sweep,'Exec');
+  const hitFlag=node('Var',{Value:{$variant:'Bool',value:false}});
+  function setHit(port,value){const set=node('Exec_Var_Set',{Value:{$variant:'Bool',value},bChangeType:false});wire(hitFlag,'VarRef',set,'VarRef');wire(sweep,port,set,'Exec');}
+  setHit('Hit',true);setHit('Miss',false);
+  const hit=node('Expr_SplitVector');wire(sweep,'HitLocation',hit,'Input');
+
+  // The physical display face is sampled directly. Its nine column centers
+  // are X 6108..6140; its seven row centers run from Z 11018 down to 10994.
+  const xOffset=node('Expr_MathSubtract',{InputB:N(6106)});wire(hit,'X',xOffset,'InputA');
+  const xScaled=node('Expr_MathDivide',{InputB:N(4)});wire(xOffset,'Output',xScaled,'InputA');
+  const xFloor=node('Expr_Floor');wire(xScaled,'Output',xFloor,'Input');
+  const col=node('Expr_MathClamp',{Min:N(0),Max:N(8)});wire(xFloor,'Output',col,'Input');
+  const zOffset=node('Expr_MathSubtract',{InputA:N(11020)});wire(hit,'Z',zOffset,'InputB');
+  const zScaled=node('Expr_MathDivide',{InputB:N(4)});wire(zOffset,'Output',zScaled,'InputA');
+  const zFloor=node('Expr_Floor');wire(zScaled,'Output',zFloor,'Input');
+  const row=node('Expr_MathClamp',{Min:N(0),Max:N(6)});wire(zFloor,'Output',row,'Input');
+  const rowBase=node('Expr_MathMultiply',{InputB:N(9)});wire(row,'Output',rowBase,'InputA');
+  const index=math('Add',rowBase,'Output',col,'Output');
+  const screens=[];
+  for(let selected=0;selected<63;selected++){const lines=[];for(let y=0;y<7;y++)lines.push(Array.from({length:9},(_,x)=>y*9+x===selected?'◆':'·').join(''));screens.push(lines.join('\r\n'));}
+  const frames=node('ArrayVar',{Value:{$elementType:'str',$array:screens}});
+  const get=node('Exec_ArrayVar_Get',{Index:0,Value:{$variant:'str',value:screens[31]}});wire(frames,'ArrayVarRef',get,'ArrayVarRef');wire(index,'Output',get,'Index');wire(sweep,'ExecOut',get,'Exec');wire(get,'Value',{key:display.key,type:C.TextDisplay.NAME},'Text');
+
+  const xMin=node('Expr_CompareGreaterOrEqual',{InputB:N(6106)});wire(hit,'X',xMin,'InputA');
+  const xMax=node('Expr_CompareLessOrEqual',{InputB:N(6142)});wire(hit,'X',xMax,'InputA');
+  const zMin=node('Expr_CompareGreaterOrEqual',{InputB:N(10992)});wire(hit,'Z',zMin,'InputA');
+  const zMax=node('Expr_CompareLessOrEqual',{InputB:N(11020)});wire(hit,'Z',zMax,'InputA');
+  const xInside=node('Expr_LogicalAND');wire(xMin,'bOutput',xInside,'bInputA');wire(xMax,'bOutput',xInside,'bInputB');
+  const zInside=node('Expr_LogicalAND');wire(zMin,'bOutput',zInside,'bInputA');wire(zMax,'bOutput',zInside,'bInputB');
+  const inRect=node('Expr_LogicalAND');wire(xInside,'bOutput',inRect,'bInputA');wire(zInside,'bOutput',inRect,'bInputB');
+  const visible=node('Expr_LogicalAND');wire(hitFlag,'Value',visible,'bInputA');wire(inRect,'bOutput',visible,'bInputB');wire(visible,'bOutput',{key:display.key,type:C.TextDisplay.NAME},'bEnabled');
+  const displayComp=display.comps.find(c=>c.type===C.TextDisplay.NAME);displayComp.data.Text=screens[31];displayComp.data.Kerning=4;displayComp.data.LineHeight=1.5;displayComp.data.WidthScale=1;
+  const entity=one([...scene.r.entities()].filter(e=>e.persistentIndex===grid),'microchip entity');scene.entityOverrides=new Map([[grid,{...entity,data:{...structuredClone(entity.data),bCollapsed:true,PlaneCenter:{X:120,Y:72,Z:2},PlaneExtent:{X:160,Y:110,Z:8}}}]]);
+  const name='Monitor Frame - Raycast Live Aim Cursor V4',description='Reliable 7x9 cursor driven by a physical raycast hit on the monitor face.';
+  const generated=write(scene,{assets:scene.r.externalAssets(),name,description}).bytes,bytes=repack(generated,donor,{name,description}),placement=validate(bytes);assert(placement.strictOk,JSON.stringify(placement,null,2));
+  return {bytes,scene,nodes,placement,summary:{bricks:scene.bricks.length,gates:nodes.length,wires:scene.edges.length,buttons:buttons.length,rows:7,columns:9,updateHz:20,sha256:crypto.createHash('sha256').update(bytes).digest('hex')}};
+ }
 
  if(rayDebug){
   const negX=node('Expr_MathMultiply',{InputB:N(-1)});wire(direction,'X',negX,'InputA');
@@ -126,4 +166,4 @@ function build(input,{debug=false,rayDebug=false}={}){
  return {bytes,scene,nodes,placement,summary:{bricks:scene.bricks.length,gates:nodes.length,wires:scene.edges.length,buttons:buttons.length,rows:7,columns:9,updateHz:20,sha256:crypto.createHash('sha256').update(bytes).digest('hex')}};
 }
 module.exports=build;
-if(require.main===module){const [input,output,flag]=process.argv.slice(2);if(!input||!output)throw Error('Usage: node build-monitor-live-cursor-probe.cjs input.brz output.brz [--debug|--ray-debug]');const opts={debug:flag==='--debug',rayDebug:flag==='--ray-debug'};const result=build(input,opts);fs.writeFileSync(output,result.bytes);console.log(JSON.stringify({output,...opts,bytes:result.bytes.length,...result.summary,strictPlacement:result.placement.strictOk,warnings:result.placement.warnings||[]},null,2));}
+if(require.main===module){const [input,output,flag]=process.argv.slice(2);if(!input||!output)throw Error('Usage: node build-monitor-live-cursor-probe.cjs input.brz output.brz [--debug|--ray-debug|--ray-cursor]');const opts={debug:flag==='--debug',rayDebug:flag==='--ray-debug',rayCursor:flag==='--ray-cursor'};const result=build(input,opts);fs.writeFileSync(output,result.bytes);console.log(JSON.stringify({output,...opts,bytes:result.bytes.length,...result.summary,strictPlacement:result.placement.strictOk,warnings:result.placement.warnings||[]},null,2));}
