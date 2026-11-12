@@ -18,17 +18,21 @@ function build(input){
  ];
  const selected=new Set(chosen.map(x=>x.brick.key));
  for(const brick of all){
-  if(!selected.has(brick.key)){brick.comps=brick.comps.filter(c=>c.type!==C.Button.NAME);continue;}
+  if(!selected.has(brick.key))continue;
   const spec=chosen.find(x=>x.brick===brick),comp=brick.comps.find(c=>c.type===C.Button.NAME);
-  comp.data.bAllowNearbyInteraction=false;comp.data.bHiddenInteraction=false;comp.data.PromptCustomLabel=`Click ${spec.label}`;
+  // Expand each invisible interaction surface to cover its visual quadrant.
+  // Nearby interaction must remain enabled for Brickadia to expose the prompt.
+  brick.data.size=[8,1,5];brick.data.collision.interaction=true;brick.data.visibility=false;
+  comp.data.bAllowNearbyInteraction=true;comp.data.bHiddenInteraction=false;comp.data.PromptCustomLabel=`Click ${spec.label}`;
  }
+ scene.bricks=scene.bricks.filter(brick=>!all.includes(brick)||selected.has(brick.key));
  const def=C.Expr_String_FormatText,gate={key:'button-demo:format',g:grid,data:{asset:def.BRICK,material:'BMC_Plastic',position:[0,0,2],size:[0,0,0],direction:4,rotation:0,collision:{player:true,weapon:true,interaction:true,tool:true,physics:true},visibility:true,material_intensity:0,color:[45,115,175],owner_index:0},comps:[{type:def.NAME,data:{FormatString:'🍪  {A}                 ⚙  {B}\r\n\r\n\r\n\r\n💎  {C}                 ⭐  {D}'}}]};scene.bricks.push(gate);
  function wire(a,p,z,q){scene.edges.push({a:a.key,at:a.type,p,z:z.key,zt:z.type,q});}
  chosen.forEach((x,i)=>wire({key:x.brick.key,type:C.Button.NAME},'PressCount',{key:gate.key,type:def.NAME},`Input${String.fromCharCode(65+i)}`));
  wire({key:gate.key,type:def.NAME},'Output',{key:display.key,type:C.TextDisplay.NAME},'Text');
  const dc=display.comps.find(c=>c.type===C.TextDisplay.NAME);dc.data.Text='🍪  0                 ⚙  0\r\n\r\n\r\n\r\n💎  0                 ⭐  0';dc.data.Kerning=1;dc.data.LineHeight=2.25;dc.data.WidthScale=.85;dc.data.Anchor={X:.5,Y:.5};
  const entity=one([...scene.r.entities()].filter(e=>e.persistentIndex===grid),'chip entity');scene.entityOverrides=new Map([[grid,{...entity,data:{...structuredClone(entity.data),bCollapsed:true,PlaneCenter:{X:0,Y:0,Z:2},PlaneExtent:{X:80,Y:50,Z:8}}}]]);
- const name='Monitor Frame - Four Button Emoji Demo',description='Four click-only monitor regions update independent emoji counters without raycasts or cursor logic.';
+ const name='Monitor Frame - Four Button Emoji Demo V2',description='Four large click-only monitor regions update independent emoji counters without raycasts or cursor logic.';
  const generated=write(scene,{assets:scene.r.externalAssets(),name,description}).bytes,bytes=repack(generated,donor,{name,description}),placement=validate(bytes);assert(placement.strictOk,JSON.stringify(placement,null,2));
  return {bytes,placement,summary:{bricks:scene.bricks.length,wires:scene.edges.length,activeButtons:4,sha256:crypto.createHash('sha256').update(bytes).digest('hex')}};
 }
