@@ -6,7 +6,7 @@ const validate=require('./validate-placement.cjs');
 const {C,N,R}=require('./loadboard-lib.cjs');
 
 function one(items,label){assert.equal(items.length,1,`Expected one ${label}, found ${items.length}`);return items[0];}
-function build(input,{debug=false,rayDebug=false,rayCursor=false}={}){
+function build(input,{debug=false,rayDebug=false,rayCursor=false,calibrate=false}={}){
  const donor=fs.readFileSync(input),scene=read(donor);
  const link=one(scene.links,'microchip link'),chip=one(scene.bricks.filter(b=>b.key===link.key),'microchip');
  const grid=link.grid;
@@ -29,6 +29,19 @@ function build(input,{debug=false,rayDebug=false,rayCursor=false}={}){
  wire(spawned,'Character',aim,'Character');wire(clock,'Pulse',aim,'Exec');
  const origin=node('Expr_SplitVector');wire(aim,'Origin',origin,'Input');
  const direction=node('Expr_SplitVector');wire(aim,'Direction',direction,'Input');
+
+ if(calibrate){
+  const sweep=node('Exec_Sweep',{Origin:{X:0,Y:0,Z:0},Direction:{X:1,Y:0,Z:0},Distance:1000,Radius:0,bRelative:false,bIgnoreOwningGrid:false,CollisionChannel:8,bDetectBricks:true,bDetectPlayers1:false,bDetectPlayers2:false,bDetectPlayers3:false,bDetectPlayers4:false,bDetectPhysics:false,bDetectMap:false});
+  wire(aim,'Origin',sweep,'Origin');wire(aim,'Direction',sweep,'Direction');wire(aim,'ExecOut',sweep,'Exec');
+  const hit=node('Expr_SplitVector');wire(sweep,'HitLocation',hit,'Input');
+  const text=node('Expr_String_FormatText',{FormatString:'AIM CALIBRATION\r\n\r\nAim just inside each black corner\r\nand screenshot these values.\r\n\r\nX  {A}\r\nZ  {B}\r\n\r\nY  {C}\r\nDistance  {D}'});
+  wire(hit,'X',text,'InputA');wire(hit,'Z',text,'InputB');wire(hit,'Y',text,'InputC');wire(sweep,'HitDistance',text,'InputD');wire(text,'Output',{key:display.key,type:C.TextDisplay.NAME},'Text');
+  const displayComp=display.comps.find(c=>c.type===C.TextDisplay.NAME);displayComp.data.Text='AIM CALIBRATION';displayComp.data.Kerning=2;displayComp.data.LineHeight=1.25;displayComp.data.WidthScale=1;
+  const entity=one([...scene.r.entities()].filter(e=>e.persistentIndex===grid),'microchip entity');scene.entityOverrides=new Map([[grid,{...entity,data:{...structuredClone(entity.data),bCollapsed:true,PlaneCenter:{X:120,Y:72,Z:2},PlaneExtent:{X:160,Y:110,Z:8}}}]]);
+  const name='Monitor Frame - Raycast Edge Calibration',description='Displays the normal aim-ray hit coordinates used to calibrate all four monitor edges.';
+  const generated=write(scene,{assets:scene.r.externalAssets(),name,description}).bytes,bytes=repack(generated,donor,{name,description}),placement=validate(bytes);assert(placement.strictOk,JSON.stringify(placement,null,2));
+  return {bytes,scene,nodes,placement,summary:{bricks:scene.bricks.length,gates:nodes.length,wires:scene.edges.length,buttons:buttons.length,updateHz:20,sha256:crypto.createHash('sha256').update(bytes).digest('hex')}};
+ }
 
  if(rayCursor){
   const sweep=node('Exec_Sweep',{Origin:{X:0,Y:0,Z:0},Direction:{X:1,Y:0,Z:0},Distance:1000,Radius:0,bRelative:false,bIgnoreOwningGrid:false,CollisionChannel:8,bDetectBricks:true,bDetectPlayers1:false,bDetectPlayers2:false,bDetectPlayers3:false,bDetectPlayers4:false,bDetectPhysics:false,bDetectMap:false});
@@ -166,4 +179,4 @@ function build(input,{debug=false,rayDebug=false,rayCursor=false}={}){
  return {bytes,scene,nodes,placement,summary:{bricks:scene.bricks.length,gates:nodes.length,wires:scene.edges.length,buttons:buttons.length,rows:7,columns:9,updateHz:20,sha256:crypto.createHash('sha256').update(bytes).digest('hex')}};
 }
 module.exports=build;
-if(require.main===module){const [input,output,flag]=process.argv.slice(2);if(!input||!output)throw Error('Usage: node build-monitor-live-cursor-probe.cjs input.brz output.brz [--debug|--ray-debug|--ray-cursor]');const opts={debug:flag==='--debug',rayDebug:flag==='--ray-debug',rayCursor:flag==='--ray-cursor'};const result=build(input,opts);fs.writeFileSync(output,result.bytes);console.log(JSON.stringify({output,...opts,bytes:result.bytes.length,...result.summary,strictPlacement:result.placement.strictOk,warnings:result.placement.warnings||[]},null,2));}
+if(require.main===module){const [input,output,flag]=process.argv.slice(2);if(!input||!output)throw Error('Usage: node build-monitor-live-cursor-probe.cjs input.brz output.brz [--debug|--ray-debug|--ray-cursor|--calibrate]');const opts={debug:flag==='--debug',rayDebug:flag==='--ray-debug',rayCursor:flag==='--ray-cursor',calibrate:flag==='--calibrate'};const result=build(input,opts);fs.writeFileSync(output,result.bytes);console.log(JSON.stringify({output,...opts,bytes:result.bytes.length,...result.summary,strictPlacement:result.placement.strictOk,warnings:result.placement.warnings||[]},null,2));}
