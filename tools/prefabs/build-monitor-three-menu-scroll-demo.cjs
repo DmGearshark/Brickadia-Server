@@ -17,12 +17,19 @@ function build(input){
  function set(variable,value,exec,port='OnRisingEdge'){const n=node('Exec_Var_Set',{Value:N(0),bChangeType:false});wire(variable,'VarRef',n,'VarRef');wire(value[0],value[1],n,'Value');wire(exec,port,n,'Exec');return n;}
  function edge(inputPort,kind,threshold){const cmp=node('Expr_Compare'+kind,{InputB:N(threshold)});wire(splitter,inputPort,cmp,'InputA');const e=node('Expr_EdgeDetectorExec',{Input:0,InputLast:0,bSeeded:true});wire(cmp,'bOutput',e,'Input');return e;}
  const selection=node('Var',{Value:N(0)}),menu=node('Var',{Value:N(0)}),counts=[node('Var',{Value:N(0)}),node('Var',{Value:N(0)}),node('Var',{Value:N(0)})];
- const prevRaw=math('Subtract',selection,'Value',{InputB:N(1)}),nextRaw=math('Add',selection,'Value',{InputB:N(1)});
- const atFirst=node('Expr_CompareEqual',{InputB:N(0)});wire(selection,'Value',atFirst,'InputA');const atLast=node('Expr_CompareEqual',{InputB:N(4)});wire(selection,'Value',atLast,'InputA');
- const prev=node('Expr_Select',{InputA:N(0),InputB:N(4),bSelectB:false});wire(prevRaw,'Output',prev,'InputA');wire(atFirst,'bOutput',prev,'bSelectB');
- const next=node('Expr_Select',{InputA:N(0),InputB:N(0),bSelectB:false});wire(nextRaw,'Output',next,'InputA');wire(atLast,'bOutput',next,'bSelectB');
- for(const e of [edge('InputForward','Greater',.5),edge('InputRight','Less',-.5)])set(selection,[prev,'Output'],e);
- for(const e of [edge('InputForward','Less',-.5),edge('InputRight','Greater',.5)])set(selection,[next,'Output'],e);
+ // Spatial navigation for the actual layout:
+ //   0 (top item)       3 (up arrow)
+ //   1 (middle item)
+ //   2 (bottom item)    4 (down arrow)
+ function mappedValue(entries){let value=selection;let port='Value';for(const [from,to] of entries){const eq=node('Expr_CompareEqual',{InputB:N(from)});wire(selection,'Value',eq,'InputA');const pick=node('Expr_Select',{InputA:N(0),InputB:N(to),bSelectB:false});wire(value,port,pick,'InputA');wire(eq,'bOutput',pick,'bSelectB');value=pick;port='Output';}return [value,port];}
+ const moveUp=mappedValue([[1,0],[2,1],[4,3]]);       // W
+ const moveDown=mappedValue([[0,1],[1,2],[3,4]]);     // S
+ const moveLeft=mappedValue([[3,0],[4,2]]);           // A
+ const moveRight=mappedValue([[0,3],[2,4]]);          // D; middle stays put
+ set(selection,moveUp,edge('InputForward','Greater',.5));
+ set(selection,moveDown,edge('InputForward','Less',-.5));
+ set(selection,moveLeft,edge('InputRight','Less',-.5));
+ set(selection,moveRight,edge('InputRight','Greater',.5));
  const space=edge('InputUp','Greater',.5),branches=[];
  for(let i=0;i<5;i++){const eq=node('Expr_CompareEqual',{InputB:N(i)});wire(selection,'Value',eq,'InputA');const b=node('Exec_Branch',{bCond:false});wire(eq,'bOutput',b,'bCond');wire(space,'OnRisingEdge',b,'Exec');branches.push(b);}
  for(let i=0;i<3;i++){const inc=math('Add',counts[i],'Value',{InputB:N(1)});set(counts[i],[inc,'Output'],branches[i],'ExecOutA');}
