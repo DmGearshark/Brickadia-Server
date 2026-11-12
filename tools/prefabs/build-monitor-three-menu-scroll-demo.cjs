@@ -27,10 +27,8 @@ function build(input){
  const moveDown=mappedValue([[0,1],[1,2],[2,0],[3,4],[4,3]]); // wrap each column
  const moveLeft=mappedValue([[0,3],[3,0],[2,4],[4,2]]);       // wrap each row
  const moveRight=mappedValue([[0,3],[3,0],[2,4],[4,2]]);      // wrap each row; middle stays
- set(selection,moveUp,edge('InputForward','Greater',.5));
- set(selection,moveDown,edge('InputForward','Less',-.5));
- set(selection,moveLeft,edge('InputRight','Less',-.5));
- set(selection,moveRight,edge('InputRight','Greater',.5));
+ const movementEdges=[edge('InputForward','Greater',.5),edge('InputForward','Less',-.5),edge('InputRight','Less',-.5),edge('InputRight','Greater',.5)];
+ set(selection,moveUp,movementEdges[0]);set(selection,moveDown,movementEdges[1]);set(selection,moveLeft,movementEdges[2]);set(selection,moveRight,movementEdges[3]);
  const space=edge('InputUp','Greater',.5),branches=[];
  for(let i=0;i<5;i++){const eq=node('Expr_CompareEqual',{InputB:N(i)});wire(selection,'Value',eq,'InputA');const b=node('Exec_Branch',{bCond:false});wire(eq,'bOutput',b,'bCond');wire(space,'OnRisingEdge',b,'Exec');branches.push(b);}
  // Slots 0 and 2 demonstrate successful actions. Slot 1 deliberately fails
@@ -41,6 +39,18 @@ function build(input){
  const menuPrev=node('Expr_Select',{InputA:N(0),InputB:N(2),bSelectB:false});wire(menuMinus,'Output',menuPrev,'InputA');wire(menuFirst,'bOutput',menuPrev,'bSelectB');
  const menuNext=node('Expr_Select',{InputA:N(0),InputB:N(0),bSelectB:false});wire(menuPlus,'Output',menuNext,'InputA');wire(menuLast,'bOutput',menuNext,'bSelectB');
  set(menu,[menuPrev,'Output'],branches[3],'ExecOutA');set(menu,[menuNext,'Output'],branches[4],'ExecOutA');
+
+ // Self-contained UI audio. Navigation and page scrolling share the keypad
+ // click, successful actions use a cash-register confirmation, and failure
+ // uses a short error beep.
+ const assets=structuredClone(scene.r.externalAssets());
+ function asset(type,name){let i=assets.findIndex(a=>a.type===type&&a.name===name);if(i<0){i=assets.length;assets.push({type,name});}return i;}
+ function execUnion(sources){let current=sources[0];for(let i=1;i<sources.length;i++){const u=node('Exec_Union');wire(current[0],current[1],u,'ExecA');wire(sources[i][0],sources[i][1],u,'ExecB');current=[u,'ExecOut'];}return current;}
+ function sound(descriptor,sources,volume=.55,pitch=1){const play=node('Exec_PlayGlobalAudio',{AudioDescriptor:descriptor,VolumeMultiplier:volume,PitchMultiplier:pitch}),merged=execUnion(sources);wire(merged[0],merged[1],play,'Exec');return play;}
+ const navAsset=asset('BrickOneShotAudioDescriptor','OBA_Keypad'),buyAsset=asset('BrickOneShotAudioDescriptor','OBA_CashRegister_Ding_2'),failAsset=asset('BrickOneShotAudioDescriptor','OBA_Beep_6');
+ sound(navAsset,[...movementEdges.map(e=>[e,'OnRisingEdge']),[branches[3],'ExecOutA'],[branches[4],'ExecOutA']],.42,1.1);
+ sound(buyAsset,[[branches[0],'ExecOutA'],[branches[2],'ExecOutA']],.55,1);
+ sound(failAsset,[[branches[1],'ExecOutA']],.48,.85);
 
  const baseData=background.comps.find(c=>c.type===C.TextDisplay.NAME).data;baseData.Text='WASD  SELECT       SPACE  ACTIVATE';baseData.Anchor={X:.5,Y:.06};baseData.Offset={X:0,Y:0,Z:0};baseData.LineHeight=1.05;baseData.WidthScale=.85;baseData.LineOffset=0;
  function display(key,pos,text,lineHeight=1.2,size=[11,1,2]){const data=structuredClone(baseData);Object.assign(data,{Text:text,Anchor:{X:.5,Y:.5},Offset:{X:0,Y:0,Z:0},LineHeight:lineHeight,WidthScale:1,LineOffset:0,Kerning:0});const b={key,g:1,data:{asset:'PB_DefaultMicroBrick',material:'BMC_Glow',position:pos,size,direction:4,rotation:0,collision:{player:false,weapon:false,interaction:false,tool:false,physics:false},visibility:false,material_intensity:0,color:[0,0,0],owner_index:0},comps:[{type:C.TextDisplay.NAME,data}]};scene.bricks.push(b);return {key,type:C.TextDisplay.NAME};}
@@ -75,7 +85,7 @@ function build(input){
   if(blink<2){const offWait=node('BufferSeconds',{SecondsToWait:.1,ZeroSecondsToWait:0});wire(off,'ExecOut',offWait,'Input');failTail=offWait;failPort='Output';}
  }
  const entity=one([...scene.r.entities()].filter(e=>e.persistentIndex===grid),'chip entity');scene.entityOverrides=new Map([[grid,{...entity,data:{...structuredClone(entity.data),bCollapsed:true,PlaneCenter:{X:216,Y:216,Z:2},PlaneExtent:{X:260,Y:260,Z:8}}}]]);
- const name='Monitor Frame - Three Menu Feedback Demo V9',description='Three-page spatial menu with explicit second-based feedback: successful clicks depress for 0.1 seconds; failed buys stay full-size and blink red three times with 0.1-second phases.';
- const generated=write(scene,{assets:scene.r.externalAssets(),name,description}).bytes,bytes=repack(generated,donor,{name,description}),placement=validate(bytes);assert(placement.strictOk,JSON.stringify(placement,null,2));return {bytes,placement,summary:{bricks:scene.bricks.length,gates:nodes.length,wires:scene.edges.length,textDisplays:scene.bricks.filter(b=>b.comps.some(c=>c.type===C.TextDisplay.NAME)).length,buttons:0,sha256:crypto.createHash('sha256').update(bytes).digest('hex')}};
+ const name='Monitor Frame - Three Menu Audio Feedback Demo V10',description='Three-page tactile menu with navigation/scroll, successful-buy, and failed-buy audio plus orange selection, press animation, and triple red failure blink.';
+ const generated=write(scene,{assets,name,description}).bytes,bytes=repack(generated,donor,{name,description}),placement=validate(bytes);assert(placement.strictOk,JSON.stringify(placement,null,2));return {bytes,placement,summary:{bricks:scene.bricks.length,gates:nodes.length,wires:scene.edges.length,textDisplays:scene.bricks.filter(b=>b.comps.some(c=>c.type===C.TextDisplay.NAME)).length,buttons:0,audioAssets:3,sha256:crypto.createHash('sha256').update(bytes).digest('hex')}};
 }
 module.exports=build;if(require.main===module){const [input,output]=process.argv.slice(2);if(!input||!output)throw Error('Usage: node build-monitor-three-menu-scroll-demo.cjs input.brz output.brz');const r=build(input);fs.writeFileSync(output,r.bytes);console.log(JSON.stringify({output,bytes:r.bytes.length,...r.summary,strictPlacement:r.placement.strictOk,warnings:r.placement.warnings||[]},null,2));}
