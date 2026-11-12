@@ -31,16 +31,17 @@ function behavior(ctx){
  const names=portable.ui.filter(n=>n.type===C.TextDisplay.NAME&&/Load [1-5]/.test(n.data.Text)).sort((a,z)=>z.pos[2]-a.pos[2]);
  assert.deepEqual(names.map(n=>m.read(n,'Text')),['Alpha','Bravo','>Charlie<','Delta','Echo']);
  const down=portable.ui.find(n=>n.type===C.Button.NAME&&n.data.PromptCustomLabel==='Scroll Down');assert(down);
- const before=m.tick;m.press(down,'char-alice');m.advance(1);
+ const before=m.tick,sentBefore=m.responses.filter(r=>r.name==='LB1.Request').length;m.press(down,'char-alice');m.advance(1);
  assert.deepEqual(names.map(n=>m.read(n,'Text')),['Bravo','Charlie','>Delta<','Echo','Alpha'],'cached rows rotate after only the native one-tick button snapshot');
  assert.equal(m.tick-before,1);assert.equal(m.published.get(portable.offset.id),1);
- const refresh=m.responses.filter(r=>r.name==='LB1.Request').at(-1);assert.equal(refresh.atTick,m.tick,'authority refresh is sent after the local update');assert.equal(refresh.args[2],0);assert.equal(refresh.args[3],1);
+ assert.equal(m.responses.filter(r=>r.name==='LB1.Request').length,sentBefore,'background refresh waits one tick so the new index can settle');
  m.press(down,'char-alice');m.advance(1);assert.deepEqual(names.map(n=>m.read(n,'Text')),['Charlie','Delta','>Echo<','Alpha','Bravo'],'rapid browsing stays local while a refresh is in flight');
- const latest=m.responses.filter(r=>r.name==='LB1.Request').at(-1);assert.equal(latest.args[3],2);assert(latest.args[7]>refresh.args[7]);
+ const refresh=m.responses.filter(r=>r.name==='LB1.Request').at(-1);assert.equal(refresh.atTick,m.tick);assert.equal(refresh.args[2],0);assert.equal(refresh.args[3],1);
+ m.advance(1);const latest=m.responses.filter(r=>r.name==='LB1.Request').at(-1);assert.equal(latest.atTick,m.tick,'latest settled index is refreshed after the local double-click');assert.equal(latest.args[3],2);assert(latest.args[7]>refresh.args[7]);
  const action=portable.ui.find(n=>n.type===C.Button.NAME&&n.data.PromptCustomLabel==='Accept/Abbandon');let count=m.responses.length;m.press(action,'char-alice');m.advance(1);assert.equal(m.responses.length,count,'transaction input stays locked until the authoritative refresh returns');
  m.invoke(portable.reply,['board-alice','alice','stale',refresh.args[7],'Load board',rows,details,0]);m.advance(1);assert.deepEqual(names.map(n=>m.read(n,'Text')),['Charlie','Delta','>Echo<','Alpha','Bravo'],'stale reply cannot roll the local selection backward');assert.equal(m.published.get(portable.busy.id),true);
  const rotated=['Charlie','Delta','Echo','Alpha','Bravo'].map((name,i)=>`${name}^${200+i}^Car^Pickup ${i}^Destination ${i}`).join('~');m.invoke(portable.reply,['board-alice','alice','Ready',latest.args[7],'Load board',rotated,'x|x|x|x|x|8|0|x',0]);m.advance(1);assert.deepEqual(names.map(n=>m.read(n,'Text')),['Charlie','Delta','>Echo<','Alpha','Bravo']);assert.equal(m.published.get(portable.offset.id),0);assert.equal(m.published.get(portable.busy.id),false);
- count=m.responses.length;m.press(action,'char-alice');m.advance(1);assert.equal(m.responses.length,count+1,'accept request resumes after the authoritative refresh');const accept=m.responses.at(-1);assert.equal(accept.args[2],1);assert.equal(accept.args[3],2);assert.equal(accept.args[4],8);assert.equal(m.published.get(portable.pendingOp.id),1);
+ count=m.responses.length;m.press(action,'char-alice');m.advance(1);assert.equal(m.responses.length,count,'transaction request also snapshots settled client state');m.advance(1);assert.equal(m.responses.length,count+1,'accept request resumes after the authoritative refresh');const accept=m.responses.at(-1);assert.equal(accept.args[2],1);assert.equal(accept.args[3],2);assert.equal(accept.args[4],8);assert.equal(m.published.get(portable.pendingOp.id),1);
  const selected=m.published.get(portable.index.id);count=m.responses.length;m.press(down,'char-alice');m.advance(1);assert.equal(m.published.get(portable.index.id),selected,'browsing cannot supersede an in-flight transaction');assert.equal(m.responses.length,count);
 }
 
