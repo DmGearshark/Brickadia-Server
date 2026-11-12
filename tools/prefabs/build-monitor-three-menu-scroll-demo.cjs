@@ -22,10 +22,10 @@ function build(input){
  //   1 (middle item)
  //   2 (bottom item)    4 (down arrow)
  function mappedValue(entries){let value=selection;let port='Value';for(const [from,to] of entries){const eq=node('Expr_CompareEqual',{InputB:N(from)});wire(selection,'Value',eq,'InputA');const pick=node('Expr_Select',{InputA:N(0),InputB:N(to),bSelectB:false});wire(value,port,pick,'InputA');wire(eq,'bOutput',pick,'bSelectB');value=pick;port='Output';}return [value,port];}
- const moveUp=mappedValue([[1,0],[2,1],[4,3]]);       // W
- const moveDown=mappedValue([[0,1],[1,2],[3,4]]);     // S
- const moveLeft=mappedValue([[3,0],[4,2]]);           // A
- const moveRight=mappedValue([[0,3],[2,4]]);          // D; middle stays put
+ const moveUp=mappedValue([[0,2],[1,0],[2,1],[3,4],[4,3]]);   // wrap each column
+ const moveDown=mappedValue([[0,1],[1,2],[2,0],[3,4],[4,3]]); // wrap each column
+ const moveLeft=mappedValue([[0,3],[3,0],[2,4],[4,2]]);       // wrap each row
+ const moveRight=mappedValue([[0,3],[3,0],[2,4],[4,2]]);      // wrap each row; middle stays
  set(selection,moveUp,edge('InputForward','Greater',.5));
  set(selection,moveDown,edge('InputForward','Less',-.5));
  set(selection,moveLeft,edge('InputRight','Less',-.5));
