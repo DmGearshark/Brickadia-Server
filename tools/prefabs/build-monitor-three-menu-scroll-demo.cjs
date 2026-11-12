@@ -64,18 +64,18 @@ function build(input){
   const highlighted=node('Expr_Select',{InputA:N(1),InputB:N(1.05),bSelectB:false});wire(selectedSignals[i],'bOutput',highlighted,'bSelectB');
   const visualScale=node('Expr_Select',{InputA:N(1),InputB:N(1),bSelectB:false});wire(highlighted,'Output',visualScale,'InputA');wire(pressed[i],'Value',visualScale,'bSelectB');wire(visualScale,'Output',d,'WidthScale');
   const h=math('Multiply',visualScale,'Output',{InputB:N(i<3?1.2:1.5)});wire(h,'Output',d,'LineHeight');
-  if(i!==1){const down=setConst(pressed[i],B(true),branches[i]),wait=node('BufferTicks',{TicksToWait:6,ZeroTicksToWait:0}),restore=setConst(pressed[i],B(false),wait,'Output');wire(down,'ExecOut',wait,'Input');}
+  if(i!==1){const down=setConst(pressed[i],B(true),branches[i]),wait=node('BufferSeconds',{SecondsToWait:.1,ZeroSecondsToWait:0}),restore=setConst(pressed[i],B(false),wait,'Output');wire(down,'ExecOut',wait,'Input');}
  });
  // The middle entry is the unavailable example. It remains unpurchased and
  // overrides orange with red for the duration of the click depression.
  let failTail=branches[1],failPort='ExecOutA';
  for(let blink=0;blink<3;blink++){
-  const on=setConst(invalidFlashes[1],B(true),failTail,failPort),onWait=node('BufferTicks',{TicksToWait:6,ZeroTicksToWait:0}),off=setConst(invalidFlashes[1],B(false),onWait,'Output');wire(on,'ExecOut',onWait,'Input');
+  const on=setConst(invalidFlashes[1],B(true),failTail,failPort),onWait=node('BufferSeconds',{SecondsToWait:.1,ZeroSecondsToWait:0}),off=setConst(invalidFlashes[1],B(false),onWait,'Output');wire(on,'ExecOut',onWait,'Input');
   failTail=off;failPort='ExecOut';
-  if(blink<2){const offWait=node('BufferTicks',{TicksToWait:6,ZeroTicksToWait:0});wire(off,'ExecOut',offWait,'Input');failTail=offWait;failPort='Output';}
+  if(blink<2){const offWait=node('BufferSeconds',{SecondsToWait:.1,ZeroSecondsToWait:0});wire(off,'ExecOut',offWait,'Input');failTail=offWait;failPort='Output';}
  }
  const entity=one([...scene.r.entities()].filter(e=>e.persistentIndex===grid),'chip entity');scene.entityOverrides=new Map([[grid,{...entity,data:{...structuredClone(entity.data),bCollapsed:true,PlaneCenter:{X:216,Y:216,Z:2},PlaneExtent:{X:260,Y:260,Z:8}}}]]);
- const name='Monitor Frame - Three Menu Feedback Demo V8',description='Three-page spatial menu: selected controls are orange and 5% larger; successful clicks depress for about 0.1 seconds; failed buys stay full-size and blink red three times at a slower rate.';
+ const name='Monitor Frame - Three Menu Feedback Demo V9',description='Three-page spatial menu with explicit second-based feedback: successful clicks depress for 0.1 seconds; failed buys stay full-size and blink red three times with 0.1-second phases.';
  const generated=write(scene,{assets:scene.r.externalAssets(),name,description}).bytes,bytes=repack(generated,donor,{name,description}),placement=validate(bytes);assert(placement.strictOk,JSON.stringify(placement,null,2));return {bytes,placement,summary:{bricks:scene.bricks.length,gates:nodes.length,wires:scene.edges.length,textDisplays:scene.bricks.filter(b=>b.comps.some(c=>c.type===C.TextDisplay.NAME)).length,buttons:0,sha256:crypto.createHash('sha256').update(bytes).digest('hex')}};
 }
 module.exports=build;if(require.main===module){const [input,output]=process.argv.slice(2);if(!input||!output)throw Error('Usage: node build-monitor-three-menu-scroll-demo.cjs input.brz output.brz');const r=build(input);fs.writeFileSync(output,r.bytes);console.log(JSON.stringify({output,bytes:r.bytes.length,...r.summary,strictPlacement:r.placement.strictOk,warnings:r.placement.warnings||[]},null,2));}
