@@ -30,21 +30,24 @@ function build(input){
  const origin=node('Expr_SplitVector');wire(aim,'Origin',origin,'Input');
  const direction=node('Expr_SplitVector');wire(aim,'Direction',direction,'Input');
 
- // Intersect the camera ray with the button plane Y=-75049.
- const planeDelta=node('Expr_MathSubtract',{InputA:N(-75049)});wire(origin,'Y',planeDelta,'InputB');
+ // Saved brick coordinates are tenths of runtime world units. Intersect the
+ // camera ray with the actual button plane Y=-7504.9.
+ const planeDelta=node('Expr_MathSubtract',{InputA:N(-7504.9)});wire(origin,'Y',planeDelta,'InputB');
  const distance=node('Expr_MathDivide',{InputA:N(0),InputB:N(1)});wire(planeDelta,'Output',distance,'InputA');wire(direction,'Y',distance,'InputB');
  const xTravel=math('Multiply',direction,'X',distance,'Output');
  const hitX=math('Add',origin,'X',xTravel,'Output');
  const zTravel=math('Multiply',direction,'Z',distance,'Output');
  const hitZ=math('Add',origin,'Z',zTravel,'Output');
 
- // Button boundaries: X 6106..6142 and Z 10992..11020. Row zero is the top row.
- const xOffset=node('Expr_MathSubtract',{InputB:N(6106)});wire(hitX,'Output',xOffset,'InputA');
- const xScaled=node('Expr_MathDivide',{InputB:N(4)});wire(xOffset,'Output',xScaled,'InputA');
+ // Runtime button boundaries are X 610.6..614.2 and Z 1099.2..1102.0,
+ // with 0.4 world units per cell. This Text Display face presents both axes
+ // reversed relative to saved brick X/Z, so count from the opposite edges.
+ const xOffset=node('Expr_MathSubtract',{InputA:N(614.2)});wire(hitX,'Output',xOffset,'InputB');
+ const xScaled=node('Expr_MathDivide',{InputB:N(.4)});wire(xOffset,'Output',xScaled,'InputA');
  const xFloor=node('Expr_Floor');wire(xScaled,'Output',xFloor,'Input');
  const col=node('Expr_MathClamp',{Min:N(0),Max:N(8)});wire(xFloor,'Output',col,'Input');
- const zOffset=node('Expr_MathSubtract',{InputA:N(11020)});wire(hitZ,'Output',zOffset,'InputB');
- const zScaled=node('Expr_MathDivide',{InputB:N(4)});wire(zOffset,'Output',zScaled,'InputA');
+ const zOffset=node('Expr_MathSubtract',{InputB:N(1099.2)});wire(hitZ,'Output',zOffset,'InputA');
+ const zScaled=node('Expr_MathDivide',{InputB:N(.4)});wire(zOffset,'Output',zScaled,'InputA');
  const zFloor=node('Expr_Floor');wire(zScaled,'Output',zFloor,'Input');
  const row=node('Expr_MathClamp',{Min:N(0),Max:N(6)});wire(zFloor,'Output',row,'Input');
  const rowBase=node('Expr_MathMultiply',{InputB:N(9)});wire(row,'Output',rowBase,'InputA');
@@ -66,8 +69,8 @@ function build(input){
 
  const entity=one([...scene.r.entities()].filter(e=>e.persistentIndex===grid),'microchip entity');
  scene.entityOverrides=new Map([[grid,{...entity,data:{...structuredClone(entity.data),bCollapsed:true,PlaneCenter:{X:120,Y:72,Z:2},PlaneExtent:{X:160,Y:110,Z:8}}}]]);
- const name='Monitor Frame - Live Aim Cursor Probe';
- const description='Single-player 7x9 live aim cursor probe. The most recently spawned character is sampled at 20 Hz and projected onto the supplied monitor button plane.';
+ const name='Monitor Frame - Live Aim Cursor Probe V2';
+ const description='Calibrated single-player 7x9 live aim cursor probe. Runtime-scale plane coordinates and reversed display axes match the supplied monitor face.';
  const generated=write(scene,{assets:scene.r.externalAssets(),name,description}).bytes;
  const bytes=repack(generated,donor,{name,description});
  const placement=validate(bytes);assert(placement.strictOk,JSON.stringify(placement,null,2));
