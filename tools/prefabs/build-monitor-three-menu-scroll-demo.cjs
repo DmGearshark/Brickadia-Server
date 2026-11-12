@@ -1,0 +1,55 @@
+'use strict';
+const fs=require('fs'),assert=require('assert/strict'),crypto=require('crypto');
+const {read,write}=require('./reskin-loadboard.cjs');
+const repack=require('./repack-with-donor-metadata.cjs');
+const validate=require('./validate-placement.cjs');
+const {C,N,S}=require('./loadboard-lib.cjs');
+function one(xs,label){assert.equal(xs.length,1,`Expected one ${label}, found ${xs.length}`);return xs[0];}
+function build(input){
+ const donor=fs.readFileSync(input),scene=read(donor),link=one(scene.links,'chip link'),grid=link.grid;
+ const background=one(scene.bricks.filter(b=>b.comps.some(c=>c.type===C.TextDisplay.NAME)),'display');
+ const splitterBrick=one(scene.bricks.filter(b=>b.comps.some(c=>c.type===C.InputSplitter.NAME)),'seat splitter');
+ const splitter={key:splitterBrick.key,type:C.InputSplitter.NAME};
+ const nodes=[];let seq=0;
+ function node(kind,data={}){const def=C[kind],i=seq++,brick={key:`three-menu:${i}:${kind}`,g:grid,data:{asset:def.BRICK,material:'BMC_Plastic',position:[(i%9)*48,Math.floor(i/9)*48+48,2],size:[0,0,0],direction:4,rotation:0,collision:{player:true,weapon:true,interaction:true,tool:true,physics:true},visibility:true,material_intensity:0,color:[45,115,175],owner_index:0},comps:[{type:def.NAME,data}]};scene.bricks.push(brick);const n={key:brick.key,type:def.NAME};nodes.push(n);return n;}
+ function wire(a,p,z,q){const ac=Object.values(C).find(c=>c.NAME===a.type),zc=Object.values(C).find(c=>c.NAME===z.type);assert(ac?.PORTS[p]||Object.values(ac?.PORTS||{}).includes(p),`${a.type}.${p}`);assert(zc?.PORTS[q]||Object.values(zc?.PORTS||{}).includes(q),`${z.type}.${q}`);assert(!scene.edges.some(e=>e.z===z.key&&e.zt===z.type&&e.q===q),`Duplicate ${z.type}.${q}`);scene.edges.push({a:a.key,at:a.type,p,z:z.key,zt:z.type,q});}
+ function math(kind,a,ap,data={}){const n=node('Expr_Math'+kind,data);wire(a,ap,n,'InputA');return n;}
+ function set(variable,value,exec,port='OnRisingEdge'){const n=node('Exec_Var_Set',{Value:N(0),bChangeType:false});wire(variable,'VarRef',n,'VarRef');wire(value[0],value[1],n,'Value');wire(exec,port,n,'Exec');return n;}
+ function edge(inputPort,kind,threshold){const cmp=node('Expr_Compare'+kind,{InputB:N(threshold)});wire(splitter,inputPort,cmp,'InputA');const e=node('Expr_EdgeDetectorExec',{Input:0,InputLast:0,bSeeded:true});wire(cmp,'bOutput',e,'Input');return e;}
+ const selection=node('Var',{Value:N(0)}),menu=node('Var',{Value:N(0)}),counts=[node('Var',{Value:N(0)}),node('Var',{Value:N(0)}),node('Var',{Value:N(0)})];
+ const prevRaw=math('Subtract',selection,'Value',{InputB:N(1)}),nextRaw=math('Add',selection,'Value',{InputB:N(1)});
+ const atFirst=node('Expr_CompareEqual',{InputB:N(0)});wire(selection,'Value',atFirst,'InputA');const atLast=node('Expr_CompareEqual',{InputB:N(4)});wire(selection,'Value',atLast,'InputA');
+ const prev=node('Expr_Select',{InputA:N(0),InputB:N(4),bSelectB:false});wire(prevRaw,'Output',prev,'InputA');wire(atFirst,'bOutput',prev,'bSelectB');
+ const next=node('Expr_Select',{InputA:N(0),InputB:N(0),bSelectB:false});wire(nextRaw,'Output',next,'InputA');wire(atLast,'bOutput',next,'bSelectB');
+ for(const e of [edge('InputForward','Greater',.5),edge('InputRight','Less',-.5)])set(selection,[prev,'Output'],e);
+ for(const e of [edge('InputForward','Less',-.5),edge('InputRight','Greater',.5)])set(selection,[next,'Output'],e);
+ const space=edge('InputUp','Greater',.5),branches=[];
+ for(let i=0;i<5;i++){const eq=node('Expr_CompareEqual',{InputB:N(i)});wire(selection,'Value',eq,'InputA');const b=node('Exec_Branch',{bCond:false});wire(eq,'bOutput',b,'bCond');wire(space,'OnRisingEdge',b,'Exec');branches.push(b);}
+ for(let i=0;i<3;i++){const inc=math('Add',counts[i],'Value',{InputB:N(1)});set(counts[i],[inc,'Output'],branches[i],'ExecOutA');}
+ const menuMinus=math('Subtract',menu,'Value',{InputB:N(1)}),menuPlus=math('Add',menu,'Value',{InputB:N(1)});
+ const menuFirst=node('Expr_CompareEqual',{InputB:N(0)});wire(menu,'Value',menuFirst,'InputA');const menuLast=node('Expr_CompareEqual',{InputB:N(2)});wire(menu,'Value',menuLast,'InputA');
+ const menuPrev=node('Expr_Select',{InputA:N(0),InputB:N(2),bSelectB:false});wire(menuMinus,'Output',menuPrev,'InputA');wire(menuFirst,'bOutput',menuPrev,'bSelectB');
+ const menuNext=node('Expr_Select',{InputA:N(0),InputB:N(0),bSelectB:false});wire(menuPlus,'Output',menuNext,'InputA');wire(menuLast,'bOutput',menuNext,'bSelectB');
+ set(menu,[menuPrev,'Output'],branches[3],'ExecOutA');set(menu,[menuNext,'Output'],branches[4],'ExecOutA');
+
+ const baseData=background.comps.find(c=>c.type===C.TextDisplay.NAME).data;baseData.Text='WASD  SELECT       SPACE  ACTIVATE';baseData.Anchor={X:.5,Y:.06};baseData.Offset={X:0,Y:0,Z:0};baseData.LineHeight=1.05;baseData.WidthScale=.85;baseData.LineOffset=0;
+ function display(key,pos,text,lineHeight=1.2,size=[11,1,2]){const data=structuredClone(baseData);Object.assign(data,{Text:text,Anchor:{X:.5,Y:.5},Offset:{X:0,Y:0,Z:0},LineHeight:lineHeight,WidthScale:1,LineOffset:0,Kerning:0});const b={key,g:1,data:{asset:'PB_DefaultMicroBrick',material:'BMC_Glow',position:pos,size,direction:4,rotation:0,collision:{player:false,weapon:false,interaction:false,tool:false,physics:false},visibility:false,material_intensity:0,color:[0,0,0],owner_index:0},comps:[{type:C.TextDisplay.NAME,data}]};scene.bricks.push(b);return {key,type:C.TextDisplay.NAME};}
+ const header=display('three-menu:page',[6118,-75361,11052],'MENU 1 / 3',1,[18,1,2]);const labels=[display('three-menu:item0',[6110,-75361,11045],'ITEM',1.2,[8,1,2]),display('three-menu:item1',[6110,-75361,11038],'ITEM',1.2,[8,1,2]),display('three-menu:item2',[6110,-75361,11031],'ITEM',1.2,[8,1,2])];
+ const countDisplays=[display('three-menu:count0',[6121,-75361,11045],'0',.8,[2,1,2]),display('three-menu:count1',[6121,-75361,11038],'0',.8,[2,1,2]),display('three-menu:count2',[6121,-75361,11031],'0',.8,[2,1,2])];
+ const arrows=[display('three-menu:up',[6131,-75361,11045],'▲ UP',1.5,[5,1,3]),display('three-menu:down',[6131,-75361,11031],'▼ DOWN',1.5,[5,1,3])];
+ const pageNum=math('Add',menu,'Value',{InputB:N(1)}),pageText=node('Expr_String_FormatText',{FormatString:'MENU {A} / 3'});wire(pageNum,'Output',pageText,'InputA');wire(pageText,'Output',header,'Text');
+ const names=[['🍪 GENERATORS','⚡ UPGRADES','📊 STATISTICS'],['🍪 COOKIE','⚙ FACTORY','💎 MINE'],['⚡ POWER','⏱ SPEED','💰 DISCOUNT']];
+ function selectionColor(displayNode,selectedSignal){for(const [channel,normal,orange] of [['R',255,255],['G',255,135],['B',255,20]]){const pick=node('Expr_Select',{InputA:N(normal),InputB:N(orange),bSelectB:false});wire(selectedSignal,'bOutput',pick,'bSelectB');wire(pick,'Output',displayNode,`Color.${channel}`);}}
+ for(let i=0;i<3;i++){
+  const isMenu1=node('Expr_CompareEqual',{InputB:N(1)});wire(menu,'Value',isMenu1,'InputA');const isMenu2=node('Expr_CompareEqual',{InputB:N(2)});wire(menu,'Value',isMenu2,'InputA');
+  const choose1=node('Expr_Select',{InputA:S(names[0][i]),InputB:S(names[1][i]),bSelectB:false});wire(isMenu1,'bOutput',choose1,'bSelectB');const choose2=node('Expr_Select',{InputA:S(''),InputB:S(names[2][i]),bSelectB:false});wire(choose1,'Output',choose2,'InputA');wire(isMenu2,'bOutput',choose2,'bSelectB');
+  const selected=node('Expr_CompareEqual',{InputB:N(i)});wire(selection,'Value',selected,'InputA');const marked=node('Expr_String_FormatText',{FormatString:'> {A} <'});wire(choose2,'Output',marked,'InputA');const final=node('Expr_Select',{InputA:S(''),InputB:S(''),bSelectB:false});wire(choose2,'Output',final,'InputA');wire(marked,'Output',final,'InputB');wire(selected,'bOutput',final,'bSelectB');wire(final,'Output',labels[i],'Text');selectionColor(labels[i],selected);
+  const ct=node('Expr_String_FormatText',{FormatString:'x{A}'});wire(counts[i],'Value',ct,'InputA');wire(ct,'Output',countDisplays[i],'Text');
+ }
+ ['▲ UP','▼ DOWN'].forEach((text,i)=>{const selected=node('Expr_CompareEqual',{InputB:N(i+3)});wire(selection,'Value',selected,'InputA');const choice=node('Expr_Select',{InputA:S(`  ${text}  `),InputB:S(`> ${text} <`),bSelectB:false});wire(selected,'bOutput',choice,'bSelectB');wire(choice,'Output',arrows[i],'Text');selectionColor(arrows[i],selected);});
+ [...labels,...arrows].forEach((d,i)=>{const scale=node('Var',{Value:N(1)});wire(scale,'Value',d,'WidthScale');const h=math('Multiply',scale,'Value',{InputB:N(i<3?1.2:1.5)});wire(h,'Output',d,'LineHeight');function setter(v){const n=node('Exec_Var_Set',{Value:N(v),bChangeType:false});wire(scale,'VarRef',n,'VarRef');return n;}const press=setter(.78),w1=node('BufferTicks',{TicksToWait:2,ZeroTicksToWait:0}),bounce=setter(1.2),w2=node('BufferTicks',{TicksToWait:3,ZeroTicksToWait:0}),rest=setter(1);wire(branches[i],'ExecOutA',press,'Exec');wire(press,'ExecOut',w1,'Input');wire(w1,'Output',bounce,'Exec');wire(bounce,'ExecOut',w2,'Input');wire(w2,'Output',rest,'Exec');});
+ const entity=one([...scene.r.entities()].filter(e=>e.persistentIndex===grid),'chip entity');scene.entityOverrides=new Map([[grid,{...entity,data:{...structuredClone(entity.data),bCollapsed:true,PlaneCenter:{X:216,Y:216,Z:2},PlaneExtent:{X:260,Y:260,Z:8}}}]]);
+ const name='Monitor Frame - Three Menu Scroll Demo V1',description='Seat-controlled three-page tactile menu with fixed item displays and selectable up/down page arrows.';
+ const generated=write(scene,{assets:scene.r.externalAssets(),name,description}).bytes,bytes=repack(generated,donor,{name,description}),placement=validate(bytes);assert(placement.strictOk,JSON.stringify(placement,null,2));return {bytes,placement,summary:{bricks:scene.bricks.length,gates:nodes.length,wires:scene.edges.length,textDisplays:scene.bricks.filter(b=>b.comps.some(c=>c.type===C.TextDisplay.NAME)).length,buttons:0,sha256:crypto.createHash('sha256').update(bytes).digest('hex')}};
+}
+module.exports=build;if(require.main===module){const [input,output]=process.argv.slice(2);if(!input||!output)throw Error('Usage: node build-monitor-three-menu-scroll-demo.cjs input.brz output.brz');const r=build(input);fs.writeFileSync(output,r.bytes);console.log(JSON.stringify({output,bytes:r.bytes.length,...r.summary,strictPlacement:r.placement.strictOk,warnings:r.placement.warnings||[]},null,2));}
