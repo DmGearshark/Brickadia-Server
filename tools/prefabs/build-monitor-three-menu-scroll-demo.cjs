@@ -3,7 +3,7 @@ const fs=require('fs'),assert=require('assert/strict'),crypto=require('crypto');
 const {read,write}=require('./reskin-loadboard.cjs');
 const repack=require('./repack-with-donor-metadata.cjs');
 const validate=require('./validate-placement.cjs');
-const {C,N,S}=require('./loadboard-lib.cjs');
+const {C,N,S,B}=require('./loadboard-lib.cjs');
 function one(xs,label){assert.equal(xs.length,1,`Expected one ${label}, found ${xs.length}`);return xs[0];}
 function build(input){
  const donor=fs.readFileSync(input),scene=read(donor),link=one(scene.links,'chip link'),grid=link.grid;
@@ -15,6 +15,7 @@ function build(input){
  function wire(a,p,z,q){const ac=Object.values(C).find(c=>c.NAME===a.type),zc=Object.values(C).find(c=>c.NAME===z.type);assert(ac?.PORTS[p]||Object.values(ac?.PORTS||{}).includes(p),`${a.type}.${p}`);assert(zc?.PORTS[q]||Object.values(zc?.PORTS||{}).includes(q),`${z.type}.${q}`);assert(!scene.edges.some(e=>e.z===z.key&&e.zt===z.type&&e.q===q),`Duplicate ${z.type}.${q}`);scene.edges.push({a:a.key,at:a.type,p,z:z.key,zt:z.type,q});}
  function math(kind,a,ap,data={}){const n=node('Expr_Math'+kind,data);wire(a,ap,n,'InputA');return n;}
  function set(variable,value,exec,port='OnRisingEdge'){const n=node('Exec_Var_Set',{Value:N(0),bChangeType:false});wire(variable,'VarRef',n,'VarRef');wire(value[0],value[1],n,'Value');wire(exec,port,n,'Exec');return n;}
+ function setConst(variable,value,exec,port='ExecOutA'){const n=node('Exec_Var_Set',{Value:value,bChangeType:false});wire(variable,'VarRef',n,'VarRef');wire(exec,port,n,'Exec');return n;}
  function edge(inputPort,kind,threshold){const cmp=node('Expr_Compare'+kind,{InputB:N(threshold)});wire(splitter,inputPort,cmp,'InputA');const e=node('Expr_EdgeDetectorExec',{Input:0,InputLast:0,bSeeded:true});wire(cmp,'bOutput',e,'Input');return e;}
  const selection=node('Var',{Value:N(0)}),menu=node('Var',{Value:N(0)}),counts=[node('Var',{Value:N(0)}),node('Var',{Value:N(0)}),node('Var',{Value:N(0)})];
  // Spatial navigation for the actual layout:
@@ -32,7 +33,9 @@ function build(input){
  set(selection,moveRight,edge('InputRight','Greater',.5));
  const space=edge('InputUp','Greater',.5),branches=[];
  for(let i=0;i<5;i++){const eq=node('Expr_CompareEqual',{InputB:N(i)});wire(selection,'Value',eq,'InputA');const b=node('Exec_Branch',{bCond:false});wire(eq,'bOutput',b,'bCond');wire(space,'OnRisingEdge',b,'Exec');branches.push(b);}
- for(let i=0;i<3;i++){const inc=math('Add',counts[i],'Value',{InputB:N(1)});set(counts[i],[inc,'Output'],branches[i],'ExecOutA');}
+ // Slots 0 and 2 demonstrate successful actions. Slot 1 deliberately fails
+ // so its red unavailable feedback can be tested.
+ for(const i of [0,2]){const inc=math('Add',counts[i],'Value',{InputB:N(1)});set(counts[i],[inc,'Output'],branches[i],'ExecOutA');}
  const menuMinus=math('Subtract',menu,'Value',{InputB:N(1)}),menuPlus=math('Add',menu,'Value',{InputB:N(1)});
  const menuFirst=node('Expr_CompareEqual',{InputB:N(0)});wire(menu,'Value',menuFirst,'InputA');const menuLast=node('Expr_CompareEqual',{InputB:N(2)});wire(menu,'Value',menuLast,'InputA');
  const menuPrev=node('Expr_Select',{InputA:N(0),InputB:N(2),bSelectB:false});wire(menuMinus,'Output',menuPrev,'InputA');wire(menuFirst,'bOutput',menuPrev,'bSelectB');
@@ -45,18 +48,29 @@ function build(input){
  const countDisplays=[display('three-menu:count0',[6121,-75361,11045],'0',.8,[2,1,2]),display('three-menu:count1',[6121,-75361,11038],'0',.8,[2,1,2]),display('three-menu:count2',[6121,-75361,11031],'0',.8,[2,1,2])];
  const arrows=[display('three-menu:up',[6131,-75361,11045],'▲ UP',1.5,[5,1,3]),display('three-menu:down',[6131,-75361,11031],'▼ DOWN',1.5,[5,1,3])];
  const pageNum=math('Add',menu,'Value',{InputB:N(1)}),pageText=node('Expr_String_FormatText',{FormatString:'MENU {A} / 3'});wire(pageNum,'Output',pageText,'InputA');wire(pageText,'Output',header,'Text');
- const names=[['🍪 GENERATORS','⚡ UPGRADES','📊 STATISTICS'],['🍪 COOKIE','⚙ FACTORY','💎 MINE'],['⚡ POWER','⏱ SPEED','💰 DISCOUNT']];
- function selectionColor(displayNode,selectedSignal){for(const [channel,normal,orange] of [['R',255,255],['G',255,135],['B',255,20]]){const pick=node('Expr_Select',{InputA:N(normal),InputB:N(orange),bSelectB:false});wire(selectedSignal,'bOutput',pick,'bSelectB');wire(pick,'Output',displayNode,`Color.${channel}`);}}
+ const names=[['🍪 GENERATORS','⚡ UPGRADES (LOCKED)','📊 STATISTICS'],['🍪 COOKIE','⚙ FACTORY (TOO EXPENSIVE)','💎 MINE'],['⚡ POWER','⏱ SPEED (LOCKED)','💰 DISCOUNT']];
+ const invalidFlashes=Array.from({length:5},()=>node('Var',{Value:B(false)}));
+ const pressed=Array.from({length:5},()=>node('Var',{Value:B(false)}));
+ function selectionColor(displayNode,selectedSignal,invalidSignal){for(const [channel,normal,orange,red] of [['R',255,255,255],['G',255,135,25],['B',255,20,20]]){const selectedColor=node('Expr_Select',{InputA:N(normal),InputB:N(orange),bSelectB:false});wire(selectedSignal,'bOutput',selectedColor,'bSelectB');const finalColor=node('Expr_Select',{InputA:N(normal),InputB:N(red),bSelectB:false});wire(selectedColor,'Output',finalColor,'InputA');wire(invalidSignal,'Value',finalColor,'bSelectB');wire(finalColor,'Output',displayNode,`Color.${channel}`);}}
+ const selectedSignals=[];
  for(let i=0;i<3;i++){
   const isMenu1=node('Expr_CompareEqual',{InputB:N(1)});wire(menu,'Value',isMenu1,'InputA');const isMenu2=node('Expr_CompareEqual',{InputB:N(2)});wire(menu,'Value',isMenu2,'InputA');
   const choose1=node('Expr_Select',{InputA:S(names[0][i]),InputB:S(names[1][i]),bSelectB:false});wire(isMenu1,'bOutput',choose1,'bSelectB');const choose2=node('Expr_Select',{InputA:S(''),InputB:S(names[2][i]),bSelectB:false});wire(choose1,'Output',choose2,'InputA');wire(isMenu2,'bOutput',choose2,'bSelectB');
-  const selected=node('Expr_CompareEqual',{InputB:N(i)});wire(selection,'Value',selected,'InputA');const marked=node('Expr_String_FormatText',{FormatString:'> {A} <'});wire(choose2,'Output',marked,'InputA');const final=node('Expr_Select',{InputA:S(''),InputB:S(''),bSelectB:false});wire(choose2,'Output',final,'InputA');wire(marked,'Output',final,'InputB');wire(selected,'bOutput',final,'bSelectB');wire(final,'Output',labels[i],'Text');selectionColor(labels[i],selected);
+  const selected=node('Expr_CompareEqual',{InputB:N(i)});wire(selection,'Value',selected,'InputA');selectedSignals[i]=selected;const marked=node('Expr_String_FormatText',{FormatString:'> {A} <'});wire(choose2,'Output',marked,'InputA');const final=node('Expr_Select',{InputA:S(''),InputB:S(''),bSelectB:false});wire(choose2,'Output',final,'InputA');wire(marked,'Output',final,'InputB');wire(selected,'bOutput',final,'bSelectB');wire(final,'Output',labels[i],'Text');selectionColor(labels[i],selected,invalidFlashes[i]);
   const ct=node('Expr_String_FormatText',{FormatString:'x{A}'});wire(counts[i],'Value',ct,'InputA');wire(ct,'Output',countDisplays[i],'Text');
  }
- ['▲ UP','▼ DOWN'].forEach((text,i)=>{const selected=node('Expr_CompareEqual',{InputB:N(i+3)});wire(selection,'Value',selected,'InputA');const choice=node('Expr_Select',{InputA:S(`  ${text}  `),InputB:S(`> ${text} <`),bSelectB:false});wire(selected,'bOutput',choice,'bSelectB');wire(choice,'Output',arrows[i],'Text');selectionColor(arrows[i],selected);});
- [...labels,...arrows].forEach((d,i)=>{const scale=node('Var',{Value:N(1)});wire(scale,'Value',d,'WidthScale');const h=math('Multiply',scale,'Value',{InputB:N(i<3?1.2:1.5)});wire(h,'Output',d,'LineHeight');function setter(v){const n=node('Exec_Var_Set',{Value:N(v),bChangeType:false});wire(scale,'VarRef',n,'VarRef');return n;}const press=setter(.78),w1=node('BufferTicks',{TicksToWait:2,ZeroTicksToWait:0}),bounce=setter(1.2),w2=node('BufferTicks',{TicksToWait:3,ZeroTicksToWait:0}),rest=setter(1);wire(branches[i],'ExecOutA',press,'Exec');wire(press,'ExecOut',w1,'Input');wire(w1,'Output',bounce,'Exec');wire(bounce,'ExecOut',w2,'Input');wire(w2,'Output',rest,'Exec');});
+ ['▲ UP','▼ DOWN'].forEach((text,i)=>{const slot=i+3,selected=node('Expr_CompareEqual',{InputB:N(slot)});wire(selection,'Value',selected,'InputA');selectedSignals[slot]=selected;const choice=node('Expr_Select',{InputA:S(`  ${text}  `),InputB:S(`> ${text} <`),bSelectB:false});wire(selected,'bOutput',choice,'bSelectB');wire(choice,'Output',arrows[i],'Text');selectionColor(arrows[i],selected,invalidFlashes[slot]);});
+ [...labels,...arrows].forEach((d,i)=>{
+  const highlighted=node('Expr_Select',{InputA:N(1),InputB:N(1.2),bSelectB:false});wire(selectedSignals[i],'bOutput',highlighted,'bSelectB');
+  const visualScale=node('Expr_Select',{InputA:N(1),InputB:N(1),bSelectB:false});wire(highlighted,'Output',visualScale,'InputA');wire(pressed[i],'Value',visualScale,'bSelectB');wire(visualScale,'Output',d,'WidthScale');
+  const h=math('Multiply',visualScale,'Output',{InputB:N(i<3?1.2:1.5)});wire(h,'Output',d,'LineHeight');
+  const down=setConst(pressed[i],B(true),branches[i]),wait=node('BufferTicks',{TicksToWait:30,ZeroTicksToWait:0}),restore=setConst(pressed[i],B(false),wait,'Output');wire(down,'ExecOut',wait,'Input');
+ });
+ // The middle entry is the unavailable example. It remains unpurchased and
+ // overrides orange with red for the duration of the click depression.
+ const failOn=setConst(invalidFlashes[1],B(true),branches[1]),failWait=node('BufferTicks',{TicksToWait:30,ZeroTicksToWait:0}),failOff=setConst(invalidFlashes[1],B(false),failWait,'Output');wire(failOn,'ExecOut',failWait,'Input');
  const entity=one([...scene.r.entities()].filter(e=>e.persistentIndex===grid),'chip entity');scene.entityOverrides=new Map([[grid,{...entity,data:{...structuredClone(entity.data),bCollapsed:true,PlaneCenter:{X:216,Y:216,Z:2},PlaneExtent:{X:260,Y:260,Z:8}}}]]);
- const name='Monitor Frame - Three Menu Scroll Demo V1',description='Seat-controlled three-page tactile menu with fixed item displays and selectable up/down page arrows.';
+ const name='Monitor Frame - Three Menu Feedback Demo V4',description='Three-page spatial menu: selected controls are orange and 20% larger; clicks depress for half a second; unavailable middle entries flash red.';
  const generated=write(scene,{assets:scene.r.externalAssets(),name,description}).bytes,bytes=repack(generated,donor,{name,description}),placement=validate(bytes);assert(placement.strictOk,JSON.stringify(placement,null,2));return {bytes,placement,summary:{bricks:scene.bricks.length,gates:nodes.length,wires:scene.edges.length,textDisplays:scene.bricks.filter(b=>b.comps.some(c=>c.type===C.TextDisplay.NAME)).length,buttons:0,sha256:crypto.createHash('sha256').update(bytes).digest('hex')}};
 }
 module.exports=build;if(require.main===module){const [input,output]=process.argv.slice(2);if(!input||!output)throw Error('Usage: node build-monitor-three-menu-scroll-demo.cjs input.brz output.brz');const r=build(input);fs.writeFileSync(output,r.bytes);console.log(JSON.stringify({output,bytes:r.bytes.length,...r.summary,strictPlacement:r.placement.strictOk,warnings:r.placement.warnings||[]},null,2));}
