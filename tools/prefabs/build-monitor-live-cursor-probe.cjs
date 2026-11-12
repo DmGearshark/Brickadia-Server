@@ -30,24 +30,22 @@ function build(input,{debug=false}={}){
  const origin=node('Expr_SplitVector');wire(aim,'Origin',origin,'Input');
  const direction=node('Expr_SplitVector');wire(aim,'Direction',direction,'Input');
 
- // Saved brick coordinates are tenths of runtime world units. Intersect the
- // camera ray with the actual button plane Y=-7504.9.
- const planeDelta=node('Expr_MathSubtract',{InputA:N(-7504.9)});wire(origin,'Y',planeDelta,'InputB');
+ // Get Aim uses the same full world-coordinate scale as the saved monitor.
+ const planeDelta=node('Expr_MathSubtract',{InputA:N(-75049)});wire(origin,'Y',planeDelta,'InputB');
  const distance=node('Expr_MathDivide',{InputA:N(0),InputB:N(1)});wire(planeDelta,'Output',distance,'InputA');wire(direction,'Y',distance,'InputB');
  const xTravel=math('Multiply',direction,'X',distance,'Output');
  const hitX=math('Add',origin,'X',xTravel,'Output');
  const zTravel=math('Multiply',direction,'Z',distance,'Output');
  const hitZ=math('Add',origin,'Z',zTravel,'Output');
 
- // Runtime button boundaries are X 610.6..614.2 and Z 1099.2..1102.0,
- // with 0.4 world units per cell. This Text Display face presents both axes
- // reversed relative to saved brick X/Z, so count from the opposite edges.
- const xOffset=node('Expr_MathSubtract',{InputA:N(614.2)});wire(hitX,'Output',xOffset,'InputB');
- const xScaled=node('Expr_MathDivide',{InputB:N(.4)});wire(xOffset,'Output',xScaled,'InputA');
+ // Button boundaries are X 6106..6142 and Z 10992..11020, with four world
+ // units per cell. This display face presents both axes reversed.
+ const xOffset=node('Expr_MathSubtract',{InputA:N(6142)});wire(hitX,'Output',xOffset,'InputB');
+ const xScaled=node('Expr_MathDivide',{InputB:N(4)});wire(xOffset,'Output',xScaled,'InputA');
  const xFloor=node('Expr_Floor');wire(xScaled,'Output',xFloor,'Input');
  const col=node('Expr_MathClamp',{Min:N(0),Max:N(8)});wire(xFloor,'Output',col,'Input');
- const zOffset=node('Expr_MathSubtract',{InputB:N(1099.2)});wire(hitZ,'Output',zOffset,'InputA');
- const zScaled=node('Expr_MathDivide',{InputB:N(.4)});wire(zOffset,'Output',zScaled,'InputA');
+ const zOffset=node('Expr_MathSubtract',{InputB:N(10992)});wire(hitZ,'Output',zOffset,'InputA');
+ const zScaled=node('Expr_MathDivide',{InputB:N(4)});wire(zOffset,'Output',zScaled,'InputA');
  const zFloor=node('Expr_Floor');wire(zScaled,'Output',zFloor,'Input');
  const row=node('Expr_MathClamp',{Min:N(0),Max:N(6)});wire(zFloor,'Output',row,'Input');
  const rowBase=node('Expr_MathMultiply',{InputB:N(9)});wire(row,'Output',rowBase,'InputA');
@@ -67,15 +65,27 @@ function build(input,{debug=false}={}){
   wire(origin,'X',diagnostic,'InputA');wire(origin,'Y',diagnostic,'InputB');wire(origin,'Z',diagnostic,'InputC');
   wire(direction,'X',diagnostic,'InputD');wire(direction,'Y',diagnostic,'InputE');wire(direction,'Z',diagnostic,'InputF');
   wire(diagnostic,'Output',{key:display.key,type:C.TextDisplay.NAME},'Text');
- }else wire(get,'Value',{key:display.key,type:C.TextDisplay.NAME},'Text');
+ }else{
+  wire(get,'Value',{key:display.key,type:C.TextDisplay.NAME},'Text');
+  // Do not clamp off-screen aim into an edge cursor. The cursor is visible
+  // only while the projected ray intersection is inside the monitor bounds.
+  const xMin=node('Expr_CompareGreaterOrEqual',{InputB:N(6106)});wire(hitX,'Output',xMin,'InputA');
+  const xMax=node('Expr_CompareLessOrEqual',{InputB:N(6142)});wire(hitX,'Output',xMax,'InputA');
+  const zMin=node('Expr_CompareGreaterOrEqual',{InputB:N(10992)});wire(hitZ,'Output',zMin,'InputA');
+  const zMax=node('Expr_CompareLessOrEqual',{InputB:N(11020)});wire(hitZ,'Output',zMax,'InputA');
+  const xInside=node('Expr_LogicalAND');wire(xMin,'bOutput',xInside,'bInputA');wire(xMax,'bOutput',xInside,'bInputB');
+  const zInside=node('Expr_LogicalAND');wire(zMin,'bOutput',zInside,'bInputA');wire(zMax,'bOutput',zInside,'bInputB');
+  const onScreen=node('Expr_LogicalAND');wire(xInside,'bOutput',onScreen,'bInputA');wire(zInside,'bOutput',onScreen,'bInputB');
+  wire(onScreen,'bOutput',{key:display.key,type:C.TextDisplay.NAME},'bEnabled');
+ }
  const displayComp=display.comps.find(c=>c.type===C.TextDisplay.NAME);
  displayComp.data.Text=debug?'ORIGIN\r\nX 0\r\nY 0\r\nZ 0\r\nDIRECTION\r\nX 0  Y 0\r\nZ 0':screens[31];
  displayComp.data.Kerning=4;displayComp.data.LineHeight=1.5;displayComp.data.WidthScale=1;
 
  const entity=one([...scene.r.entities()].filter(e=>e.persistentIndex===grid),'microchip entity');
  scene.entityOverrides=new Map([[grid,{...entity,data:{...structuredClone(entity.data),bCollapsed:true,PlaneCenter:{X:120,Y:72,Z:2},PlaneExtent:{X:160,Y:110,Z:8}}}]]);
- const name=debug?'Monitor Frame - Aim Coordinate Diagnostic':'Monitor Frame - Live Aim Cursor Probe V2';
- const description=debug?'Displays live Get Aim origin and direction values for coordinate-space calibration.':'Calibrated single-player 7x9 live aim cursor probe. Runtime-scale plane coordinates and reversed display axes match the supplied monitor face.';
+ const name=debug?'Monitor Frame - Aim Coordinate Diagnostic':'Monitor Frame - Live Aim Cursor Probe V3';
+ const description=debug?'Displays live Get Aim origin and direction values for coordinate-space calibration.':'World-space 7x9 live cursor with corrected display axes; cursor visibility is limited to intersections inside the monitor bounds.';
  const generated=write(scene,{assets:scene.r.externalAssets(),name,description}).bytes;
  const bytes=repack(generated,donor,{name,description});
  const placement=validate(bytes);assert(placement.strictOk,JSON.stringify(placement,null,2));
