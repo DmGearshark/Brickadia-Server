@@ -6,7 +6,7 @@ const validate=require('./validate-placement.cjs');
 const {C,N,R}=require('./loadboard-lib.cjs');
 
 function one(items,label){assert.equal(items.length,1,`Expected one ${label}, found ${items.length}`);return items[0];}
-function build(input){
+function build(input,{debug=false}={}){
  const donor=fs.readFileSync(input),scene=read(donor);
  const link=one(scene.links,'microchip link'),chip=one(scene.bricks.filter(b=>b.key===link.key),'microchip');
  const grid=link.grid;
@@ -62,19 +62,24 @@ function build(input){
  const frames=node('ArrayVar',{Value:{$elementType:'str',$array:screens}});
  const get=node('Exec_ArrayVar_Get',{Index:0,Value:{$variant:'str',value:screens[31]}});
  wire(frames,'ArrayVarRef',get,'ArrayVarRef');wire(index,'Output',get,'Index');wire(aim,'ExecOut',get,'Exec');
- wire(get,'Value',{key:display.key,type:C.TextDisplay.NAME},'Text');
+ if(debug){
+  const diagnostic=node('Expr_String_FormatText',{FormatString:'ORIGIN\r\nX {A}\r\nY {B}\r\nZ {C}\r\nDIRECTION\r\nX {D}  Y {E}\r\nZ {F}'});
+  wire(origin,'X',diagnostic,'InputA');wire(origin,'Y',diagnostic,'InputB');wire(origin,'Z',diagnostic,'InputC');
+  wire(direction,'X',diagnostic,'InputD');wire(direction,'Y',diagnostic,'InputE');wire(direction,'Z',diagnostic,'InputF');
+  wire(diagnostic,'Output',{key:display.key,type:C.TextDisplay.NAME},'Text');
+ }else wire(get,'Value',{key:display.key,type:C.TextDisplay.NAME},'Text');
  const displayComp=display.comps.find(c=>c.type===C.TextDisplay.NAME);
- displayComp.data.Text=screens[31];
+ displayComp.data.Text=debug?'ORIGIN\r\nX 0\r\nY 0\r\nZ 0\r\nDIRECTION\r\nX 0  Y 0\r\nZ 0':screens[31];
  displayComp.data.Kerning=4;displayComp.data.LineHeight=1.5;displayComp.data.WidthScale=1;
 
  const entity=one([...scene.r.entities()].filter(e=>e.persistentIndex===grid),'microchip entity');
  scene.entityOverrides=new Map([[grid,{...entity,data:{...structuredClone(entity.data),bCollapsed:true,PlaneCenter:{X:120,Y:72,Z:2},PlaneExtent:{X:160,Y:110,Z:8}}}]]);
- const name='Monitor Frame - Live Aim Cursor Probe V2';
- const description='Calibrated single-player 7x9 live aim cursor probe. Runtime-scale plane coordinates and reversed display axes match the supplied monitor face.';
+ const name=debug?'Monitor Frame - Aim Coordinate Diagnostic':'Monitor Frame - Live Aim Cursor Probe V2';
+ const description=debug?'Displays live Get Aim origin and direction values for coordinate-space calibration.':'Calibrated single-player 7x9 live aim cursor probe. Runtime-scale plane coordinates and reversed display axes match the supplied monitor face.';
  const generated=write(scene,{assets:scene.r.externalAssets(),name,description}).bytes;
  const bytes=repack(generated,donor,{name,description});
  const placement=validate(bytes);assert(placement.strictOk,JSON.stringify(placement,null,2));
  return {bytes,scene,nodes,placement,summary:{bricks:scene.bricks.length,gates:nodes.length,wires:scene.edges.length,buttons:buttons.length,rows:7,columns:9,updateHz:20,sha256:crypto.createHash('sha256').update(bytes).digest('hex')}};
 }
 module.exports=build;
-if(require.main===module){const [input,output]=process.argv.slice(2);if(!input||!output)throw Error('Usage: node build-monitor-live-cursor-probe.cjs input.brz output.brz');const result=build(input);fs.writeFileSync(output,result.bytes);console.log(JSON.stringify({output,bytes:result.bytes.length,...result.summary,strictPlacement:result.placement.strictOk,warnings:result.placement.warnings||[]},null,2));}
+if(require.main===module){const [input,output,flag]=process.argv.slice(2);if(!input||!output)throw Error('Usage: node build-monitor-live-cursor-probe.cjs input.brz output.brz [--debug]');const result=build(input,{debug:flag==='--debug'});fs.writeFileSync(output,result.bytes);console.log(JSON.stringify({output,debug:flag==='--debug',bytes:result.bytes.length,...result.summary,strictPlacement:result.placement.strictOk,warnings:result.placement.warnings||[]},null,2));}
