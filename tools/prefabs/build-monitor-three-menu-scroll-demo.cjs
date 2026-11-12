@@ -61,16 +61,16 @@ function build(input){
  }
  ['▲ UP','▼ DOWN'].forEach((text,i)=>{const slot=i+3,selected=node('Expr_CompareEqual',{InputB:N(slot)});wire(selection,'Value',selected,'InputA');selectedSignals[slot]=selected;const choice=node('Expr_Select',{InputA:S(`  ${text}  `),InputB:S(`> ${text} <`),bSelectB:false});wire(selected,'bOutput',choice,'bSelectB');wire(choice,'Output',arrows[i],'Text');selectionColor(arrows[i],selected,invalidFlashes[slot]);});
  [...labels,...arrows].forEach((d,i)=>{
-  const highlighted=node('Expr_Select',{InputA:N(1),InputB:N(1.2),bSelectB:false});wire(selectedSignals[i],'bOutput',highlighted,'bSelectB');
+  const highlighted=node('Expr_Select',{InputA:N(1),InputB:N(1.05),bSelectB:false});wire(selectedSignals[i],'bOutput',highlighted,'bSelectB');
   const visualScale=node('Expr_Select',{InputA:N(1),InputB:N(1),bSelectB:false});wire(highlighted,'Output',visualScale,'InputA');wire(pressed[i],'Value',visualScale,'bSelectB');wire(visualScale,'Output',d,'WidthScale');
   const h=math('Multiply',visualScale,'Output',{InputB:N(i<3?1.2:1.5)});wire(h,'Output',d,'LineHeight');
-  const down=setConst(pressed[i],B(true),branches[i]),wait=node('BufferTicks',{TicksToWait:30,ZeroTicksToWait:0}),restore=setConst(pressed[i],B(false),wait,'Output');wire(down,'ExecOut',wait,'Input');
+  if(i!==1){const down=setConst(pressed[i],B(true),branches[i]),wait=node('BufferTicks',{TicksToWait:30,ZeroTicksToWait:0}),restore=setConst(pressed[i],B(false),wait,'Output');wire(down,'ExecOut',wait,'Input');}
  });
  // The middle entry is the unavailable example. It remains unpurchased and
  // overrides orange with red for the duration of the click depression.
  const failOn=setConst(invalidFlashes[1],B(true),branches[1]),failWait=node('BufferTicks',{TicksToWait:30,ZeroTicksToWait:0}),failOff=setConst(invalidFlashes[1],B(false),failWait,'Output');wire(failOn,'ExecOut',failWait,'Input');
  const entity=one([...scene.r.entities()].filter(e=>e.persistentIndex===grid),'chip entity');scene.entityOverrides=new Map([[grid,{...entity,data:{...structuredClone(entity.data),bCollapsed:true,PlaneCenter:{X:216,Y:216,Z:2},PlaneExtent:{X:260,Y:260,Z:8}}}]]);
- const name='Monitor Frame - Three Menu Feedback Demo V4',description='Three-page spatial menu: selected controls are orange and 20% larger; clicks depress for half a second; unavailable middle entries flash red.';
+ const name='Monitor Frame - Three Menu Feedback Demo V5',description='Three-page spatial menu: selected controls are orange and 5% larger; successful clicks depress for half a second; unavailable middle entries only flash red.';
  const generated=write(scene,{assets:scene.r.externalAssets(),name,description}).bytes,bytes=repack(generated,donor,{name,description}),placement=validate(bytes);assert(placement.strictOk,JSON.stringify(placement,null,2));return {bytes,placement,summary:{bricks:scene.bricks.length,gates:nodes.length,wires:scene.edges.length,textDisplays:scene.bricks.filter(b=>b.comps.some(c=>c.type===C.TextDisplay.NAME)).length,buttons:0,sha256:crypto.createHash('sha256').update(bytes).digest('hex')}};
 }
 module.exports=build;if(require.main===module){const [input,output]=process.argv.slice(2);if(!input||!output)throw Error('Usage: node build-monitor-three-menu-scroll-demo.cjs input.brz output.brz');const r=build(input);fs.writeFileSync(output,r.bytes);console.log(JSON.stringify({output,bytes:r.bytes.length,...r.summary,strictPlacement:r.placement.strictOk,warnings:r.placement.warnings||[]},null,2));}
