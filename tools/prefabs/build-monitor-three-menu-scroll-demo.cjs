@@ -70,12 +70,12 @@ function build(input){
  // overrides orange with red for the duration of the click depression.
  let failTail=branches[1],failPort='ExecOutA';
  for(let blink=0;blink<3;blink++){
-  const on=setConst(invalidFlashes[1],B(true),failTail,failPort),onWait=node('BufferTicks',{TicksToWait:3,ZeroTicksToWait:0}),off=setConst(invalidFlashes[1],B(false),onWait,'Output');wire(on,'ExecOut',onWait,'Input');
+  const on=setConst(invalidFlashes[1],B(true),failTail,failPort),onWait=node('BufferTicks',{TicksToWait:6,ZeroTicksToWait:0}),off=setConst(invalidFlashes[1],B(false),onWait,'Output');wire(on,'ExecOut',onWait,'Input');
   failTail=off;failPort='ExecOut';
-  if(blink<2){const offWait=node('BufferTicks',{TicksToWait:3,ZeroTicksToWait:0});wire(off,'ExecOut',offWait,'Input');failTail=offWait;failPort='Output';}
+  if(blink<2){const offWait=node('BufferTicks',{TicksToWait:6,ZeroTicksToWait:0});wire(off,'ExecOut',offWait,'Input');failTail=offWait;failPort='Output';}
  }
  const entity=one([...scene.r.entities()].filter(e=>e.persistentIndex===grid),'chip entity');scene.entityOverrides=new Map([[grid,{...entity,data:{...structuredClone(entity.data),bCollapsed:true,PlaneCenter:{X:216,Y:216,Z:2},PlaneExtent:{X:260,Y:260,Z:8}}}]]);
- const name='Monitor Frame - Three Menu Feedback Demo V7',description='Three-page spatial menu: selected controls are orange and 5% larger; successful clicks depress for about 0.1 seconds; failed buys stay full-size and blink red three times.';
+ const name='Monitor Frame - Three Menu Feedback Demo V8',description='Three-page spatial menu: selected controls are orange and 5% larger; successful clicks depress for about 0.1 seconds; failed buys stay full-size and blink red three times at a slower rate.';
  const generated=write(scene,{assets:scene.r.externalAssets(),name,description}).bytes,bytes=repack(generated,donor,{name,description}),placement=validate(bytes);assert(placement.strictOk,JSON.stringify(placement,null,2));return {bytes,placement,summary:{bricks:scene.bricks.length,gates:nodes.length,wires:scene.edges.length,textDisplays:scene.bricks.filter(b=>b.comps.some(c=>c.type===C.TextDisplay.NAME)).length,buttons:0,sha256:crypto.createHash('sha256').update(bytes).digest('hex')}};
 }
 module.exports=build;if(require.main===module){const [input,output]=process.argv.slice(2);if(!input||!output)throw Error('Usage: node build-monitor-three-menu-scroll-demo.cjs input.brz output.brz');const r=build(input);fs.writeFileSync(output,r.bytes);console.log(JSON.stringify({output,bytes:r.bytes.length,...r.summary,strictPlacement:r.placement.strictOk,warnings:r.placement.warnings||[]},null,2));}
