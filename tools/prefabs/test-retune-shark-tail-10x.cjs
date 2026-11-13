@@ -11,23 +11,26 @@ assert(input, 'Usage: node test-retune-shark-tail-10x.cjs input.brz');
 const result = build(input);
 const saved = read(result.bytes);
 
-assert.equal(saved.bricks.length, result.original.bricks.length);
-assert.equal(saved.edges.length, result.original.edges.length);
+assert.equal(saved.bricks.length, result.original.bricks.length + 4);
+assert.equal(saved.edges.length, result.original.edges.length + 5);
 assert.equal(saved.links.length, result.original.links.length);
 assert.equal(saved.joints.length, result.original.joints.length);
 assert.deepEqual(result.values, {
   follow: -50,
+  crouchProbeX: -300,
   crouchHeight: 200,
-  sweepDistance: 1500,
+  sweepDistance: 600,
   sweepRadius: 0,
   servoPower: 10000000,
   servoDamping: 1000000,
+  crouchEyeHeightThreshold: 140,
+  crouchDetection: 'eye-height',
 });
 
 // No brick geometry or component count may change before serialization.
-assert.deepEqual(result.scene.bricks.map(brick => brick.data),
+assert.deepEqual(result.scene.bricks.slice(0, result.original.bricks.length).map(brick => brick.data),
   result.original.bricks.map(brick => brick.data));
-assert.deepEqual(result.scene.bricks.map(brick => brick.comps.length),
+assert.deepEqual(result.scene.bricks.slice(0, result.original.bricks.length).map(brick => brick.comps.length),
   result.original.bricks.map(brick => brick.comps.length));
 
 const beforePlacement = validate(fs.readFileSync(input));
