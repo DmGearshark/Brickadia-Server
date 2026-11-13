@@ -20,7 +20,7 @@
     <color="bc7d66">█</><color="d8a78c">█</><color="ddb394">█</><color="bc7d66">█</><color="a40808">█</><color="2575a4">█</><color="014e7a">█</><color="01436a">█</><color="033958">█</><color="01436a">█</><color="014e7a">█</><color="2575a4">█</><color="a40808">█</><color="bc7d66">█</><color="d8a78c">██</><color="bc7d66">█</>
    <color="a40808">██</><color="bc7d66">██</><color="e91111">█</><color="ff0000">█████████</><color="e91111">█</><color="bc7d66">██</><color="a40808">██</>
    <color="a40808">█</><color="ff0000">█</><color="e91111">██</><color="ff0000">███████████</><color="e91111">██</><color="ff0000">█</><color="a40808">█</>
-   <color="a40808">█</><color="ff0000">██</><color="d60000">█████</><color="c40000">█</> <color="d60000">██</><color="e40000">█</><color="c40000">█</><color="e40000">███</><color="ff0000">█</><color="a40808">█</>
+   <color="a40808">█</><color="ff0000">██</><color="d60000">█████</><color="c40000">█</><color="000000">█</><color="d60000">██</><color="e40000">█</><color="c40000">█</><color="e40000">███</><color="ff0000">█</><color="a40808">█</>
    <color="a40808">█</><color="ff0000">██</><color="d60000">██</><color="c40000">████</><color="d60000">███</><color="c40000">█</><color="b00000">██</><color="c40000">█</><color="e40000">█</><color="ff0000">█</><color="a40808">█</>
     <color="a40808">██</><color="c40000">████</><color="b00000">███████</><color="c40000">██</><color="a40808">██</>
      <color="a40808">███</><color="b00000">████</><color="7e0000">█</><color="b00000">█</><color="c40000">█</><color="7e0000">█</><color="a40808">████</>

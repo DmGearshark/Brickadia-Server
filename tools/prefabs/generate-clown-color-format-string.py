@@ -19,6 +19,9 @@ X_CENTER = 4
 Y_CENTER = 5
 GRID_COLUMNS = 29
 GRID_ROWS = 35
+# The source sprite has one background-colored hole at the exact center of the
+# upper pants/base. Fill that requested correction with true black.
+BLACK_OVERRIDES = {(14, 24): (0, 0, 0)}
 
 
 PIXEL = "█"
@@ -40,6 +43,8 @@ def main() -> None:
          for x in range(GRID_COLUMNS)]
         for y in range(GRID_ROWS)
     ]
+    for (x, y), color in BLACK_OVERRIDES.items():
+        grid[y][x] = color
     occupied = [
         (x, y)
         for y, row in enumerate(grid)
