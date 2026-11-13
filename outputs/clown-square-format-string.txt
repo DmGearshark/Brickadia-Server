@@ -1,0 +1,26 @@
+        <color="62506f">■■■■</>
+    <color="f47a13">■■■■</><color="62506f">■■■■</><color="f47a13">■■■■</>
+   <color="f47a13">■■■■■■</><color="62506f">■■</><color="f47a13">■■■■■■</>
+    <color="f47a13">■■■■</><color="fff8ed">■■■■</><color="f47a13">■■■■</>
+       <color="fff8ed">■■■■■■</>
+      <color="fff8ed">■</><color="ffe11a">■■</><color="fff8ed">■■</><color="ffe11a">■■</><color="fff8ed">■</>
+      <color="fff8ed">■</><color="176bd1">■■</><color="ef101b">■■</><color="176bd1">■■</><color="fff8ed">■</>
+       <color="fff8ed">■■</><color="ef101b">■■</><color="fff8ed">■■</>
+      <color="fff8ed">■■■■■■■■</>
+     <color="ef101b">■■</><color="00a9c9">■■</><color="ef101b">■■</><color="00a9c9">■■</><color="ef101b">■■</>
+    <color="ef101b">■■</><color="00a9c9">■■</><color="ef101b">■■■■</><color="00a9c9">■■</><color="ef101b">■■</>
+    <color="ef101b">■</><color="bc6d4c">■</><color="25252c">■</><color="00a9c9">■</><color="ef101b">■■■■</><color="00a9c9">■</><color="25252c">■</><color="bc6d4c">■</><color="ef101b">■</>
+    <color="ef101b">■</><color="bc6d4c">■■</><color="00a9c9">■</><color="ef101b">■■■■</><color="00a9c9">■</><color="bc6d4c">■■</><color="ef101b">■</>
+     <color="bc6d4c">■■</><color="00a9c9">■</><color="ef101b">■■■■</><color="00a9c9">■</><color="bc6d4c">■■</>
+      <color="00a9c9">■■</><color="ef101b">■■■■</><color="00a9c9">■■</>
+      <color="00a9c9">■■</><color="ef101b">■■■■</><color="00a9c9">■■</>
+     <color="ef101b">■■■■■■■■■■</>
+    <color="ef101b">■■■■■■■■■■■■</>
+   <color="ef101b">■■■■■■■■■■■■■■</>
+   <color="ef101b">■■■■■■■■■■■■■■</>
+    <color="ef101b">■■■■■■■■■■■■</>
+     <color="ef101b">■■■■■■■■■■</>
+  <color="cb168e">■■</><color="ef101b">■■■■</>    <color="ef101b">■■■■</><color="cb168e">■■</>
+ <color="cb168e">■■</><color="176bd1">■</><color="ef101b">■■■</><color="ffe11a">■</><color="ef101b">■</>  <color="ef101b">■</><color="ffe11a">■</><color="ef101b">■■■</><color="176bd1">■</><color="cb168e">■■</>
+<color="cb168e">■■</><color="176bd1">■■</><color="ef101b">■■</><color="ffe11a">■■</><color="ef101b">■■■■</><color="ffe11a">■■</><color="ef101b">■■</><color="176bd1">■■</><color="cb168e">■■</>
+  <color="ef101b">■■■■</><color="ffe11a">■■</><color="ef101b">■■■■</><color="ffe11a">■■</><color="ef101b">■■■■</>
