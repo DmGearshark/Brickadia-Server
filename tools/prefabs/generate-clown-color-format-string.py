@@ -21,9 +21,14 @@ GRID_COLUMNS = 29
 GRID_ROWS = 35
 
 
+PIXEL = "█"
+
+
 def encode_run(color: tuple[int, int, int], count: int) -> str:
     hexadecimal = "".join(f"{channel:02x}" for channel in color)
-    return f'<color="{hexadecimal}">{"■" * count}</>'
+    # U+2588 has no side bearings. U+25A0 (■) leaves visible seams between
+    # adjacent cells even when the TextDisplay metrics are otherwise correct.
+    return f'<color="{hexadecimal}">{PIXEL * count}</>'
 
 
 def main() -> None:

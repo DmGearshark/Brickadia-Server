@@ -1,31 +1,31 @@
-      <color="f27f18">■■■</> <color="614c66">■</><color="745d7b">■</> <color="745d7b">■</><color="614c66">■</> <color="f27f18">■■■</>
-     <color="f27f18">■■■■■■</><color="4b3a4f">■</><color="69546f">■</><color="4b3a4f">■</><color="f27f18">■■■■■■</>
-    <color="f27f18">■■■■■■</><color="d6cccc">■■■■■</><color="f27f18">■■■■■■</>
-    <color="f27f18">■■■■</><color="e16c0d">■■</><color="d6cccc">■</><color="ffff00">■</><color="ffffff">■</><color="ffff00">■</><color="d6cccc">■</><color="e16c0d">■■</><color="f27f18">■■■■</>
-     <color="f27f18">■</><color="e16c0d">■■■</><color="d6cccc">■■</><color="0000ff">■</><color="ffff00">■</><color="0000ff">■</><color="d6cccc">■■</><color="e16c0d">■■■</><color="f27f18">■</>
-      <color="e16c0d">■■■</><color="d6cccc">■</><color="ffffff">■</><color="ffff00">■</><color="ffffff">■</><color="ffff00">■</><color="ffffff">■</><color="d6cccc">■</><color="e16c0d">■■■</>
-        <color="614c66">■</><color="d6cccc">■</><color="ffffff">■</><color="f88a8a">■</><color="ff0033">■</><color="f88a8a">■</><color="ffffff">■</><color="d6cccc">■</><color="614c66">■</>
-       <color="b0b0b0">■</> <color="d6cccc">■■</><color="ffffff">■</><color="f88a8a">■</><color="ffffff">■</><color="d6cccc">■■</>
-        <color="b0b0b0">■</> <color="bc7d66">■</><color="d6cccc">■■■</><color="bc7d66">■</>
-        <color="6d97af">■</><color="a40808">■</><color="ffc0ff">■</><color="cb987f">■■■</><color="ffc0ff">■</><color="a40808">■</><color="6d97af">■</>
-       <color="6d97af">■</><color="2575a4">■</><color="ffc0ff">■</><color="a40808">■</><color="f3f3f3">■■■</><color="a40808">■</><color="ffc0ff">■</><color="2575a4">■</><color="6d97af">■</>
-      <color="a40808">■</><color="ff0000">■</><color="2575a4">■</><color="015789">■</><color="ffc0ff">■</><color="a40808">■</><color="f3f3f3">■</><color="a40808">■</><color="ffc0ff">■</><color="015789">■</><color="2575a4">■</><color="ff0000">■</><color="a40808">■</>
-     <color="a40808">■</><color="ffc0ff">■■</><color="2575a4">■</><color="006097">■</><color="a40808">■■■■■</><color="006097">■</><color="2575a4">■</><color="ffc0ff">■■</><color="a40808">■</>
-     <color="a40808">■</><color="ff0000">■■</><color="2575a4">■</><color="015789">■</><color="ff0000">■■■■■</><color="015789">■</><color="2575a4">■</><color="ff0000">■■</><color="a40808">■</>
-    <color="a40808">■</><color="ffc0ff">■</><color="a40808">■■</><color="2575a4">■</><color="006097">■</><color="ffc0ff">■■■■■</><color="006097">■</><color="2575a4">■</><color="a40808">■■</><color="ffc0ff">■</><color="a40808">■</>
-    <color="a40808">■</><color="ff0000">■</><color="a40808">■</> <color="2575a4">■</><color="015789">■</><color="ff0000">■■■■■</><color="015789">■</><color="2575a4">■</> <color="a40808">■</><color="ff0000">■</><color="a40808">■</>
-    <color="a40808">■■■</> <color="2575a4">■</><color="015789">■</><color="ffc0ff">■■■■■</><color="015789">■</><color="2575a4">■</> <color="a40808">■■■</>
-    <color="bc7d66">■</><color="ddb394">■</><color="cb987f">■</><color="bc7d66">■</><color="2575a4">■</><color="015789">■</><color="ff0000">■■■■■</><color="015789">■</><color="2575a4">■</><color="bc7d66">■</><color="cb987f">■</><color="ddb394">■</><color="bc7d66">■</>
-    <color="bc7d66">■</><color="ddb394">■</><color="d8a78c">■</><color="cb987f">■</><color="006097">■</><color="ffc0ff">■■■■■■■</><color="006097">■</><color="cb987f">■</><color="d8a78c">■</><color="cb987f">■</><color="bc7d66">■</>
-    <color="bc7d66">■</><color="d8a78c">■</><color="ddb394">■</><color="bc7d66">■</><color="a40808">■</><color="2575a4">■</><color="014e7a">■</><color="01436a">■</><color="033958">■</><color="01436a">■</><color="014e7a">■</><color="2575a4">■</><color="a40808">■</><color="bc7d66">■</><color="d8a78c">■■</><color="bc7d66">■</>
-   <color="a40808">■■</><color="bc7d66">■■</><color="e91111">■</><color="ff0000">■■■■■■■■■</><color="e91111">■</><color="bc7d66">■■</><color="a40808">■■</>
-   <color="a40808">■</><color="ff0000">■</><color="e91111">■■</><color="ff0000">■■■■■■■■■■■</><color="e91111">■■</><color="ff0000">■</><color="a40808">■</>
-   <color="a40808">■</><color="ff0000">■■</><color="d60000">■■■■■</><color="c40000">■</> <color="d60000">■■</><color="e40000">■</><color="c40000">■</><color="e40000">■■■</><color="ff0000">■</><color="a40808">■</>
-   <color="a40808">■</><color="ff0000">■■</><color="d60000">■■</><color="c40000">■■■■</><color="d60000">■■■</><color="c40000">■</><color="b00000">■■</><color="c40000">■</><color="e40000">■</><color="ff0000">■</><color="a40808">■</>
-    <color="a40808">■■</><color="c40000">■■■■</><color="b00000">■■■■■■■</><color="c40000">■■</><color="a40808">■■</>
-     <color="a40808">■■■</><color="b00000">■■■■</><color="7e0000">■</><color="b00000">■</><color="c40000">■</><color="7e0000">■</><color="a40808">■■■■</>
-       <color="a40808">■■■■■■■■■■</>
-        <color="a40808">■■■■</> <color="a40808">■■■■</>
-  <color="a40808">■■■■</> <color="a40808">■■</><color="ffff00">■■</><color="a40808">■</> <color="a40808">■</><color="ffff00">■■</><color="a40808">■■</> <color="a40808">■■■■</>
- <color="a40808">■</><color="3f3fdf">■</><color="9933ff">■</><color="cc0099">■</><color="ff3399">■</><color="a40808">■■</><color="ff3333">■</><color="ff9933">■</><color="ffff00">■</><color="a40808">■</> <color="a40808">■</><color="ffff00">■</><color="ff9933">■</><color="ff3333">■</><color="a40808">■■</><color="ff3399">■</><color="cc0099">■</><color="9933ff">■</><color="3f3fdf">■</><color="a40808">■</>
-<color="a40808">■■■■■■■■■■■■</> <color="a40808">■■■■■■■■■■■■</>
+      <color="f27f18">███</> <color="614c66">█</><color="745d7b">█</> <color="745d7b">█</><color="614c66">█</> <color="f27f18">███</>
+     <color="f27f18">██████</><color="4b3a4f">█</><color="69546f">█</><color="4b3a4f">█</><color="f27f18">██████</>
+    <color="f27f18">██████</><color="d6cccc">█████</><color="f27f18">██████</>
+    <color="f27f18">████</><color="e16c0d">██</><color="d6cccc">█</><color="ffff00">█</><color="ffffff">█</><color="ffff00">█</><color="d6cccc">█</><color="e16c0d">██</><color="f27f18">████</>
+     <color="f27f18">█</><color="e16c0d">███</><color="d6cccc">██</><color="0000ff">█</><color="ffff00">█</><color="0000ff">█</><color="d6cccc">██</><color="e16c0d">███</><color="f27f18">█</>
+      <color="e16c0d">███</><color="d6cccc">█</><color="ffffff">█</><color="ffff00">█</><color="ffffff">█</><color="ffff00">█</><color="ffffff">█</><color="d6cccc">█</><color="e16c0d">███</>
+        <color="614c66">█</><color="d6cccc">█</><color="ffffff">█</><color="f88a8a">█</><color="ff0033">█</><color="f88a8a">█</><color="ffffff">█</><color="d6cccc">█</><color="614c66">█</>
+       <color="b0b0b0">█</> <color="d6cccc">██</><color="ffffff">█</><color="f88a8a">█</><color="ffffff">█</><color="d6cccc">██</>
+        <color="b0b0b0">█</> <color="bc7d66">█</><color="d6cccc">███</><color="bc7d66">█</>
+        <color="6d97af">█</><color="a40808">█</><color="ffc0ff">█</><color="cb987f">███</><color="ffc0ff">█</><color="a40808">█</><color="6d97af">█</>
+       <color="6d97af">█</><color="2575a4">█</><color="ffc0ff">█</><color="a40808">█</><color="f3f3f3">███</><color="a40808">█</><color="ffc0ff">█</><color="2575a4">█</><color="6d97af">█</>
+      <color="a40808">█</><color="ff0000">█</><color="2575a4">█</><color="015789">█</><color="ffc0ff">█</><color="a40808">█</><color="f3f3f3">█</><color="a40808">█</><color="ffc0ff">█</><color="015789">█</><color="2575a4">█</><color="ff0000">█</><color="a40808">█</>
+     <color="a40808">█</><color="ffc0ff">██</><color="2575a4">█</><color="006097">█</><color="a40808">█████</><color="006097">█</><color="2575a4">█</><color="ffc0ff">██</><color="a40808">█</>
+     <color="a40808">█</><color="ff0000">██</><color="2575a4">█</><color="015789">█</><color="ff0000">█████</><color="015789">█</><color="2575a4">█</><color="ff0000">██</><color="a40808">█</>
+    <color="a40808">█</><color="ffc0ff">█</><color="a40808">██</><color="2575a4">█</><color="006097">█</><color="ffc0ff">█████</><color="006097">█</><color="2575a4">█</><color="a40808">██</><color="ffc0ff">█</><color="a40808">█</>
+    <color="a40808">█</><color="ff0000">█</><color="a40808">█</> <color="2575a4">█</><color="015789">█</><color="ff0000">█████</><color="015789">█</><color="2575a4">█</> <color="a40808">█</><color="ff0000">█</><color="a40808">█</>
+    <color="a40808">███</> <color="2575a4">█</><color="015789">█</><color="ffc0ff">█████</><color="015789">█</><color="2575a4">█</> <color="a40808">███</>
+    <color="bc7d66">█</><color="ddb394">█</><color="cb987f">█</><color="bc7d66">█</><color="2575a4">█</><color="015789">█</><color="ff0000">█████</><color="015789">█</><color="2575a4">█</><color="bc7d66">█</><color="cb987f">█</><color="ddb394">█</><color="bc7d66">█</>
+    <color="bc7d66">█</><color="ddb394">█</><color="d8a78c">█</><color="cb987f">█</><color="006097">█</><color="ffc0ff">███████</><color="006097">█</><color="cb987f">█</><color="d8a78c">█</><color="cb987f">█</><color="bc7d66">█</>
+    <color="bc7d66">█</><color="d8a78c">█</><color="ddb394">█</><color="bc7d66">█</><color="a40808">█</><color="2575a4">█</><color="014e7a">█</><color="01436a">█</><color="033958">█</><color="01436a">█</><color="014e7a">█</><color="2575a4">█</><color="a40808">█</><color="bc7d66">█</><color="d8a78c">██</><color="bc7d66">█</>
+   <color="a40808">██</><color="bc7d66">██</><color="e91111">█</><color="ff0000">█████████</><color="e91111">█</><color="bc7d66">██</><color="a40808">██</>
+   <color="a40808">█</><color="ff0000">█</><color="e91111">██</><color="ff0000">███████████</><color="e91111">██</><color="ff0000">█</><color="a40808">█</>
+   <color="a40808">█</><color="ff0000">██</><color="d60000">█████</><color="c40000">█</> <color="d60000">██</><color="e40000">█</><color="c40000">█</><color="e40000">███</><color="ff0000">█</><color="a40808">█</>
+   <color="a40808">█</><color="ff0000">██</><color="d60000">██</><color="c40000">████</><color="d60000">███</><color="c40000">█</><color="b00000">██</><color="c40000">█</><color="e40000">█</><color="ff0000">█</><color="a40808">█</>
+    <color="a40808">██</><color="c40000">████</><color="b00000">███████</><color="c40000">██</><color="a40808">██</>
+     <color="a40808">███</><color="b00000">████</><color="7e0000">█</><color="b00000">█</><color="c40000">█</><color="7e0000">█</><color="a40808">████</>
+       <color="a40808">██████████</>
+        <color="a40808">████</> <color="a40808">████</>
+  <color="a40808">████</> <color="a40808">██</><color="ffff00">██</><color="a40808">█</> <color="a40808">█</><color="ffff00">██</><color="a40808">██</> <color="a40808">████</>
+ <color="a40808">█</><color="3f3fdf">█</><color="9933ff">█</><color="cc0099">█</><color="ff3399">█</><color="a40808">██</><color="ff3333">█</><color="ff9933">█</><color="ffff00">█</><color="a40808">█</> <color="a40808">█</><color="ffff00">█</><color="ff9933">█</><color="ff3333">█</><color="a40808">██</><color="ff3399">█</><color="cc0099">█</><color="9933ff">█</><color="3f3fdf">█</><color="a40808">█</>
+<color="a40808">████████████</> <color="a40808">████████████</>
