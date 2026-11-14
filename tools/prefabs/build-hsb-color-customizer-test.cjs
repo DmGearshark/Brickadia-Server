@@ -260,16 +260,28 @@ function build(input) {
     wire(compare, 'bOutput', marker, 'bSelectB');
     return marker;
   });
-  const format = node('Expr_String_FormatText', {
-    FormatString: 'COLOR CUSTOMIZER\r\n\r\n{A}HUE           {B}°\r\n{C}SATURATION    {D}%\r\n{E}BRIGHTNESS    {F}%\r\n{G}APPLY\r\n\r\nW/S SELECT   A/D ADJUST   SPACE APPLY',
+  const closingMarkers = selected.map(compare => {
+    const marker = node('Expr_Select', { InputA: S(''), InputB: S(' <'), bSelectB: false });
+    wire(compare, 'bOutput', marker, 'bSelectB');
+    return marker;
   });
-  wire(markers[0], 'Output', format, 'InputA');
-  wire(hue, 'Value', format, 'InputB');
-  wire(markers[1], 'Output', format, 'InputC');
-  wire(saturation, 'Value', format, 'InputD');
-  wire(markers[2], 'Output', format, 'InputE');
-  wire(brightness, 'Value', format, 'InputF');
-  wire(markers[3], 'Output', format, 'InputG');
+  function menuRow(index, template, value) {
+    const row = node('Expr_String_FormatText', { FormatString: template });
+    wire(markers[index], 'Output', row, 'InputA');
+    if (value) wire(value[0], value[1], row, 'InputB');
+    wire(closingMarkers[index], 'Output', row, value ? 'InputC' : 'InputB');
+    return row;
+  }
+  const rows = [
+    menuRow(0, '{A}HUE           {B}°{C}', [hue, 'Value']),
+    menuRow(1, '{A}SATURATION    {B}%{C}', [saturation, 'Value']),
+    menuRow(2, '{A}BRIGHTNESS    {B}%{C}', [brightness, 'Value']),
+    menuRow(3, '{A}APPLY{B}'),
+  ];
+  const format = node('Expr_String_FormatText', {
+    FormatString: 'COLOR CUSTOMIZER\r\n\r\n{A}\r\n{B}\r\n{C}\r\n{D}\r\n\r\nW/S SELECT   A/D ADJUST   SPACE APPLY',
+  });
+  rows.forEach((row, index) => wire(row, 'Output', format, `Input${String.fromCharCode(65 + index)}`));
   const screen = ref(screenBrick, C.TextDisplay.NAME);
   wire(format, 'Output', screen, 'Text');
   const screenData = screenBrick.comps.find(comp => comp.type === C.TextDisplay.NAME).data;
