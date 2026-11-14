@@ -6,7 +6,7 @@ const crypto = require('crypto');
 const { read, write } = require('./reskin-loadboard.cjs');
 const repack = require('./repack-with-donor-metadata.cjs');
 const validate = require('./validate-placement.cjs');
-const { C, N, S } = require('./loadboard-lib.cjs');
+const { B, C, N, S } = require('./loadboard-lib.cjs');
 
 function one(values, label) {
   assert.equal(values.length, 1, `Expected one ${label}, found ${values.length}`);
@@ -46,7 +46,7 @@ function build(input) {
       bCollapsed: true,
       bLegacyIOSlotOrder: true,
       PlaneCenter: { X: 216, Y: 216, Z: 2 },
-      PlaneExtent: { X: 260, Y: 260, Z: 8 },
+      PlaneExtent: { X: 360, Y: 360, Z: 8 },
     },
   }];
   scene.extraGridIds = new Set([newGrid]);
@@ -116,6 +116,7 @@ function build(input) {
     wire(splitter, port, compare, 'InputA');
     const detector = node('Expr_EdgeDetectorExec', { Input: 0, InputLast: 0, bSeeded: true });
     wire(compare, 'bOutput', detector, 'Input');
+    detector.comparison = compare;
     return detector;
   }
   function setValue(variable, value, valuePort, trigger, triggerPort) {
@@ -125,15 +126,21 @@ function build(input) {
     wire(trigger, triggerPort, setter, 'Exec');
     return setter;
   }
+  function setConstant(variable, value, trigger, triggerPort) {
+    const setter = node('Exec_Var_Set', { Value: B(value), bChangeType: false });
+    wire(variable, 'VarRef', setter, 'VarRef');
+    wire(trigger, triggerPort, setter, 'Exec');
+    return setter;
+  }
   function math(kind, source, sourcePort, constant) {
     const gate = node(`Expr_Math${kind}`, { InputB: N(constant) });
     wire(source, sourcePort, gate, 'InputA');
     return gate;
   }
-  function branch(condition, trigger) {
+  function branch(condition, trigger, triggerPort = 'OnRisingEdge') {
     const gate = node('Exec_Branch', { bCond: false });
     wire(condition, 'bOutput', gate, 'bCond');
-    wire(trigger, 'OnRisingEdge', gate, 'Exec');
+    wire(trigger, triggerPort, gate, 'Exec');
     return gate;
   }
   function select(condition, inputA, inputB) {
@@ -177,9 +184,8 @@ function build(input) {
     return compare;
   });
 
-  function adjust(variable, selectedIndex, direction, increment, wrap) {
-    const movement = direction === 'right' ? right : left;
-    const routed = branch(selected[selectedIndex], movement);
+  function adjust(variable, selectedIndex, movement, movementPort, direction, increment, wrap) {
+    const routed = branch(selected[selectedIndex], movement, movementPort);
     const amount = direction === 'right' ? increment : (wrap ? wrap - increment : -increment);
     const changed = math('Add', variable, 'Value', amount);
     let final = changed;
@@ -192,12 +198,27 @@ function build(input) {
     }
     setValue(variable, final, 'Output', routed, 'ExecOutA');
   }
-  adjust(hue, 0, 'left', 5, 360);
-  adjust(hue, 0, 'right', 5, 360);
-  adjust(saturation, 1, 'left', 5, 0);
-  adjust(saturation, 1, 'right', 5, 0);
-  adjust(brightness, 2, 'left', 5, 0);
-  adjust(brightness, 2, 'right', 5, 0);
+  function repeatAfterHold(control) {
+    const timer = node('Stopwatch', { Limit: 0.5, Time: 0, bRunning: false });
+    wire(control, 'OnRisingEdge', timer, 'Restart');
+    wire(control, 'OnFallingEdge', timer, 'Pause');
+    const repeating = node('Var', { Value: B(false) });
+    setConstant(repeating, true, timer, 'Expired');
+    setConstant(repeating, false, control, 'OnFallingEdge');
+    const clock = node('Clock', { IntervalSeconds: N(0.1), bEnabled: false });
+    wire(repeating, 'Value', clock, 'bEnabled');
+    return clock;
+  }
+  const leftRepeat = repeatAfterHold(left);
+  const rightRepeat = repeatAfterHold(right);
+  for (const [movement, movementPort, direction] of [
+    [left, 'OnRisingEdge', 'left'], [right, 'OnRisingEdge', 'right'],
+    [leftRepeat, 'Pulse', 'left'], [rightRepeat, 'Pulse', 'right'],
+  ]) {
+    adjust(hue, 0, movement, movementPort, direction, 1, 360);
+    adjust(saturation, 1, movement, movementPort, direction, 1, 0);
+    adjust(brightness, 2, movement, movementPort, direction, 1, 0);
+  }
 
   // HSV/HSB to RGB conversion.
   const sNorm = math('Divide', saturation, 'Value', 100);
@@ -279,7 +300,7 @@ function build(input) {
     menuRow(3, '{A}APPLY{B}'),
   ];
   const format = node('Expr_String_FormatText', {
-    FormatString: 'COLOR CUSTOMIZER\r\n\r\n{A}\r\n{B}\r\n{C}\r\n{D}\r\n\r\nW/S SELECT   A/D ADJUST   SPACE APPLY',
+    FormatString: 'COLOR CUSTOMIZER\r\n\r\n{A}\r\n{B}\r\n{C}\r\n{D}\r\n\r\nW/S SELECT   A/D TAP: 1 | HOLD 0.5s: REPEAT\r\nSPACE APPLY',
   });
   rows.forEach((row, index) => wire(row, 'Output', format, `Input${String.fromCharCode(65 + index)}`));
   const screen = ref(screenBrick, C.TextDisplay.NAME);
