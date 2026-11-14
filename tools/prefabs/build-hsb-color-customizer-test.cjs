@@ -199,11 +199,12 @@ function build(input) {
     setValue(variable, final, 'Output', routed, 'ExecOutA');
   }
   function repeatAfterHold(control) {
-    const timer = node('Stopwatch', { Limit: 0.5, Time: 0, bRunning: false });
-    wire(control, 'OnRisingEdge', timer, 'Restart');
-    wire(control, 'OnFallingEdge', timer, 'Pause');
+    // The delay clock only runs while the direction is physically held.
+    // Its first pulse occurs after 0.5 seconds and arms rapid repetition.
+    const holdClock = node('Clock', { IntervalSeconds: N(0.5), bEnabled: false });
+    wire(control.comparison, 'bOutput', holdClock, 'bEnabled');
     const repeating = node('Var', { Value: B(false) });
-    setConstant(repeating, true, timer, 'Expired');
+    setConstant(repeating, true, holdClock, 'Pulse');
     setConstant(repeating, false, control, 'OnFallingEdge');
     // Keep the clock running and gate its pulses. Dynamically enabling a Clock can
     // miss its startup edge in Brickadia, especially while a seat input is held.
