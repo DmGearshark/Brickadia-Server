@@ -45,8 +45,8 @@ function build(input) {
     data: {
       bCollapsed: true,
       bLegacyIOSlotOrder: true,
-      PlaneCenter: { X: 216, Y: 216, Z: 2 },
-      PlaneExtent: { X: 360, Y: 360, Z: 8 },
+      PlaneCenter: { X: 216, Y: 360, Z: 2 },
+      PlaneExtent: { X: 360, Y: 420, Z: 8 },
     },
   }];
   scene.extraGridIds = new Set([newGrid]);
@@ -154,6 +154,17 @@ function build(input) {
     wire(condition, 'bOutput', gate, 'bSelectB');
     return gate;
   }
+  function execUnion(sources) {
+    assert(sources.length, 'Exec union needs at least one source');
+    let current = sources[0];
+    for (const source of sources.slice(1)) {
+      const union = node('Exec_Union');
+      wire(current[0], current[1], union, 'ExecA');
+      wire(source[0], source[1], union, 'ExecB');
+      current = [union, 'ExecOut'];
+    }
+    return current;
+  }
 
   const seat = ref(seatBrick, C.Seat.NAME);
   const splitter = node('InputSplitter');
@@ -196,7 +207,7 @@ function build(input) {
       final = node('Expr_MathClamp', { Input: N(0), Min: N(0), Max: N(100) });
       wire(changed, 'Output', final, 'Input');
     }
-    setValue(variable, final, 'Output', routed, 'ExecOutA');
+    return setValue(variable, final, 'Output', routed, 'ExecOutA');
   }
   function repeatAfterHold(control) {
     // The delay clock only runs while the direction is physically held.
@@ -216,13 +227,18 @@ function build(input) {
   }
   const leftRepeat = repeatAfterHold(left);
   const rightRepeat = repeatAfterHold(right);
+  const tapAdjustments = [];
+  const repeatAdjustments = [];
   for (const [movement, movementPort, direction] of [
     [left, 'OnRisingEdge', 'left'], [right, 'OnRisingEdge', 'right'],
     [leftRepeat, 'ExecOutA', 'left'], [rightRepeat, 'ExecOutA', 'right'],
   ]) {
-    adjust(hue, 0, movement, movementPort, direction, 1, 360);
-    adjust(saturation, 1, movement, movementPort, direction, 1, 0);
-    adjust(brightness, 2, movement, movementPort, direction, 1, 0);
+    const outputs = [
+      adjust(hue, 0, movement, movementPort, direction, 1, 360),
+      adjust(saturation, 1, movement, movementPort, direction, 1, 0),
+      adjust(brightness, 2, movement, movementPort, direction, 1, 0),
+    ];
+    (movementPort === 'OnRisingEdge' ? tapAdjustments : repeatAdjustments).push(...outputs);
   }
 
   // HSV/HSB to RGB conversion.
@@ -326,24 +342,37 @@ function build(input) {
 
   const apply = branch(selected[3], space);
   const assets = structuredClone(scene.r.externalAssets());
-  let soundIndex = assets.findIndex(asset => asset.type === 'BrickOneShotAudioDescriptor' && asset.name === 'OBA_CashRegister_Ding_2');
-  if (soundIndex < 0) {
-    soundIndex = assets.length;
-    assets.push({ type: 'BrickOneShotAudioDescriptor', name: 'OBA_CashRegister_Ding_2' });
+  function soundAsset(name) {
+    let index = assets.findIndex(asset => asset.type === 'BrickOneShotAudioDescriptor' && asset.name === name);
+    if (index < 0) {
+      index = assets.length;
+      assets.push({ type: 'BrickOneShotAudioDescriptor', name });
+    }
+    return index;
   }
-  const sound = node('OneShotAudioEmitter', {
-    AudioDescriptor: soundIndex,
-    VolumeMultiplier: 0.5,
-    PitchMultiplier: 1,
-    InnerRadius: 30,
-    MaxDistance: 250,
-    bSpatialization: true,
-    bEnableRepeat: false,
-    RepeatCount: 1,
-    RepeatTime: 1,
-    RepeatVariance: 0,
-  });
-  wire(apply, 'ExecOutA', sound, 'Play');
+  function addSound(name, sources, volume, pitch) {
+    const sound = node('OneShotAudioEmitter', {
+      AudioDescriptor: soundAsset(name),
+      VolumeMultiplier: volume,
+      PitchMultiplier: pitch,
+      InnerRadius: 30,
+      MaxDistance: 250,
+      bSpatialization: true,
+      bEnableRepeat: false,
+      RepeatCount: 1,
+      RepeatTime: 1,
+      RepeatVariance: 0,
+    });
+    const source = execUnion(sources);
+    wire(source[0], source[1], sound, 'Play');
+    return sound;
+  }
+  addSound('OBA_CashRegister_Ding_2', [[apply, 'ExecOutA']], 0.5, 1);
+  addSound('OBA_Keypad', [
+    [up, 'OnRisingEdge'], [down, 'OnRisingEdge'],
+    ...tapAdjustments.map(gate => [gate, 'ExecOut']),
+  ], 0.32, 1.12);
+  addSound('OBA_Keyboard', repeatAdjustments.map(gate => [gate, 'ExecOut']), 0.11, 1.45);
 
   const name = 'HSB Color Customizer Test';
   const description = 'Seat-controlled HSB color editor. W/S selects Hue, Saturation, Brightness, or Apply; A/D adjusts; Space confirms. Both preview displays update live.';
