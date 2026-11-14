@@ -125,6 +125,21 @@ function build(input) {
     nodes.push(result);
     return result;
   }
+  function annotate(target, label, message) {
+    const brick = target.brick ?? target;
+    brick.comps.push({
+      type: C.Interact.NAME,
+      data: {
+        InteractSound: 1,
+        Message: message,
+        ConsoleTag: '',
+        bAllowNearbyInteraction: true,
+        bHiddenInteraction: false,
+        PromptCustomLabel: label,
+      },
+    });
+    return target;
+  }
   function ref(brick, type) { return { key: brick.key, type }; }
   function wire(source, sourcePort, target, targetPort) {
     const sourceDefinition = componentDefinition(source.type);
@@ -194,10 +209,12 @@ function build(input) {
     'customizer-v2:nested-chip', mainGrid, C.Microchip.BRICK, [0, 0, 2], [35, 55, 90],
     [{ type: C.Microchip.NAME, data: {} }],
   );
+  annotate(nestedChipBrick, 'Hidden color logic', 'Contains movement, timing, HSB conversion, metal, intensity, and sound-execution logic. Normally leave this chip alone.');
   scene.links.push({ key: nestedChipBrick.key, grid: innerGrid });
 
   const outer = { grid: mainGrid };
   outer.repeatInterval = node('Var', { Value: N(0.025) }, { grid: mainGrid, position: [-240, -192, 2], color: [70, 170, 95] });
+  annotate(outer.repeatInterval, 'Held-repeat interval', 'Seconds between adjustments after A or D has been held for 0.75 seconds. 0.025 = 40 adjustments per second. Lower is faster; higher is slower.');
   const soundSpecs = [
     ['Apply', 'OBA_CashRegister_Ding_2', 0.5],
     ['Select', 'OBA_Keypad', 0.32],
@@ -214,12 +231,12 @@ function build(input) {
   }
   outer.sounds = soundSpecs.map(([label, name, volume], index) => ({
     label,
-    reference: node('OneShotAudioReference', { Asset: assetIndex(name) }, {
+    reference: annotate(node('OneShotAudioReference', { Asset: assetIndex(name) }, {
       grid: mainGrid, position: [-144 + index * 96, -192, 2], color: [145, 75, 175],
-    }),
-    volume: node('Var', { Value: N(volume) }, {
+    }), `${label} sound`, `${label} interaction sound asset. Change this reference to replace the sound without editing the hidden chip.`),
+    volume: annotate(node('Var', { Value: N(volume) }, {
       grid: mainGrid, position: [-144 + index * 96, -264, 2], color: [95, 150, 185],
-    }),
+    }), `${label} sound volume`, `Volume multiplier for the ${label.toLowerCase()} interaction sound. 0 is silent; 1 is normal volume.`),
   }));
 
   function outerFormat(template, position) {
@@ -235,10 +252,20 @@ function build(input) {
     outerFormat('{A}INTENSITY     {B}%{C}', [144, 144, 2]),
     outerFormat('{A}APPLY{B}', [240, 144, 2]),
   ];
+  const rowHelp = [
+    ['Hue row format', 'Controls the Hue row text. A is the left selection marker, B is the hue value, and C is the right marker.'],
+    ['Saturation row format', 'Controls the Saturation row text. A and C are selection markers; B is the percentage value.'],
+    ['Brightness row format', 'Controls the Brightness row text. A and C are selection markers; B is the percentage value.'],
+    ['Metal row format', 'Controls the Metal row text. A and C are selection markers; B displays ON or OFF.'],
+    ['Intensity row format', 'Controls the Material Intensity row text. A and C are selection markers; B is 0–100 in ten-percent steps.'],
+    ['Apply row format', 'Controls the Apply row text. A and B are the left and right selection markers.'],
+  ];
+  outer.rows.forEach((row, index) => annotate(row, rowHelp[index][0], rowHelp[index][1]));
   outer.master = outerFormat(
     'COLOR CUSTOMIZER\r\n\r\n{A}\r\n{B}\r\n{C}\r\n{D}\r\n{E}\r\n{F}\r\n\r\nW/S SELECT   A/D TAP: 1 | HOLD: REPEAT\r\nSPACE APPLY',
     [0, 240, 2],
   );
+  annotate(outer.master, 'Complete menu format', 'Controls the complete display layout and instructions. Inputs A through F are the six editable row-format outputs above.');
   outer.rows.forEach((row, index) => wire(row, 'Output', outer.master, `Input${String.fromCharCode(65 + index)}`));
 
   outer.outputs = [

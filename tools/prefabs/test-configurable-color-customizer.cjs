@@ -40,6 +40,22 @@ function test(input) {
   assert.equal(components(scene, C.OneShotAudioReference.NAME, mainGrid).length, 4, 'four editable sound references');
   assert.equal(components(scene, C.Var.NAME, mainGrid).length, 5, 'repeat interval plus four sound volume vars');
   assert.equal(components(scene, C.Expr_String_FormatText.NAME, innerGrid).length, 0, 'no format gates hidden');
+  const annotatedTypes = [C.Var.NAME, C.OneShotAudioReference.NAME, C.Expr_String_FormatText.NAME];
+  for (const brick of scene.bricks.filter(candidate => candidate.g === mainGrid
+    && candidate.comps.some(comp => annotatedTypes.includes(comp.type)))) {
+    assert(brick.comps.some(comp => comp.type === C.Interact.NAME), `editable control ${brick.key} has an Interact label`);
+  }
+  const interactionLabels = components(scene, C.Interact.NAME, mainGrid)
+    .map(({ comp }) => comp.data.PromptCustomLabel);
+  for (const expected of [
+    'Held-repeat interval',
+    'Apply sound', 'Apply sound volume',
+    'Select sound', 'Select sound volume',
+    'Tap sound', 'Tap sound volume',
+    'Repeat sound', 'Repeat sound volume',
+    'Hue row format', 'Metal row format', 'Intensity row format', 'Complete menu format',
+    'Hidden color logic',
+  ]) assert(interactionLabels.includes(expected), `Interact label: ${expected}`);
 
   const outerOutputs = components(scene, C.MicrochipOutput.NAME, mainGrid);
   assert.deepEqual(outerOutputs.map(({ comp }) => comp.data.PortLabel), [
