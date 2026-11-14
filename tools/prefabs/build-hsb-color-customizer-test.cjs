@@ -205,15 +205,19 @@ function build(input) {
     const repeating = node('Var', { Value: B(false) });
     setConstant(repeating, true, timer, 'Expired');
     setConstant(repeating, false, control, 'OnFallingEdge');
-    const clock = node('Clock', { IntervalSeconds: N(0.1), bEnabled: false });
-    wire(repeating, 'Value', clock, 'bEnabled');
-    return clock;
+    // Keep the clock running and gate its pulses. Dynamically enabling a Clock can
+    // miss its startup edge in Brickadia, especially while a seat input is held.
+    const clock = node('Clock', { IntervalSeconds: N(0.1), bEnabled: true });
+    const gate = node('Exec_Branch', { bCond: false });
+    wire(repeating, 'Value', gate, 'bCond');
+    wire(clock, 'Pulse', gate, 'Exec');
+    return gate;
   }
   const leftRepeat = repeatAfterHold(left);
   const rightRepeat = repeatAfterHold(right);
   for (const [movement, movementPort, direction] of [
     [left, 'OnRisingEdge', 'left'], [right, 'OnRisingEdge', 'right'],
-    [leftRepeat, 'Pulse', 'left'], [rightRepeat, 'Pulse', 'right'],
+    [leftRepeat, 'ExecOutA', 'left'], [rightRepeat, 'ExecOutA', 'right'],
   ]) {
     adjust(hue, 0, movement, movementPort, direction, 1, 360);
     adjust(saturation, 1, movement, movementPort, direction, 1, 0);
