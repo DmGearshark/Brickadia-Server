@@ -370,8 +370,8 @@ function build(input) {
   addSound('OBA_CashRegister_Ding_2', [[apply, 'ExecOutA']], 0.5, 1);
   addSound('OBA_Keypad', [
     [up, 'OnRisingEdge'], [down, 'OnRisingEdge'],
-    ...tapAdjustments.map(gate => [gate, 'ExecOut']),
   ], 0.32, 1.12);
+  addSound('OBA_Keyboard', tapAdjustments.map(gate => [gate, 'ExecOut']), 0.26, 1.08);
   addSound('OBA_Keyboard', repeatAdjustments.map(gate => [gate, 'ExecOut']), 0.11, 1.45);
 
   const name = 'HSB Color Customizer Test';
