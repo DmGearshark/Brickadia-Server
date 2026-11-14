@@ -208,7 +208,7 @@ function build(input) {
     setConstant(repeating, false, control, 'OnFallingEdge');
     // Keep the clock running and gate its pulses. Dynamically enabling a Clock can
     // miss its startup edge in Brickadia, especially while a seat input is held.
-    const clock = node('Clock', { IntervalSeconds: 0.05, bEnabled: true });
+    const clock = node('Clock', { IntervalSeconds: 0.025, bEnabled: true });
     const gate = node('Exec_Branch', { bCond: false });
     wire(repeating, 'Value', gate, 'bCond');
     wire(clock, 'Pulse', gate, 'Exec');
