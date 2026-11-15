@@ -22,13 +22,15 @@ Finish `FlatbedTruck1` as the first fully upgradable and customizable vehicle.
 
 ### SR-001 — Finish and integrate the color customizer
 
-Status: `Next`
+Status: `In progress`
 
 - Finish the existing color customizer.
 - Connect its Color, Metal Material Toggle, and Material Intensity outputs to the vehicle.
 - Ensure changes affect only the intended vehicle and player/session.
 - Decide how colors are priced, unlocked, purchased, saved, and reapplied.
 - Verify default/reset behavior and vehicle respawn behavior.
+- Blue-body target array populated in `outputs/truck1-blue-body-array-populated.brz` with 31 visible body/cosmetic brick references: 28 fixed-body bricks plus two door panels and the hood panel.
+- The body-array pass intentionally excludes hidden wheel/engine gates, the rigid bearing, and blue logic gates. It changes only the existing array value; color handoff wiring and loop execution remain separate work and still require in-game verification.
 
 Acceptance checks:
 
