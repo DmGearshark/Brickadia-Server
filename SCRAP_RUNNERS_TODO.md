@@ -39,16 +39,19 @@ Acceptance checks:
 
 ### SR-002 — Configure an engine from one array entry
 
-Status: `Next`
+Status: `In progress`
 
-- Make one array the authoritative engine configuration source.
-- Intended shape resembles `Array index 1 = 200 5 0.5`.
-- Decide whether each entry is a space-delimited string, a flat numeric layout, or another Brickadia-compatible representation; ordinary nested arrays may not be available.
-- Field order is `Speed`, `Torque`, `Acceleration`; define their exact units, valid ranges, and defaults.
+- Use one Quaternion array as the authoritative engine-profile source.
+- The saved mechanic-shop value is the profile index used by the dedicated Array Get gate.
+- Quaternion field mapping is X = Top Speed, Y = Torque, Z = Acceleration, W = Eco.
+- Feed the Array Get result directly into Split Quaternion; separate forwarding Vars are not required.
+- Define the exact units, valid ranges, and defaults for all four fields.
 - Apply the selected configuration to every engine property that should change.
-- Reject or safely fall back from malformed/missing entries.
+- Use tier/profile index `0` as stock, keep released indices stable, and append new profiles rather than reordering them.
+- Check out-of-bounds/missing profile values and safely fall back to index `0`.
+- Verify first-load propagation; add a one-tick buffer between asynchronous stat reads and dependent execution only if the initial read otherwise uses the previous value.
 
-Example: `200 5 0.5` means Speed `200`, Torque `5`, Acceleration `0.5`.
+Current demonstrated profile: Top Speed `300`, Torque `5`, Acceleration `0.5`, Eco `1`.
 
 ### SR-003 — Fuel tank upgrade
 
@@ -250,9 +253,8 @@ Whichever approach is chosen must isolate players/sessions, distinguish preview 
 
 ## Open decisions to resolve when relevant
 
-1. Decide exactly how one `Speed Torque Acceleration` entry is represented in Brickadia's array.
-2. Decide what vehicle customization/upgrades must persist across respawn, reconnect, and server restart.
-3. Confirm the intended names of the three used semi-trucks.
-4. Choose the eventual color-testing/application workflow; this is deliberately not blocking current work.
+1. Decide what vehicle customization/upgrades must persist across respawn, reconnect, and server restart.
+2. Confirm the intended names of the three used semi-trucks.
+3. Choose the eventual color-testing/application workflow; this is deliberately not blocking current work.
 
 Persistence boundaries, pricing/unlocks, reset behavior, and multiplayer-isolation checks are proposed safeguards. Confirm their exact scope when their related task becomes active rather than treating every detail above as a locked design decision.
