@@ -53,11 +53,22 @@ Status: `In progress`
 
 Current demonstrated profile: Top Speed `300`, Torque `5`, Acceleration `0.5`, Eco `1`.
 
+Confirmed mechanic-shop engine catalogue order and prices:
+
+- `0` Stock Shitter — free
+- `1` RedNeck Engine — 2,500 Scrap
+- `2` Backyard Engine — 5,000 Scrap
+- `3` A Real Engine — 15,000 Scrap
+- `4` The Slow Turtle Engine — 10,000 Scrap
+
+These are catalogue/profile IDs and prices; the exact Quaternion statistics for profiles `1` through `4` still need to be defined on the truck.
+
 ### SR-003 — Fuel tank upgrade
 
 Status: `Backlog`
 
 - Define capacity tiers and prices.
+- Confirmed profiles: `0` Starter/20,000 capacity/free; `1` Mid/25,000 capacity/5,000 Scrap; `2` Large/30,000 capacity/10,000 Scrap.
 - Connect capacity to the gas tank and gauge.
 - Verify refueling, fuel consumption, empty-tank behavior, and persistence.
 
@@ -66,6 +77,7 @@ Status: `Backlog`
 Status: `Backlog`
 
 - Define suspension tier values and prices.
+- Confirmed value/price profiles: `500/1000`, `1000/2000`, `1500/2000`, `2000/2000`, `2500/2000`.
 - Apply the chosen tier consistently to every relevant wheel.
 - Check stability at minimum and maximum settings.
 
@@ -74,6 +86,7 @@ Status: `Backlog`
 Status: `Backlog`
 
 - Define steering-speed tiers and prices.
+- Confirmed free profiles: `0.05`, `0.1`, `0.2`.
 - Apply the setting consistently to steering components.
 - Check responsiveness without oscillation or snapping.
 
@@ -82,13 +95,14 @@ Status: `Backlog`
 Status: `Backlog`
 
 - Define steering-angle tiers and prices.
+- Confirmed free profiles: `30`, `35`, `40`, `45`, `50`, `55`, `60` degrees.
 - Verify wheel clearance, turning radius, and behavior at speed.
 
 ### SR-007 — Wheel-spacing upgrade
 
 Status: `Backlog`
 
-Wheel Spacing is confirmed as an upgrade for the first vehicle. Define its tiers, prices, safe wheel positions, and clearance checks.
+Wheel Spacing is confirmed as an upgrade for the first vehicle. Confirmed value/price profiles: `0/free`, `2.5/500`, `5/1500`, `7.5/3000`, `10/10000`. Define safe wheel positions and clearance checks.
 
 ### SR-008 — Complete the shared vehicle feature checklist
 
@@ -117,10 +131,14 @@ Status: `Backlog`
 - Reference documentation: `tools/prefabs/PARTS-SHOP-DISPLAY.md` and `tools/prefabs/MECHANIC-ZONE-STARTUP-TEST.md`.
 - Existing catalog format: `VehicleID.Category.DisplayPosition = Name|LeaderboardKey|SavedValue|ScrapPrice`.
 - Confirmed FlatbedTruck1 mechanic identifiers: vehicle/ownership key `Truck1Owned`; engine selection leaderboard key `Truck1Engine`.
-- Confirmed current engine catalog rows:
+- Confirmed engine catalog rows:
   - `Truck1Owned.Engine.0 = Stock Shitter|Truck1Engine|0|0`
-  - `Truck1Owned.Engine.1 = Scrapyard Engine|Truck1Engine|1|2500`
-  - `Truck1Owned.Engine.2 = Redneck Engine|Truck1Engine|2|7500`
+  - `Truck1Owned.Engine.1 = RedNeck Engine|Truck1Engine|1|2500`
+  - `Truck1Owned.Engine.2 = Backyard Engine|Truck1Engine|2|5000`
+  - `Truck1Owned.Engine.3 = A Real Engine|Truck1Engine|3|15000`
+  - `Truck1Owned.Engine.4 = The Slow Turtle Engine|Truck1Engine|4|10000`
+- Populated standalone catalogue map: `outputs/truck1-mechanic-parts-catalog.brz`. It has 28 rows across Engine, FuelTank, Suspension, WheelSpacing, SteerAngle, and SteerTurnSpeed.
+- Confirmed Truck1 leaderboard keys: `Truck1Engine`, `Truck1Fueltank`, `Truck1Suspension`, `Truck1Steerangle`, and `Truck1Steerturnspeed`. The new wheel-spacing key is `Truck1Wheelspacing` and must be created with that exact casing.
 - The mechanic catalog stores menu order, display name, saved selection ID, and price. It does not store the physical engine values; the truck's engine-profile array resolves the saved ID to Top Speed, Torque, Acceleration, and Eco.
 - The existing system handles selection, purchase, and saving the chosen upgrade value.
 - Configure the truck to read its saved upgrade values from that system.
