@@ -16,7 +16,7 @@ Statuses: `Next`, `In progress`, `Needs user verification`, `Blocked`, `Backlog`
 
 ## Current objective
 
-Finish the first fully upgradable and customizable vehicle. Based on the current planning board, this is assumed to be `FlatbedTruck1` until the user confirms otherwise.
+Finish `FlatbedTruck1` as the first fully upgradable and customizable vehicle.
 
 ## Milestone 1 — First complete vehicle
 
@@ -44,11 +44,11 @@ Status: `Next`
 - Make one array the authoritative engine configuration source.
 - Intended shape resembles `Array index 1 = 200 5 0.5`.
 - Decide whether each entry is a space-delimited string, a flat numeric layout, or another Brickadia-compatible representation; ordinary nested arrays may not be available.
-- Define the exact meaning, order, units, valid ranges, and defaults for each value.
+- Field order is `Speed`, `Torque`, `Acceleration`; define their exact units, valid ranges, and defaults.
 - Apply the selected configuration to every engine property that should change.
 - Reject or safely fall back from malformed/missing entries.
 
-Open decision: what do `200`, `5`, and `0.5` each represent?
+Example: `200 5 0.5` means Speed `200`, Torque `5`, Acceleration `0.5`.
 
 ### SR-003 — Fuel tank upgrade
 
@@ -83,9 +83,9 @@ Status: `Backlog`
 
 ### SR-007 — Wheel-spacing upgrade
 
-Status: `Blocked`
+Status: `Backlog`
 
-This appears on the in-world planning board but was not included in the written upgrade list. Confirm whether it remains part of the first vehicle.
+Wheel Spacing is confirmed as an upgrade for the first vehicle. Define its tiers, prices, safe wheel positions, and clearance checks.
 
 ### SR-008 — Complete the shared vehicle feature checklist
 
@@ -105,14 +105,25 @@ The first flatbed truck additionally needs:
 
 - Two distinct cargo-latch buttons: one for Lock and one for Unlock.
 
-### SR-009 — Vehicle-upgrade selection and purchase interface
+### SR-009 — Connect FlatbedTruck1 to the existing vehicle upgrade system
 
 Status: `Backlog`
 
-- Confirm whether the existing upgrade shop/interface will be reused or a vehicle-specific interface is needed.
-- Display current tier, next tier, price, and the effect of the upgrade before purchase.
-- Apply purchases to the correct owned vehicle and prevent duplicate charges.
-- Cover Engine, Fuel Tank, Suspension, Steering Turn Speed, Steering Angle, and Wheel Spacing if that upgrade is confirmed.
+- Reuse the vehicle upgrade system already built; do not create another upgrade shop.
+- Production mechanic prefab: `prefabs/mechanic-shop-zone-based.brz`.
+- Reference documentation: `tools/prefabs/PARTS-SHOP-DISPLAY.md` and `tools/prefabs/MECHANIC-ZONE-STARTUP-TEST.md`.
+- Existing catalog format: `VehicleID.Category.DisplayPosition = Name|LeaderboardKey|SavedValue|ScrapPrice`.
+- The existing system handles selection, purchase, and saving the chosen upgrade value.
+- Configure the truck to read its saved upgrade values from that system.
+- Use each saved value as the correct configuration-array index and apply the selected settings to the truck.
+- Match the truck's stat/category keys exactly to the existing upgrade catalog.
+- Cover Engine, Fuel Tank, Suspension, Steering Turn Speed, Steering Angle, and Wheel Spacing.
+- Extend the current shipped catalog, which presently covers only `CarOwned` Engine/FuelTank and `TruckOwned` Engine/WheelDistance, with the FlatbedTruck1 categories and options.
+- Use the exact FlatbedTruck1 ownership ID used by the dealership rather than inventing a second identifier.
+- Use safe stock defaults for missing or out-of-range saved values.
+- Verify that changing one category updates only that category and only the correct player's truck.
+
+Known verification note: the buffered first-entry zone-binding fix was confirmed in game, then promoted into the clean production mechanic. The clean production prefab itself was not separately re-tested after removing diagnostics, so include one fresh first-entry binding check during integration testing.
 
 ### SR-010 — First-vehicle integration and regression pass
 
@@ -185,7 +196,7 @@ Names and prices transcribed from the current in-world board. Verify naming befo
 | PickupTruck1 | 5,000 | WIP |
 | PickupTruck2 | 7,500 | |
 | PickupTruck3 | 10,000 | |
-| FlatbedTruck1 | 5,000 | Assumed first complete vehicle |
+| FlatbedTruck1 | 5,000 | Confirmed first complete vehicle |
 | FlatbedTruck2 | 7,500 | |
 | FlatbedTruck3 | 10,000 | |
 | Boxtruck1 | 10,000 | |
@@ -239,11 +250,9 @@ Whichever approach is chosen must isolate players/sessions, distinguish preview 
 
 ## Open decisions to resolve when relevant
 
-1. Confirm that `FlatbedTruck1` is the first vehicle to finish.
-2. Define the three engine-array values, their units, and how one entry is represented in Brickadia's array.
-3. Confirm whether wheel spacing is still an upgrade.
-4. Decide what vehicle customization/upgrades must persist across respawn, reconnect, and server restart.
-5. Confirm the intended names of the three used semi-trucks.
-6. Choose the eventual color-testing/application workflow; this is deliberately not blocking current work.
+1. Decide exactly how one `Speed Torque Acceleration` entry is represented in Brickadia's array.
+2. Decide what vehicle customization/upgrades must persist across respawn, reconnect, and server restart.
+3. Confirm the intended names of the three used semi-trucks.
+4. Choose the eventual color-testing/application workflow; this is deliberately not blocking current work.
 
 Persistence boundaries, pricing/unlocks, reset behavior, and multiplayer-isolation checks are proposed safeguards. Confirm their exact scope when their related task becomes active rather than treating every detail above as a locked design decision.
