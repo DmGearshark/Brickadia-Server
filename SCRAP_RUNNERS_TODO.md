@@ -116,6 +116,12 @@ Status: `Backlog`
 - Production mechanic prefab: `prefabs/mechanic-shop-zone-based.brz`.
 - Reference documentation: `tools/prefabs/PARTS-SHOP-DISPLAY.md` and `tools/prefabs/MECHANIC-ZONE-STARTUP-TEST.md`.
 - Existing catalog format: `VehicleID.Category.DisplayPosition = Name|LeaderboardKey|SavedValue|ScrapPrice`.
+- Confirmed FlatbedTruck1 mechanic identifiers: vehicle/ownership key `Truck1Owned`; engine selection leaderboard key `Truck1Engine`.
+- Confirmed current engine catalog rows:
+  - `Truck1Owned.Engine.0 = Stock Shitter|Truck1Engine|0|0`
+  - `Truck1Owned.Engine.1 = Scrapyard Engine|Truck1Engine|1|2500`
+  - `Truck1Owned.Engine.2 = Redneck Engine|Truck1Engine|2|7500`
+- The mechanic catalog stores menu order, display name, saved selection ID, and price. It does not store the physical engine values; the truck's engine-profile array resolves the saved ID to Top Speed, Torque, Acceleration, and Eco.
 - The existing system handles selection, purchase, and saving the chosen upgrade value.
 - Configure the truck to read its saved upgrade values from that system.
 - Use each saved value as the correct configuration-array index and apply the selected settings to the truck.
