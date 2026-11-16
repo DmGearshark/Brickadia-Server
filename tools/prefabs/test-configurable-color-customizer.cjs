@@ -42,9 +42,9 @@ function test(input) {
   const innerGrid = nestedLink.grid;
 
   assert.equal(components(scene, C.Microchip.NAME, mainGrid).length, 1, 'one hidden-logic chip on main grid');
-  assert.equal(components(scene, C.Expr_String_FormatText.NAME, mainGrid).length, 8, 'six rows, hex row, and master format are editable');
-  assert.equal(components(scene, C.OneShotAudioReference.NAME, mainGrid).length, 4, 'four editable sound references');
-  assert.equal(components(scene, C.Var.NAME, mainGrid).length, 5, 'repeat interval plus four sound volume vars');
+  assert.equal(components(scene, C.Expr_String_FormatText.NAME, mainGrid).length, 7, 'five live rows, hex row, and master format are editable');
+  assert.equal(components(scene, C.OneShotAudioReference.NAME, mainGrid).length, 3, 'three editable live-interaction sound references');
+  assert.equal(components(scene, C.Var.NAME, mainGrid).length, 4, 'repeat interval plus three sound volume vars');
   assert.equal(components(scene, C.Expr_String_FormatText.NAME, innerGrid).length, 0, 'no format gates hidden');
   const annotatedTypes = [C.Var.NAME, C.OneShotAudioReference.NAME, C.Expr_String_FormatText.NAME];
   for (const brick of scene.bricks.filter(candidate => candidate.g === mainGrid
@@ -55,7 +55,6 @@ function test(input) {
     .map(({ comp }) => comp.data.PromptCustomLabel);
   for (const expected of [
     'Held-repeat interval',
-    'Apply sound', 'Apply sound volume',
     'Select sound', 'Select sound volume',
     'Tap sound', 'Tap sound volume',
     'Repeat sound', 'Repeat sound volume',
@@ -73,7 +72,6 @@ function test(input) {
   const innerInputs = components(scene, C.MicrochipInput.NAME, innerGrid);
   assert.deepEqual(innerInputs.map(({ comp }) => comp.data.PortLabel), [
     'Character', 'Repeat Interval',
-    'Apply Sound', 'Apply Volume',
     'Select Sound', 'Select Volume',
     'Tap Sound', 'Tap Volume',
     'Repeat Sound', 'Repeat Volume',
@@ -85,12 +83,14 @@ function test(input) {
   assert(formats.some(format => format.includes('CURRENT HEX')));
   assert(formats.some(format => format.includes('INTENSITY')));
   assert(formats.some(format => format.includes('W/S SELECT') && format.includes('C ENTER HEX')));
+  assert(!formats.some(format => /APPLY|SPACE/i.test(format)), 'no dead Apply/Space text remains');
 
   // C -> seated PlayerState -> modal hex entry.
   const splitter = components(scene, C.InputSplitter.NAME, innerGrid);
   assert.equal(splitter.length, 1);
   const cWire = outgoing(scene, splitter[0].brick, C.InputSplitter.NAME, 'bPressedC');
   assert.equal(cWire.length, 1, 'C has one dedicated edge-detector path');
+  assert.equal(outgoing(scene, splitter[0].brick, C.InputSplitter.NAME, 'InputUp').length, 0, 'Space has no dead Apply path');
   const cTarget = scene.bricks.find(brick => brick.key === cWire[0].z);
   assert(cTarget.comps.some(comp => comp.type === C.Expr_EdgeDetectorExec.NAME));
 
@@ -146,7 +146,10 @@ function test(input) {
   }
   const moduloSix = components(scene, C.Expr_MathModuloFloored.NAME, innerGrid)
     .filter(({ comp }) => comp.data.InputB?.value === 6);
-  assert.equal(moduloSix.length, 4, 'menu previous/next plus material left/right all wrap at six');
+  assert.equal(moduloSix.length, 2, 'material left/right wrap through all six materials');
+  const moduloFive = components(scene, C.Expr_MathModuloFloored.NAME, innerGrid)
+    .filter(({ comp }) => comp.data.InputB?.value === 5);
+  assert.equal(moduloFive.length, 2, 'W/S navigation wraps through five live controls');
 
   const clocks = components(scene, C.Clock.NAME, innerGrid).map(({ comp }) => comp.data.IntervalSeconds).sort((a, b) => a - b);
   assert.deepEqual(clocks, [0.025, 0.025, 0.75, 0.75]);
@@ -158,7 +161,7 @@ function test(input) {
   assert.equal(repeatDrivenClocks.length, 2, 'both repeat clocks use editable repeat interval');
 
   const emitters = components(scene, C.OneShotAudioEmitter.NAME, innerGrid);
-  assert.equal(emitters.length, 4);
+  assert.equal(emitters.length, 3);
   for (const { brick } of emitters) {
     assert.equal(incoming(scene, brick, C.OneShotAudioEmitter.NAME, 'AudioDescriptor').length, 1);
     assert.equal(incoming(scene, brick, C.OneShotAudioEmitter.NAME, 'VolumeMultiplier').length, 1);
@@ -189,6 +192,7 @@ function test(input) {
   assert.equal(incoming(scene, screen.brick, C.TextDisplay.NAME, 'bEnabled').length, 1, 'seat occupancy still gates the public screen');
   assert(screen.comp.data.Text.includes('CURRENT HEX'));
   assert(screen.comp.data.Text.includes('C ENTER HEX'));
+  assert(!/APPLY|SPACE/i.test(screen.comp.data.Text), 'screen contains no dead Apply control');
   const enabledEdge = incoming(scene, screen.brick, C.TextDisplay.NAME, 'bEnabled')[0];
   const enabledRerouter = scene.bricks.find(brick => brick.key === enabledEdge.a);
   const enabledSource = incoming(scene, enabledRerouter, enabledEdge.at, 'RER_Input')[0];

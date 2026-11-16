@@ -256,7 +256,6 @@ function build(input) {
   outer.repeatInterval = node('Var', { Value: structuredClone(priorRepeat) }, { grid: mainGrid, position: [-240, -192, 2], color: [70, 170, 95] });
   annotate(outer.repeatInterval, 'Held-repeat interval', 'Seconds between adjustments after A or D has been held for 0.75 seconds. 0.025 = 40 adjustments per second. Lower is faster; higher is slower.');
   const soundSpecs = [
-    ['Apply', 'OBA_CashRegister_Ding_2', 0.5],
     ['Select', 'OBA_Keypad', 0.32],
     ['Tap', 'OBA_Keyboard', 0.26],
     ['Repeat', 'OBA_Keyboard', 0.11],
@@ -297,7 +296,6 @@ function build(input) {
     outerFormat(priorFormat('Brightness row format', '{A}BRIGHTNESS    {B}%{C}'), [-48, 144, 2]),
     outerFormat(priorFormat('Material row format', '{A}MATERIAL      {B}{C}'), [48, 144, 2]),
     outerFormat(priorFormat('Intensity row format', '{A}INTENSITY     {B}%{C}'), [144, 144, 2]),
-    outerFormat(priorFormat('Apply row format', '{A}APPLY{B}'), [240, 144, 2]),
   ];
   const rowHelp = [
     ['Hue row format', 'Controls the Hue row text. A is the left selection marker, B is the hue value, and C is the right marker.'],
@@ -305,19 +303,18 @@ function build(input) {
     ['Brightness row format', 'Controls the Brightness row text. A and C are selection markers; B is the percentage value.'],
     ['Material row format', 'Controls the Material row text. A and C are selection markers; B displays Plastic, Glass, Translucent Plastic, Glow, Metal, or Hologram.'],
     ['Intensity row format', 'Controls the Material Intensity row text. A and C are selection markers; B is 0–100 in ten-percent steps.'],
-    ['Apply row format', 'Controls the Apply row text. A and B are the left and right selection markers.'],
   ];
   outer.rows.forEach((row, index) => annotate(row, rowHelp[index][0], rowHelp[index][1]));
   outer.hex = outerFormat(priorFormat('Hex row format', 'CURRENT HEX    #{A}'), [336, 144, 2]);
   annotate(outer.hex, 'Hex row format', 'Controls the current RGB hex display. Input A is the six-digit code without a leading #.');
-  const defaultMasterFormat = 'COLOR CUSTOMIZER\r\n{G}\r\n\r\n{A}\r\n{B}\r\n{C}\r\n{D}\r\n{E}\r\n{F}\r\n\r\nW/S SELECT   A/D TAP: 1 | HOLD: REPEAT\r\nC ENTER HEX   SPACE APPLY';
+  const defaultMasterFormat = 'COLOR CUSTOMIZER\r\n{G}\r\n\r\n{A}\r\n{B}\r\n{C}\r\n{D}\r\n{E}\r\n\r\nW/S SELECT   A/D TAP: 1 | HOLD: REPEAT\r\nC ENTER HEX';
   const priorMasterFormat = priorData('Complete menu format', C.Expr_String_FormatText.NAME)?.FormatString;
   outer.master = outerFormat(
-    priorMasterFormat?.includes('{G}') && priorMasterFormat.includes('C ENTER HEX')
+    priorMasterFormat?.includes('{G}') && priorMasterFormat.includes('C ENTER HEX') && !priorMasterFormat.includes('APPLY')
       ? priorMasterFormat : defaultMasterFormat,
     [0, 240, 2],
   );
-  annotate(outer.master, 'Complete menu format', 'Controls the complete display layout and instructions. Inputs A through F are the six selectable rows; G is the current-hex row.');
+  annotate(outer.master, 'Complete menu format', 'Controls the complete display layout and instructions. Inputs A through E are the five live-control rows; G is the current-hex row.');
   outer.rows.forEach((row, index) => wire(row, 'Output', outer.master, `Input${String.fromCharCode(65 + index)}`));
   wire(outer.hex, 'Output', outer.master, 'InputG');
 
@@ -374,20 +371,19 @@ function build(input) {
   const down = edge(splitter, 'InputForward', 'Less', -0.5);
   const left = edge(splitter, 'InputRight', 'Less', -0.5);
   const right = edge(splitter, 'InputRight', 'Greater', 0.5);
-  const space = edge(splitter, 'InputUp', 'Greater', 0.5);
   const enterHex = node('Expr_EdgeDetectorExec', { Input: B(false), InputLast: B(false), bSeeded: true });
   wire(splitter, 'bPressedC', enterHex, 'Input');
 
-  const previousRaw = math('Add', selection, 'Value', 5);
-  const previous = node('Expr_MathModuloFloored', { InputB: N(6) });
+  const previousRaw = math('Add', selection, 'Value', 4);
+  const previous = node('Expr_MathModuloFloored', { InputB: N(5) });
   wire(previousRaw, 'Output', previous, 'InputA');
   setValue(selection, previous, 'Output', up, 'OnRisingEdge');
   const nextRaw = math('Add', selection, 'Value', 1);
-  const next = node('Expr_MathModuloFloored', { InputB: N(6) });
+  const next = node('Expr_MathModuloFloored', { InputB: N(5) });
   wire(nextRaw, 'Output', next, 'InputA');
   setValue(selection, next, 'Output', down, 'OnRisingEdge');
 
-  const selected = Array.from({ length: 6 }, (_, index) => {
+  const selected = Array.from({ length: 5 }, (_, index) => {
     const compare = node('Expr_CompareEqual', { InputB: N(index) });
     wire(selection, 'Value', compare, 'InputA');
     return compare;
@@ -620,7 +616,7 @@ function build(input) {
   wire(brightness, 'Value', roundedBrightness, 'Input');
   const rowValues = [
     [roundedHue, 'Output'], [roundedSaturation, 'Output'], [roundedBrightness, 'Output'],
-    materialText, [intensityPercent, 'Output'], null,
+    materialText, [intensityPercent, 'Output'],
   ];
   outer.rows.forEach((row, index) => {
     wire(leftMarkers[index], 'Output', row, 'InputA');
@@ -632,8 +628,8 @@ function build(input) {
   wire(outer.master, 'Output', screen, 'Text');
   const screenData = screenBrick.comps.find(comp => comp.type === C.TextDisplay.NAME).data;
   Object.assign(screenData, {
-    Text: 'COLOR CUSTOMIZER\r\nCURRENT HEX    #FF0000\r\n\r\n> HUE           0° <\r\n  SATURATION    100%\r\n  BRIGHTNESS    100%\r\n  MATERIAL      PLASTIC\r\n  INTENSITY     100%\r\n  APPLY\r\n\r\nW/S SELECT   A/D TAP: 1 | HOLD: REPEAT\r\nC ENTER HEX   SPACE APPLY',
-    LineHeight: 0.88,
+    Text: 'COLOR CUSTOMIZER\r\nCURRENT HEX    #FF0000\r\n\r\n> HUE           0° <\r\n  SATURATION    100%\r\n  BRIGHTNESS    100%\r\n  MATERIAL      PLASTIC\r\n  INTENSITY     100%\r\n\r\nW/S SELECT   A/D TAP: 1 | HOLD: REPEAT\r\nC ENTER HEX',
+    LineHeight: 0.95,
     WidthScale: 0.75,
   });
 
@@ -657,7 +653,6 @@ function build(input) {
   wire(occupancyColor, 'Output', ref(squareBrick, C.TextDisplay.NAME), 'Color');
 
   // Hidden audio execution; sound asset and volume controls stay editable.
-  const apply = branch(selected[5], space);
   function addSound(index, sources, pitch) {
     const spec = soundSpecs[index];
     const emitter = node('OneShotAudioEmitter', {
@@ -677,10 +672,9 @@ function build(input) {
     const source = execUnion(sources);
     wire(source[0], source[1], emitter, 'Play');
   }
-  addSound(0, [[apply, 'ExecOutA']], 1);
-  addSound(1, [[up, 'OnRisingEdge'], [down, 'OnRisingEdge']], 1.12);
-  addSound(2, tapAdjustments.map(gate => [gate, 'ExecOut']), 1.08);
-  addSound(3, repeatAdjustments.map(gate => [gate, 'ExecOut']), 1.45);
+  addSound(0, [[up, 'OnRisingEdge'], [down, 'OnRisingEdge']], 1.12);
+  addSound(1, tapAdjustments.map(gate => [gate, 'ExecOut']), 1.08);
+  addSound(2, repeatAdjustments.map(gate => [gate, 'ExecOut']), 1.45);
 
   const name = 'Public Hex + HSB Color Customizer';
   const description = 'Standalone public-use color station. Seat controls HSB, C opens validated six-digit RGB hex entry, and A/D selects every Brickadia material. Outer chip exposes editable text/sounds and Color, Material, and Material Intensity outputs.';
