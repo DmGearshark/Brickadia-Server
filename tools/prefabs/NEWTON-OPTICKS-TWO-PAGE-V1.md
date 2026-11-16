@@ -102,6 +102,45 @@ node tools/prefabs/test-opticks-two-page-big-book.cjs \
 python3 tools/prefabs/test-opticks-two-page-compact-layout.py
 ```
 
+### Large-text 47-by-31 leaf calibration
+
+The later articulated frame has a user-measured safe area of 47 characters by
+31 rendered rows. Two rows are reserved for the page number and its separator,
+leaving 29 body rows. Regenerate and patch that edition without rebuilding or
+moving any part of the supplied frame:
+
+```sh
+python3 tools/prefabs/generate-opticks-four-display-pages.py \
+  --output /tmp/opticks-v29-large-text.json \
+  --live-row-aspect 0.70 \
+  --compact-live-layout \
+  --text-body-rows 29 \
+  --text-line-height 0.8125 \
+  --text-width-scale 0.75 \
+  --text-columns 47 \
+  --max-active-image-bottom 240 \
+  --name "Newton Opticks - Calibrated Large Text Edition" \
+  --description "Complete Opticks text and source-derived figures reflowed to the manually calibrated 47-column by 31-line two-page frame."
+
+python3 tools/prefabs/test-opticks-large-text-layout.py \
+  /tmp/opticks-v29-large-text.json
+
+node tools/prefabs/reflow-opticks-large-text-book.cjs \
+  supplied-newtons-opticks.brz \
+  /tmp/opticks-v29-large-text.json \
+  outputs/newton-opticks-large-text-illustrated-book.brz
+
+node tools/prefabs/test-opticks-large-text-book.cjs \
+  supplied-newtons-opticks.brz \
+  outputs/newton-opticks-large-text-illustrated-book.brz \
+  /tmp/opticks-v29-large-text.json
+```
+
+The archive-level patch changes only the two page-display component payloads,
+the page-data logic payload, and the left prose display's missing wire plus its
+wire count. The cover, frame geometry, art-display calibration, controls,
+sounds, and all other saved payloads remain byte-for-byte identical.
+
 The structural check verifies exact odd/even reconstruction of all five compact
 streams, the 44-wire graph, initial and final spreads, synchronized image
 origins, shell preservation, metadata, and strict zero-warning placement.

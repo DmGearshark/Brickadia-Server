@@ -36,6 +36,7 @@ IMAGE_FONT = "IosevkaTerm"
 IMAGE_KERNING = -6
 IMAGE_ADVANCE_SCALE = 0.115
 TEXT_WIDTH_SCALE = 0.82
+TEXT_COLUMNS: int | None = None
 # The large two-page shell scales generated text geometry by 1.6.  These
 # compact-only values therefore become 0.875 line height and preserve the
 # existing horizontal advance (0.546875 * 0.75 * 1.6 = 0.65625) while making
@@ -128,6 +129,61 @@ class ImageParser(HTMLParser):
             values = dict(attrs)
             if values.get("src"):
                 self.images.append((values["src"], html.unescape(values.get("alt") or "Illustration")))
+
+
+def wrap_page_text(value: str, width: int | None = None) -> list[str]:
+    """Wrap one logical row without losing or inventing non-space characters."""
+    remaining = value.strip()
+    rows: list[str] = []
+    while remaining:
+        row_width = width or len(remaining)
+        split = remaining.rfind(" ", 0, row_width + 1)
+        piece = remaining if len(remaining) <= row_width else remaining[:split if split > 0 else row_width]
+        rows.append(piece)
+        remaining = remaining[len(piece):].lstrip()
+    return rows
+
+
+def caption_rows(value: str) -> list[str]:
+    """Wrap captions only for an explicitly width-constrained edition."""
+    if TEXT_COLUMNS is None:
+        return [value]
+    return wrap_page_text(value, TEXT_COLUMNS)
+
+
+def logical_source_rows(source_lines: list[str]) -> list[str]:
+    """Join Gutenberg hard-wrapped prose while retaining preformatted blocks."""
+    if TEXT_COLUMNS is None:
+        return source_lines
+
+    rows: list[str] = []
+    block: list[str] = []
+
+    def flush_block() -> None:
+        if not block:
+            return
+        preformatted = any(
+            (line[:1].isspace()
+             or "|" in line
+             or re.fullmatch(r"\s*[-+*=_.]{3,}.*", line) is not None
+             or re.fullmatch(r"\s*\[Illustration: .+\]\s*", line) is not None)
+            for line in block
+        )
+        if preformatted:
+            rows.extend(block)
+        else:
+            rows.append(" ".join(line.strip() for line in block))
+        block.clear()
+
+    for line in source_lines:
+        if line.strip():
+            block.append(line)
+        else:
+            flush_block()
+            if rows and rows[-1] != "":
+                rows.append("")
+    flush_block()
+    return rows
 
 
 def convert_image(
@@ -305,6 +361,11 @@ def reservation_rows_for_art(image_rows: int) -> int:
     return reserved_text_rows(planning_rows) + (1 if COMPACT_LIVE_LAYOUT else 0)
 
 
+def reservation_rows_with_caption(image_rows: int, caption: str) -> int:
+    """Keep the art clearance fixed and reserve any extra caption rows."""
+    return reservation_rows_for_art(image_rows) + len(caption_rows(caption)) - 1
+
+
 def image_row_for_text(text_row: int) -> int:
     """Align a Braille image row with a row on the overlaid prose display."""
     return round(text_row * TEXT_LINE_HEIGHT / IMAGE_LAYOUT_LINE_HEIGHT)
@@ -313,6 +374,7 @@ def image_row_for_text(text_row: int) -> int:
 def main() -> None:
     lines = SOURCE.read_text("utf-8-sig").replace("\r\n", "\n").splitlines()
     lines = lines[lines.index("OPTICKS:"):next(i for i, line in enumerate(lines) if line.startswith("End of the Project Gutenberg EBook"))]
+    lines = logical_source_rows(lines)
 
     parser = ImageParser()
     parser.feed(HTML.read_text("utf8"))
@@ -332,7 +394,8 @@ def main() -> None:
     def append_detail_page(detail: dict, overview_page: int) -> None:
         art = detail["art"]
         layout_rows = layout_rows_for_art(len(art))
-        reserve = reservation_rows_for_art(len(art))
+        captions = caption_rows(detail["caption"])
+        reserve = reservation_rows_with_caption(len(art), detail["caption"])
         if reserve > TEXT_BODY_ROWS:
             raise ValueError(f"Detail view {detail['name']} exceeds page height")
         page_number = len(text_pages) + 1
@@ -342,7 +405,7 @@ def main() -> None:
         detail_canvas = [""] * (image_y + len(art))
         for row, art_line in enumerate(art):
             detail_canvas[image_y + row] = overlay_line("", art_line, image_x)
-        detail_body = [""] * (reserve - 1) + [detail["caption"]]
+        detail_body = [""] * (reserve - len(captions)) + captions
         text_pages.append(f"{page_number}\r\n\r\n" + "\r\n".join(detail_body))
         image_pages.append("\r\n".join(detail_canvas))
         detail_views.append({
@@ -385,7 +448,9 @@ def main() -> None:
     def place_figure(number: int, src: str, alt: str, art: list[str]) -> None:
         nonlocal body, image_canvas, queued_details
         layout_rows = layout_rows_for_art(len(art))
-        reserve = reservation_rows_for_art(len(art))
+        caption = alt.rstrip(".") + "."
+        captions = caption_rows(caption)
+        reserve = reservation_rows_with_caption(len(art), caption)
         if len(body) + reserve > TEXT_BODY_ROWS:
             raise ValueError(f"Figure {number} does not fit reserved region")
         text_start = len(body)
@@ -409,13 +474,18 @@ def main() -> None:
             image_canvas.extend([""] * (needed - len(image_canvas)))
         for row, art_line in enumerate(art):
             image_canvas[image_y + row] = overlay_line(image_canvas[image_y + row], art_line, image_x)
-        body.extend([""] * (reserve - 1))
+        blank_reserve = reserve - len(captions)
+        body.extend([""] * blank_reserve)
         side_width = math.floor(image_x * IMAGE_ADVANCE_SCALE / TEXT_WIDTH_SCALE) - 2
         # Dense or tall figures need their complete rectangle. Side-flowing
         # prose beside these diagrams crossed long rays in the calibrated font.
         if side_width >= 20 and can_side_flow:
-            side_slots.extend((text_start + row, side_width) for row in range(reserve - 1) if not body[text_start + row].strip())
-        body.append(alt.rstrip(".") + ".")
+            side_slots.extend(
+                (text_start + row, side_width)
+                for row in range(blank_reserve)
+                if not body[text_start + row].strip()
+            )
+        body.extend(captions)
         placements.append({
             "number": number,
             "source": src,
@@ -463,20 +533,35 @@ def main() -> None:
         nonlocal body, side_slots
         remaining = line.strip()
         while remaining:
+            if TEXT_COLUMNS is None:
+                if side_slots:
+                    row, width = side_slots.pop(0)
+                    wrapped = textwrap.wrap(
+                        remaining,
+                        width=width,
+                        break_long_words=False,
+                        break_on_hyphens=False,
+                    )
+                    piece = wrapped[0] if wrapped else remaining
+                    body[row] = piece
+                    remaining = remaining[len(piece):].lstrip()
+                else:
+                    body.append(remaining)
+                    remaining = ""
+                continue
+            if len(body) >= TEXT_BODY_ROWS:
+                flush_and_place_pending()
             if side_slots:
                 row, width = side_slots.pop(0)
-                wrapped = textwrap.wrap(
-                    remaining,
-                    width=width,
-                    break_long_words=False,
-                    break_on_hyphens=False,
-                )
-                piece = wrapped[0] if wrapped else remaining
+                if TEXT_COLUMNS is not None:
+                    width = min(width, TEXT_COLUMNS)
+                piece = wrap_page_text(remaining, width)[0]
                 body[row] = piece
-                remaining = remaining[len(piece):].lstrip()
             else:
-                body.append(remaining)
-                remaining = ""
+                width = TEXT_COLUMNS or len(remaining)
+                piece = wrap_page_text(remaining, width)[0]
+                body.append(piece)
+            remaining = remaining[len(piece):].lstrip()
 
     for raw in lines:
         line = raw.rstrip().replace("_", "")
@@ -488,7 +573,8 @@ def main() -> None:
                 flush()
             src, alt = parser.images[figure_index]
             art = convert_figure(HTML.parent / src)
-            reserve = reservation_rows_for_art(len(art))
+            caption = alt.rstrip(".") + "."
+            reserve = reservation_rows_with_caption(len(art), caption)
             if reserve > TEXT_BODY_ROWS:
                 raise ValueError(f"Figure {figure_index + 1} exceeds page height")
             top_margin = 1 if COMPACT_LIVE_LAYOUT else 0
@@ -558,6 +644,7 @@ def main() -> None:
     assert not oversized, oversized
     layout = {
         "textBodyRows": TEXT_BODY_ROWS,
+        **({"textColumns": TEXT_COLUMNS} if TEXT_COLUMNS is not None else {}),
         "textLineHeight": TEXT_LINE_HEIGHT,
         "imageLineHeight": IMAGE_RENDER_LINE_HEIGHT,
         "imageLayoutLineHeight": IMAGE_LAYOUT_LINE_HEIGHT,
@@ -587,7 +674,7 @@ def main() -> None:
         layout["compactLiveLayout"] = True
         layout["paginationPolicy"] = (
             "actual live-art row reservations, one prose-row figure clearance, "
-            "and guarded 240-row active image region"
+            f"and guarded {COMPACT_MAX_ACTIVE_IMAGE_BOTTOM}-row active image region"
         )
         layout["figureTopMarginTextRows"] = 1
         layout["maximumActiveImageBottom"] = COMPACT_MAX_ACTIVE_IMAGE_BOTTOM
@@ -643,6 +730,11 @@ if __name__ == "__main__":
         help="Vertical source-sampling factor measured from live Brickadia Braille cells",
     )
     parser.add_argument("--force-new-page-before", type=int, action="append", default=[])
+    parser.add_argument("--text-body-rows", type=int)
+    parser.add_argument("--text-line-height", type=float)
+    parser.add_argument("--text-width-scale", type=float)
+    parser.add_argument("--text-columns", type=int)
+    parser.add_argument("--max-active-image-bottom", type=int)
     parser.add_argument(
         "--compact-live-layout",
         action="store_true",
@@ -664,6 +756,26 @@ if __name__ == "__main__":
         TEXT_BODY_ROWS = COMPACT_TEXT_BODY_ROWS
         TEXT_LINE_HEIGHT = COMPACT_TEXT_LINE_HEIGHT
         TEXT_WIDTH_SCALE = COMPACT_TEXT_WIDTH_SCALE
+    if arguments.text_body_rows is not None:
+        if arguments.text_body_rows < 1:
+            parser.error("--text-body-rows must be positive")
+        TEXT_BODY_ROWS = arguments.text_body_rows
+    if arguments.text_line_height is not None:
+        if arguments.text_line_height <= 0:
+            parser.error("--text-line-height must be positive")
+        TEXT_LINE_HEIGHT = arguments.text_line_height
+    if arguments.text_width_scale is not None:
+        if arguments.text_width_scale <= 0:
+            parser.error("--text-width-scale must be positive")
+        TEXT_WIDTH_SCALE = arguments.text_width_scale
+    if arguments.text_columns is not None:
+        if arguments.text_columns < 1:
+            parser.error("--text-columns must be positive")
+        TEXT_COLUMNS = arguments.text_columns
+    if arguments.max_active_image_bottom is not None:
+        if arguments.max_active_image_bottom < 1:
+            parser.error("--max-active-image-bottom must be positive")
+        COMPACT_MAX_ACTIVE_IMAGE_BOTTOM = arguments.max_active_image_bottom
     REVISION_NAME = arguments.name
     REVISION_DESCRIPTION = arguments.description
     main()
