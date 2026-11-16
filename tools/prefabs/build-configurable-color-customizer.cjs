@@ -20,7 +20,11 @@ function build(input) {
   const scene = read(donor);
   const assets = structuredClone(scene.r.externalAssets());
 
-  const mainChipLink = one(scene.links, 'existing main microchip link');
+  const linkedGridIds = new Set(scene.links.map(link => link.grid));
+  const mainChipLink = one(scene.links.filter(link => {
+    const chip = scene.bricks.find(brick => brick.key === link.key);
+    return chip && !linkedGridIds.has(chip.g);
+  }), 'existing outer microchip link');
   const mainGrid = mainChipLink.grid;
   const seatBrick = one(scene.bricks.filter(brick => brick.comps.some(comp => comp.type === C.Seat.NAME)), 'seat');
   const screenBrick = one(scene.bricks.filter(brick => brick.comps.some(comp => comp.type === C.TextDisplay.NAME
@@ -29,9 +33,35 @@ function build(input) {
     && comp.data.Text === '■')), 'color preview square');
   const changerBrick = one(scene.bricks.filter(brick => brick.comps.some(comp => comp.type === C.BrickPropertyChanger.NAME)), 'preview property changer');
 
+  // Preserve user-editable controls when upgrading an already-configurable
+  // customizer. Rows whose meaning changed (Material and the master layout) are
+  // intentionally replaced below.
+  const existingControls = new Map();
+  for (const brick of scene.bricks.filter(candidate => candidate.g === mainGrid)) {
+    const label = brick.comps.find(comp => comp.type === C.Interact.NAME)?.data.PromptCustomLabel;
+    if (label) existingControls.set(label, brick);
+  }
+  function priorData(label, type) {
+    return existingControls.get(label)?.comps.find(comp => comp.type === type)?.data;
+  }
+
   // Replace only the prior generated logic. User-authored presentation geometry,
   // the seat, displays, preview brick, dynamic joint, and frame remain intact.
-  const removed = new Set(scene.bricks.filter(brick => brick.g === mainGrid).map(brick => brick.key));
+  // A v2 input already has a nested hidden chip, so recursively clear every
+  // logic grid below the outer chip and reuse its first hidden-grid entity.
+  const replacedGrids = new Set([mainGrid]);
+  for (let changed = true; changed;) {
+    changed = false;
+    for (const link of scene.links) {
+      const chip = scene.bricks.find(brick => brick.key === link.key);
+      if (chip && replacedGrids.has(chip.g) && !replacedGrids.has(link.grid)) {
+        replacedGrids.add(link.grid);
+        changed = true;
+      }
+    }
+  }
+  const priorInnerGrids = [...replacedGrids].filter(grid => grid !== mainGrid);
+  const removed = new Set(scene.bricks.filter(brick => replacedGrids.has(brick.g)).map(brick => brick.key));
   scene.bricks = scene.bricks.filter(brick => !removed.has(brick.key));
   scene.edges = scene.edges.filter(edge => !removed.has(edge.a) && !removed.has(edge.z));
   scene.links = scene.links.filter(link => !removed.has(link.key));
@@ -48,12 +78,14 @@ function build(input) {
     },
   }]]);
 
-  const innerGrid = Math.max(...[...scene.r.entities()].map(entity => entity.persistentIndex)) + 1;
+  const innerGrid = priorInnerGrids[0]
+    ?? Math.max(...[...scene.r.entities()].map(entity => entity.persistentIndex)) + 1;
   const palette = Object.fromEntries(Array.from({ length: 8 }, (_, index) => [
     `Color${index}`,
     { R: index === 0 ? 42 : 55, G: index === 0 ? 68 : 105, B: index === 0 ? 110 : 165, A: 255 },
   ]));
-  scene.extraEntities = [{
+  const innerEntity = [...scene.r.entities()].find(entity => entity.persistentIndex === innerGrid);
+  const innerEntityData = {
     typeName: 'Entity_MicrochipDynamicBrickGrid',
     className: 'BP_MicrochipBrickGridDynamicActor_C',
     persistentIndex: innerGrid,
@@ -70,11 +102,18 @@ function build(input) {
     data: {
       bCollapsed: true,
       bLegacyIOSlotOrder: true,
-      PlaneCenter: { X: 264, Y: 456, Z: 2 },
-      PlaneExtent: { X: 340, Y: 520, Z: 8 },
+      PlaneCenter: { X: 264, Y: 528, Z: 2 },
+      PlaneExtent: { X: 340, Y: 600, Z: 8 },
     },
-  }];
-  scene.extraGridIds = new Set([innerGrid]);
+  };
+  if (innerEntity) {
+    scene.entityOverrides.set(innerGrid, { ...innerEntity, ...innerEntityData, persistentIndex: innerGrid });
+    scene.extraEntities = [];
+    scene.extraGridIds = new Set();
+  } else {
+    scene.extraEntities = [innerEntityData];
+    scene.extraGridIds = new Set([innerGrid]);
+  }
 
   const nodes = [];
   let serial = 0;
@@ -209,11 +248,12 @@ function build(input) {
     'customizer-v2:nested-chip', mainGrid, C.Microchip.BRICK, [0, 0, 2], [35, 55, 90],
     [{ type: C.Microchip.NAME, data: {} }],
   );
-  annotate(nestedChipBrick, 'Hidden color logic', 'Contains movement, timing, HSB conversion, metal, intensity, and sound-execution logic. Normally leave this chip alone.');
+  annotate(nestedChipBrick, 'Hidden color logic', 'Contains movement, timing, hex validation, HSB conversion, material, intensity, and sound-execution logic. Normally leave this chip alone.');
   scene.links.push({ key: nestedChipBrick.key, grid: innerGrid });
 
   const outer = { grid: mainGrid };
-  outer.repeatInterval = node('Var', { Value: N(0.025) }, { grid: mainGrid, position: [-240, -192, 2], color: [70, 170, 95] });
+  const priorRepeat = priorData('Held-repeat interval', C.Var.NAME)?.Value ?? N(0.025);
+  outer.repeatInterval = node('Var', { Value: structuredClone(priorRepeat) }, { grid: mainGrid, position: [-240, -192, 2], color: [70, 170, 95] });
   annotate(outer.repeatInterval, 'Held-repeat interval', 'Seconds between adjustments after A or D has been held for 0.75 seconds. 0.025 = 40 adjustments per second. Lower is faster; higher is slower.');
   const soundSpecs = [
     ['Apply', 'OBA_CashRegister_Ding_2', 0.5],
@@ -231,10 +271,14 @@ function build(input) {
   }
   outer.sounds = soundSpecs.map(([label, name, volume], index) => ({
     label,
-    reference: annotate(node('OneShotAudioReference', { Asset: assetIndex(name) }, {
+    reference: annotate(node('OneShotAudioReference', {
+      Asset: priorData(`${label} sound`, C.OneShotAudioReference.NAME)?.Asset ?? assetIndex(name),
+    }, {
       grid: mainGrid, position: [-144 + index * 96, -192, 2], color: [145, 75, 175],
     }), `${label} sound`, `${label} interaction sound asset. Change this reference to replace the sound without editing the hidden chip.`),
-    volume: annotate(node('Var', { Value: N(volume) }, {
+    volume: annotate(node('Var', {
+      Value: structuredClone(priorData(`${label} sound volume`, C.Var.NAME)?.Value ?? N(volume)),
+    }, {
       grid: mainGrid, position: [-144 + index * 96, -264, 2], color: [95, 150, 185],
     }), `${label} sound volume`, `Volume multiplier for the ${label.toLowerCase()} interaction sound. 0 is silent; 1 is normal volume.`),
   }));
@@ -244,33 +288,42 @@ function build(input) {
       grid: mainGrid, position, color: [205, 120, 40],
     });
   }
+  function priorFormat(label, fallback) {
+    return priorData(label, C.Expr_String_FormatText.NAME)?.FormatString ?? fallback;
+  }
   outer.rows = [
-    outerFormat('{A}HUE           {B}°{C}', [-240, 144, 2]),
-    outerFormat('{A}SATURATION    {B}%{C}', [-144, 144, 2]),
-    outerFormat('{A}BRIGHTNESS    {B}%{C}', [-48, 144, 2]),
-    outerFormat('{A}METAL         {B}{C}', [48, 144, 2]),
-    outerFormat('{A}INTENSITY     {B}%{C}', [144, 144, 2]),
-    outerFormat('{A}APPLY{B}', [240, 144, 2]),
+    outerFormat(priorFormat('Hue row format', '{A}HUE           {B}°{C}'), [-240, 144, 2]),
+    outerFormat(priorFormat('Saturation row format', '{A}SATURATION    {B}%{C}'), [-144, 144, 2]),
+    outerFormat(priorFormat('Brightness row format', '{A}BRIGHTNESS    {B}%{C}'), [-48, 144, 2]),
+    outerFormat(priorFormat('Material row format', '{A}MATERIAL      {B}{C}'), [48, 144, 2]),
+    outerFormat(priorFormat('Intensity row format', '{A}INTENSITY     {B}%{C}'), [144, 144, 2]),
+    outerFormat(priorFormat('Apply row format', '{A}APPLY{B}'), [240, 144, 2]),
   ];
   const rowHelp = [
     ['Hue row format', 'Controls the Hue row text. A is the left selection marker, B is the hue value, and C is the right marker.'],
     ['Saturation row format', 'Controls the Saturation row text. A and C are selection markers; B is the percentage value.'],
     ['Brightness row format', 'Controls the Brightness row text. A and C are selection markers; B is the percentage value.'],
-    ['Metal row format', 'Controls the Metal row text. A and C are selection markers; B displays ON or OFF.'],
+    ['Material row format', 'Controls the Material row text. A and C are selection markers; B displays Plastic, Glass, Translucent Plastic, Glow, Metal, or Hologram.'],
     ['Intensity row format', 'Controls the Material Intensity row text. A and C are selection markers; B is 0–100 in ten-percent steps.'],
     ['Apply row format', 'Controls the Apply row text. A and B are the left and right selection markers.'],
   ];
   outer.rows.forEach((row, index) => annotate(row, rowHelp[index][0], rowHelp[index][1]));
+  outer.hex = outerFormat(priorFormat('Hex row format', 'CURRENT HEX    #{A}'), [336, 144, 2]);
+  annotate(outer.hex, 'Hex row format', 'Controls the current RGB hex display. Input A is the six-digit code without a leading #.');
+  const defaultMasterFormat = 'COLOR CUSTOMIZER\r\n{G}\r\n\r\n{A}\r\n{B}\r\n{C}\r\n{D}\r\n{E}\r\n{F}\r\n\r\nW/S SELECT   A/D TAP: 1 | HOLD: REPEAT\r\nC ENTER HEX   SPACE APPLY';
+  const priorMasterFormat = priorData('Complete menu format', C.Expr_String_FormatText.NAME)?.FormatString;
   outer.master = outerFormat(
-    'COLOR CUSTOMIZER\r\n\r\n{A}\r\n{B}\r\n{C}\r\n{D}\r\n{E}\r\n{F}\r\n\r\nW/S SELECT   A/D TAP: 1 | HOLD: REPEAT\r\nSPACE APPLY',
+    priorMasterFormat?.includes('{G}') && priorMasterFormat.includes('C ENTER HEX')
+      ? priorMasterFormat : defaultMasterFormat,
     [0, 240, 2],
   );
-  annotate(outer.master, 'Complete menu format', 'Controls the complete display layout and instructions. Inputs A through F are the six editable row-format outputs above.');
+  annotate(outer.master, 'Complete menu format', 'Controls the complete display layout and instructions. Inputs A through F are the six selectable rows; G is the current-hex row.');
   outer.rows.forEach((row, index) => wire(row, 'Output', outer.master, `Input${String.fromCharCode(65 + index)}`));
+  wire(outer.hex, 'Output', outer.master, 'InputG');
 
   outer.outputs = [
     node('MicrochipOutput', { PortLabel: 'Color', PortOrder: 1 }, { grid: mainGrid, position: [240, 48, 2], color: [55, 145, 215] }),
-    node('MicrochipOutput', { PortLabel: 'Metal Material Toggle', PortOrder: 2, CallableDefault: B(true), CallableResult: B(true) }, {
+    node('MicrochipOutput', { PortLabel: 'Material', PortOrder: 2, CallableDefault: N(0), CallableResult: N(0) }, {
       grid: mainGrid, position: [240, 0, 2], color: [55, 145, 215],
     }),
     node('MicrochipOutput', { PortLabel: 'Material Intensity', PortOrder: 3, CallableDefault: N(255), CallableResult: N(255) }, {
@@ -301,7 +354,7 @@ function build(input) {
 
   const innerOutputs = [
     node('MicrochipOutput', { PortLabel: 'Color', PortOrder: 1 }, { color: [55, 145, 215] }),
-    node('MicrochipOutput', { PortLabel: 'Metal Material Toggle', PortOrder: 2, CallableDefault: B(true), CallableResult: B(true) }, { color: [55, 145, 215] }),
+    node('MicrochipOutput', { PortLabel: 'Material', PortOrder: 2, CallableDefault: N(0), CallableResult: N(0) }, { color: [55, 145, 215] }),
     node('MicrochipOutput', { PortLabel: 'Material Intensity', PortOrder: 3, CallableDefault: N(255), CallableResult: N(255) }, { color: [55, 145, 215] }),
   ];
 
@@ -314,7 +367,7 @@ function build(input) {
   const hue = node('Var', { Value: N(0) });
   const saturation = node('Var', { Value: N(100) });
   const brightness = node('Var', { Value: N(100) });
-  const metal = node('Var', { Value: B(true) });
+  const material = node('Var', { Value: N(0) });
   const intensityLevel = node('Var', { Value: N(10) });
 
   const up = edge(splitter, 'InputForward', 'Greater', 0.5);
@@ -322,6 +375,8 @@ function build(input) {
   const left = edge(splitter, 'InputRight', 'Less', -0.5);
   const right = edge(splitter, 'InputRight', 'Greater', 0.5);
   const space = edge(splitter, 'InputUp', 'Greater', 0.5);
+  const enterHex = node('Expr_EdgeDetectorExec', { Input: B(false), InputLast: B(false), bSeeded: true });
+  wire(splitter, 'bPressedC', enterHex, 'Input');
 
   const previousRaw = math('Add', selection, 'Value', 5);
   const previous = node('Expr_MathModuloFloored', { InputB: N(6) });
@@ -382,15 +437,13 @@ function build(input) {
     (movementPort === 'OnRisingEdge' ? tapAdjustments : repeatAdjustments).push(...outputs);
   }
 
-  // Metal is a discrete toggle and intentionally does not auto-repeat.
-  const invertedMetal = node('Expr_LogicalNOT', { bInput: false });
-  wire(metal, 'Value', invertedMetal, 'bInput');
-  for (const movement of [left, right]) {
+  // Material is a discrete six-value selector and intentionally does not repeat.
+  for (const [movement, amount] of [[left, 5], [right, 1]]) {
     const routed = branch(selected[3], movement);
-    const setter = node('Exec_Var_Set', { Value: B(false), bChangeType: false });
-    wire(metal, 'VarRef', setter, 'VarRef');
-    wire(invertedMetal, 'bOutput', setter, 'Value');
-    wire(routed, 'ExecOutA', setter, 'Exec');
+    const changed = math('Add', material, 'Value', amount);
+    const wrapped = node('Expr_MathModuloFloored', { InputB: N(6) });
+    wire(changed, 'Output', wrapped, 'InputA');
+    const setter = setValue(material, wrapped, 'Output', routed, 'ExecOutA');
     tapAdjustments.push(setter);
   }
 
@@ -442,7 +495,101 @@ function build(input) {
   const makeColor = node('Expr_MakeColorSRGB', { A: 255 });
   ['R', 'G', 'B'].forEach((channel, index) => wire(channels[index], 'Output', makeColor, channel));
   wire(makeColor, 'Output', innerOutputs[0], 'RER_Input');
-  wire(metal, 'Value', innerOutputs[1], 'RER_Input');
+  wire(material, 'Value', innerOutputs[1], 'RER_Input');
+
+  // C opens a player-local six-digit RGB entry box. Re-resolve the current
+  // sitter on confirmation so a stale dialog cannot change the shared station
+  // after its player has left the seat.
+  const openPlayer = node('Exec_PlayerState_GetFromEntity');
+  wire(characterInput, 'RER_Output', openPlayer, 'Entity');
+  wire(enterHex, 'OnRisingEdge', openPlayer, 'Exec');
+  const textInput = node('Exec_PlayerState_ShowTextInputBox', {
+    Text: '',
+    Title: 'ENTER HEX COLOR',
+    Message: 'Enter exactly 6 RGB digits (RRGGBB or #RRGGBB).',
+  });
+  wire(openPlayer, 'PlayerState', textInput, 'PlayerState');
+  wire(openPlayer, 'ExecOut', textInput, 'Exec');
+
+  const currentPlayer = node('Exec_PlayerState_GetFromEntity');
+  wire(characterInput, 'RER_Output', currentPlayer, 'Entity');
+  wire(textInput, 'OkClicked', currentPlayer, 'Exec');
+  const samePlayer = node('Expr_CompareEqual');
+  wire(currentPlayer, 'PlayerState', samePlayer, 'InputA');
+  wire(textInput, 'ClickedBy', samePlayer, 'InputB');
+  const authorized = node('Exec_Branch', { bCond: false });
+  wire(samePlayer, 'bOutput', authorized, 'bCond');
+  wire(currentPlayer, 'ExecOut', authorized, 'Exec');
+
+  const trimmedHex = node('Expr_String_Trim', { Input: '' });
+  wire(textInput, 'Text', trimmedHex, 'Input');
+  const upperHex = node('Expr_String_ToUpper', { Input: '' });
+  wire(trimmedHex, 'Output', upperHex, 'Input');
+  const hasHash = node('Expr_String_StartsWith', { Input: '', Prefix: '#', bCaseSensitive: true });
+  wire(upperHex, 'Output', hasHash, 'Input');
+  const withoutHash = node('Expr_String_Substring', { Input: '', Start: 1, Length: 1024 });
+  wire(upperHex, 'Output', withoutHash, 'Input');
+  const normalizedHex = node('Expr_Select', { InputA: S(''), InputB: S(''), bSelectB: false });
+  wire(upperHex, 'Output', normalizedHex, 'InputA');
+  wire(withoutHash, 'Output', normalizedHex, 'InputB');
+  wire(hasHash, 'Output', normalizedHex, 'bSelectB');
+
+  const hexLength = node('Expr_String_Length', { Input: '' });
+  wire(normalizedHex, 'Output', hexLength, 'Input');
+  const validLength = node('Expr_CompareEqual', { InputB: N(6) });
+  wire(hexLength, 'Output', validLength, 'InputA');
+  let validHex = [validLength, 'bOutput'];
+  for (let index = 0; index < 6; index++) {
+    const character = node('Expr_String_Substring', { Input: '', Start: index, Length: 1 });
+    wire(normalizedHex, 'Output', character, 'Input');
+    const allowed = node('Expr_String_Contains', {
+      Input: '0123456789ABCDEF', Search: '', bCaseSensitive: true,
+    });
+    wire(character, 'Output', allowed, 'Search');
+    const both = node('Expr_LogicalAND', { bInputA: false, bInputB: false });
+    wire(validHex[0], validHex[1], both, 'bInputA');
+    wire(allowed, 'Output', both, 'bInputB');
+    validHex = [both, 'bOutput'];
+  }
+  const acceptHex = node('Exec_Branch', { bCond: false });
+  wire(validHex[0], validHex[1], acceptHex, 'bCond');
+  wire(authorized, 'ExecOutA', acceptHex, 'Exec');
+
+  const parsedHex = node('Expr_MakeColorHex', { Hex: '' });
+  wire(normalizedHex, 'Output', parsedHex, 'Hex');
+  const toHsv = node('Expr_ColorConvert', { FromSpace: 0, ToSpace: 3 });
+  wire(parsedHex, 'Output', toHsv, 'Input');
+  const splitHsv = node('Expr_SplitColor');
+  wire(toHsv, 'Output', splitHsv, 'Input');
+  const parsedSaturation = math('Multiply', splitHsv, 'G', 100);
+  const parsedBrightness = math('Multiply', splitHsv, 'B', 100);
+  setValue(hue, splitHsv, 'R', acceptHex, 'ExecOutA');
+  setValue(saturation, parsedSaturation, 'Output', acceptHex, 'ExecOutA');
+  setValue(brightness, parsedBrightness, 'Output', acceptHex, 'ExecOutA');
+
+  const invalidHex = node('Exec_PlayerState_ShowStatusMessage', {
+    Message: 'Invalid hex. Enter exactly 6 digits using 0-9 and A-F.',
+  });
+  wire(textInput, 'ClickedBy', invalidHex, 'PlayerState');
+  wire(acceptHex, 'ExecOutB', invalidHex, 'Exec');
+
+  // Always show the canonical current RGB value. ColorToHex may include a
+  // leading # and/or alpha, so normalize it to the first six RGB digits.
+  const colorHex = node('Expr_ColorToHex');
+  wire(makeColor, 'Output', colorHex, 'Input');
+  const colorHexUpper = node('Expr_String_ToUpper', { Input: '' });
+  wire(colorHex, 'Hex', colorHexUpper, 'Input');
+  const colorHasHash = node('Expr_String_StartsWith', { Input: '', Prefix: '#', bCaseSensitive: true });
+  wire(colorHexUpper, 'Output', colorHasHash, 'Input');
+  const colorWithoutHash = node('Expr_String_Substring', { Input: '', Start: 1, Length: 1024 });
+  wire(colorHexUpper, 'Output', colorWithoutHash, 'Input');
+  const normalizedColorHex = node('Expr_Select', { InputA: S(''), InputB: S(''), bSelectB: false });
+  wire(colorHexUpper, 'Output', normalizedColorHex, 'InputA');
+  wire(colorWithoutHash, 'Output', normalizedColorHex, 'InputB');
+  wire(colorHasHash, 'Output', normalizedColorHex, 'bSelectB');
+  const rgbHex = node('Expr_String_Substring', { Input: '', Start: 0, Length: 6 });
+  wire(normalizedColorHex, 'Output', rgbHex, 'Input');
+  wire(rgbHex, 'Output', outer.hex, 'InputA');
 
   // MaterialAlpha is a u8. Exact 10% checkpoints use round(level * 25.5):
   // 0, 26, 51, 77, 102, 128, 153, 179, 204, 230, 255.
@@ -451,17 +598,29 @@ function build(input) {
   wire(alphaScaled, 'Output', materialAlpha, 'Input');
   wire(materialAlpha, 'Output', innerOutputs[2], 'RER_Input');
   const intensityPercent = math('Multiply', intensityLevel, 'Value', 10);
-  const materialSelect = node('Expr_Select', { InputA: N(0), InputB: N(4), bSelectB: false });
-  wire(metal, 'Value', materialSelect, 'bSelectB');
-
   // Editable row formatters receive state from the hidden chip.
   const leftMarkers = selected.map(compare => select(compare, '  ', '> '));
   const rightMarkers = selected.map(compare => select(compare, '', ' <'));
-  const metalText = node('Expr_Select', { InputA: S('OFF'), InputB: S('ON'), bSelectB: false });
-  wire(metal, 'Value', metalText, 'bSelectB');
+  const materialMatches = Array.from({ length: 6 }, (_, index) => {
+    const compare = node('Expr_CompareEqual', { InputB: N(index) });
+    wire(material, 'Value', compare, 'InputA');
+    return compare;
+  });
+  const materialNames = ['PLASTIC', 'GLASS', 'TRANSLUCENT PLASTIC', 'GLOW', 'METAL', 'HOLOGRAM'];
+  let materialNameGate = select(materialMatches[1], materialNames[0], materialNames[1]);
+  for (let index = 2; index < materialNames.length; index++) {
+    materialNameGate = select(materialMatches[index], [materialNameGate, 'Output'], materialNames[index]);
+  }
+  const materialText = [materialNameGate, 'Output'];
+  const roundedHue = node('Expr_Round', { Input: N(0) });
+  const roundedSaturation = node('Expr_Round', { Input: N(0) });
+  const roundedBrightness = node('Expr_Round', { Input: N(0) });
+  wire(hue, 'Value', roundedHue, 'Input');
+  wire(saturation, 'Value', roundedSaturation, 'Input');
+  wire(brightness, 'Value', roundedBrightness, 'Input');
   const rowValues = [
-    [hue, 'Value'], [saturation, 'Value'], [brightness, 'Value'],
-    [metalText, 'Output'], [intensityPercent, 'Output'], null,
+    [roundedHue, 'Output'], [roundedSaturation, 'Output'], [roundedBrightness, 'Output'],
+    materialText, [intensityPercent, 'Output'], null,
   ];
   outer.rows.forEach((row, index) => {
     wire(leftMarkers[index], 'Output', row, 'InputA');
@@ -473,8 +632,8 @@ function build(input) {
   wire(outer.master, 'Output', screen, 'Text');
   const screenData = screenBrick.comps.find(comp => comp.type === C.TextDisplay.NAME).data;
   Object.assign(screenData, {
-    Text: 'COLOR CUSTOMIZER\r\n\r\n> HUE           0° <\r\n  SATURATION    100%\r\n  BRIGHTNESS    100%\r\n  METAL         ON\r\n  INTENSITY     100%\r\n  APPLY\r\n\r\nW/S SELECT   A/D TAP: 1 | HOLD: REPEAT\r\nSPACE APPLY',
-    LineHeight: 0.95,
+    Text: 'COLOR CUSTOMIZER\r\nCURRENT HEX    #FF0000\r\n\r\n> HUE           0° <\r\n  SATURATION    100%\r\n  BRIGHTNESS    100%\r\n  MATERIAL      PLASTIC\r\n  INTENSITY     100%\r\n  APPLY\r\n\r\nW/S SELECT   A/D TAP: 1 | HOLD: REPEAT\r\nC ENTER HEX   SPACE APPLY',
+    LineHeight: 0.88,
     WidthScale: 0.75,
   });
 
@@ -482,14 +641,20 @@ function build(input) {
   wire(innerOutputs[0], 'RER_Output', outer.outputs[0], 'RER_Input');
   wire(innerOutputs[1], 'RER_Output', outer.outputs[1], 'RER_Input');
   wire(innerOutputs[2], 'RER_Output', outer.outputs[2], 'RER_Input');
-  const square = ref(squareBrick, C.TextDisplay.NAME);
   const changer = ref(changerBrick, C.BrickPropertyChanger.NAME);
-  wire(innerOutputs[0], 'RER_Output', square, 'Color');
   wire(innerOutputs[0], 'RER_Output', changer, 'Color');
-  wire(materialSelect, 'Output', square, 'Material');
-  wire(materialSelect, 'Output', changer, 'Material');
-  wire(intensityLevel, 'Value', square, 'MaterialSlider');
+  wire(innerOutputs[1], 'RER_Output', changer, 'Material');
   wire(innerOutputs[2], 'RER_Output', changer, 'MaterialAlpha');
+
+  // Preserve the public terminal's occupied-seat indicator: red while free,
+  // green while somebody is using the station. It is not the material preview.
+  const occupancyColor = node('Expr_Select', {
+    InputA: { $variant: 'LinearColor', value: { R: 1, G: 0, B: 0, A: 1 } },
+    InputB: { $variant: 'LinearColor', value: { R: 0, G: 1, B: 0, A: 1 } },
+    bSelectB: false,
+  }, { grid: mainGrid, position: [336, 48, 2], color: [55, 145, 215] });
+  wire(seat, 'bIsOccupied', occupancyColor, 'bSelectB');
+  wire(occupancyColor, 'Output', ref(squareBrick, C.TextDisplay.NAME), 'Color');
 
   // Hidden audio execution; sound asset and volume controls stay editable.
   const apply = branch(selected[5], space);
@@ -517,8 +682,8 @@ function build(input) {
   addSound(2, tapAdjustments.map(gate => [gate, 'ExecOut']), 1.08);
   addSound(3, repeatAdjustments.map(gate => [gate, 'ExecOut']), 1.45);
 
-  const name = 'Configurable HSB Color Customizer';
-  const description = 'Nested-chip color customizer. Outer chip exposes editable format strings, repeat interval, sound references/volumes, and Color, Metal Toggle, and Material Intensity outputs. Hidden chip contains interaction and conversion logic.';
+  const name = 'Public Hex + HSB Color Customizer';
+  const description = 'Standalone public-use color station. Seat controls HSB, C opens validated six-digit RGB hex entry, and A/D selects every Brickadia material. Outer chip exposes editable text/sounds and Color, Material, and Material Intensity outputs.';
   const generated = write(scene, { assets, name, description }).bytes;
   const bytes = repack(generated, donor, { name, description });
   const placement = validate(bytes);
