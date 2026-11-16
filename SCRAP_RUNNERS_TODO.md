@@ -191,16 +191,20 @@ Status: `Backlog`
 - Accept a job, collect cargo, deliver it, pay once, and clean up all state.
 - Test cancellation, vehicle loss, disconnect, wrong cargo, and simultaneous players.
 
-Planned Lua load/route model:
+Load-planning checklist (implementation deliberately undecided):
 
-- Keep route definitions small: stable Route ID, Pickup Location ID, Destination Location ID, and Cargo Type ID.
-- Keep cargo balancing in the cargo catalogue: visible name, pay per stud, required vehicle class, cargo prefab/type, and an optional minimum/base payment.
-- Pickup and destination objects register their stable location IDs and world positions. Route definitions do not contain XYZ coordinates.
-- Calculate horizontal distance from the registered pickup and destination positions, then convert coordinate units to studs using `10 units = 1 stud`.
-- A generated load snapshots: unique Load ID/generation, route, cargo type, required vehicle class, pickup, destination, pay per stud, stud distance, and total payment.
-- Runtime assignment state separately tracks the assigned player and vehicle, status (`Available`, `Accepted`, `PickedUp`, `Delivered`, `Cancelled`), and the issued cargo instance/generation used to reject copies and duplicate payouts.
-- Proposed base formula: `Total Pay = max(Minimum Pay, Base Pay + Stud Distance × Pay Per Stud)`. Cargo quantity/weight can become another multiplier later if loads stop being fixed-size cargo objects.
-- Snapshot the displayed payout before acceptance so moving a station or editing a catalogue cannot change an already offered or accepted contract.
+- Cargo type.
+- Required vehicle class.
+- Pickup location.
+- Destination.
+- Pay per stud travelled.
+- Stud distance, calculated automatically from the pickup and destination rather than entered on every load.
+- Total payout shown to the player.
+- Decide whether every cargo object represents one fixed load or whether loads also need an amount, size, or weight.
+- Decide whether short trips need a base/minimum payment in addition to distance pay.
+- Track whether a load is available, taken, collected, delivered, cancelled, or failed.
+- Give each offered/accepted load a unique identity so the game cannot confuse simultaneous loads or pay one twice.
+- Optional later concepts: time limit, urgency bonus, fragile/hazardous requirements, route rarity, and reputation requirements. None are required for the first route.
 
 ## Milestone 3 — Truck-stop loadboard monitor
 
