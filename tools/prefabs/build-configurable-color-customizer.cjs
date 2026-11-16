@@ -3,6 +3,7 @@
 const fs = require('fs');
 const assert = require('assert/strict');
 const crypto = require('crypto');
+const { brdb } = require('brs-js');
 const { read, write } = require('./reskin-loadboard.cjs');
 const repack = require('./repack-with-donor-metadata.cjs');
 const validate = require('./validate-placement.cjs');
@@ -19,6 +20,13 @@ function build(input) {
   const donor = fs.readFileSync(input);
   const scene = read(donor);
   const assets = structuredClone(scene.r.externalAssets());
+  const owners = scene.r.owners();
+  const ownerIndex = owners.UserNames.findIndex(name => name !== 'PUBLIC');
+  const owner = ownerIndex < 0 ? undefined : {
+    id: brdb.guidToUuid(owners.UserIds[ownerIndex]),
+    name: owners.UserNames[ownerIndex],
+    display_name: owners.DisplayNames[ownerIndex],
+  };
 
   const linkedGridIds = new Set(scene.links.map(link => link.grid));
   const mainChipLink = one(scene.links.filter(link => {
@@ -28,7 +36,7 @@ function build(input) {
   const mainGrid = mainChipLink.grid;
   const seatBrick = one(scene.bricks.filter(brick => brick.comps.some(comp => comp.type === C.Seat.NAME)), 'seat');
   const screenBrick = one(scene.bricks.filter(brick => brick.comps.some(comp => comp.type === C.TextDisplay.NAME
-    && /COLOR CUSTOMIZER/.test(comp.data.Text))), 'customizer screen');
+    && /COLOR[ _]CUSTOMIZER/i.test(comp.data.Text))), 'customizer screen');
   const squareBrick = one(scene.bricks.filter(brick => brick.comps.some(comp => comp.type === C.TextDisplay.NAME
     && comp.data.Text === '■')), 'color preview square');
   const changerBrick = one(scene.bricks.filter(brick => brick.comps.some(comp => comp.type === C.BrickPropertyChanger.NAME)), 'preview property changer');
@@ -102,8 +110,8 @@ function build(input) {
     data: {
       bCollapsed: true,
       bLegacyIOSlotOrder: true,
-      PlaneCenter: { X: 264, Y: 528, Z: 2 },
-      PlaneExtent: { X: 340, Y: 600, Z: 8 },
+      PlaneCenter: { X: 264, Y: 1152, Z: 2 },
+      PlaneExtent: { X: 340, Y: 1248, Z: 8 },
     },
   };
   if (innerEntity) {
@@ -234,6 +242,17 @@ function build(input) {
     }
     return current;
   }
+  function logicalAnd(signals) {
+    assert(signals.length, 'Logical AND needs at least one signal');
+    let current = signals[0];
+    for (const signal of signals.slice(1)) {
+      const both = node('Expr_LogicalAND', { bInputA: false, bInputB: false });
+      wire(current[0], current[1], both, 'bInputA');
+      wire(signal[0], signal[1], both, 'bInputB');
+      current = [both, 'bOutput'];
+    }
+    return current;
+  }
   function edge(splitter, port, comparison, threshold) {
     const compare = node(`Expr_Compare${comparison}`, { InputB: N(threshold) });
     wire(splitter, port, compare, 'InputA');
@@ -290,32 +309,58 @@ function build(input) {
   function priorFormat(label, fallback) {
     return priorData(label, C.Expr_String_FormatText.NAME)?.FormatString ?? fallback;
   }
+  function groupedPriorFormat(label, fallback, group, word, spacing) {
+    const format = priorFormat(label, fallback);
+    if (format.includes(`${group} ${word}`)) return format;
+    return format.replace(new RegExp(`${word}\\s*`), `${group} ${word}${spacing}`);
+  }
+  function alignedPriorFormat(label, fallback, word, spacing) {
+    return priorFormat(label, fallback)
+      .replace(new RegExp(`${word}\\s*(?=\\{B\\})`), `${word}${spacing}`);
+  }
+  const rowPositions = [-336, -240, -144, -48, 48, 144, 240, 336].map(x => [x, 144, 2]);
   outer.rows = [
-    outerFormat(priorFormat('Hue row format', '{A}HUE           {B}°{C}'), [-240, 144, 2]),
-    outerFormat(priorFormat('Saturation row format', '{A}SATURATION    {B}%{C}'), [-144, 144, 2]),
-    outerFormat(priorFormat('Brightness row format', '{A}BRIGHTNESS    {B}%{C}'), [-48, 144, 2]),
-    outerFormat(priorFormat('Material row format', '{A}MATERIAL      {B}{C}'), [48, 144, 2]),
-    outerFormat(priorFormat('Intensity row format', '{A}INTENSITY     {B}%{C}'), [144, 144, 2]),
+    outerFormat(priorFormat('Red row format', '{A}RGB RED        {B}{C}'), rowPositions[0]),
+    outerFormat(priorFormat('Green row format', '{A}RGB GREEN      {B}{C}'), rowPositions[1]),
+    outerFormat(priorFormat('Blue row format', '{A}RGB BLUE       {B}{C}'), rowPositions[2]),
+    outerFormat(groupedPriorFormat('Hue row format', '{A}HSV HUE        {B}°{C}', 'HSV', 'HUE', '        '), rowPositions[3]),
+    outerFormat(groupedPriorFormat('Saturation row format', '{A}HSV SATURATION {B}%{C}', 'HSV', 'SATURATION', ' '), rowPositions[4]),
+    outerFormat(priorFormat('Value row format', '{A}HSV VALUE      {B}%{C}'), rowPositions[5]),
+    outerFormat(alignedPriorFormat('Material row format', '{A}MATERIAL       {B}{C}', 'MATERIAL', '       '), rowPositions[6]),
+    outerFormat(alignedPriorFormat('Intensity row format', '{A}INTENSITY      {B}%{C}', 'INTENSITY', '      '), rowPositions[7]),
   ];
   const rowHelp = [
+    ['Red row format', 'Controls the RGB Red row text. A and C are selection markers; B is the 0–255 channel value.'],
+    ['Green row format', 'Controls the RGB Green row text. A and C are selection markers; B is the 0–255 channel value.'],
+    ['Blue row format', 'Controls the RGB Blue row text. A and C are selection markers; B is the 0–255 channel value.'],
     ['Hue row format', 'Controls the Hue row text. A is the left selection marker, B is the hue value, and C is the right marker.'],
     ['Saturation row format', 'Controls the Saturation row text. A and C are selection markers; B is the percentage value.'],
-    ['Brightness row format', 'Controls the Brightness row text. A and C are selection markers; B is the percentage value.'],
+    ['Value row format', 'Controls the HSV Value row text. A and C are selection markers; B is the percentage value.'],
     ['Material row format', 'Controls the Material row text. A and C are selection markers; B displays Plastic, Glass, Translucent Plastic, Glow, Metal, or Hologram.'],
     ['Intensity row format', 'Controls the Material Intensity row text. A and C are selection markers; B is 0–100 in ten-percent steps.'],
   ];
   outer.rows.forEach((row, index) => annotate(row, rowHelp[index][0], rowHelp[index][1]));
-  outer.hex = outerFormat(priorFormat('Hex row format', 'CURRENT HEX    #{A}'), [336, 144, 2]);
+  outer.hex = outerFormat(priorFormat('Hex row format', 'CURRENT HEX    #{A}'), [-336, 72, 2]);
   annotate(outer.hex, 'Hex row format', 'Controls the current RGB hex display. Input A is the six-digit code without a leading #.');
-  const defaultMasterFormat = 'COLOR CUSTOMIZER\r\n{G}\r\n\r\n{A}\r\n{B}\r\n{C}\r\n{D}\r\n{E}\r\n\r\nW/S SELECT   A/D TAP: 1 | HOLD: REPEAT\r\nC ENTER HEX';
   const priorMasterFormat = priorData('Complete menu format', C.Expr_String_FormatText.NAME)?.FormatString;
+  const priorG = priorMasterFormat?.indexOf('{G}') ?? -1;
+  const preservedHeader = priorG >= 0
+    ? priorMasterFormat.slice(0, priorG).replace(/[\r\n]+$/, '')
+    : 'COLOR CUSTOMIZER';
+  const defaultMasterFormat = `${preservedHeader}\r\n\r\n{G}\r\n\r\n{A}\r\n\r\nW/S SELECT   A/D TAP: 1 | HOLD: REPEAT\r\nC HEX   Q RGB   E HSV`;
   outer.master = outerFormat(
-    priorMasterFormat?.includes('{G}') && priorMasterFormat.includes('C ENTER HEX') && !priorMasterFormat.includes('APPLY')
-      ? priorMasterFormat : defaultMasterFormat,
+    defaultMasterFormat,
     [0, 240, 2],
   );
-  annotate(outer.master, 'Complete menu format', 'Controls the complete display layout and instructions. Inputs A through E are the five live-control rows; G is the current-hex row.');
-  outer.rows.forEach((row, index) => wire(row, 'Output', outer.master, `Input${String.fromCharCode(65 + index)}`));
+  annotate(outer.master, 'Complete menu format', 'Controls the complete display layout and instructions. Input A is the combined eight-row control list; G is the current-hex row.');
+  let combinedRows = [outer.rows[0], 'Output'];
+  for (const row of outer.rows.slice(1)) {
+    const joined = node('Expr_String_Concatenate', { Separator: '\r\n' });
+    wire(combinedRows[0], combinedRows[1], joined, 'InputA');
+    wire(row, 'Output', joined, 'InputB');
+    combinedRows = [joined, 'Output'];
+  }
+  wire(combinedRows[0], combinedRows[1], outer.master, 'InputA');
   wire(outer.hex, 'Output', outer.master, 'InputG');
 
   outer.outputs = [
@@ -365,7 +410,7 @@ function build(input) {
   const saturation = node('Var', { Value: N(100) });
   const brightness = node('Var', { Value: N(100) });
   const material = node('Var', { Value: N(0) });
-  const intensityLevel = node('Var', { Value: N(10) });
+  const intensityLevel = node('Var', { Value: N(5) });
 
   const up = edge(splitter, 'InputForward', 'Greater', 0.5);
   const down = edge(splitter, 'InputForward', 'Less', -0.5);
@@ -373,17 +418,21 @@ function build(input) {
   const right = edge(splitter, 'InputRight', 'Greater', 0.5);
   const enterHex = node('Expr_EdgeDetectorExec', { Input: B(false), InputLast: B(false), bSeeded: true });
   wire(splitter, 'bPressedC', enterHex, 'Input');
+  const enterRgb = node('Expr_EdgeDetectorExec', { Input: B(false), InputLast: B(false), bSeeded: true });
+  wire(splitter, 'bPressedQ', enterRgb, 'Input');
+  const enterHsv = node('Expr_EdgeDetectorExec', { Input: B(false), InputLast: B(false), bSeeded: true });
+  wire(splitter, 'bPressedE', enterHsv, 'Input');
 
-  const previousRaw = math('Add', selection, 'Value', 4);
-  const previous = node('Expr_MathModuloFloored', { InputB: N(5) });
+  const previousRaw = math('Add', selection, 'Value', 7);
+  const previous = node('Expr_MathModuloFloored', { InputB: N(8) });
   wire(previousRaw, 'Output', previous, 'InputA');
   setValue(selection, previous, 'Output', up, 'OnRisingEdge');
   const nextRaw = math('Add', selection, 'Value', 1);
-  const next = node('Expr_MathModuloFloored', { InputB: N(5) });
+  const next = node('Expr_MathModuloFloored', { InputB: N(8) });
   wire(nextRaw, 'Output', next, 'InputA');
   setValue(selection, next, 'Output', down, 'OnRisingEdge');
 
-  const selected = Array.from({ length: 5 }, (_, index) => {
+  const selected = Array.from({ length: 8 }, (_, index) => {
     const compare = node('Expr_CompareEqual', { InputB: N(index) });
     wire(selection, 'Value', compare, 'InputA');
     return compare;
@@ -420,22 +469,23 @@ function build(input) {
   const rightRepeat = repeatAfterHold(right);
   const tapAdjustments = [];
   const repeatAdjustments = [];
-  for (const [movement, movementPort, direction] of [
+  const movementSpecs = [
     [left, 'OnRisingEdge', 'left'], [right, 'OnRisingEdge', 'right'],
     [leftRepeat, 'ExecOutA', 'left'], [rightRepeat, 'ExecOutA', 'right'],
-  ]) {
+  ];
+  for (const [movement, movementPort, direction] of movementSpecs) {
     const outputs = [
-      adjust(hue, 0, movement, movementPort, direction, 1, 360),
-      adjust(saturation, 1, movement, movementPort, direction, 1, 0),
-      adjust(brightness, 2, movement, movementPort, direction, 1, 0),
-      adjust(intensityLevel, 4, movement, movementPort, direction, 1, 0, 10),
+      adjust(hue, 3, movement, movementPort, direction, 1, 360),
+      adjust(saturation, 4, movement, movementPort, direction, 1, 0),
+      adjust(brightness, 5, movement, movementPort, direction, 1, 0),
+      adjust(intensityLevel, 7, movement, movementPort, direction, 1, 0, 10),
     ];
     (movementPort === 'OnRisingEdge' ? tapAdjustments : repeatAdjustments).push(...outputs);
   }
 
   // Material is a discrete six-value selector and intentionally does not repeat.
   for (const [movement, amount] of [[left, 5], [right, 1]]) {
-    const routed = branch(selected[3], movement);
+    const routed = branch(selected[6], movement);
     const changed = math('Add', material, 'Value', amount);
     const wrapped = node('Expr_MathModuloFloored', { InputB: N(6) });
     wire(changed, 'Output', wrapped, 'InputA');
@@ -492,6 +542,47 @@ function build(input) {
   ['R', 'G', 'B'].forEach((channel, index) => wire(channels[index], 'Output', makeColor, channel));
   wire(makeColor, 'Output', innerOutputs[0], 'RER_Input');
   wire(material, 'Value', innerOutputs[1], 'RER_Input');
+
+  // RGB controls edit the rendered sRGB byte channels, then immediately
+  // convert the result back into the canonical HSV variables. Snapshot the
+  // full converted HSV triplet before changing any canonical variable so the
+  // later setters cannot observe a partially-updated color.
+  const splitRgb = node('Expr_SplitColorSRGB');
+  wire(makeColor, 'Output', splitRgb, 'Input');
+  const rgbSnapshot = [
+    node('Var', { Value: N(0) }),
+    node('Var', { Value: N(100) }),
+    node('Var', { Value: N(100) }),
+  ];
+  function adjustRgbChannel(channelIndex, selectedIndex, movement, movementPort, direction) {
+    const routed = branch(selected[selectedIndex], movement, movementPort);
+    const ports = ['R', 'G', 'B'];
+    const changed = math('Add', splitRgb, ports[channelIndex], direction === 'right' ? 1 : -1);
+    const clamped = node('Expr_MathClamp', { Input: N(0), Min: N(0), Max: N(255) });
+    wire(changed, 'Output', clamped, 'Input');
+    const edited = node('Expr_MakeColorSRGB', { A: 255 });
+    ports.forEach((port, index) => wire(index === channelIndex ? clamped : splitRgb,
+      index === channelIndex ? 'Output' : port, edited, port));
+    const converted = node('Expr_ColorConvert', { FromSpace: 0, ToSpace: 3 });
+    wire(edited, 'Output', converted, 'Input');
+    const hsv = node('Expr_SplitColor');
+    wire(converted, 'Output', hsv, 'Input');
+    const convertedS = math('Multiply', hsv, 'G', 100);
+    const convertedV = math('Multiply', hsv, 'B', 100);
+
+    const saveH = setValue(rgbSnapshot[0], hsv, 'R', routed, 'ExecOutA');
+    const saveS = setValue(rgbSnapshot[1], convertedS, 'Output', saveH, 'ExecOut');
+    const saveV = setValue(rgbSnapshot[2], convertedV, 'Output', saveS, 'ExecOut');
+    const applyH = setValue(hue, rgbSnapshot[0], 'Value', saveV, 'ExecOut');
+    const applyS = setValue(saturation, rgbSnapshot[1], 'Value', applyH, 'ExecOut');
+    return setValue(brightness, rgbSnapshot[2], 'Value', applyS, 'ExecOut');
+  }
+  for (const [movement, movementPort, direction] of movementSpecs) {
+    const outputs = [0, 1, 2].map(channel => adjustRgbChannel(
+      channel, channel, movement, movementPort, direction,
+    ));
+    (movementPort === 'OnRisingEdge' ? tapAdjustments : repeatAdjustments).push(...outputs);
+  }
 
   // C opens a player-local six-digit RGB entry box. Re-resolve the current
   // sitter on confirmation so a stale dialog cannot change the shared station
@@ -569,6 +660,126 @@ function build(input) {
   wire(textInput, 'ClickedBy', invalidHex, 'PlayerState');
   wire(acceptHex, 'ExecOutB', invalidHex, 'Exec');
 
+  function authorizedTextDialog(trigger, title, message) {
+    const lookup = node('Exec_PlayerState_GetFromEntity');
+    wire(characterInput, 'RER_Output', lookup, 'Entity');
+    wire(trigger, 'OnRisingEdge', lookup, 'Exec');
+    const box = node('Exec_PlayerState_ShowTextInputBox', { Text: '', Title: title, Message: message });
+    wire(lookup, 'PlayerState', box, 'PlayerState');
+    wire(lookup, 'ExecOut', box, 'Exec');
+
+    const recheck = node('Exec_PlayerState_GetFromEntity');
+    wire(characterInput, 'RER_Output', recheck, 'Entity');
+    wire(box, 'OkClicked', recheck, 'Exec');
+    const same = node('Expr_CompareEqual');
+    wire(recheck, 'PlayerState', same, 'InputA');
+    wire(box, 'ClickedBy', same, 'InputB');
+    const authorizedBranch = node('Exec_Branch', { bCond: false });
+    wire(same, 'bOutput', authorizedBranch, 'bCond');
+    wire(recheck, 'ExecOut', authorizedBranch, 'Exec');
+    return { box, authorized: authorizedBranch };
+  }
+
+  function parseTriple(box, bounds, wholeNumbers) {
+    const first = node('Expr_String_Split', {
+      Delimiter: ',', Occurrence: 1, bCaseSensitive: true,
+    });
+    wire(box, 'Text', first, 'Input');
+    const second = node('Expr_String_Split', {
+      Delimiter: ',', Occurrence: 1, bCaseSensitive: true,
+    });
+    wire(first, 'Right', second, 'Input');
+    const extra = node('Expr_String_Split', {
+      Delimiter: ',', Occurrence: 1, bCaseSensitive: true,
+    });
+    wire(second, 'Right', extra, 'Input');
+    const noExtra = node('Expr_LogicalNOT', { bInput: false });
+    wire(extra, 'bFound', noExtra, 'bInput');
+
+    const rawFields = [[first, 'Left'], [second, 'Left'], [extra, 'Left']];
+    const parsed = rawFields.map(([source, port]) => {
+      const trimmed = node('Expr_String_Trim', { Input: '' });
+      wire(source, port, trimmed, 'Input');
+      const number = node('Expr_String_ParseNumber', { Input: '' });
+      wire(trimmed, 'Output', number, 'Input');
+      return number;
+    });
+    const checks = [
+      [first, 'bFound'], [second, 'bFound'], [noExtra, 'bOutput'],
+    ];
+    parsed.forEach((number, index) => {
+      checks.push([number, 'bSuccess']);
+      const minimumCheck = node('Expr_CompareGreaterOrEqual', { InputB: N(bounds[index][0]) });
+      wire(number, 'Value', minimumCheck, 'InputA');
+      checks.push([minimumCheck, 'bOutput']);
+      const maximumCheck = node('Expr_CompareLessOrEqual', { InputB: N(bounds[index][1]) });
+      wire(number, 'Value', maximumCheck, 'InputA');
+      checks.push([maximumCheck, 'bOutput']);
+      if (wholeNumbers) {
+        const floor = node('Expr_Floor', { Input: N(0) });
+        wire(number, 'Value', floor, 'Input');
+        const whole = node('Expr_CompareEqual');
+        wire(number, 'Value', whole, 'InputA');
+        wire(floor, 'Output', whole, 'InputB');
+        checks.push([whole, 'bOutput']);
+      }
+    });
+    return { parsed, valid: logicalAnd(checks) };
+  }
+
+  function validatedBranch(dialog, parsed) {
+    const accept = node('Exec_Branch', { bCond: false });
+    wire(parsed.valid[0], parsed.valid[1], accept, 'bCond');
+    wire(dialog.authorized, 'ExecOutA', accept, 'Exec');
+    return accept;
+  }
+
+  // Q accepts an exact R,G,B byte triplet and synchronizes the canonical HSV
+  // state. The same current-sitter check used by Hex prevents stale dialogs.
+  const rgbDialog = authorizedTextDialog(
+    enterRgb,
+    'ENTER RGB COLOR',
+    'Enter R, G, B as whole numbers from 0 to 255. Example: 255, 0, 0',
+  );
+  const rgbParsed = parseTriple(rgbDialog.box, [[0, 255], [0, 255], [0, 255]], true);
+  const acceptRgb = validatedBranch(rgbDialog, rgbParsed);
+  const enteredRgb = node('Expr_MakeColorSRGB', { A: 255 });
+  ['R', 'G', 'B'].forEach((port, index) => wire(rgbParsed.parsed[index], 'Value', enteredRgb, port));
+  const enteredRgbToHsv = node('Expr_ColorConvert', { FromSpace: 0, ToSpace: 3 });
+  wire(enteredRgb, 'Output', enteredRgbToHsv, 'Input');
+  const enteredHsv = node('Expr_SplitColor');
+  wire(enteredRgbToHsv, 'Output', enteredHsv, 'Input');
+  const enteredSaturation = math('Multiply', enteredHsv, 'G', 100);
+  const enteredValue = math('Multiply', enteredHsv, 'B', 100);
+  const rgbSetH = setValue(hue, enteredHsv, 'R', acceptRgb, 'ExecOutA');
+  const rgbSetS = setValue(saturation, enteredSaturation, 'Output', rgbSetH, 'ExecOut');
+  setValue(brightness, enteredValue, 'Output', rgbSetS, 'ExecOut');
+  const invalidRgb = node('Exec_PlayerState_ShowStatusMessage', {
+    Message: 'Invalid RGB. Enter exactly three whole numbers from 0 to 255.',
+  });
+  wire(rgbDialog.box, 'ClickedBy', invalidRgb, 'PlayerState');
+  wire(acceptRgb, 'ExecOutB', invalidRgb, 'Exec');
+
+  // E accepts H,S,V directly. Hue 360 is accepted as the conventional alias
+  // for 0 degrees; saturation and value accept any numeric percentage 0..100.
+  const hsvDialog = authorizedTextDialog(
+    enterHsv,
+    'ENTER HSV COLOR',
+    'Enter H, S, V: Hue 0-360; Saturation and Value 0-100. Example: 0, 100, 100',
+  );
+  const hsvParsed = parseTriple(hsvDialog.box, [[0, 360], [0, 100], [0, 100]], false);
+  const acceptHsv = validatedBranch(hsvDialog, hsvParsed);
+  const enteredHue = node('Expr_MathModuloFloored', { InputB: N(360) });
+  wire(hsvParsed.parsed[0], 'Value', enteredHue, 'InputA');
+  const hsvSetH = setValue(hue, enteredHue, 'Output', acceptHsv, 'ExecOutA');
+  const hsvSetS = setValue(saturation, hsvParsed.parsed[1], 'Value', hsvSetH, 'ExecOut');
+  setValue(brightness, hsvParsed.parsed[2], 'Value', hsvSetS, 'ExecOut');
+  const invalidHsv = node('Exec_PlayerState_ShowStatusMessage', {
+    Message: 'Invalid HSV. Use H 0-360 and S/V 0-100.',
+  });
+  wire(hsvDialog.box, 'ClickedBy', invalidHsv, 'PlayerState');
+  wire(acceptHsv, 'ExecOutB', invalidHsv, 'Exec');
+
   // Always show the canonical current RGB value. ColorToHex may include a
   // leading # and/or alpha, so normalize it to the first six RGB digits.
   const colorHex = node('Expr_ColorToHex');
@@ -611,10 +822,17 @@ function build(input) {
   const roundedHue = node('Expr_Round', { Input: N(0) });
   const roundedSaturation = node('Expr_Round', { Input: N(0) });
   const roundedBrightness = node('Expr_Round', { Input: N(0) });
+  const roundedRed = node('Expr_Round', { Input: N(0) });
+  const roundedGreen = node('Expr_Round', { Input: N(0) });
+  const roundedBlue = node('Expr_Round', { Input: N(0) });
   wire(hue, 'Value', roundedHue, 'Input');
   wire(saturation, 'Value', roundedSaturation, 'Input');
   wire(brightness, 'Value', roundedBrightness, 'Input');
+  wire(splitRgb, 'R', roundedRed, 'Input');
+  wire(splitRgb, 'G', roundedGreen, 'Input');
+  wire(splitRgb, 'B', roundedBlue, 'Input');
   const rowValues = [
+    [roundedRed, 'Output'], [roundedGreen, 'Output'], [roundedBlue, 'Output'],
     [roundedHue, 'Output'], [roundedSaturation, 'Output'], [roundedBrightness, 'Output'],
     materialText, [intensityPercent, 'Output'],
   ];
@@ -628,8 +846,8 @@ function build(input) {
   wire(outer.master, 'Output', screen, 'Text');
   const screenData = screenBrick.comps.find(comp => comp.type === C.TextDisplay.NAME).data;
   Object.assign(screenData, {
-    Text: 'COLOR CUSTOMIZER\r\nCURRENT HEX    #FF0000\r\n\r\n> HUE           0° <\r\n  SATURATION    100%\r\n  BRIGHTNESS    100%\r\n  MATERIAL      PLASTIC\r\n  INTENSITY     100%\r\n\r\nW/S SELECT   A/D TAP: 1 | HOLD: REPEAT\r\nC ENTER HEX',
-    LineHeight: 0.95,
+    Text: `${preservedHeader}\r\n\r\nCURRENT HEX    #FF0000\r\n\r\n> RGB RED        255 <\r\n  RGB GREEN      0\r\n  RGB BLUE       0\r\n  HSV HUE        0°\r\n  HSV SATURATION 100%\r\n  HSV VALUE      100%\r\n  MATERIAL       PLASTIC\r\n  INTENSITY      50%\r\n\r\nW/S SELECT   A/D TAP: 1 | HOLD: REPEAT\r\nC HEX   Q RGB   E HSV`,
+    LineHeight: 0.88,
     WidthScale: 0.75,
   });
 
@@ -676,9 +894,14 @@ function build(input) {
   addSound(1, tapAdjustments.map(gate => [gate, 'ExecOut']), 1.08);
   addSound(2, repeatAdjustments.map(gate => [gate, 'ExecOut']), 1.45);
 
-  const name = 'Public Hex + HSB Color Customizer';
-  const description = 'Standalone public-use color station. Seat controls HSB, C opens validated six-digit RGB hex entry, and A/D selects every Brickadia material. Outer chip exposes editable text/sounds and Color, Material, and Material Intensity outputs.';
-  const generated = write(scene, { assets, name, description }).bytes;
+  const maxInnerY = Math.floor(Math.max(0, innerSerial - 1) / 12) * 48;
+  const innerPlane = scene.entityOverrides.get(innerGrid) ?? innerEntityData;
+  innerPlane.data.PlaneCenter = { X: 264, Y: maxInnerY / 2, Z: 2 };
+  innerPlane.data.PlaneExtent = { X: 340, Y: maxInnerY / 2 + 72, Z: 8 };
+
+  const name = 'Public Hex + RGB + HSV Color Customizer';
+  const description = 'Standalone public-use color station. W/S selects eight RGB, HSV, material, and intensity rows; A/D taps or repeats. C, Q, and E open validated Hex, RGB, and HSV entry. Outer chip exposes editable text/sounds and Color, Material, and Material Intensity outputs.';
+  const generated = write(scene, { assets, name, description, owner }).bytes;
   const bytes = repack(generated, donor, { name, description });
   const placement = validate(bytes);
   assert(placement.strictOk, JSON.stringify(placement, null, 2));
