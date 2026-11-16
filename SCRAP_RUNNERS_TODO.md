@@ -1,6 +1,6 @@
 # Scrap Runners Roadmap
 
-Last updated: 2026-11-15
+Last updated: 2026-11-16
 
 This is the persistent source of truth for Scrap Runners work. Chat memory is not authoritative.
 
@@ -190,6 +190,17 @@ Status: `Backlog`
 
 - Accept a job, collect cargo, deliver it, pay once, and clean up all state.
 - Test cancellation, vehicle loss, disconnect, wrong cargo, and simultaneous players.
+
+Planned Lua load/route model:
+
+- Keep route definitions small: stable Route ID, Pickup Location ID, Destination Location ID, and Cargo Type ID.
+- Keep cargo balancing in the cargo catalogue: visible name, pay per stud, required vehicle class, cargo prefab/type, and an optional minimum/base payment.
+- Pickup and destination objects register their stable location IDs and world positions. Route definitions do not contain XYZ coordinates.
+- Calculate horizontal distance from the registered pickup and destination positions, then convert coordinate units to studs using `10 units = 1 stud`.
+- A generated load snapshots: unique Load ID/generation, route, cargo type, required vehicle class, pickup, destination, pay per stud, stud distance, and total payment.
+- Runtime assignment state separately tracks the assigned player and vehicle, status (`Available`, `Accepted`, `PickedUp`, `Delivered`, `Cancelled`), and the issued cargo instance/generation used to reject copies and duplicate payouts.
+- Proposed base formula: `Total Pay = max(Minimum Pay, Base Pay + Stud Distance × Pay Per Stud)`. Cargo quantity/weight can become another multiplier later if loads stop being fixed-size cargo objects.
+- Snapshot the displayed payout before acceptance so moving a station or editing a catalogue cannot change an already offered or accepted contract.
 
 ## Milestone 3 — Truck-stop loadboard monitor
 
