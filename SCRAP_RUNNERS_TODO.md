@@ -1,6 +1,6 @@
 # Scrap Runners Roadmap
 
-Last updated: 2026-11-16
+Last updated: 2026-11-17
 
 This is the persistent source of truth for Scrap Runners work. Chat memory is not authoritative.
 
@@ -31,6 +31,13 @@ Status: `In progress`
 - Verify default/reset behavior and vehicle respawn behavior.
 - Blue-body target array populated in `outputs/truck1-blue-body-array-populated.brz` with 31 visible body/cosmetic brick references: 28 fixed-body bricks plus two door panels and the hood panel.
 - The body-array pass intentionally excludes hidden wheel/engine gates, the rigid bearing, and blue logic gates. It changes only the existing array value; color handoff wiring and loop execution remain separate work and still require in-game verification.
+- First color-purchase integration candidate: `outputs/scrap-runners-truck1-color-terminal-v1.brz`.
+  - Stores the spawner-provided owner PlayerState in the truck's general-purpose chip for reuse by later vehicle terminals.
+  - Moves saved-color decoding, temporary preview selection, body-brick references, change detection, and application into the dedicated `Truck1Color Controller`; `Truck1Material` remains separate and unchanged.
+  - A/D and hex changes preview for free on the vehicle currently in the terminal zone. Space purchases only when `Scrap >= 100` and the packed RGB value differs from the saved `Truck1Color`; the score is written before 100 Scrap is deducted.
+  - Vehicle-zone exit targets the exact leaving entity and reloads only its `Truck1Color` getter. Engine, fuel, suspension, steering, wheel-spacing, and material leaderboard paths are structurally preserved.
+  - Generator validation remaps and resolves all 33 stored brick handles after prefab grid renumbering, keeps the 31 intended body targets intact, preserves the Gearshark owner ID on every brick/entity, and expands the organized logic-chip planes so all gates remain accessible.
+  - Ownership validation remains deliberately deferred: this candidate assumes the seated terminal operator is the vehicle owner. Verify live preview, purchase, insufficient-funds handling, same-color no-charge behavior, exit restoration, respawn persistence, and two-player isolation in game before promoting it.
 
 Acceptance checks:
 
