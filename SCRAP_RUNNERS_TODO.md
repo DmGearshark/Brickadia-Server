@@ -54,6 +54,14 @@ Status: `In progress`
   - Adds outer configurable-chip pulse outputs `Successful Buy` and `Failed Buy`. Success pulses only after the saved-color write and Scrap debit complete. Failure combines only no vehicle in the zone, insufficient Scrap, and an already-saved color.
   - Selection now wraps over all six rows. A/D remains inactive on `BUY`, and the selected row uses the same fixed-width `> BUY <` presentation without shifting the other text.
   - Static validation covers the sixth-row wrap, selectable formatting, purchase guard, exact success/failure pulse sources, new-gate collision bounds, live-preview paths, and all existing truck/non-color regressions. In-game verification of the v4 terminal ports and revised monitor layout is still required.
+- Session-and-vehicle display candidate: `outputs/scrap-runners-color-terminal-v5.brz` with `outputs/scrap-runners-truck1-color-enabled-v4.brz`.
+  - Builds from the user's rearranged terminal and preserves all six configured sound emitters, including the two success sounds, failed-buy sound, selection sound, tap sound, and repeat sound. The failed-buy sound's editor note is hidden during play so it cannot create a nearby-interaction prompt.
+  - The screen now shows the seated user's full ID, username, and Scrap; the supported vehicle's display name; its saved/current color hex; and the live preview/new color hex. The purchase row reads `Price: 🔩Scrap 100` above `BUY`.
+  - Seat entry resolves the current PlayerState and refreshes its identity and Scrap. Vehicle entry reads `VehicleName` and `ColorLeaderboardKey` custom properties from the exact index-0 vehicle already targeted by preview/restoration. Purchases dynamically use that color key, then refresh displayed Scrap and saved color after the write/debit completes.
+  - The updated Truck1 prefab adds only `VehicleName = FlatbedTruck1` and `ColorLeaderboardKey = Truck1Color` to its tagged root. Its 245 bricks, 159 wires, 33 stored brick handles, color controller, and every non-color vehicle system remain structurally unchanged from the working v3 truck.
+  - Replace the current spawner's Truck1 prefab entry with truck v4; the original spawner logic itself needs no identification changes. Older trucks without the two properties display `NONE` and leave `BUY` disabled.
+  - Static generation and strict placement validation pass with no invalid bricks, overlaps, components, or warnings. In-game verification is still required for screen fit, identity formatting, sounds, current/new color display, purchase outputs, and spawner replacement.
+  - Displayed Scrap/current saved color refresh on seat changes, vehicle changes, and this terminal's purchase flow. Unrelated external changes made while the same user remains seated are not polled continuously.
 
 Acceptance checks:
 
