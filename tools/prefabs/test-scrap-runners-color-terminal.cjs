@@ -8,8 +8,8 @@ const { read } = require('./reskin-loadboard.cjs');
 const { C } = require('./loadboard-lib.cjs');
 
 const DEFAULT_INPUT = '/workspace/attachments/0729ece5-83e9-4bbc-9116-14b1d500027f/Change.brz';
-const DEFAULT_TERMINAL_OUTPUT = path.join(__dirname, '../../outputs/scrap-runners-color-terminal-v2.brz');
-const DEFAULT_TRUCK_OUTPUT = path.join(__dirname, '../../outputs/scrap-runners-truck1-color-enabled-v2.brz');
+const DEFAULT_TERMINAL_OUTPUT = path.join(__dirname, '../../outputs/scrap-runners-color-terminal-v3.brz');
+const DEFAULT_TRUCK_OUTPUT = path.join(__dirname, '../../outputs/scrap-runners-truck1-color-enabled-v3.brz');
 
 function isBrickHandle(value) {
   return value && typeof value === 'object'
@@ -114,6 +114,17 @@ function assertGridFitsPlane(scene, grid, label) {
   }
 }
 
+function bricksOverlap(first, second) {
+  const halfSize = brick => {
+    if (brick.data.size?.some(value => value > 0)) return brick.data.size;
+    if (brick.data.asset.startsWith('B_1x1_Gate_')) return [5, 5, 2];
+    return [0, 0, 0];
+  };
+  const a = halfSize(first);
+  const b = halfSize(second);
+  return [0, 1, 2].every(axis => Math.abs(first.data.position[axis] - second.data.position[axis]) < a[axis] + b[axis]);
+}
+
 function test({ input = DEFAULT_INPUT, terminalOutput = DEFAULT_TERMINAL_OUTPUT, truckOutput = DEFAULT_TRUCK_OUTPUT } = {}) {
   const before = read(fs.readFileSync(input));
   const terminal = read(fs.readFileSync(terminalOutput));
@@ -157,6 +168,12 @@ function test({ input = DEFAULT_INPUT, terminalOutput = DEFAULT_TERMINAL_OUTPUT,
   const selectedColor = t.row(C.MicrochipOutput.NAME, (data, brick) => data.PortLabel === 'Color'
     && t.outgoing(brick, C.MicrochipOutput.NAME, 'RER_Output').some(edge => edge.z === previewSend.brick.key), 'selected Color output');
   assert(t.incoming(previewSend.brick, C.Exec_SendCustomEventGlobal.NAME, 'DataIn1').some(edge => edge.a === selectedColor.brick.key), 'Selected color must feed preview payload');
+  const livePreviewLabel = t.row(C.TextDisplay.NAME, data => /^LIVE VEHICLE PREVIEW/.test(data.Text), 'live-preview organization label');
+  const leftInputDetector = t.row(C.Expr_EdgeDetectorExec.NAME, (_data, brick) => brick.g === selectedColor.brick.g
+    && brick.data.position[0] === 528 && brick.data.position[1] === 48, 'left-input edge detector');
+  assert(!bricksOverlap(livePreviewLabel.brick, leftInputDetector.brick), 'Live-preview label physically overlaps the left-input edge detector');
+  assert.equal(terminal.edges.filter(edge => edge.a === leftInputDetector.brick.key || edge.z === leftInputDetector.brick.key).length, 7,
+    'Left-input edge detector must retain all seven placement-sensitive wires');
 
   // Walk from the guarded preview sender back to the enter/change union.
   const previewBranchEdge = t.one(t.incoming(previewSend.brick, C.Exec_SendCustomEventGlobal.NAME, 'ExecIn'), 'preview sender ExecIn');
@@ -268,6 +285,18 @@ function test({ input = DEFAULT_INPUT, terminalOutput = DEFAULT_TERMINAL_OUTPUT,
   assert.equal(colorPlayerSource.a, ownerOutput.brick.key, 'Truck1Color must use retained owner PlayerState');
   const restoreEvent = v.row(C.Event_CustomGlobal.NAME, data => data.EventName === 'Restore Truck1Color' && data.bIsObjectEvent, 'vehicle restore event');
   assert(v.outgoing(restoreEvent.brick, C.Event_CustomGlobal.NAME, 'ExecOut').length, 'Restore event must pulse color path');
+  const previewEvent = v.row(C.Event_CustomGlobal.NAME, data => data.EventName === 'Interface with Vehicle' && data.bIsObjectEvent, 'vehicle live-preview event');
+  const previewExec = v.one(v.outgoing(previewEvent.brick, C.Event_CustomGlobal.NAME, 'ExecOut'), 'vehicle preview ExecOut');
+  const previewValue = v.one(v.outgoing(previewEvent.brick, C.Event_CustomGlobal.NAME, 'DataOut1'), 'vehicle preview DataOut1');
+  assert.equal(previewExec.zt, C.Exec_Var_Set.NAME, 'Vehicle preview execution must feed the temporary color setter');
+  assert.equal(previewValue.zt, C.Exec_Var_Set.NAME, 'Vehicle preview color must feed the temporary color setter');
+  assert.equal(previewExec.z, previewValue.z, 'Vehicle preview execution and color must feed the same setter');
+
+  const restoreLabel = v.row(C.TextDisplay.NAME, data => /^TRUCK1COLOR LOAD \/ RESTORE/.test(data.Text), 'Truck1Color restore label');
+  const savedLabel = v.row(C.TextDisplay.NAME, data => data.Text === 'SAVED SCORE -> RGB', 'saved-color label');
+  const displayLabel = v.row(C.TextDisplay.NAME, data => /^DISPLAY COLOR/.test(data.Text), 'display-color label');
+  assert(!bricksOverlap(restoreLabel.brick, previewEvent.brick), 'Restore label physically overlaps the vehicle preview event');
+  assert(!bricksOverlap(savedLabel.brick, displayLabel.brick), 'Saved/display color labels physically overlap');
 
   const controllerGrid = v.one([...new Set(v.rows.filter(item => item.component.type === C.ArrayVar.NAME
     && item.component.data.Value?.$elementType === 'brick_handle').map(item => item.brick.g))], 'Truck1Color controller grid');
@@ -288,6 +317,7 @@ function test({ input = DEFAULT_INPUT, terminalOutput = DEFAULT_TERMINAL_OUTPUT,
   assert.equal(restoreExec.p, 'Exec');
 
   assertGridFitsPlane(terminal, terminalGrid, 'terminal organization');
+  assertGridFitsPlane(terminal, selectedColor.brick.g, 'color-core live-preview organization');
   assertGridFitsPlane(truck, generalGrid, 'general PlayerState organization');
   assertGridFitsPlane(truck, controllerGrid, 'Truck1Color controller organization');
 

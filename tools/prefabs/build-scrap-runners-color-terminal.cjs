@@ -9,8 +9,8 @@ const repack = require('./repack-with-donor-metadata.cjs');
 const { C, N, S, B, O } = require('./loadboard-lib.cjs');
 
 const INPUT = path.resolve(process.argv[2] || '/workspace/attachments/0729ece5-83e9-4bbc-9116-14b1d500027f/Change.brz');
-const TERMINAL_OUTPUT = path.resolve(process.argv[3] || path.join(__dirname, '../../outputs/scrap-runners-color-terminal-v2.brz'));
-const TRUCK_OUTPUT = path.resolve(process.argv[4] || path.join(__dirname, '../../outputs/scrap-runners-truck1-color-enabled-v2.brz'));
+const TERMINAL_OUTPUT = path.resolve(process.argv[3] || path.join(__dirname, '../../outputs/scrap-runners-color-terminal-v3.brz'));
+const TRUCK_OUTPUT = path.resolve(process.argv[4] || path.join(__dirname, '../../outputs/scrap-runners-truck1-color-enabled-v3.brz'));
 
 const GRID = {
   main: 1,
@@ -349,9 +349,9 @@ function build(input = INPUT) {
     brick.data.position = position;
   }
   label(GRID.colorController, [25, 25, 2], 'SAVED SCORE -> RGB',
-    { name: 'saved_decode_label', size: [35, 8, 2], textColor: { B: 80, G: 190, R: 255, A: 255 } });
+    { name: 'saved_decode_label', size: [30, 8, 2], textColor: { B: 80, G: 190, R: 255, A: 255 } });
   label(GRID.colorController, [105, 25, 2], 'DISPLAY COLOR\r\nSaved load or temporary preview',
-    { name: 'display_color_label', size: [50, 10, 2], textColor: { B: 180, G: 255, R: 255, A: 255 } });
+    { name: 'display_color_label', size: [45, 10, 2], textColor: { B: 180, G: 255, R: 255, A: 255 } });
   label(GRID.colorController, [215, 25, 2], 'APPLY TO BODY BRICKS',
     { name: 'body_apply_label', size: [50, 8, 2], textColor: { B: 120, G: 255, R: 140, A: 255 } });
 
@@ -368,8 +368,8 @@ function build(input = INPUT) {
   }, { name: 'initial_color_owner_delay', color: [255, 185, 80] });
   const colorLoadUnion = gate('Exec_Union', GRID.truckStats, [75, 35, 2], {},
     { name: 'color_load_union', color: [255, 185, 80] });
-  label(GRID.truckStats, [75, 55, 2], 'TRUCK1COLOR LOAD / RESTORE\r\nInitial UpdateCar waits one tick for the general owner PlayerState.\r\nZone exit pulses only this color getter.',
-    { name: 'color_restore_label', size: [70, 15, 2], textColor: { B: 80, G: 185, R: 255, A: 255 } });
+  label(GRID.truckStats, [75, 90, 2], 'TRUCK1COLOR LOAD / RESTORE\r\nInitial UpdateCar waits one tick for the general owner PlayerState.\r\nZone exit pulses only this color getter.',
+    { name: 'color_restore_label', size: [65, 10, 2], textColor: { B: 80, G: 185, R: 255, A: 255 } });
 
   removeIncoming(colorGetter, C.Exec_Gamemode_GetLeaderboardValue.NAME, 'Exec');
   removeIncoming(colorGetter, C.Exec_Gamemode_GetLeaderboardValue.NAME, 'PlayerState');
@@ -490,7 +490,7 @@ function build(input = INPUT) {
     Input: { $variant: 'WireGraphExec', value: {} }, Output: { $variant: 'WireGraphExec', value: {} },
     Buffered: { $variant: 'WireGraphExec', value: {} }, bHasQueued: false, bIsOffTimer: false,
   }, { name: 'preview_after_color_write', color: [215, 85, 255] });
-  label(GRID.colorCore, [552, 36, 2], 'LIVE VEHICLE PREVIEW\r\n15 H/S/B writes -> 1 tick -> terminal',
+  label(GRID.colorCore, [552, 1100, 2], 'LIVE VEHICLE PREVIEW\r\n15 H/S/B writes -> 1 tick -> terminal',
     { name: 'live_preview_pulse_label', size: [45, 10, 2], textColor: { B: 255, G: 140, R: 235, A: 255 } });
   addEdge(previewPulse.brick, previewPulse.type, previewPulse.port, previewDelay, C.BufferTicks.NAME, 'Input');
   addEdge(previewDelay, C.BufferTicks.NAME, 'Output', previewUnion, C.Exec_Union.NAME, 'ExecB');
@@ -639,9 +639,9 @@ function build(input = INPUT) {
     truckPrefab.pivots[key].halfExtent = { x: 100, y: 60, z: 50 };
   }
 
-  const terminalName = 'Scrap Runners - Color Terminal v2';
+  const terminalName = 'Scrap Runners - Color Terminal v3';
   const terminalDescription = 'Terminal-only colorizer with live tap, held-repeat, and hex preview; 100 Scrap purchase; and targeted zone-exit restoration. No test truck is bundled in the zone.';
-  const truckName = 'Scrap Runners - Truck1 Color Enabled v2';
+  const truckName = 'Scrap Runners - Truck1 Color Enabled v3';
   const truckDescription = 'Truck1-only prefab for the existing vehicle spawner, with retained owner PlayerState, saved color loading, temporary preview events, and targeted restoration.';
   const terminalResult = writeWithRemappedBrickHandles(terminalScene, {
     name: terminalName,

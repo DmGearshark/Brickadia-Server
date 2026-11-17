@@ -43,7 +43,11 @@ Status: `In progress`
   - The Truck1 prefab contains the modified vehicle only, is recentered on the tagged vehicle root for clean prefab-spawner placement, and is intended to replace the existing Truck1 prefab entry inside the current vehicle spawner; it does not require a new spawner.
   - Live preview is driven by the completion pulses of all 15 Hue/Saturation/Brightness write gates, covering A/D taps, held repeats, and accepted hex input. A one-tick buffer lets all three parallel hex writes settle and coalesces their same-tick pulses before the preview event reads the selected color.
   - Static validation confirms the terminal has 0 stored truck BrickHandles and no vehicle receiver/stat logic; the truck retains and resolves all 33 stored BrickHandles, four wheel entities, owner PlayerState handling, color restore receiver, and all seven protected non-color leaderboard paths.
-  - Ownership validation remains deliberately deferred: this candidate assumes the seated terminal operator is the vehicle owner. Verify tap preview, held preview, hex preview, purchase, insufficient-funds handling, same-color no-charge behavior, exit restoration, respawn persistence, and two-player isolation in game before promoting it.
+  - In-game placement exposed geometry collisions that static wire validation missed: three truck labels blocked each other/the `Interface with Vehicle` receiver (4 blocked bricks and 2 failed wires), while the terminal preview label blocked an existing edge detector (2 blocked bricks and 7 failed wires). No component type or cross-chip wire was unsupported.
+- Placement-collision correction candidates: `outputs/scrap-runners-color-terminal-v3.brz` and `outputs/scrap-runners-truck1-color-enabled-v3.brz`.
+  - Relocates/resizes only the four conflicting organizational labels. The critical preview receiver, edge detector, and all nine associated wires remain otherwise unchanged.
+  - Validator now requires the truck preview event's execution and color wires, all seven placement-sensitive edge-detector wires, and non-overlapping bounds for the exact labels/gates involved in the v2 paste failure.
+  - Ownership validation remains deliberately deferred: this candidate assumes the seated terminal operator is the vehicle owner. Verify clean placement counts first, then tap preview, held preview, hex preview, purchase, insufficient-funds handling, same-color no-charge behavior, exit restoration, respawn persistence, and two-player isolation in game before promoting it.
 
 Acceptance checks:
 
