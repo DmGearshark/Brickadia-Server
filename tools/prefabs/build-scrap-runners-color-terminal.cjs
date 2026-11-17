@@ -9,7 +9,7 @@ const repack = require('./repack-with-donor-metadata.cjs');
 const { C, N, S, B, O } = require('./loadboard-lib.cjs');
 
 const INPUT = path.resolve(process.argv[2] || '/workspace/attachments/0729ece5-83e9-4bbc-9116-14b1d500027f/Change.brz');
-const TERMINAL_OUTPUT = path.resolve(process.argv[3] || path.join(__dirname, '../../outputs/scrap-runners-color-terminal-v3.brz'));
+const TERMINAL_OUTPUT = path.resolve(process.argv[3] || path.join(__dirname, '../../outputs/scrap-runners-color-terminal-v4.brz'));
 const TRUCK_OUTPUT = path.resolve(process.argv[4] || path.join(__dirname, '../../outputs/scrap-runners-truck1-color-enabled-v3.brz'));
 
 const GRID = {
@@ -380,7 +380,7 @@ function build(input = INPUT) {
   addEdge(ownerOutput, C.MicrochipOutput.NAME, 'RER_Output', colorGetter, C.Exec_Gamemode_GetLeaderboardValue.NAME, 'PlayerState');
 
   // ---------------------------------------------------------------------------
-  // CONFIG CHIP — expose the editable purchase cost and update instructions.
+  // CONFIG CHIP — expose the editable purchase cost, BUY row, and result pulses.
   // ---------------------------------------------------------------------------
   const costTemplate = brickAt(GRID.colorConfig, 14);
   const costVar = clone(costTemplate);
@@ -393,10 +393,52 @@ function build(input = INPUT) {
   costInteract.data.PromptCustomLabel = 'Color purchase cost';
   scene.bricks.push(costVar);
 
+  // BUY is the sixth selectable row. Keep its angle brackets entirely inside
+  // the formatted row so selecting it never shifts any of the other rows.
+  const selectionVar = brickAt(GRID.colorCore, 109);
+  const previousSelectionAdd = brickAt(GRID.colorCore, 143);
+  const previousSelectionModulo = brickAt(GRID.colorCore, 100);
+  const nextSelectionModulo = brickAt(GRID.colorCore, 101);
+  component(previousSelectionAdd, C.Expr_MathAdd.NAME).data.InputB = N(5);
+  component(previousSelectionModulo, C.Expr_MathModuloFloored.NAME).data.InputB = N(6);
+  component(nextSelectionModulo, C.Expr_MathModuloFloored.NAME).data.InputB = N(6);
+
+  const buySelected = gate('Expr_CompareEqual', GRID.colorCore, [576, 816, 2], {
+    InputA: N(0), InputB: N(5),
+  }, { name: 'buy_selection_compare', color: [75, 210, 125] });
+  const buyPrefix = gate('Expr_Select', GRID.colorCore, [576, 864, 2], {
+    InputA: S('  '), InputB: S('> '), bSelectB: false,
+  }, { name: 'buy_selection_prefix', color: [75, 210, 125] });
+  const buySuffix = gate('Expr_Select', GRID.colorCore, [576, 912, 2], {
+    InputA: S(''), InputB: S(' <'), bSelectB: false,
+  }, { name: 'buy_selection_suffix', color: [75, 210, 125] });
+  const buyRow = gate('Expr_String_FormatText', GRID.colorConfig, [240, 144, 2], {
+    FormatString: '{A}BUY{B}',
+    InputA: S('  '), InputB: S(''), InputC: N(0), InputD: N(0), InputE: N(0), InputF: N(0), InputG: N(0),
+  }, { name: 'buy_menu_row', color: [75, 210, 125] });
+  const priceAndBuy = gate('Expr_String_FormatText', GRID.colorConfig, [240, 240, 2], {
+    FormatString: 'PRICE {A}\r\n{B}',
+    InputA: I(100), InputB: S('  BUY'), InputC: N(0), InputD: N(0), InputE: N(0), InputF: N(0), InputG: N(0),
+  }, { name: 'price_and_buy_menu_block', color: [75, 210, 125] });
+  const successfulBuyOutput = gate('MicrochipOutput', GRID.colorConfig, [240, -96, 2], {
+    PortLabel: 'Successful Buy', PortOrder: 4, CallableDefault: S(''), CallableResult: S(''),
+  }, { name: 'successful_buy_output', color: [75, 210, 125] });
+  const failedBuyOutput = gate('MicrochipOutput', GRID.colorConfig, [240, -144, 2], {
+    PortLabel: 'Failed Buy', PortOrder: 5, CallableDefault: S(''), CallableResult: S(''),
+  }, { name: 'failed_buy_output', color: [255, 95, 95] });
+
+  addEdge(selectionVar, C.Var.NAME, 'Value', buySelected, C.Expr_CompareEqual.NAME, 'InputA');
+  addEdge(buySelected, C.Expr_CompareEqual.NAME, 'bOutput', buyPrefix, C.Expr_Select.NAME, 'bSelectB');
+  addEdge(buySelected, C.Expr_CompareEqual.NAME, 'bOutput', buySuffix, C.Expr_Select.NAME, 'bSelectB');
+  addEdge(buyPrefix, C.Expr_Select.NAME, 'Output', buyRow, C.Expr_String_FormatText.NAME, 'InputA');
+  addEdge(buySuffix, C.Expr_Select.NAME, 'Output', buyRow, C.Expr_String_FormatText.NAME, 'InputB');
+  addEdge(costVar, C.Var.NAME, 'Value', priceAndBuy, C.Expr_String_FormatText.NAME, 'InputA');
+  addEdge(buyRow, C.Expr_String_FormatText.NAME, 'Output', priceAndBuy, C.Expr_String_FormatText.NAME, 'InputB');
+
   const completeMenu = brickAt(GRID.colorConfig, 9);
   const completeMenuFormat = component(completeMenu, C.Expr_String_FormatText.NAME);
-  completeMenuFormat.data.FormatString = 'PROCESS: COLOR_CUSTOMIZER\r\nSTATUS: RUNNING\r\n\r\n{G}\r\n\r\n{A}\r\n{B}\r\n{C}\r\n{D}\r\n{E}\r\n\r\nW/S SELECT   A/D TAP: 1 | HOLD: REPEAT\r\nC ENTER HEX   SPACE BUY COLOR ({F} SCRAP)';
-  addEdge(costVar, C.Var.NAME, 'Value', completeMenu, C.Expr_String_FormatText.NAME, 'InputF');
+  completeMenuFormat.data.FormatString = 'PROCESS: COLOR_CUSTOMIZER\r\nSTATUS: RUNNING\r\n\r\n{G}\r\n\r\n{A}\r\n{B}\r\n{C}\r\n{D}\r\n{E}\r\n\r\n{F}\r\n\r\nW/S SELECT   A/D TAP: 1 | HOLD: REPEAT\r\nC ENTER HEX   SPACE ACTIVATE';
+  addEdge(priceAndBuy, C.Expr_String_FormatText.NAME, 'Output', completeMenu, C.Expr_String_FormatText.NAME, 'InputF');
 
   // ---------------------------------------------------------------------------
   // TERMINAL CHIP — rebuild the small interface into clear sections.
@@ -523,9 +565,13 @@ function build(input = INPUT) {
     { name: 'get_scrap', color: [75, 210, 125] });
   const getSavedColor = gate('Exec_Gamemode_GetLeaderboardValue', GRID.terminal, [300, 370, 2], { Key: 'Truck1Color', Value: 0 },
     { name: 'get_saved_color', color: [75, 210, 125] });
+  const buySelectionBranch = gate('Exec_Branch', GRID.terminal, [0, 320, 2], { bCond: false },
+    { name: 'buy_selection_guard', color: [75, 210, 125] });
 
   addEdge(vehicleArray, C.ArrayVar.NAME, 'ArrayVarRef', purchaseVehicleGet, C.Exec_ArrayVar_Get.NAME, 'ArrayVarRef');
-  addEdge(inputSplitter, typeOf(inputSplitter), 'InputUp', purchaseVehicleGet, C.Exec_ArrayVar_Get.NAME, 'Exec');
+  addEdge(inputSplitter, typeOf(inputSplitter), 'InputUp', buySelectionBranch, C.Exec_Branch.NAME, 'Exec');
+  addEdge(buySelected, C.Expr_CompareEqual.NAME, 'bOutput', buySelectionBranch, C.Exec_Branch.NAME, 'bCond');
+  addEdge(buySelectionBranch, C.Exec_Branch.NAME, 'ExecOutA', purchaseVehicleGet, C.Exec_ArrayVar_Get.NAME, 'Exec');
   addEdge(purchaseVehicleGet, C.Exec_ArrayVar_Get.NAME, 'bOutOfBounds', purchaseVehicleValid, C.Expr_LogicalNOT.NAME, 'bInput');
   addEdge(purchaseVehicleGet, C.Exec_ArrayVar_Get.NAME, 'ExecOut', purchaseVehicleBranch, C.Exec_Branch.NAME, 'Exec');
   addEdge(purchaseVehicleValid, C.Expr_LogicalNOT.NAME, 'bOutput', purchaseVehicleBranch, C.Exec_Branch.NAME, 'bCond');
@@ -609,6 +655,21 @@ function build(input = INPUT) {
   addEdge(successFormat, C.Expr_String_FormatText.NAME, 'Output', successMessage, C.Exec_PlayerState_ShowStatusMessage.NAME, 'Message');
   addEdge(failureFormat, C.Expr_String_FormatText.NAME, 'Output', failureMessage, C.Exec_PlayerState_ShowStatusMessage.NAME, 'Message');
 
+  // External result pulses are emitted only for an actual BUY activation.
+  // Success occurs after the debit finishes. Failure combines no vehicle,
+  // insufficient Scrap, and already-saved color; an unselected Space press is
+  // intentionally ignored by the buy-selection branch above.
+  const failedBuyUnionA = gate('Exec_Union', GRID.terminal, [600, 520, 2], {},
+    { name: 'failed_buy_union_a', color: [255, 95, 95] });
+  const failedBuyUnionB = gate('Exec_Union', GRID.terminal, [660, 520, 2], {},
+    { name: 'failed_buy_union_b', color: [255, 95, 95] });
+  addEdge(purchaseVehicleBranch, C.Exec_Branch.NAME, 'ExecOutB', failedBuyUnionA, C.Exec_Union.NAME, 'ExecA');
+  addEdge(fundsBranch, C.Exec_Branch.NAME, 'ExecOutB', failedBuyUnionA, C.Exec_Union.NAME, 'ExecB');
+  addEdge(failedBuyUnionA, C.Exec_Union.NAME, 'ExecOut', failedBuyUnionB, C.Exec_Union.NAME, 'ExecA');
+  addEdge(changedBranch, C.Exec_Branch.NAME, 'ExecOutB', failedBuyUnionB, C.Exec_Union.NAME, 'ExecB');
+  addEdge(chargeScrap, C.Exec_Gamemode_IncrementLeaderboardValue.NAME, 'ExecOut', successfulBuyOutput, C.MicrochipOutput.NAME, 'RER_Input');
+  addEdge(failedBuyUnionB, C.Exec_Union.NAME, 'ExecOut', failedBuyOutput, C.MicrochipOutput.NAME, 'RER_Input');
+
   // The old Space preview edge must be completely gone.
   assert(!scene.edges.some(edge => edge.a === inputSplitter.key && edge.p === 'InputUp'
     && edge.z === previewSend.key && edge.q === 'ExecIn'));
@@ -639,8 +700,8 @@ function build(input = INPUT) {
     truckPrefab.pivots[key].halfExtent = { x: 100, y: 60, z: 50 };
   }
 
-  const terminalName = 'Scrap Runners - Color Terminal v3';
-  const terminalDescription = 'Terminal-only colorizer with live tap, held-repeat, and hex preview; 100 Scrap purchase; and targeted zone-exit restoration. No test truck is bundled in the zone.';
+  const terminalName = 'Scrap Runners - Color Terminal v4';
+  const terminalDescription = 'Terminal-only colorizer with live preview, selectable BUY row and price, successful/failed purchase pulse outputs, 100 Scrap saving, and targeted zone-exit restoration. Uses the existing v3 color-enabled Truck1 prefab.';
   const truckName = 'Scrap Runners - Truck1 Color Enabled v3';
   const truckDescription = 'Truck1-only prefab for the existing vehicle spawner, with retained owner PlayerState, saved color loading, temporary preview events, and targeted restoration.';
   const terminalResult = writeWithRemappedBrickHandles(terminalScene, {

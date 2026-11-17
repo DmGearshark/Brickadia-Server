@@ -8,7 +8,7 @@ const { read } = require('./reskin-loadboard.cjs');
 const { C } = require('./loadboard-lib.cjs');
 
 const DEFAULT_INPUT = '/workspace/attachments/0729ece5-83e9-4bbc-9116-14b1d500027f/Change.brz';
-const DEFAULT_TERMINAL_OUTPUT = path.join(__dirname, '../../outputs/scrap-runners-color-terminal-v3.brz');
+const DEFAULT_TERMINAL_OUTPUT = path.join(__dirname, '../../outputs/scrap-runners-color-terminal-v4.brz');
 const DEFAULT_TRUCK_OUTPUT = path.join(__dirname, '../../outputs/scrap-runners-truck1-color-enabled-v3.brz');
 
 function isBrickHandle(value) {
@@ -157,10 +157,45 @@ function test({ input = DEFAULT_INPUT, terminalOutput = DEFAULT_TERMINAL_OUTPUT,
   const cost = t.row(C.Var.NAME, (data, brick) => data.Value?.value === 100
     && brick.comps.some(component => component.type === C.Interact.NAME && component.data.PromptCustomLabel === 'Color purchase cost'), 'configurable color cost');
   assert.equal(cost.component.data.Value.$variant, 'i64', 'Color cost should remain an integer');
-  const menu = t.row(C.Expr_String_FormatText.NAME, data => /SPACE BUY COLOR \(\{F\} SCRAP\)/.test(data.FormatString), 'menu purchase instructions');
+  const menu = t.row(C.Expr_String_FormatText.NAME, data => /\{F\}[\s\S]*SPACE ACTIVATE/.test(data.FormatString), 'menu purchase instructions');
   const colorConfigGrid = menu.brick.g;
   assert.equal(cost.brick.g, colorConfigGrid, 'Cost and menu must share the green config chip');
-  assert(t.incoming(menu.brick, C.Expr_String_FormatText.NAME, 'InputF').some(edge => edge.a === cost.brick.key), 'Cost must feed menu InputF');
+  const buyRow = t.row(C.Expr_String_FormatText.NAME, data => data.FormatString === '{A}BUY{B}', 'selectable BUY row');
+  const priceAndBuy = t.row(C.Expr_String_FormatText.NAME, data => data.FormatString === 'PRICE {A}\r\n{B}', 'price and BUY block');
+  assert.equal(buyRow.brick.g, colorConfigGrid, 'BUY row must be formatted in the green config chip');
+  assert.equal(priceAndBuy.brick.g, colorConfigGrid, 'Price/BUY block must be formatted in the green config chip');
+  assert(t.incoming(priceAndBuy.brick, C.Expr_String_FormatText.NAME, 'InputA').some(edge => edge.a === cost.brick.key), 'Cost must feed the displayed price');
+  assert(t.incoming(priceAndBuy.brick, C.Expr_String_FormatText.NAME, 'InputB').some(edge => edge.a === buyRow.brick.key), 'Selectable BUY row must sit below price');
+  assert(t.incoming(menu.brick, C.Expr_String_FormatText.NAME, 'InputF').some(edge => edge.a === priceAndBuy.brick.key), 'Price/BUY block must feed menu InputF');
+
+  const buySelected = t.row(C.Expr_CompareEqual.NAME, (data, brick) => data.InputB?.value === 5
+    && brick.data.position[0] === 576 && brick.data.position[1] === 816, 'BUY selection compare');
+  const buyPrefix = t.bricks.get(t.one(t.incoming(buyRow.brick, C.Expr_String_FormatText.NAME, 'InputA'), 'BUY prefix').a);
+  const buySuffix = t.bricks.get(t.one(t.incoming(buyRow.brick, C.Expr_String_FormatText.NAME, 'InputB'), 'BUY suffix').a);
+  assert(buyPrefix.comps.some(component => component.type === C.Expr_Select.NAME), 'BUY prefix must be a select gate');
+  assert(buySuffix.comps.some(component => component.type === C.Expr_Select.NAME), 'BUY suffix must be a select gate');
+  assert(t.incoming(buyPrefix, C.Expr_Select.NAME, 'bSelectB').some(edge => edge.a === buySelected.brick.key), 'BUY prefix must follow selection 5');
+  assert(t.incoming(buySuffix, C.Expr_Select.NAME, 'bSelectB').some(edge => edge.a === buySelected.brick.key), 'BUY suffix must follow selection 5');
+  const selectionSource = t.one(t.incoming(buySelected.brick, C.Expr_CompareEqual.NAME, 'InputA'), 'BUY selection value');
+  assert.equal(selectionSource.at, C.Var.NAME, 'BUY compare must read the shared selection variable');
+  const selectionModulo = t.rows.filter(item => item.brick.g === buySelected.brick.g
+    && item.component.type === C.Expr_MathModuloFloored.NAME && item.brick.data.position[1] === 96
+    && [192, 336].includes(item.brick.data.position[0]));
+  assert.equal(selectionModulo.length, 2, 'Expected the two W/S selection modulo gates');
+  assert(selectionModulo.every(item => item.component.data.InputB?.value === 6), 'W/S selection must wrap across all six rows');
+  const decrementModulo = selectionModulo.find(item => t.incoming(item.brick, C.Expr_MathModuloFloored.NAME, 'InputA')
+    .some(edge => edge.at === C.Expr_MathAdd.NAME && t.bricks.get(edge.a).comps
+      .some(component => component.type === C.Expr_MathAdd.NAME && component.data.InputB?.value === 5)));
+  assert(decrementModulo, 'Selection decrement must add 5 before modulo 6');
+
+  const successfulBuyOutput = t.row(C.MicrochipOutput.NAME, data => data.PortLabel === 'Successful Buy', 'Successful Buy output');
+  const failedBuyOutput = t.row(C.MicrochipOutput.NAME, data => data.PortLabel === 'Failed Buy', 'Failed Buy output');
+  assert.equal(successfulBuyOutput.brick.g, colorConfigGrid, 'Successful Buy must be exposed from the green config chip');
+  assert.equal(failedBuyOutput.brick.g, colorConfigGrid, 'Failed Buy must be exposed from the green config chip');
+  assert.equal(successfulBuyOutput.component.data.PortOrder, 4, 'Successful Buy port order');
+  assert.equal(failedBuyOutput.component.data.PortOrder, 5, 'Failed Buy port order');
+  assert.equal(successfulBuyOutput.component.data.CallableDefault.$variant, 'str', 'Successful Buy must serialize as a pulse output');
+  assert.equal(failedBuyOutput.component.data.CallableDefault.$variant, 'str', 'Failed Buy must serialize as a pulse output');
 
   const terminalGrid = t.row(C.EntityZoneEvent_Left.NAME, () => true, 'terminal zone-left event').brick.g;
   const inputSplitter = t.row(C.InputSplitter.NAME, () => true, 'color-customizer seat input splitter');
@@ -221,9 +256,17 @@ function test({ input = DEFAULT_INPUT, terminalOutput = DEFAULT_TERMINAL_OUTPUT,
   }).sort((a, b) => a - b);
   assert.deepEqual(hsbDefaults, [100, 100, 286], 'Live-preview variables are not H/S/B');
 
-  // Space starts purchase only; color writes and zone entry start preview.
+  // Space attempts purchase only while BUY is selected; color writes and zone
+  // entry start preview. The false side intentionally does nothing.
   assert(!terminal.edges.some(edge => edge.a === inputSplitter.brick.key && edge.p === 'InputUp' && edge.z === previewSend.brick.key), 'Space still directly previews');
-  assert(terminal.edges.some(edge => edge.a === inputSplitter.brick.key && edge.p === 'InputUp' && edge.zt === C.Exec_ArrayVar_Get.NAME), 'Space must start guarded purchase');
+  const spaceEdge = t.one(t.outgoing(inputSplitter.brick, C.InputSplitter.NAME, 'InputUp'), 'Space activation');
+  assert.equal(spaceEdge.zt, C.Exec_Branch.NAME, 'Space must first check whether BUY is selected');
+  const buyGuard = t.bricks.get(spaceEdge.z);
+  assert(t.incoming(buyGuard, C.Exec_Branch.NAME, 'bCond').some(edge => edge.a === buySelected.brick.key), 'Space guard must use selection 5');
+  const purchaseStart = t.one(t.outgoing(buyGuard, C.Exec_Branch.NAME, 'ExecOutA'), 'selected BUY activation');
+  assert.equal(purchaseStart.zt, C.Exec_ArrayVar_Get.NAME, 'Selected BUY must start the vehicle lookup');
+  assert.equal(t.outgoing(buyGuard, C.Exec_Branch.NAME, 'ExecOutB').length, 0, 'Space outside BUY must be a no-op');
+  const purchaseVehicleGet = t.bricks.get(purchaseStart.z);
 
   // Proven RGB integer encoder and purchase transaction.
   const split = t.row(C.Expr_SplitColorSRGB.NAME, (_data, brick) => brick.g === terminalGrid, 'SplitColorSRGB encoder');
@@ -241,6 +284,44 @@ function test({ input = DEFAULT_INPUT, terminalOutput = DEFAULT_TERMINAL_OUTPUT,
   assert(t.incoming(debit.brick, C.Exec_Gamemode_IncrementLeaderboardValue.NAME, 'Value').some(edge => edge.at === C.Expr_MathNegate.NAME), 'Negative configurable cost must feed debit');
   assert(t.rows.some(item => item.component.type === C.Expr_CompareGreaterOrEqual.NAME
     && t.incoming(item.brick, C.Expr_CompareGreaterOrEqual.NAME, 'InputB').some(edge => edge.a === cost.brick.key)), 'Affordability must use configurable cost');
+
+  const successPulse = t.one(t.incoming(successfulBuyOutput.brick, C.MicrochipOutput.NAME, 'RER_Input'), 'Successful Buy pulse source');
+  assert.equal(successPulse.a, debit.brick.key, 'Successful Buy must pulse only after Scrap debit completes');
+  assert.equal(successPulse.p, 'ExecOut', 'Successful Buy must use the debit completion pulse');
+
+  const purchaseVehicleBranchEdge = t.one(t.outgoing(purchaseVehicleGet, C.Exec_ArrayVar_Get.NAME, 'ExecOut'), 'purchase vehicle validity branch');
+  assert.equal(purchaseVehicleBranchEdge.zt, C.Exec_Branch.NAME, 'Vehicle lookup must feed a validity branch');
+  const purchaseVehicleBranch = t.bricks.get(purchaseVehicleBranchEdge.z);
+  const changedBranchEdge = t.one(t.incoming(setColor.brick, C.Exec_Gamemode_SetLeaderboardValue.NAME, 'Exec'), 'new-color branch');
+  assert.equal(changedBranchEdge.at, C.Exec_Branch.NAME, 'Color setter must follow the changed-color branch');
+  const changedBranch = t.bricks.get(changedBranchEdge.a);
+  const fundsBranchEdge = t.one(t.incoming(changedBranch, C.Exec_Branch.NAME, 'Exec'), 'funds branch');
+  assert.equal(fundsBranchEdge.at, C.Exec_Branch.NAME, 'Changed-color branch must follow the funds branch');
+  const fundsBranch = t.bricks.get(fundsBranchEdge.a);
+
+  const failureLeaves = [];
+  const walkFailurePulse = edge => {
+    if (edge.at !== C.Exec_Union.NAME) {
+      failureLeaves.push(`${edge.a}|${edge.p}`);
+      return;
+    }
+    const union = t.bricks.get(edge.a);
+    walkFailurePulse(t.one(t.incoming(union, C.Exec_Union.NAME, 'ExecA'), 'failed-buy union ExecA'));
+    walkFailurePulse(t.one(t.incoming(union, C.Exec_Union.NAME, 'ExecB'), 'failed-buy union ExecB'));
+  };
+  walkFailurePulse(t.one(t.incoming(failedBuyOutput.brick, C.MicrochipOutput.NAME, 'RER_Input'), 'Failed Buy pulse source'));
+  assert.deepEqual(failureLeaves.sort(), [
+    `${purchaseVehicleBranch.key}|ExecOutB`,
+    `${fundsBranch.key}|ExecOutB`,
+    `${changedBranch.key}|ExecOutB`,
+  ].sort(), 'Failed Buy must combine exactly no vehicle, insufficient Scrap, and already-saved color');
+
+  const newLayoutBricks = [buyRow.brick, priceAndBuy.brick, successfulBuyOutput.brick, failedBuyOutput.brick,
+    buySelected.brick, buyPrefix, buySuffix];
+  for (const brick of newLayoutBricks) for (const candidate of terminal.bricks) {
+    if (brick.key === candidate.key || brick.g !== candidate.g) continue;
+    assert(!bricksOverlap(brick, candidate), `New BUY layout brick ${brick.key} overlaps ${candidate.key}`);
+  }
 
   // Truck-only artifact keeps the existing spawner contract and vehicle logic.
   const vehicleRoot = v.one([...truck.r.entities()].filter(entity => entity.data?.EntityTag === 'Vehicle'), 'tagged vehicle root');

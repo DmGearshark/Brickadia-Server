@@ -47,7 +47,13 @@ Status: `In progress`
 - Placement-collision correction candidates: `outputs/scrap-runners-color-terminal-v3.brz` and `outputs/scrap-runners-truck1-color-enabled-v3.brz`.
   - Relocates/resizes only the four conflicting organizational labels. The critical preview receiver, edge detector, and all nine associated wires remain otherwise unchanged.
   - Validator now requires the truck preview event's execution and color wires, all seven placement-sensitive edge-detector wires, and non-overlapping bounds for the exact labels/gates involved in the v2 paste failure.
-  - Ownership validation remains deliberately deferred: this candidate assumes the seated terminal operator is the vehicle owner. Verify clean placement counts first, then tap preview, held preview, hex preview, purchase, insufficient-funds handling, same-color no-charge behavior, exit restoration, respawn persistence, and two-player isolation in game before promoting it.
+  - In-game verification on 2026-11-17: the user confirmed this version works as intended for the tested preview, purchase, and restoration flow.
+  - Ownership validation remains deliberately deferred: this candidate assumes the seated terminal operator is the vehicle owner. Two-player isolation still needs a later ownership-aware pass before SR-001 is complete.
+- Selectable-purchase terminal candidate: `outputs/scrap-runners-color-terminal-v4.brz`; continue using the already-confirmed `outputs/scrap-runners-truck1-color-enabled-v3.brz` because the vehicle-side logic did not change.
+  - Adds `BUY` as the sixth W/S-selectable row below `PRICE 100`, separated from Material Intensity and above the usage instructions. Space attempts a purchase only while `BUY` is selected; other Space presses are intentionally ignored.
+  - Adds outer configurable-chip pulse outputs `Successful Buy` and `Failed Buy`. Success pulses only after the saved-color write and Scrap debit complete. Failure combines only no vehicle in the zone, insufficient Scrap, and an already-saved color.
+  - Selection now wraps over all six rows. A/D remains inactive on `BUY`, and the selected row uses the same fixed-width `> BUY <` presentation without shifting the other text.
+  - Static validation covers the sixth-row wrap, selectable formatting, purchase guard, exact success/failure pulse sources, new-gate collision bounds, live-preview paths, and all existing truck/non-color regressions. In-game verification of the v4 terminal ports and revised monitor layout is still required.
 
 Acceptance checks:
 
