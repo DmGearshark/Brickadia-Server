@@ -9,7 +9,8 @@ const repack = require('./repack-with-donor-metadata.cjs');
 const { C, N, S, B, O } = require('./loadboard-lib.cjs');
 
 const INPUT = path.resolve(process.argv[2] || '/workspace/attachments/0729ece5-83e9-4bbc-9116-14b1d500027f/Change.brz');
-const OUTPUT = path.resolve(process.argv[3] || path.join(__dirname, '../../outputs/scrap-runners-truck1-color-terminal-v1.brz'));
+const TERMINAL_OUTPUT = path.resolve(process.argv[3] || path.join(__dirname, '../../outputs/scrap-runners-color-terminal-v2.brz'));
+const TRUCK_OUTPUT = path.resolve(process.argv[4] || path.join(__dirname, '../../outputs/scrap-runners-truck1-color-enabled-v2.brz'));
 
 const GRID = {
   main: 1,
@@ -87,8 +88,6 @@ function writeWithRemappedBrickHandles(scene, metadata) {
     value.BrickIndexInChunk = index;
     remapped++;
   });
-  assert(remapped > 0, 'Expected at least one stored BrickHandle to remap');
-
   const finalBytes = write(first, metadata).bytes;
   const finalScene = read(finalBytes);
   const validTargets = new Set(finalScene.bricks.map(brick => brick.key));
@@ -107,6 +106,61 @@ function writeWithRemappedBrickHandles(scene, metadata) {
   });
   assert.equal(validated, remapped, 'Stored BrickHandle validation count changed');
   return { bytes: finalBytes, remappedBrickHandles: remapped };
+}
+
+function sceneForGrids(scene, grids, { originEntity } = {}) {
+  const keptGrids = new Set(grids);
+  const bricks = scene.bricks.filter(brick => keptGrids.has(brick.g));
+  const brickKeys = new Set(bricks.map(brick => brick.key));
+  const links = scene.links.filter(link => brickKeys.has(link.key) && keptGrids.has(link.grid));
+  const joints = (scene.joints || []).filter(joint => brickKeys.has(joint.key));
+  const entityIds = new Set([...keptGrids].filter(grid => grid !== 1));
+  for (const joint of joints) entityIds.add(joint.entity);
+  const retainedEntities = [...scene.r.entities()].filter(entity => entityIds.has(entity.persistentIndex));
+  const origin = originEntity == null
+    ? { X: 0, Y: 0, Z: 0 }
+    : retainedEntities.find(entity => entity.persistentIndex === originEntity)?.location;
+  assert(origin, `Missing requested prefab-origin entity ${originEntity}`);
+  const entities = retainedEntities.map(entity => {
+    const shifted = clone(entity);
+    shifted.location = {
+      X: entity.location.X - origin.X,
+      Y: entity.location.Y - origin.Y,
+      Z: entity.location.Z - origin.Z,
+    };
+    return shifted;
+  });
+
+  // reskin-loadboard.write() normally serializes every donor entity. Present a
+  // filtered reader view so the terminal contains no hidden/empty truck grids,
+  // while all metadata/schema reads still bind to the original reader.
+  const reader = new Proxy(scene.r, {
+    get(target, property) {
+      if (property === 'entities') return () => entities.values();
+      if (property === 'gridIds') return () => [...keptGrids];
+      const value = Reflect.get(target, property, target);
+      return typeof value === 'function' ? value.bind(target) : value;
+    },
+  });
+  return {
+    ...scene,
+    r: reader,
+    bricks,
+    edges: scene.edges.filter(edge => brickKeys.has(edge.a) && brickKeys.has(edge.z)),
+    links,
+    joints,
+    entityOverrides: new Map([...(scene.entityOverrides || new Map())]
+      .filter(([grid]) => entityIds.has(grid))
+      .map(([grid, override]) => {
+        const shifted = clone(override);
+        shifted.location = {
+          X: override.location.X - origin.X,
+          Y: override.location.Y - origin.Y,
+          Z: override.location.Z - origin.Z,
+        };
+        return [grid, shifted];
+      })),
+  };
 }
 
 function build(input = INPUT) {
@@ -405,20 +459,41 @@ function build(input = INPUT) {
   scene.edges = scene.edges.filter(edge => !(edge.a === insert.key && edge.p === 'ExecOut')
     && !(edge.a === removeAt.key && edge.p === 'ExecOut'));
 
-  const previewChange = gate('Expr_ChangeDetector', GRID.terminal, [0, 210, 2], {
-    Input: { $variant: 'LinearColor', value: colorValue(1, 0, 1, 1) },
-    InputLast: { $variant: 'LinearColor', value: colorValue(1, 0, 1, 1) },
-    bSeeded: true,
-  }, { name: 'selected_color_change', color: [215, 85, 255] });
   const previewUnion = gate('Exec_Union', GRID.terminal, [60, 210, 2], {},
     { name: 'preview_enter_or_change', color: [215, 85, 255] });
   const previewInBounds = gate('Expr_LogicalNOT', GRID.terminal, [180, 210, 2], { bInput: true },
     { name: 'preview_target_valid', color: [215, 85, 255] });
   const previewBranch = gate('Exec_Branch', GRID.terminal, [240, 210, 2], { bCond: false },
     { name: 'preview_guard', color: [215, 85, 255] });
-  addEdge(selectedColorOutput, C.MicrochipOutput.NAME, 'RER_Output', previewChange, C.Expr_ChangeDetector.NAME, 'Input');
   addEdge(insert, C.Exec_ArrayVar_Insert.NAME, 'ExecOut', previewUnion, C.Exec_Union.NAME, 'ExecA');
-  addEdge(previewChange, C.Expr_ChangeDetector.NAME, 'bPulseOnChange', previewUnion, C.Exec_Union.NAME, 'ExecB');
+
+  // A pure ChangeDetector did not produce execution in game. Aggregate the
+  // actual post-write pulses for every Hue/Saturation/Brightness setter. The
+  // one-tick buffer lets all three parallel hex setters finish before reading
+  // the selected Color output, and also coalesces their same-tick pulses.
+  const colorVars = new Set([110, 111, 112].map(index => brickAt(GRID.colorCore, index).key));
+  const colorSetters = scene.bricks.filter(brick => brick.g === GRID.colorCore
+    && brick.comps.some(savedComponent => savedComponent.type === C.Exec_Var_Set.NAME)
+    && scene.edges.some(edge => edge.a && colorVars.has(edge.a)
+      && edge.z === brick.key && edge.zt === C.Exec_Var_Set.NAME && edge.q === 'VarRef'));
+  assert.equal(colorSetters.length, 15, 'Expected exactly 15 H/S/B write paths');
+  let previewPulse = { brick: colorSetters[0], type: C.Exec_Var_Set.NAME, port: 'ExecOut' };
+  for (let index = 1; index < colorSetters.length; index++) {
+    const union = gate('Exec_Union', GRID.colorCore, [576, 72 + (index - 1) * 48, 2], {},
+      { name: `preview_color_write_union_${index}`, color: [215, 85, 255] });
+    addEdge(previewPulse.brick, previewPulse.type, previewPulse.port, union, C.Exec_Union.NAME, 'ExecA');
+    addEdge(colorSetters[index], C.Exec_Var_Set.NAME, 'ExecOut', union, C.Exec_Union.NAME, 'ExecB');
+    previewPulse = { brick: union, type: C.Exec_Union.NAME, port: 'ExecOut' };
+  }
+  const previewDelay = gate('BufferTicks', GRID.colorCore, [576, 768, 2], {
+    TicksToWait: 1, ZeroTicksToWait: -1, CurrentTicks: 0,
+    Input: { $variant: 'WireGraphExec', value: {} }, Output: { $variant: 'WireGraphExec', value: {} },
+    Buffered: { $variant: 'WireGraphExec', value: {} }, bHasQueued: false, bIsOffTimer: false,
+  }, { name: 'preview_after_color_write', color: [215, 85, 255] });
+  label(GRID.colorCore, [552, 36, 2], 'LIVE VEHICLE PREVIEW\r\n15 H/S/B writes -> 1 tick -> terminal',
+    { name: 'live_preview_pulse_label', size: [45, 10, 2], textColor: { B: 255, G: 140, R: 235, A: 255 } });
+  addEdge(previewPulse.brick, previewPulse.type, previewPulse.port, previewDelay, C.BufferTicks.NAME, 'Input');
+  addEdge(previewDelay, C.BufferTicks.NAME, 'Output', previewUnion, C.Exec_Union.NAME, 'ExecB');
   addEdge(previewUnion, C.Exec_Union.NAME, 'ExecOut', previewTargetGet, C.Exec_ArrayVar_Get.NAME, 'Exec');
   addEdge(previewTargetGet, C.Exec_ArrayVar_Get.NAME, 'bOutOfBounds', previewInBounds, C.Expr_LogicalNOT.NAME, 'bInput');
   addEdge(previewTargetGet, C.Exec_ArrayVar_Get.NAME, 'ExecOut', previewBranch, C.Exec_Branch.NAME, 'Exec');
@@ -552,23 +627,70 @@ function build(input = INPUT) {
     return keys.has(edge.a) || keys.has(edge.z);
   }), materialGridSnapshot.edges, 'Truck1Material decoder wires changed');
 
-  const name = 'Scrap Runners - Truck1 Color Terminal v1';
-  const description = 'Live vehicle color preview, 100 Scrap purchase, packed RGB Truck1Color persistence, and targeted zone-exit restoration. Non-color vehicle stats and material logic preserved.';
-  const result = writeWithRemappedBrickHandles(scene, {
-    name,
-    description,
+  const terminalScene = sceneForGrids(scene, [1, GRID.terminal, 2532427, GRID.colorConfig, GRID.colorCore]);
+  const truckScene = sceneForGrids(scene, [
+    2532391, 2532392, 2532393, 2532394, 2532395, 2532396, 2532397, 2532398, 2532399,
+    GRID.truckOuter, GRID.truckGeneral, GRID.truckStats, GRID.colorApplyLoop, GRID.materialDecoder, GRID.colorController,
+  ], { originEntity: 2532391 });
+
+  const truckPrefab = clone(scene.r.prefabJson());
+  for (const key of ['bottomStudsPivot', 'studsExpandedPivot', 'topStudsPivot', 'boundsPivot']) {
+    truckPrefab.pivots[key].center = { x: 0, y: 0, z: 0 };
+    truckPrefab.pivots[key].halfExtent = { x: 100, y: 60, z: 50 };
+  }
+
+  const terminalName = 'Scrap Runners - Color Terminal v2';
+  const terminalDescription = 'Terminal-only colorizer with live tap, held-repeat, and hex preview; 100 Scrap purchase; and targeted zone-exit restoration. No test truck is bundled in the zone.';
+  const truckName = 'Scrap Runners - Truck1 Color Enabled v2';
+  const truckDescription = 'Truck1-only prefab for the existing vehicle spawner, with retained owner PlayerState, saved color loading, temporary preview events, and targeted restoration.';
+  const terminalResult = writeWithRemappedBrickHandles(terminalScene, {
+    name: terminalName,
+    description: terminalDescription,
     owner,
   });
-  const bytes = repack(result.bytes, inputBytes, { name, description });
-  return { bytes, scene, input, output: OUTPUT, grids: GRID, remappedBrickHandles: result.remappedBrickHandles };
+  const truckResult = writeWithRemappedBrickHandles(truckScene, {
+    name: truckName,
+    description: truckDescription,
+    owner,
+    prefab: truckPrefab,
+  });
+  const terminalBytes = repack(terminalResult.bytes, inputBytes, { name: terminalName, description: terminalDescription });
+  const truckBytes = repack(truckResult.bytes, inputBytes, { name: truckName, description: truckDescription });
+  return {
+    terminalBytes,
+    truckBytes,
+    scene,
+    terminalScene,
+    truckScene,
+    input,
+    terminalOutput: TERMINAL_OUTPUT,
+    truckOutput: TRUCK_OUTPUT,
+    grids: GRID,
+    terminalRemappedBrickHandles: terminalResult.remappedBrickHandles,
+    truckRemappedBrickHandles: truckResult.remappedBrickHandles,
+  };
 }
 
 if (require.main === module) {
   const context = build(INPUT);
-  fs.mkdirSync(path.dirname(OUTPUT), { recursive: true });
-  fs.writeFileSync(OUTPUT, context.bytes);
-  require('./test-scrap-runners-color-terminal.cjs')({ input: INPUT, output: OUTPUT });
-  console.log(JSON.stringify({ input: INPUT, output: OUTPUT, bytes: context.bytes.length, remappedBrickHandles: context.remappedBrickHandles }, null, 2));
+  fs.mkdirSync(path.dirname(TERMINAL_OUTPUT), { recursive: true });
+  fs.mkdirSync(path.dirname(TRUCK_OUTPUT), { recursive: true });
+  fs.writeFileSync(TERMINAL_OUTPUT, context.terminalBytes);
+  fs.writeFileSync(TRUCK_OUTPUT, context.truckBytes);
+  require('./test-scrap-runners-color-terminal.cjs')({
+    input: INPUT,
+    terminalOutput: TERMINAL_OUTPUT,
+    truckOutput: TRUCK_OUTPUT,
+  });
+  console.log(JSON.stringify({
+    input: INPUT,
+    terminalOutput: TERMINAL_OUTPUT,
+    terminalBytes: context.terminalBytes.length,
+    terminalRemappedBrickHandles: context.terminalRemappedBrickHandles,
+    truckOutput: TRUCK_OUTPUT,
+    truckBytes: context.truckBytes.length,
+    truckRemappedBrickHandles: context.truckRemappedBrickHandles,
+  }, null, 2));
 }
 
 module.exports = build;

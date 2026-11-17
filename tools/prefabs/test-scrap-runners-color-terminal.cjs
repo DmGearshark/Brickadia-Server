@@ -1,15 +1,15 @@
 'use strict';
 
 const fs = require('fs');
+const path = require('path');
 const assert = require('assert/strict');
 const { brdb } = require('brs-js');
 const { read } = require('./reskin-loadboard.cjs');
 const { C } = require('./loadboard-lib.cjs');
 
 const DEFAULT_INPUT = '/workspace/attachments/0729ece5-83e9-4bbc-9116-14b1d500027f/Change.brz';
-const DEFAULT_OUTPUT = require('path').join(__dirname, '../../outputs/scrap-runners-truck1-color-terminal-v1.brz');
-
-const indexOf = key => Number(JSON.parse(key)[4]);
+const DEFAULT_TERMINAL_OUTPUT = path.join(__dirname, '../../outputs/scrap-runners-color-terminal-v2.brz');
+const DEFAULT_TRUCK_OUTPUT = path.join(__dirname, '../../outputs/scrap-runners-truck1-color-enabled-v2.brz');
 
 function isBrickHandle(value) {
   return value && typeof value === 'object'
@@ -26,118 +26,67 @@ function visitValues(value, callback) {
   else for (const child of Object.values(value)) visitValues(child, callback);
 }
 
-function test({ input = DEFAULT_INPUT, output = DEFAULT_OUTPUT } = {}) {
-  const before = read(fs.readFileSync(input));
-  const after = read(fs.readFileSync(output));
-  const componentRows = scene => scene.bricks.flatMap(brick => brick.comps.map(component => ({ brick, component })));
-  const rows = componentRows(after);
+function api(scene) {
+  const rows = scene.bricks.flatMap(brick => brick.comps.map(component => ({ brick, component })));
+  const bricks = new Map(scene.bricks.map(brick => [brick.key, brick]));
   const one = (items, label) => {
     assert.equal(items.length, 1, `${label}: expected one, found ${items.length}`);
     return items[0];
   };
-  const row = (type, predicate = () => true, label = type) => one(rows.filter(item => item.component.type === type && predicate(item.component.data, item.brick)), label);
-  const incoming = (brick, type, port) => after.edges.filter(edge => edge.z === brick.key && edge.zt === type && edge.q === port);
-  const outgoing = (brick, type, port) => after.edges.filter(edge => edge.a === brick.key && edge.at === type && edge.p === port);
+  const row = (type, predicate = () => true, label = type) => one(
+    rows.filter(item => item.component.type === type && predicate(item.component.data, item.brick)), label,
+  );
+  const incoming = (brick, type, port) => scene.edges.filter(edge => edge.z === brick.key && edge.zt === type && edge.q === port);
+  const outgoing = (brick, type, port) => scene.edges.filter(edge => edge.a === brick.key && edge.at === type && edge.p === port);
+  return { rows, bricks, one, row, incoming, outgoing };
+}
 
-  // Preserve the source's non-public owner on every brick and entity.
+function assertOwnerAndMetadata(before, scene, label) {
   const sourceOwners = before.r.owners();
   const sourceOwnerIndex = sourceOwners.UserNames.findIndex(name => name !== 'PUBLIC');
   assert(sourceOwnerIndex >= 0, 'Source must have a non-public owner');
   const expectedOwnerId = brdb.guidToUuid(sourceOwners.UserIds[sourceOwnerIndex]).toLowerCase();
-  const outputOwners = after.r.owners();
+  const outputOwners = scene.r.owners();
   const outputOwnerIds = outputOwners.UserIds.map(brdb.guidToUuid).map(id => id.toLowerCase());
   const outputOwnerIndex = outputOwnerIds.indexOf(expectedOwnerId);
-  assert(outputOwnerIndex >= 0, 'Source owner ID is present in output');
-  assert.equal(outputOwners.UserNames[outputOwnerIndex], sourceOwners.UserNames[sourceOwnerIndex], 'Owner name changed');
-  assert.equal(outputOwners.DisplayNames[outputOwnerIndex], sourceOwners.DisplayNames[sourceOwnerIndex], 'Owner display name changed');
-  for (const grid of after.r.gridIds()) for (const chunk of after.r.brickChunkIndex(grid)) {
-    const soa = after.r.brickChunkSoa(grid, chunk.index);
-    assert(soa.OwnerIndices.every(index => index === outputOwnerIndex), `grid ${grid} current brick owner changed`);
-    assert(soa.OriginalOwnerIndices.every(index => index === outputOwnerIndex), `grid ${grid} original brick owner changed`);
+  assert(outputOwnerIndex >= 0, `${label}: source owner ID is present`);
+  assert.equal(outputOwners.UserNames[outputOwnerIndex], sourceOwners.UserNames[sourceOwnerIndex], `${label}: owner name changed`);
+  assert.equal(outputOwners.DisplayNames[outputOwnerIndex], sourceOwners.DisplayNames[sourceOwnerIndex], `${label}: owner display name changed`);
+  for (const grid of scene.r.gridIds()) for (const chunk of scene.r.brickChunkIndex(grid)) {
+    const soa = scene.r.brickChunkSoa(grid, chunk.index);
+    assert(soa.OwnerIndices.every(index => index === outputOwnerIndex), `${label}: grid ${grid} current owner changed`);
+    assert(soa.OriginalOwnerIndices.every(index => index === outputOwnerIndex), `${label}: grid ${grid} original owner changed`);
   }
-  assert([...after.r.entities()].every(entity => entity.ownerIndex === outputOwnerIndex), 'Entity current owner changed');
-  assert([...after.r.entities()].every(entity => entity.originalOwnerIndex === outputOwnerIndex), 'Entity original owner changed');
-  const bundle = JSON.parse(Buffer.from(after.r.fs.readFile('Meta/Bundle.json')).toString());
-  assert((bundle.authors || []).some(author => (author.iD || author.id || '').toLowerCase() === expectedOwnerId), 'Source owner must remain a bundle author');
-  assert.equal(bundle.gameVersion, JSON.parse(Buffer.from(before.r.fs.readFile('Meta/Bundle.json')).toString()).gameVersion, 'Donor game version changed');
+  assert([...scene.r.entities()].every(entity => entity.ownerIndex === outputOwnerIndex), `${label}: entity current owner changed`);
+  assert([...scene.r.entities()].every(entity => entity.originalOwnerIndex === outputOwnerIndex), `${label}: entity original owner changed`);
+  const bundle = JSON.parse(Buffer.from(scene.r.fs.readFile('Meta/Bundle.json')).toString());
+  assert((bundle.authors || []).some(author => (author.iD || author.id || '').toLowerCase() === expectedOwnerId), `${label}: bundle author missing`);
+  const donorBundle = JSON.parse(Buffer.from(before.r.fs.readFile('Meta/Bundle.json')).toString());
+  assert.equal(bundle.gameVersion, donorBundle.gameVersion, `${label}: donor game version changed`);
+}
 
-  // Purchase settings and menu.
-  const cost = row(C.Var.NAME, (data, brick) => data.Value?.value === 100
-    && brick.comps.some(component => component.type === C.Interact.NAME && component.data.PromptCustomLabel === 'Color purchase cost'), 'configurable color cost');
-  assert.equal(cost.component.data.Value.$variant, 'i64', 'Color cost should remain an integer leaderboard amount');
-  const menu = row(C.Expr_String_FormatText.NAME, data => /SPACE BUY COLOR \(\{F\} SCRAP\)/.test(data.FormatString), 'menu purchase instructions');
-  const colorConfigGrid = menu.brick.g;
-  assert.equal(cost.brick.g, colorConfigGrid, 'Cost and configurable menu must share the main green chip');
-  assert(incoming(menu.brick, C.Expr_String_FormatText.NAME, 'InputF').some(edge => edge.a === cost.brick.key), 'Cost must feed menu InputF');
-
-  // General chip retains owner PlayerState.
-  const generalGrid = one([...new Set(rows.filter(item => item.component.type === C.Exec_Entity_SetFrozen.NAME).map(item => item.brick.g))], 'general vehicle grid');
-  const terminalGrid = row(C.EntityZoneEvent_Left.NAME, () => true, 'terminal vehicle-zone left event').brick.g;
-  const ownerEvent = row(C.Event_CustomGlobal.NAME, (data, brick) => brick.g === generalGrid && data.EventName === 'UpdateCar', 'general UpdateCar event');
-  const ownerVar = row(C.Var.NAME, (data, brick) => brick.g === generalGrid && data.Value?.$variant === 'weak_object', 'general Owner PlayerState var');
-  const ownerOutput = row(C.MicrochipOutput.NAME, (data, brick) => brick.g === generalGrid && data.PortLabel === 'Owner PlayerState', 'Owner PlayerState output');
-  assert(outgoing(ownerEvent.brick, C.Event_CustomGlobal.NAME, 'DataOut1').length, 'General UpdateCar must store DataOut1');
-  assert(outgoing(ownerVar.brick, C.Var.NAME, 'Value').some(edge => edge.z === ownerOutput.brick.key), 'Owner var must feed output');
-
-  // Existing non-color getters retain the same keys/data and direct UpdateCar inputs.
-  const protectedKeys = ['Truck1Engine', 'Truck1Fueltank', 'Truck1Suspension', 'Truck1Steerangle', 'Truck1Steerturnspeed', 'Truck1WheelDistance', 'Truck1Material'];
-  for (const key of protectedKeys) {
-    const oldRows = componentRows(before).filter(item => item.component.type === C.Exec_Gamemode_GetLeaderboardValue.NAME && item.component.data.Key === key);
-    const newRows = rows.filter(item => item.component.type === C.Exec_Gamemode_GetLeaderboardValue.NAME && item.component.data.Key === key);
-    assert.equal(oldRows.length, 1, `Original ${key}`);
-    assert.equal(newRows.length, 1, `Output ${key}`);
-    assert.deepEqual(newRows[0].component.data, oldRows[0].component.data, `${key} data changed`);
-    const execSource = one(incoming(newRows[0].brick, C.Exec_Gamemode_GetLeaderboardValue.NAME, 'Exec'), `${key} Exec source`);
-    const playerSource = one(incoming(newRows[0].brick, C.Exec_Gamemode_GetLeaderboardValue.NAME, 'PlayerState'), `${key} PlayerState source`);
-    assert.equal(execSource.at, C.Event_CustomGlobal.NAME, `${key} Exec no longer comes from UpdateCar`);
-    assert.equal(playerSource.at, C.Event_CustomGlobal.NAME, `${key} PlayerState no longer comes from UpdateCar`);
+function assertIntegrity(scene, label) {
+  const brickKeys = new Set(scene.bricks.map(brick => brick.key));
+  const grids = new Set(scene.r.gridIds());
+  const entities = new Set([...scene.r.entities()].map(entity => entity.persistentIndex));
+  for (const edge of scene.edges) {
+    assert(brickKeys.has(edge.a), `${label}: dangling wire source ${edge.a}`);
+    assert(brickKeys.has(edge.z), `${label}: dangling wire target ${edge.z}`);
   }
-  const oldMaterialGrid = one([...new Set(componentRows(before).filter(item => item.component.type === C.Var.NAME
-    && item.component.data.Value?.$variant === 'dynamic_enum').map(item => item.brick.g))], 'original material decoder grid');
-  const newMaterialGrid = one([...new Set(rows.filter(item => item.component.type === C.Var.NAME
-    && item.component.data.Value?.$variant === 'dynamic_enum').map(item => item.brick.g))], 'output material decoder grid');
-  const oldMaterial = before.bricks.filter(brick => brick.g === oldMaterialGrid).map(brick => brick.comps);
-  const newMaterial = after.bricks.filter(brick => brick.g === newMaterialGrid).map(brick => brick.comps);
-  assert.deepEqual(newMaterial, oldMaterial, 'Truck1Material decoder changed');
-
-  // Only the color getter is routed through the retained owner and restore event.
-  const colorGetter = row(C.Exec_Gamemode_GetLeaderboardValue.NAME, data => data.Key === 'Truck1Color' && data.Value === 4977664, 'vehicle Truck1Color getter');
-  const colorPlayerSource = one(incoming(colorGetter.brick, C.Exec_Gamemode_GetLeaderboardValue.NAME, 'PlayerState'), 'Truck1Color PlayerState source');
-  assert.equal(colorPlayerSource.a, ownerOutput.brick.key, 'Truck1Color must use retained general-chip PlayerState');
-  const restoreEvent = row(C.Event_CustomGlobal.NAME, data => data.EventName === 'Restore Truck1Color' && data.bIsObjectEvent, 'vehicle restore event');
-  assert(outgoing(restoreEvent.brick, C.Event_CustomGlobal.NAME, 'ExecOut').length, 'Restore event must pulse color path');
-
-  // Dedicated controller contains both saved/preview sets and the body array/application loop.
-  const controllerGrid = one([...new Set(rows.filter(item => item.component.type === C.ArrayVar.NAME
-    && item.component.data.Value?.$elementType === 'brick_handle').map(item => item.brick.g))], 'Truck1Color controller grid');
-  const controllerBricks = after.bricks.filter(brick => brick.g === controllerGrid);
-  assert(controllerBricks.some(brick => brick.comps.some(component => component.type === C.Var.NAME && component.data.Value?.$variant === 'LinearColor')), 'Color display var not inside controller');
-  assert.equal(controllerBricks.filter(brick => brick.comps.some(component => component.type === C.Exec_Var_Set.NAME)).length, 2, 'Controller needs saved and preview VarSets');
-  assert(controllerBricks.some(brick => brick.comps.some(component => component.type === C.ArrayVar.NAME && component.data.Value?.$elementType === 'brick_handle')), 'Body array not inside controller');
-  assert(controllerBricks.some(brick => brick.comps.some(component => component.type === C.Expr_ChangeDetector.NAME)), 'Body color change detector not inside controller');
-  assert(after.bricks.find(brick => brick.comps.some(component => component.type === C.TextDisplay.NAME && /TRUCK1COLOR/.test(component.data.Text))), 'Controller chip label missing');
-
-  // Expanded, human-readable layouts must remain on their microchip planes.
-  function assertGridFitsPlane(grid, label) {
-    const entity = [...after.r.entities()].find(candidate => candidate.persistentIndex === grid);
-    assert(entity?.data?.PlaneCenter && entity?.data?.PlaneExtent, `${label} plane metadata`);
-    for (const brick of after.bricks.filter(candidate => candidate.g === grid)) {
-      for (const [axis, coordinate] of [['X', 0], ['Y', 1], ['Z', 2]]) {
-        const distance = Math.abs(brick.data.position[coordinate] - entity.data.PlaneCenter[axis]);
-        const halfSize = brick.data.size?.[coordinate] || 0;
-        assert(distance + halfSize <= entity.data.PlaneExtent[axis],
-          `${label} brick ${brick.key} is off-plane on ${axis}: ${distance}+${halfSize} > ${entity.data.PlaneExtent[axis]}`);
-      }
-    }
+  for (const link of scene.links) {
+    assert(brickKeys.has(link.key), `${label}: dangling microchip-link brick`);
+    assert(grids.has(link.grid), `${label}: dangling microchip-link grid ${link.grid}`);
   }
-  assertGridFitsPlane(terminalGrid, 'terminal organization');
-  assertGridFitsPlane(generalGrid, 'general PlayerState organization');
-  assertGridFitsPlane(controllerGrid, 'Truck1Color controller organization');
+  for (const joint of scene.joints || []) {
+    assert(brickKeys.has(joint.key), `${label}: dangling joint brick`);
+    assert(entities.has(joint.entity), `${label}: dangling joint entity ${joint.entity}`);
+  }
+}
 
-  // Every persistent BrickHandle must resolve after the writer renumbers grids.
-  const validBrickTargets = new Set(after.bricks.map(brick => brick.key));
-  let brickHandleCount = 0;
-  for (const brick of after.bricks) for (const savedComponent of brick.comps) visitValues(savedComponent.data, value => {
+function countAndValidateBrickHandles(scene, label) {
+  const targets = new Set(scene.bricks.map(brick => brick.key));
+  let count = 0;
+  for (const brick of scene.bricks) for (const component of brick.comps) visitValues(component.data, value => {
     if (!isBrickHandle(value) || value.GridPersistentIndex === 0 || value.BrickIndexInChunk === 0xffffffff) return;
     const key = JSON.stringify([
       value.GridPersistentIndex,
@@ -146,48 +95,201 @@ function test({ input = DEFAULT_INPUT, output = DEFAULT_OUTPUT } = {}) {
       value.ChunkIndex.Z,
       value.BrickIndexInChunk,
     ]);
-    assert(validBrickTargets.has(key), `Dangling stored BrickHandle: ${key}`);
-    brickHandleCount++;
+    assert(targets.has(key), `${label}: dangling stored BrickHandle ${key}`);
+    count++;
   });
-  assert(brickHandleCount >= 31, `Expected the Truck1 body references, found ${brickHandleCount}`);
+  return count;
+}
 
-  // Proven encoder topology.
-  const split = row(C.Expr_SplitColorSRGB.NAME, (_data, brick) => brick.g === terminalGrid, 'SplitColorSRGB encoder');
-  const redMultiply = row(C.Expr_MathMultiply.NAME, data => data.InputB?.value === 65536, 'red x65536');
-  const greenMultiply = row(C.Expr_MathMultiply.NAME, data => data.InputB?.value === 256, 'green x256');
-  assert(outgoing(split.brick, C.Expr_SplitColorSRGB.NAME, 'R').some(edge => edge.z === redMultiply.brick.key), 'R encoder wire');
-  assert(outgoing(split.brick, C.Expr_SplitColorSRGB.NAME, 'G').some(edge => edge.z === greenMultiply.brick.key), 'G encoder wire');
-  const packedAdds = rows.filter(item => item.brick.g === terminalGrid && item.component.type === C.Expr_MathAdd.NAME
-    && outgoing(item.brick, C.Expr_MathAdd.NAME, 'Output').some(edge => edge.zt === C.Exec_Gamemode_SetLeaderboardValue.NAME || edge.zt === C.Expr_CompareNotEqual.NAME));
+function assertGridFitsPlane(scene, grid, label) {
+  const entity = [...scene.r.entities()].find(candidate => candidate.persistentIndex === grid);
+  assert(entity?.data?.PlaneCenter && entity?.data?.PlaneExtent, `${label}: plane metadata`);
+  for (const brick of scene.bricks.filter(candidate => candidate.g === grid)) {
+    for (const [axis, coordinate] of [['X', 0], ['Y', 1], ['Z', 2]]) {
+      const distance = Math.abs(brick.data.position[coordinate] - entity.data.PlaneCenter[axis]);
+      const halfSize = brick.data.size?.[coordinate] || 0;
+      assert(distance + halfSize <= entity.data.PlaneExtent[axis],
+        `${label}: brick ${brick.key} off-plane on ${axis}: ${distance}+${halfSize} > ${entity.data.PlaneExtent[axis]}`);
+    }
+  }
+}
+
+function test({ input = DEFAULT_INPUT, terminalOutput = DEFAULT_TERMINAL_OUTPUT, truckOutput = DEFAULT_TRUCK_OUTPUT } = {}) {
+  const before = read(fs.readFileSync(input));
+  const terminal = read(fs.readFileSync(terminalOutput));
+  const truck = read(fs.readFileSync(truckOutput));
+  const sourceRows = before.bricks.flatMap(brick => brick.comps.map(component => ({ brick, component })));
+  const t = api(terminal);
+  const v = api(truck);
+
+  assertOwnerAndMetadata(before, terminal, 'terminal');
+  assertOwnerAndMetadata(before, truck, 'truck');
+  assertIntegrity(terminal, 'terminal');
+  assertIntegrity(truck, 'truck');
+
+  // The terminal artifact is genuinely terminal-only: root, swatch, and three
+  // microchips. No hidden test vehicle, vehicle receiver, or truck stat logic.
+  const terminalEntities = [...terminal.r.entities()];
+  assert.equal(terminal.r.gridIds().length, 5, 'Terminal should contain root + swatch + 3 microchip grids');
+  assert.equal(terminalEntities.filter(entity => entity.typeName === 'Entity_DynamicBrickGrid').length, 1, 'Terminal should retain only its preview swatch dynamic grid');
+  assert.equal(terminalEntities.filter(entity => entity.typeName === 'Entity_MicrochipDynamicBrickGrid').length, 3, 'Terminal should retain exactly three microchips');
+  assert(!terminalEntities.some(entity => entity.typeName.startsWith('Entity_Wheel_')), 'Terminal still contains a vehicle wheel');
+  assert(!terminalEntities.some(entity => entity.data?.EntityTag === 'Vehicle'), 'Terminal still contains a tagged vehicle');
+  assert(!t.rows.some(item => item.component.type === C.Event_CustomGlobal.NAME && ['UpdateCar', 'Restore Truck1Color'].includes(item.component.data.EventName)), 'Terminal still contains vehicle-side event receivers');
+  assert(!t.rows.some(item => item.component.type === C.Exec_Gamemode_GetLeaderboardValue.NAME
+    && /^Truck1/.test(item.component.data.Key) && item.component.data.Key !== 'Truck1Color'), 'Terminal still contains non-color Truck1 getters');
+  assert.equal(t.rows.filter(item => item.component.type === C.Exec_Gamemode_GetLeaderboardValue.NAME
+    && item.component.data.Key === 'Truck1Color').length, 1, 'Terminal should retain only its purchase-time Truck1Color read');
+  assert.equal(countAndValidateBrickHandles(terminal, 'terminal'), 0, 'Terminal should not retain truck body BrickHandles');
+
+  // Purchase settings and configurable menu remain in the terminal.
+  const cost = t.row(C.Var.NAME, (data, brick) => data.Value?.value === 100
+    && brick.comps.some(component => component.type === C.Interact.NAME && component.data.PromptCustomLabel === 'Color purchase cost'), 'configurable color cost');
+  assert.equal(cost.component.data.Value.$variant, 'i64', 'Color cost should remain an integer');
+  const menu = t.row(C.Expr_String_FormatText.NAME, data => /SPACE BUY COLOR \(\{F\} SCRAP\)/.test(data.FormatString), 'menu purchase instructions');
+  const colorConfigGrid = menu.brick.g;
+  assert.equal(cost.brick.g, colorConfigGrid, 'Cost and menu must share the green config chip');
+  assert(t.incoming(menu.brick, C.Expr_String_FormatText.NAME, 'InputF').some(edge => edge.a === cost.brick.key), 'Cost must feed menu InputF');
+
+  const terminalGrid = t.row(C.EntityZoneEvent_Left.NAME, () => true, 'terminal zone-left event').brick.g;
+  const inputSplitter = t.row(C.InputSplitter.NAME, () => true, 'color-customizer seat input splitter');
+  const previewSend = t.row(C.Exec_SendCustomEventGlobal.NAME, data => data.EventName === 'Interface with Vehicle', 'preview sender');
+  const selectedColor = t.row(C.MicrochipOutput.NAME, (data, brick) => data.PortLabel === 'Color'
+    && t.outgoing(brick, C.MicrochipOutput.NAME, 'RER_Output').some(edge => edge.z === previewSend.brick.key), 'selected Color output');
+  assert(t.incoming(previewSend.brick, C.Exec_SendCustomEventGlobal.NAME, 'DataIn1').some(edge => edge.a === selectedColor.brick.key), 'Selected color must feed preview payload');
+
+  // Walk from the guarded preview sender back to the enter/change union.
+  const previewBranchEdge = t.one(t.incoming(previewSend.brick, C.Exec_SendCustomEventGlobal.NAME, 'ExecIn'), 'preview sender ExecIn');
+  assert.equal(previewBranchEdge.at, C.Exec_Branch.NAME, 'Preview sender must be target-guarded');
+  const previewBranch = t.bricks.get(previewBranchEdge.a);
+  const targetGetEdge = t.one(t.incoming(previewBranch, C.Exec_Branch.NAME, 'Exec'), 'preview guard Exec');
+  assert.equal(targetGetEdge.at, C.Exec_ArrayVar_Get.NAME, 'Preview guard must follow vehicle array get');
+  const targetGet = t.bricks.get(targetGetEdge.a);
+  const previewUnionEdge = t.one(t.incoming(targetGet, C.Exec_ArrayVar_Get.NAME, 'Exec'), 'preview target-get Exec');
+  assert.equal(previewUnionEdge.at, C.Exec_Union.NAME, 'Preview target get must follow enter/change union');
+  const previewUnion = t.bricks.get(previewUnionEdge.a);
+  const enterEdge = t.one(t.incoming(previewUnion, C.Exec_Union.NAME, 'ExecA'), 'preview enter pulse');
+  assert.equal(enterEdge.at, C.Exec_ArrayVar_Insert.NAME, 'Zone insert must request the initial preview');
+  const changeEdge = t.one(t.incoming(previewUnion, C.Exec_Union.NAME, 'ExecB'), 'preview color-change pulse');
+  assert.equal(changeEdge.at, C.BufferTicks.NAME, 'Live preview must use the buffered H/S/B write pulse, not a ChangeDetector');
+  const previewDelay = t.bricks.get(changeEdge.a);
+  const previewDelayData = previewDelay.comps.find(component => component.type === C.BufferTicks.NAME).data;
+  assert.equal(previewDelayData.TicksToWait, 1, 'Live preview should wait exactly one tick');
+  assert(!t.incoming(previewUnion, C.Exec_Union.NAME, 'ExecB').some(edge => edge.at === C.Expr_ChangeDetector.NAME), 'Failed ChangeDetector preview path remains');
+
+  // Recursively prove all 15 actual H/S/B VarSet completion pulses feed the buffer.
+  const setterKeys = new Set();
+  const walkPulse = edge => {
+    if (edge.at === C.Exec_Var_Set.NAME && edge.p === 'ExecOut') {
+      setterKeys.add(edge.a);
+      return;
+    }
+    assert.equal(edge.at, C.Exec_Union.NAME, `Unexpected live-preview pulse source ${edge.at}.${edge.p}`);
+    const union = t.bricks.get(edge.a);
+    walkPulse(t.one(t.incoming(union, C.Exec_Union.NAME, 'ExecA'), 'preview union ExecA'));
+    walkPulse(t.one(t.incoming(union, C.Exec_Union.NAME, 'ExecB'), 'preview union ExecB'));
+  };
+  walkPulse(t.one(t.incoming(previewDelay, C.BufferTicks.NAME, 'Input'), 'preview delay input'));
+  assert.equal(setterKeys.size, 15, 'All 15 H/S/B setters must trigger live preview');
+  const varCounts = new Map();
+  for (const key of setterKeys) {
+    const setter = t.bricks.get(key);
+    const varEdge = t.one(t.incoming(setter, C.Exec_Var_Set.NAME, 'VarRef'), 'preview setter VarRef');
+    varCounts.set(varEdge.a, (varCounts.get(varEdge.a) || 0) + 1);
+  }
+  assert.deepEqual([...varCounts.values()].sort((a, b) => a - b), [5, 5, 5], 'Hue, Saturation, and Brightness should each have five write paths');
+  const hsbDefaults = [...varCounts.keys()].map(key => {
+    const variable = t.bricks.get(key);
+    return variable.comps.find(component => component.type === C.Var.NAME).data.Value.value;
+  }).sort((a, b) => a - b);
+  assert.deepEqual(hsbDefaults, [100, 100, 286], 'Live-preview variables are not H/S/B');
+
+  // Space starts purchase only; color writes and zone entry start preview.
+  assert(!terminal.edges.some(edge => edge.a === inputSplitter.brick.key && edge.p === 'InputUp' && edge.z === previewSend.brick.key), 'Space still directly previews');
+  assert(terminal.edges.some(edge => edge.a === inputSplitter.brick.key && edge.p === 'InputUp' && edge.zt === C.Exec_ArrayVar_Get.NAME), 'Space must start guarded purchase');
+
+  // Proven RGB integer encoder and purchase transaction.
+  const split = t.row(C.Expr_SplitColorSRGB.NAME, (_data, brick) => brick.g === terminalGrid, 'SplitColorSRGB encoder');
+  const redMultiply = t.row(C.Expr_MathMultiply.NAME, data => data.InputB?.value === 65536, 'red x65536');
+  const greenMultiply = t.row(C.Expr_MathMultiply.NAME, data => data.InputB?.value === 256, 'green x256');
+  assert(t.outgoing(split.brick, C.Expr_SplitColorSRGB.NAME, 'R').some(edge => edge.z === redMultiply.brick.key), 'R encoder wire');
+  assert(t.outgoing(split.brick, C.Expr_SplitColorSRGB.NAME, 'G').some(edge => edge.z === greenMultiply.brick.key), 'G encoder wire');
+  const packedAdds = t.rows.filter(item => item.brick.g === terminalGrid && item.component.type === C.Expr_MathAdd.NAME
+    && t.outgoing(item.brick, C.Expr_MathAdd.NAME, 'Output').some(edge => edge.zt === C.Exec_Gamemode_SetLeaderboardValue.NAME || edge.zt === C.Expr_CompareNotEqual.NAME));
   assert.equal(packedAdds.length, 1, 'One final packed RGB output');
+  const setColor = t.row(C.Exec_Gamemode_SetLeaderboardValue.NAME, data => data.Key === 'Truck1Color', 'Truck1Color setter');
+  const debit = t.row(C.Exec_Gamemode_IncrementLeaderboardValue.NAME, data => data.Key === 'Scrap', 'Scrap debit');
+  assert(t.outgoing(setColor.brick, C.Exec_Gamemode_SetLeaderboardValue.NAME, 'ExecOut').some(edge => edge.z === debit.brick.key && edge.q === 'Exec'), 'Set color must precede debit');
+  assert(t.incoming(setColor.brick, C.Exec_Gamemode_SetLeaderboardValue.NAME, 'Value').some(edge => edge.a === packedAdds[0].brick.key), 'Packed RGB must feed setter');
+  assert(t.incoming(debit.brick, C.Exec_Gamemode_IncrementLeaderboardValue.NAME, 'Value').some(edge => edge.at === C.Expr_MathNegate.NAME), 'Negative configurable cost must feed debit');
+  assert(t.rows.some(item => item.component.type === C.Expr_CompareGreaterOrEqual.NAME
+    && t.incoming(item.brick, C.Expr_CompareGreaterOrEqual.NAME, 'InputB').some(edge => edge.a === cost.brick.key)), 'Affordability must use configurable cost');
 
-  // Transaction: affordability + changed color -> Set Truck1Color -> debit Scrap.
-  const setColor = row(C.Exec_Gamemode_SetLeaderboardValue.NAME, data => data.Key === 'Truck1Color', 'Truck1Color setter');
-  const debit = row(C.Exec_Gamemode_IncrementLeaderboardValue.NAME, data => data.Key === 'Scrap', 'Scrap debit');
-  assert(outgoing(setColor.brick, C.Exec_Gamemode_SetLeaderboardValue.NAME, 'ExecOut').some(edge => edge.z === debit.brick.key && edge.q === 'Exec'), 'Set color must precede debit');
-  assert(incoming(setColor.brick, C.Exec_Gamemode_SetLeaderboardValue.NAME, 'Value').some(edge => packedAdds[0].brick.key === edge.a), 'Packed RGB must feed Truck1Color setter');
-  assert(incoming(debit.brick, C.Exec_Gamemode_IncrementLeaderboardValue.NAME, 'Value').some(edge => edge.at === C.Expr_MathNegate.NAME), 'Configurable negative cost must feed debit');
-  assert(rows.some(item => item.component.type === C.Expr_CompareGreaterOrEqual.NAME
-    && incoming(item.brick, C.Expr_CompareGreaterOrEqual.NAME, 'InputB').some(edge => edge.a === cost.brick.key)), 'Affordability must use configurable cost');
-  assert(rows.some(item => item.component.type === C.Expr_CompareNotEqual.NAME
-    && outgoing(item.brick, C.Expr_CompareNotEqual.NAME, 'bOutput').some(edge => edge.zt === C.Exec_Branch.NAME)), 'Same saved color must be rejected');
+  // Truck-only artifact keeps the existing spawner contract and vehicle logic.
+  const vehicleRoot = v.one([...truck.r.entities()].filter(entity => entity.data?.EntityTag === 'Vehicle'), 'tagged vehicle root');
+  assert.deepEqual(vehicleRoot.location, { X: 0, Y: 0, Z: 0 }, 'Truck prefab should be centered on its vehicle root for the existing spawner');
+  assert.equal([...truck.r.entities()].filter(entity => entity.typeName.startsWith('Entity_Wheel_')).length, 4, 'Truck artifact should retain four wheels');
+  assert(!v.rows.some(item => [C.EntityZoneEvent_Left.NAME, C.EntityZoneEvent_Entered.NAME].includes(item.component.type)), 'Truck artifact still contains terminal zone logic');
+  assert(!v.rows.some(item => item.component.type === C.Exec_SendCustomEventGlobal.NAME && item.component.data.EventName === 'Interface with Vehicle'), 'Truck artifact still contains terminal preview sender');
+  assert(!v.rows.some(item => item.component.type === C.Interact.NAME && item.component.data.PromptCustomLabel === 'Color purchase cost'), 'Truck artifact still contains terminal purchase config');
 
-  // Space starts purchase, not preview. Color changes drive guarded preview.
-  const inputSplitter = row(C.InputSplitter.NAME, (_data, brick) => brick.g !== generalGrid, 'color-customizer seat input splitter');
-  const previewSend = row(C.Exec_SendCustomEventGlobal.NAME, data => data.EventName === 'Interface with Vehicle', 'preview sender');
-  assert(!after.edges.some(edge => edge.a === inputSplitter.brick.key && edge.p === 'InputUp' && edge.z === previewSend.brick.key), 'Space still previews');
-  assert(after.edges.some(edge => edge.a === inputSplitter.brick.key && edge.p === 'InputUp' && edge.zt === C.Exec_ArrayVar_Get.NAME), 'Space must start guarded purchase');
-  assert(incoming(previewSend.brick, C.Exec_SendCustomEventGlobal.NAME, 'ExecIn').some(edge => edge.at === C.Exec_Branch.NAME), 'Preview sender must be target-guarded');
+  const generalGrid = v.one([...new Set(v.rows.filter(item => item.component.type === C.Exec_Entity_SetFrozen.NAME).map(item => item.brick.g))], 'general vehicle grid');
+  const ownerEvent = v.row(C.Event_CustomGlobal.NAME, (data, brick) => brick.g === generalGrid && data.EventName === 'UpdateCar', 'general UpdateCar event');
+  const ownerVar = v.row(C.Var.NAME, (data, brick) => brick.g === generalGrid && data.Value?.$variant === 'weak_object', 'general Owner PlayerState var');
+  const ownerOutput = v.row(C.MicrochipOutput.NAME, (data, brick) => brick.g === generalGrid && data.PortLabel === 'Owner PlayerState', 'Owner PlayerState output');
+  assert(v.outgoing(ownerEvent.brick, C.Event_CustomGlobal.NAME, 'DataOut1').length, 'General UpdateCar must store DataOut1');
+  assert(v.outgoing(ownerVar.brick, C.Var.NAME, 'Value').some(edge => edge.z === ownerOutput.brick.key), 'Owner var must feed output');
 
-  // Zone exit targets the exact leaving entity and triggers only the color restore event.
-  const restoreSend = row(C.Exec_SendCustomEventGlobal.NAME, data => data.EventName === 'Restore Truck1Color', 'zone-exit restore sender');
+  const protectedKeys = ['Truck1Engine', 'Truck1Fueltank', 'Truck1Suspension', 'Truck1Steerangle', 'Truck1Steerturnspeed', 'Truck1WheelDistance', 'Truck1Material'];
+  for (const key of protectedKeys) {
+    const oldRows = sourceRows.filter(item => item.component.type === C.Exec_Gamemode_GetLeaderboardValue.NAME && item.component.data.Key === key);
+    const newRows = v.rows.filter(item => item.component.type === C.Exec_Gamemode_GetLeaderboardValue.NAME && item.component.data.Key === key);
+    assert.equal(oldRows.length, 1, `Original ${key}`);
+    assert.equal(newRows.length, 1, `Truck ${key}`);
+    assert.deepEqual(newRows[0].component.data, oldRows[0].component.data, `${key} data changed`);
+    const execSource = v.one(v.incoming(newRows[0].brick, C.Exec_Gamemode_GetLeaderboardValue.NAME, 'Exec'), `${key} Exec source`);
+    const playerSource = v.one(v.incoming(newRows[0].brick, C.Exec_Gamemode_GetLeaderboardValue.NAME, 'PlayerState'), `${key} PlayerState source`);
+    assert.equal(execSource.at, C.Event_CustomGlobal.NAME, `${key} Exec no longer comes from UpdateCar`);
+    assert.equal(playerSource.at, C.Event_CustomGlobal.NAME, `${key} PlayerState no longer comes from UpdateCar`);
+  }
+
+  const oldMaterialGrid = new Set(sourceRows.filter(item => item.component.type === C.Var.NAME
+    && item.component.data.Value?.$variant === 'dynamic_enum').map(item => item.brick.g));
+  const newMaterialGrid = new Set(v.rows.filter(item => item.component.type === C.Var.NAME
+    && item.component.data.Value?.$variant === 'dynamic_enum').map(item => item.brick.g));
+  assert.equal(oldMaterialGrid.size, 1, 'Original material decoder grid');
+  assert.equal(newMaterialGrid.size, 1, 'Truck material decoder grid');
+  const oldMaterial = before.bricks.filter(brick => brick.g === [...oldMaterialGrid][0]).map(brick => brick.comps);
+  const newMaterial = truck.bricks.filter(brick => brick.g === [...newMaterialGrid][0]).map(brick => brick.comps);
+  assert.deepEqual(newMaterial, oldMaterial, 'Truck1Material decoder changed');
+
+  const colorGetter = v.row(C.Exec_Gamemode_GetLeaderboardValue.NAME, data => data.Key === 'Truck1Color' && data.Value === 4977664, 'vehicle Truck1Color getter');
+  const colorPlayerSource = v.one(v.incoming(colorGetter.brick, C.Exec_Gamemode_GetLeaderboardValue.NAME, 'PlayerState'), 'Truck1Color PlayerState source');
+  assert.equal(colorPlayerSource.a, ownerOutput.brick.key, 'Truck1Color must use retained owner PlayerState');
+  const restoreEvent = v.row(C.Event_CustomGlobal.NAME, data => data.EventName === 'Restore Truck1Color' && data.bIsObjectEvent, 'vehicle restore event');
+  assert(v.outgoing(restoreEvent.brick, C.Event_CustomGlobal.NAME, 'ExecOut').length, 'Restore event must pulse color path');
+
+  const controllerGrid = v.one([...new Set(v.rows.filter(item => item.component.type === C.ArrayVar.NAME
+    && item.component.data.Value?.$elementType === 'brick_handle').map(item => item.brick.g))], 'Truck1Color controller grid');
+  const controllerBricks = truck.bricks.filter(brick => brick.g === controllerGrid);
+  assert(controllerBricks.some(brick => brick.comps.some(component => component.type === C.Var.NAME && component.data.Value?.$variant === 'LinearColor')), 'Color display var not inside controller');
+  assert.equal(controllerBricks.filter(brick => brick.comps.some(component => component.type === C.Exec_Var_Set.NAME)).length, 2, 'Controller needs saved and preview VarSets');
+  assert(controllerBricks.some(brick => brick.comps.some(component => component.type === C.Expr_ChangeDetector.NAME)), 'Body color application detector missing');
+  assert.equal(countAndValidateBrickHandles(truck, 'truck'), 33, 'Truck must retain 31 body and 2 application-loop BrickHandles');
+
+  // Terminal exit sender and truck receiver deliberately live in separate prefabs.
+  const restoreSend = t.row(C.Exec_SendCustomEventGlobal.NAME, data => data.EventName === 'Restore Truck1Color', 'zone-exit restore sender');
   assert.equal(restoreSend.component.data.DataIn1.$variant, restoreEvent.component.data.DataOut1.$variant, 'Restore sender/receiver signature mismatch');
-  const targetEdge = one(incoming(restoreSend.brick, C.Exec_SendCustomEventGlobal.NAME, 'Target'), 'restore Target');
-  const execEdge = one(incoming(restoreSend.brick, C.Exec_SendCustomEventGlobal.NAME, 'ExecIn'), 'restore Exec');
-  assert.equal(targetEdge.at, C.EntityZoneEvent_Left.NAME, 'Restore Target must be ZoneLeft.Entity');
-  assert.equal(targetEdge.p, 'Entity');
-  assert.equal(execEdge.at, C.EntityZoneEvent_Left.NAME, 'Restore Exec must be ZoneLeft.Exec');
-  assert.equal(execEdge.p, 'Exec');
+  const restoreTarget = t.one(t.incoming(restoreSend.brick, C.Exec_SendCustomEventGlobal.NAME, 'Target'), 'restore Target');
+  const restoreExec = t.one(t.incoming(restoreSend.brick, C.Exec_SendCustomEventGlobal.NAME, 'ExecIn'), 'restore Exec');
+  assert.equal(restoreTarget.at, C.EntityZoneEvent_Left.NAME, 'Restore target must be ZoneLeft.Entity');
+  assert.equal(restoreTarget.p, 'Entity');
+  assert.equal(restoreExec.at, C.EntityZoneEvent_Left.NAME, 'Restore execution must be ZoneLeft.Exec');
+  assert.equal(restoreExec.p, 'Exec');
+
+  assertGridFitsPlane(terminal, terminalGrid, 'terminal organization');
+  assertGridFitsPlane(truck, generalGrid, 'general PlayerState organization');
+  assertGridFitsPlane(truck, controllerGrid, 'Truck1Color controller organization');
 
   // Numeric codec sanity checks against the existing integer decoder contract.
   const pack = (r, g, b) => r * 65536 + g * 256 + b;
@@ -198,17 +300,25 @@ function test({ input = DEFAULT_INPUT, output = DEFAULT_OUTPUT } = {}) {
   assert.deepEqual(unpack(4977664), [75, 244, 0]);
 
   console.log(JSON.stringify({
-    output,
-    bricks: after.bricks.length,
-    wires: after.edges.length,
-    colorCost: 100,
-    validatedBrickHandles: brickHandleCount,
+    terminalOutput,
+    terminalBricks: terminal.bricks.length,
+    terminalWires: terminal.edges.length,
+    terminalBrickHandles: 0,
+    livePreviewSetters: setterKeys.size,
+    truckOutput,
+    truckBricks: truck.bricks.length,
+    truckWires: truck.edges.length,
+    truckBrickHandles: 33,
     protectedLeaderboardGetters: protectedKeys,
     checks: 'passed',
   }, null, 2));
-  return after;
+  return { terminal, truck };
 }
 
-if (require.main === module) test({ input: process.argv[2] || DEFAULT_INPUT, output: process.argv[3] || DEFAULT_OUTPUT });
+if (require.main === module) test({
+  input: process.argv[2] || DEFAULT_INPUT,
+  terminalOutput: process.argv[3] || DEFAULT_TERMINAL_OUTPUT,
+  truckOutput: process.argv[4] || DEFAULT_TRUCK_OUTPUT,
+});
 
 module.exports = test;

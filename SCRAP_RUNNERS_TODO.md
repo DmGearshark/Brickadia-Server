@@ -34,10 +34,16 @@ Status: `In progress`
 - First color-purchase integration candidate: `outputs/scrap-runners-truck1-color-terminal-v1.brz`.
   - Stores the spawner-provided owner PlayerState in the truck's general-purpose chip for reuse by later vehicle terminals.
   - Moves saved-color decoding, temporary preview selection, body-brick references, change detection, and application into the dedicated `Truck1Color Controller`; `Truck1Material` remains separate and unchanged.
-  - A/D and hex changes preview for free on the vehicle currently in the terminal zone. Space purchases only when `Scrap >= 100` and the packed RGB value differs from the saved `Truck1Color`; the score is written before 100 Scrap is deducted.
+  - Space purchases only when `Scrap >= 100` and the packed RGB value differs from the saved `Truck1Color`; the score is written before 100 Scrap is deducted.
   - Vehicle-zone exit targets the exact leaving entity and reloads only its `Truck1Color` getter. Engine, fuel, suspension, steering, wheel-spacing, and material leaderboard paths are structurally preserved.
   - Generator validation remaps and resolves all 33 stored brick handles after prefab grid renumbering, keeps the 31 intended body targets intact, preserves the Gearshark owner ID on every brick/entity, and expands the organized logic-chip planes so all gates remain accessible.
-  - Ownership validation remains deliberately deferred: this candidate assumes the seated terminal operator is the vehicle owner. Verify live preview, purchase, insufficient-funds handling, same-color no-charge behavior, exit restoration, respawn persistence, and two-player isolation in game before promoting it.
+  - In-game testing found that its expression-only color ChangeDetector did not execute live preview; the vehicle updated only after purchase. This combined terminal-and-test-truck candidate is superseded by v2.
+- Split live-preview correction candidates: `outputs/scrap-runners-color-terminal-v2.brz` and `outputs/scrap-runners-truck1-color-enabled-v2.brz`.
+  - The terminal prefab contains the monitor, seat, zone, preview swatch, config chip, and terminal logic only. The bundled test truck and every vehicle grid/body reference were fully removed rather than merely moved outside the zone.
+  - The Truck1 prefab contains the modified vehicle only, is recentered on the tagged vehicle root for clean prefab-spawner placement, and is intended to replace the existing Truck1 prefab entry inside the current vehicle spawner; it does not require a new spawner.
+  - Live preview is driven by the completion pulses of all 15 Hue/Saturation/Brightness write gates, covering A/D taps, held repeats, and accepted hex input. A one-tick buffer lets all three parallel hex writes settle and coalesces their same-tick pulses before the preview event reads the selected color.
+  - Static validation confirms the terminal has 0 stored truck BrickHandles and no vehicle receiver/stat logic; the truck retains and resolves all 33 stored BrickHandles, four wheel entities, owner PlayerState handling, color restore receiver, and all seven protected non-color leaderboard paths.
+  - Ownership validation remains deliberately deferred: this candidate assumes the seated terminal operator is the vehicle owner. Verify tap preview, held preview, hex preview, purchase, insufficient-funds handling, same-color no-charge behavior, exit restoration, respawn persistence, and two-player isolation in game before promoting it.
 
 Acceptance checks:
 
