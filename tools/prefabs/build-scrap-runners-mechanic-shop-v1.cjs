@@ -356,30 +356,33 @@ function build(input = INPUT) {
   const displayEnable = findFrame(C.Rerouter.NAME, () => true, 'screen enable rerouter');
   const sounds = frameNodes.filter(node => node.type === C.OneShotAudioEmitter.NAME);
   assert.equal(sounds.length, 3, 'three sound emitters');
-  const successSound = sounds[0];
-  const failureSound = sounds[1];
-  const navigationSound = sounds[2];
+  const soundGroups = new Map();
+  for (const sound of sounds) {
+    const rows = soundGroups.get(sound.data.AudioDescriptor) || [];
+    rows.push(sound);
+    soundGroups.set(sound.data.AudioDescriptor, rows);
+  }
+  const successSounds = [...soundGroups.values()].find(rows => rows.length === 2);
+  const failureSounds = [...soundGroups.values()].find(rows => rows.length === 1);
+  assert(successSounds, 'two cash-register success emitters');
+  assert(failureSounds, 'one failed-purchase beep emitter');
+  assert.deepEqual(successSounds.map(sound => sound.data.PitchMultiplier).sort(), [0.5, 0.75],
+    'success uses both configured cash-register pitches');
+  const failureSound = failureSounds[0];
+  assert.equal(failureSound.data.PitchMultiplier, 0.75, 'failure uses configured beep pitch');
 
   const titleTemplate = clone(frameItems.flatMap(item => item.comps)
     .find(saved => saved.type === C.TextDisplay.NAME && saved.data.Text === 'Mechanic Shop').data);
-  const chipSpecs = [
-    ['session', [115, -65, -25], COLOR.session, 'VEHICLE +\r\nOWNER',
-      { X: 125, Y: -55, Z: 0 }, { X: 135, Y: 85, Z: 2 }],
-    ['input', [115, -45, -25], COLOR.input, 'INPUT +\r\nSELECTION',
-      { X: 140, Y: -50, Z: 0 }, { X: 150, Y: 80, Z: 2 }],
-    ['config', [115, -25, -25], COLOR.config, 'CATALOG\r\nCONFIG',
-      { X: 215, Y: -55, Z: 0 }, { X: 225, Y: 85, Z: 2 }],
-    ['core', [115, -5, -25], COLOR.core, 'PURCHASE\r\nCORE',
-      { X: 225, Y: -135, Z: 0 }, { X: 235, Y: 165, Z: 2 }],
-    ['display', [115, 15, -25], COLOR.display, 'DISPLAY +\r\nSOUND',
-      { X: 195, Y: -125, Z: 0 }, { X: 205, Y: 155, Z: 2 }],
-  ];
-  const chips = Object.fromEntries(chipSpecs.map(([
-    name, position, color, text, planeCenter, planeExtent,
-  ]) =>
-    [name, addLabeledMicrochip(build, titleTemplate, {
-      position, color, text, prompt: text.replace('\r\n', ' '), planeCenter, planeExtent,
-    })]));
+  const controller = addLabeledMicrochip(build, titleTemplate, {
+    position: [115, -25, -25], color: COLOR.config,
+    text: 'MECHANIC SHOP\r\nCONTROLLER', prompt: 'Mechanic Shop Controller',
+    planeCenter: { X: 500, Y: -215, Z: 0 },
+    planeExtent: { X: 510, Y: 265, Z: 2 },
+  });
+  const chips = {
+    session: controller, input: controller, config: controller,
+    core: controller, display: controller,
+  };
   const session = layoutCircuit(build, build.circuit(chips.session.grid, 'mechanic_session'),
     titleTemplate, [
       { name: 'bay', title: 'VEHICLE BAY LOCK', x: 0, y: 0, width: 110, color: COLOR.session },
@@ -389,38 +392,46 @@ function build(input = INPUT) {
     ]);
   const inputCircuit = layoutCircuit(build, build.circuit(chips.input.grid, 'mechanic_input'),
     titleTemplate, [
-      { name: 'split', title: 'SEAT INPUT', x: 0, y: 0, width: 100, color: COLOR.input },
-      { name: 'select', title: 'ROW SELECTION', x: 110, y: 0, width: 120, color: COLOR.input },
-      { name: 'change', title: 'CATEGORY + PART', x: 0, y: -100, width: 140, color: COLOR.input },
-      { name: 'repeat', title: 'TAP + HOLD REPEAT', x: 150, y: -100, width: 130, color: COLOR.input },
+      { name: 'split', title: 'SEAT INPUT', x: 270, y: 0, width: 100, color: COLOR.input },
+      { name: 'select', title: 'ROW SELECTION', x: 380, y: 0, width: 120, color: COLOR.input },
+      { name: 'change', title: 'CATEGORY + PART', x: 270, y: -100, width: 140, color: COLOR.input },
+      { name: 'repeat', title: 'TAP + HOLD REPEAT', x: 420, y: -100, width: 130, color: COLOR.input },
     ]);
   const config = layoutCircuit(build, build.circuit(chips.config.grid, 'mechanic_config'),
     titleTemplate, [
-      { name: 'vehicles', title: 'VEHICLES MAP\r\nID = NAME | CLASS | OWNERSHIP | CATEGORY COUNT | REVISION', x: 0, y: 0, width: 240, color: COLOR.config },
-      { name: 'categories', title: 'CATEGORIES MAP\r\nTRUCK.ORDER = ID | NAME | SCORE KEY | PART COUNT | 4 STAT SPECS', x: 0, y: -60, width: 240, color: COLOR.config },
-      { name: 'parts', title: 'PARTS MAP\r\nTRUCK.CATEGORY.INDEX = NAME | SAVED | PRICE | DESCRIPTION | 4 STATS', x: 0, y: -120, width: 240, color: COLOR.config },
-      { name: 'settings', title: 'TRADE-IN RATE 0-1 + RELOAD', x: 250, y: 0, width: 130, color: COLOR.config },
-      { name: 'help', title: 'CONFIG NOTES\r\nOWNERSHIP IS RESERVED; RELOAD CHECKS THE ACTIVE RECORD PATH', x: 250, y: -80, width: 180, color: COLOR.config },
+      { name: 'vehicles', title: 'VEHICLES MAP\r\nID = NAME | CLASS | OWNERSHIP | CATEGORY COUNT | REVISION', x: 570, y: 0, width: 240, color: COLOR.config },
+      { name: 'categories', title: 'CATEGORIES MAP\r\nTRUCK.ORDER = ID | NAME | SCORE KEY | PART COUNT | 4 STAT SPECS', x: 570, y: -60, width: 240, color: COLOR.config },
+      { name: 'parts', title: 'PARTS MAP\r\nTRUCK.CATEGORY.INDEX = NAME | SAVED | PRICE | DESCRIPTION | 4 STATS', x: 570, y: -120, width: 240, color: COLOR.config },
+      { name: 'settings', title: 'TRADE-IN RATE 0-1 + RELOAD', x: 820, y: 0, width: 130, color: COLOR.config },
+      { name: 'help', title: 'CONFIG NOTES\r\nOWNERSHIP IS RESERVED; RELOAD CHECKS THE ACTIVE RECORD PATH', x: 820, y: -80, width: 180, color: COLOR.config },
     ]);
   const core = layoutCircuit(build, build.circuit(chips.core.grid, 'mechanic_core'),
     titleTemplate, [
-      { name: 'vehicle', title: 'VEHICLE CATALOG', x: 0, y: 0, width: 120, color: COLOR.core },
-      { name: 'category', title: 'CATEGORY LOAD', x: 130, y: 0, width: 130, color: COLOR.core },
-      { name: 'scan', title: 'INSTALLED PART LOOKUP', x: 270, y: 0, width: 140, color: COLOR.core },
-      { name: 'part', title: 'PART SELECTION', x: 0, y: -130, width: 140, color: COLOR.core },
-      { name: 'quote', title: 'PRICE + TRADE-IN', x: 150, y: -130, width: 130, color: COLOR.core },
-      { name: 'purchase', title: 'PURCHASE FINAL GUARDS', x: 290, y: -130, width: 150, color: COLOR.core },
-      { name: 'commit', title: 'SAVE + VEHICLE RELOAD', x: 0, y: -280, width: 180, color: COLOR.core },
-      { name: 'response', title: 'SYSTEM RESPONSE', x: 190, y: -280, width: 170, color: COLOR.core },
+      { name: 'vehicle', title: 'VEHICLE CATALOG', x: 0, y: -180, width: 120, color: COLOR.core },
+      { name: 'category', title: 'CATEGORY LOAD', x: 130, y: -180, width: 130, color: COLOR.core },
+      { name: 'scan', title: 'INSTALLED PART LOOKUP', x: 270, y: -180, width: 140, color: COLOR.core },
+      { name: 'part', title: 'PART SELECTION', x: 0, y: -310, width: 140, color: COLOR.core },
+      { name: 'quote', title: 'PRICE + TRADE-IN', x: 150, y: -310, width: 130, color: COLOR.core },
+      { name: 'purchase', title: 'PURCHASE FINAL GUARDS', x: 290, y: -310, width: 150, color: COLOR.core },
+      { name: 'commit', title: 'SAVE + VEHICLE RELOAD', x: 0, y: -460, width: 180, color: COLOR.core },
+      { name: 'response', title: 'SYSTEM RESPONSE', x: 190, y: -460, width: 170, color: COLOR.core },
     ]);
   const display = layoutCircuit(build, build.circuit(chips.display.grid, 'mechanic_display'),
     titleTemplate, [
-      { name: 'left', title: 'SESSION SCREEN', x: 0, y: 0, width: 160, color: COLOR.display },
-      { name: 'rows', title: 'SELECTION ROWS', x: 170, y: 0, width: 140, color: COLOR.display },
-      { name: 'stats', title: 'DESCRIPTION + COMPARISONS', x: 0, y: -120, width: 210, color: COLOR.display },
-      { name: 'right', title: 'UPGRADE SCREEN', x: 220, y: -120, width: 170, color: COLOR.display },
-      { name: 'indicator', title: 'INDICATOR + SOUNDS', x: 0, y: -260, width: 160, color: COLOR.display },
+      { name: 'left', title: 'SESSION SCREEN', x: 470, y: -180, width: 160, color: COLOR.display },
+      { name: 'rows', title: 'SELECTION ROWS', x: 640, y: -180, width: 140, color: COLOR.display },
+      { name: 'stats', title: 'DESCRIPTION + COMPARISONS', x: 470, y: -300, width: 210, color: COLOR.display },
+      { name: 'right', title: 'UPGRADE SCREEN', x: 690, y: -300, width: 170, color: COLOR.display },
+      { name: 'indicator', title: 'INDICATOR + SOUNDS', x: 470, y: -440, width: 160, color: COLOR.display },
     ]);
+
+  for (const spec of [
+    { title: 'VEHICLE + OWNER', x: 0, y: 20, width: 250, color: COLOR.session },
+    { title: 'INPUT + SELECTION', x: 270, y: 20, width: 280, color: COLOR.input },
+    { title: 'CATALOG CONFIG', x: 570, y: 20, width: 430, color: COLOR.config },
+    { title: 'PURCHASE CORE', x: 0, y: -160, width: 450, color: COLOR.core },
+    { title: 'DISPLAY + SOUND', x: 470, y: -160, width: 390, color: COLOR.display },
+  ]) addHeader(build, controller.grid, titleTemplate, spec);
 
   // ---- Shared session state -------------------------------------------------
   session.use('state');
@@ -553,7 +564,7 @@ function build(input = INPUT) {
   config.use('settings');
   const tradeInRate = config.v(0.75);
   const applyButton = addButton(build, chips.config.grid, titleTemplate,
-    [315, -35, 2], 'RELOAD\r\nCATALOG', 'Reload the active mechanic catalog path', 'apply_catalog');
+    [885, -35, 2], 'RELOAD\r\nCATALOG', 'Reload the active mechanic catalog path', 'apply_catalog');
   const applyEdge = config.n('Expr_EdgeDetectorExec', { Input: R(applyButton, 'bHeld') });
 
   // ---- Vehicle/category catalog loading ------------------------------------
@@ -812,11 +823,6 @@ function build(input = INPUT) {
   changedReady = chain(build, changedReady, core.set(response, readyResponseText));
   const changedPartError = core.set(response, 'CATALOG ERROR: PART NOT FOUND');
   build.wire(changedPartFound, 'ExecOutB', changedPartError, 'Exec');
-  const navigationPulse = union(build, inputCircuit, [
-    [setPreviousRow, 'ExecOut'], [setNextRow, 'ExecOut'], categoryChanged, partChanged,
-  ]);
-  build.wire(navigationPulse[0], navigationPulse[1], navigationSound, 'Play');
-
   // ---- Purchase: fresh reads, final guards, score/Scrap write ---------------
   core.use('purchase');
   const buyRow = core.cmp('Equal', R(selectedRow), 2);
@@ -940,7 +946,8 @@ function build(input = INPUT) {
     'PART INSTALLED - NO SCRAP COST', receivedText);
   const successText = core.sel(txnPositive, nonPositiveText, paidText);
   commitTail = chain(build, commitTail, core.set(response, successText));
-  build.wire(commitTail[0], commitTail[1], successSound, 'Play');
+  for (const successSound of successSounds)
+    build.wire(commitTail[0], commitTail[1], successSound, 'Play');
   commitTail = chain(build, commitTail, core.set(busy, false));
 
   // ---- Display formatting ---------------------------------------------------
@@ -1034,7 +1041,7 @@ function build(input = INPUT) {
     'Vehicle-zone and owner-authorized mechanic shop. Browsing is screen-only; successful purchases save the exact configured score, adjust Scrap with a 75% trade-in, and reload the locked vehicle.');
   const bytes = repack(raw, donor, {
     name: 'Scrap Runners - Mechanic Shop v1',
-    description: 'Clean five-chip mechanic terminal using the supplied Gearshark frame, non-live selection, data-driven Truck1 catalog, owner authorization, trade-ins, comparisons, and targeted post-purchase reload.',
+    description: 'Clean single-controller mechanic terminal using the supplied Gearshark frame, non-live selection, data-driven Truck1 catalog, owner authorization, trade-ins, comparisons, corrected purchase sounds, and targeted post-purchase reload.',
   });
   return {
     bytes,

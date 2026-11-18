@@ -356,69 +356,56 @@ function halfSize(brick) {
     || (brick.data.asset.startsWith('PB_Gate_') ? [10, 5, 2] : [5, 5, 2]);
 }
 
-const CHIP_SPECS = [
-  {
-    label: 'VEHICLE + OWNER', text: 'VEHICLE +\r\nOWNER', position: [115, -65, -25],
-    center: { X: 125, Y: -55, Z: 0 }, extent: { X: 135, Y: 85, Z: 2 },
-  },
-  {
-    label: 'INPUT + SELECTION', text: 'INPUT +\r\nSELECTION', position: [115, -45, -25],
-    center: { X: 140, Y: -50, Z: 0 }, extent: { X: 150, Y: 80, Z: 2 },
-  },
-  {
-    label: 'CATALOG CONFIG', text: 'CATALOG\r\nCONFIG', position: [115, -25, -25],
-    center: { X: 215, Y: -55, Z: 0 }, extent: { X: 225, Y: 85, Z: 2 },
-  },
-  {
-    label: 'PURCHASE CORE', text: 'PURCHASE\r\nCORE', position: [115, -5, -25],
-    center: { X: 225, Y: -135, Z: 0 }, extent: { X: 235, Y: 165, Z: 2 },
-  },
-  {
-    label: 'DISPLAY + SOUND', text: 'DISPLAY +\r\nSOUND', position: [115, 15, -25],
-    center: { X: 195, Y: -125, Z: 0 }, extent: { X: 205, Y: 155, Z: 2 },
-  },
+const CHIP_SPEC = {
+  label: 'Mechanic Shop Controller', text: 'MECHANIC SHOP\r\nCONTROLLER',
+  position: [115, -25, -25],
+  center: { X: 500, Y: -215, Z: 0 }, extent: { X: 510, Y: 265, Z: 2 },
+};
+
+const MAJOR_HEADERS = [
+  ['VEHICLE + OWNER', 0, 20, 250],
+  ['INPUT + SELECTION', 270, 20, 280],
+  ['CATALOG CONFIG', 570, 20, 430],
+  ['PURCHASE CORE', 0, -160, 450],
+  ['DISPLAY + SOUND', 470, -160, 390],
 ];
 
 const SECTION_SPECS = {
-  'VEHICLE + OWNER': [
+  'MECHANIC SHOP CONTROLLER': [
     ['VEHICLE BAY LOCK', 0, 0, 110, -100],
     ['MECHANIC PROTOCOL', 120, 0, 120, -100],
-    ['SEAT + OWNER AUTH', 0, -100, 140, -Infinity],
-    ['SESSION STATE', 150, -100, 100, -Infinity],
-  ],
-  'INPUT + SELECTION': [
-    ['SEAT INPUT', 0, 0, 100, -100],
-    ['ROW SELECTION', 110, 0, 120, -100],
-    ['CATEGORY + PART', 0, -100, 140, -Infinity],
-    ['TAP + HOLD REPEAT', 150, -100, 130, -Infinity],
-  ],
-  'CATALOG CONFIG': [
+    ['SEAT + OWNER AUTH', 0, -100, 140, -140],
+    ['SESSION STATE', 150, -100, 100, -140],
+
+    ['SEAT INPUT', 270, 0, 100, -100],
+    ['ROW SELECTION', 380, 0, 120, -100],
+    ['CATEGORY + PART', 270, -100, 140, -140],
+    ['TAP + HOLD REPEAT', 420, -100, 130, -140],
+
     ['VEHICLES MAP\r\nID = NAME | CLASS | OWNERSHIP | CATEGORY COUNT | REVISION',
-      0, 0, 240, -60],
+      570, 0, 240, -60],
     ['CATEGORIES MAP\r\nTRUCK.ORDER = ID | NAME | SCORE KEY | PART COUNT | 4 STAT SPECS',
-      0, -60, 240, -120],
+      570, -60, 240, -120],
     ['PARTS MAP\r\nTRUCK.CATEGORY.INDEX = NAME | SAVED | PRICE | DESCRIPTION | 4 STATS',
-      0, -120, 240, -Infinity],
-    ['TRADE-IN RATE 0-1 + RELOAD', 250, 0, 130, -80],
+      570, -120, 240, -160],
+    ['TRADE-IN RATE 0-1 + RELOAD', 820, 0, 130, -80],
     ['CONFIG NOTES\r\nOWNERSHIP IS RESERVED; RELOAD CHECKS THE ACTIVE RECORD PATH',
-      250, -80, 180, -Infinity],
-  ],
-  'PURCHASE CORE': [
-    ['VEHICLE CATALOG', 0, 0, 120, -130],
-    ['CATEGORY LOAD', 130, 0, 130, -130],
-    ['INSTALLED PART LOOKUP', 270, 0, 140, -130],
-    ['PART SELECTION', 0, -130, 140, -280],
-    ['PRICE + TRADE-IN', 150, -130, 130, -280],
-    ['PURCHASE FINAL GUARDS', 290, -130, 150, -280],
-    ['SAVE + VEHICLE RELOAD', 0, -280, 180, -Infinity],
-    ['SYSTEM RESPONSE', 190, -280, 170, -Infinity],
-  ],
-  'DISPLAY + SOUND': [
-    ['SESSION SCREEN', 0, 0, 160, -120],
-    ['SELECTION ROWS', 170, 0, 140, -120],
-    ['DESCRIPTION + COMPARISONS', 0, -120, 210, -260],
-    ['UPGRADE SCREEN', 220, -120, 170, -260],
-    ['INDICATOR + SOUNDS', 0, -260, 160, -Infinity],
+      820, -80, 180, -160],
+
+    ['VEHICLE CATALOG', 0, -180, 120, -310],
+    ['CATEGORY LOAD', 130, -180, 130, -310],
+    ['INSTALLED PART LOOKUP', 270, -180, 140, -310],
+    ['PART SELECTION', 0, -310, 140, -460],
+    ['PRICE + TRADE-IN', 150, -310, 130, -460],
+    ['PURCHASE FINAL GUARDS', 290, -310, 150, -460],
+    ['SAVE + VEHICLE RELOAD', 0, -460, 180, -Infinity],
+    ['SYSTEM RESPONSE', 190, -460, 170, -Infinity],
+
+    ['SESSION SCREEN', 470, -180, 160, -300],
+    ['SELECTION ROWS', 640, -180, 140, -300],
+    ['DESCRIPTION + COMPARISONS', 470, -300, 210, -440],
+    ['UPGRADE SCREEN', 690, -300, 170, -440],
+    ['INDICATOR + SOUNDS', 470, -440, 160, -Infinity],
   ],
 };
 
@@ -426,41 +413,60 @@ function assertOrganizedChips(scene) {
   const t = api(scene);
   const entities = new Map([...scene.r.entities()].map(entity =>
     [entity.persistentIndex, entity]));
-  assert.equal(scene.links.length, 5, 'exactly five child logic chips');
-  assert.equal(new Set(scene.links.map(link => link.grid)).size, 5,
-    'five distinct child grids');
-  const gridByLabel = new Map();
-  for (const spec of CHIP_SPECS) {
-    const row = t.one(t.all(C.Interact.NAME,
-      (data, brick) => brick.g === 1 && data.PromptCustomLabel === spec.label),
-    `${spec.label} chip`);
-    assert.deepEqual(row.brick.data.position, spec.position, `${spec.label} fixed board position`);
-    assert.equal(component(row.brick, C.TextDisplay.NAME)?.data.Text, spec.text,
-      `${spec.label} visible label`);
-    assert(component(row.brick, C.Microchip.NAME), `${spec.label} is a microchip`);
-    const links = scene.links.filter(link => link.key === row.brick.key);
-    assert.equal(links.length, 1, `${spec.label} has one child grid`);
-    const grid = links[0].grid;
-    const entity = entities.get(grid);
-    assert(entity, `${spec.label} child-grid entity exists`);
-    assert.equal(entity.typeName, 'Entity_MicrochipDynamicBrickGrid',
-      `${spec.label} uses a microchip grid`);
-    assert.equal(entity.data.bCollapsed, true, `${spec.label} starts collapsed`);
-    assert.deepEqual(entity.data.PlaneCenter, spec.center,
-      `${spec.label} has the fitted plane center`);
-    assert.deepEqual(entity.data.PlaneExtent, spec.extent,
-      `${spec.label} has the fitted plane extent`);
-    for (const brick of scene.bricks.filter(candidate => candidate.g === grid)) {
-      const half = halfSize(brick);
-      assert(brick.data.position[0] - half[0] >= spec.center.X - spec.extent.X
-        && brick.data.position[0] + half[0] <= spec.center.X + spec.extent.X,
-      `${spec.label} contains ${brick.key} on X`);
-      assert(brick.data.position[1] - half[1] >= spec.center.Y - spec.extent.Y
-        && brick.data.position[1] + half[1] <= spec.center.Y + spec.extent.Y,
-      `${spec.label} contains ${brick.key} on Y`);
-    }
-    gridByLabel.set(spec.label, grid);
+  assert.equal(scene.links.length, 1, 'exactly one outer mechanic controller');
+  assert.equal(new Set(scene.links.map(link => link.grid)).size, 1,
+    'one consolidated child grid');
+  const spec = CHIP_SPEC;
+  const row = t.one(t.all(C.Interact.NAME,
+    (data, brick) => brick.g === 1 && data.PromptCustomLabel === spec.label),
+  `${spec.label} chip`);
+  assert.deepEqual(row.brick.data.position, spec.position, `${spec.label} fixed board position`);
+  assert.equal(component(row.brick, C.TextDisplay.NAME)?.data.Text, spec.text,
+    `${spec.label} visible label`);
+  assert(component(row.brick, C.Microchip.NAME), `${spec.label} is a microchip`);
+  assert.equal(t.all(C.Microchip.NAME, (_data, brick) => brick.g === 1).length, 1,
+    'no former subsystem chips remain outside');
+  const links = scene.links.filter(link => link.key === row.brick.key);
+  assert.equal(links.length, 1, `${spec.label} has one child grid`);
+  const grid = links[0].grid;
+  const entity = entities.get(grid);
+  assert(entity, `${spec.label} child-grid entity exists`);
+  assert.equal(entity.typeName, 'Entity_MicrochipDynamicBrickGrid',
+    `${spec.label} uses a microchip grid`);
+  assert.equal(entity.data.bCollapsed, true, `${spec.label} starts collapsed`);
+  assert.deepEqual(entity.data.PlaneCenter, spec.center,
+    `${spec.label} has the fitted plane center`);
+  assert.deepEqual(entity.data.PlaneExtent, spec.extent,
+    `${spec.label} has the fitted plane extent`);
+  for (const brick of scene.bricks.filter(candidate => candidate.g === grid)) {
+    const half = halfSize(brick);
+    assert(brick.data.position[0] - half[0] >= spec.center.X - spec.extent.X
+      && brick.data.position[0] + half[0] <= spec.center.X + spec.extent.X,
+    `${spec.label} contains ${brick.key} on X`);
+    assert(brick.data.position[1] - half[1] >= spec.center.Y - spec.extent.Y
+      && brick.data.position[1] + half[1] <= spec.center.Y + spec.extent.Y,
+    `${spec.label} contains ${brick.key} on Y`);
   }
+
+  for (const [title, x, y, width] of MAJOR_HEADERS) {
+    const header = t.one(t.all(C.TextDisplay.NAME,
+      (data, brick) => brick.g === grid && data.Text === title), `${title} major header`).brick;
+    assert.deepEqual(header.data.position, [x + width / 2, y + 10, 2],
+      `${title} major header position`);
+    assert.deepEqual(header.data.size, [width / 2, 10, 2],
+      `${title} major header exact width`);
+    assert(!scene.edges.some(edge => edge.a === header.key || edge.z === header.key),
+      `${title} major header is passive`);
+  }
+
+  const reload = t.one(t.all(C.Button.NAME,
+    data => data.PromptCustomLabel === 'Reload the active mechanic catalog path'),
+  'catalog reload button').brick;
+  assert.equal(reload.g, grid, 'catalog reload remains inside the controller');
+  assert.deepEqual(reload.data.position, [885, -35, 2],
+    'catalog reload follows the shifted config section');
+
+  const gridByLabel = new Map([['MECHANIC SHOP CONTROLLER', grid]]);
 
   const assigned = new Set();
   for (const [chipLabel, specs] of Object.entries(SECTION_SPECS)) {
@@ -701,6 +707,36 @@ function assertInvalidScoreFallback(scene, buildResult) {
   'successful purchase clears the invalid state after targeted reload');
 }
 
+function assertSoundWiring(scene) {
+  const t = api(scene);
+  const sounds = t.all(C.OneShotAudioEmitter.NAME);
+  assert.equal(sounds.length, 3, 'frame retains its three configured purchase sounds');
+  const groups = Map.groupBy(sounds, row => row.comp.data.AudioDescriptor);
+  const success = [...groups.values()].find(rows => rows.length === 2);
+  const failureRows = [...groups.values()].find(rows => rows.length === 1);
+  assert(success, 'the two cash-register emitters share one descriptor');
+  assert(failureRows, 'the failed-purchase beep uses the other descriptor');
+  assert.deepEqual(success.map(row => row.comp.data.PitchMultiplier).sort(), [0.5, 0.75],
+    'success retains both configured cash-register pitches');
+  assert.equal(failureRows[0].comp.data.PitchMultiplier, 0.75,
+    'failure retains the configured beep pitch');
+
+  const successPlay = success.map(row => t.one(t.incoming(row.brick,
+    C.OneShotAudioEmitter.NAME, 'Play'), 'successful-purchase sound trigger'));
+  assert.deepEqual(successPlay.map(edge => [edge.a, edge.at, edge.p]),
+    [successPlay[0], successPlay[0]].map(edge => [edge.a, edge.at, edge.p]),
+  'both cash-register sounds use the exact same success pulse');
+  assert(component(t.source(successPlay[0]), C.Exec_Var_Set.NAME),
+    'success sounds fire only after the retained success response is committed');
+
+  const failurePlay = t.one(t.incoming(failureRows[0].brick,
+    C.OneShotAudioEmitter.NAME, 'Play'), 'failed-purchase sound trigger');
+  assert(component(t.source(failurePlay), C.Exec_Union.NAME),
+    'failed-purchase reasons join before the beep');
+  assert.notEqual(failurePlay.a, successPlay[0].a,
+    'failure never reuses the successful-purchase pulse');
+}
+
 function assertProtocolAndNonLive(scene, buildResult) {
   const t = api(scene);
   const request = t.one(t.all(C.Exec_SendCustomEventGlobal.NAME,
@@ -779,6 +815,10 @@ function assertProtocolAndNonLive(scene, buildResult) {
     assert(!reachable(setter, buildResult.nodes.reload),
       `${setter.id} cannot reach vehicle reload`);
   }
+  const soundNodes = build.nodes.filter(node => node.type === C.OneShotAudioEmitter.NAME);
+  assert.equal(soundNodes.length, 3, 'build graph retains exactly three purchase sounds');
+  for (const setter of browseSetters) for (const sound of soundNodes)
+    assert(!reachable(setter, sound), `${setter.id} cannot play a purchase sound`);
   return { t, request, reply, reload };
 }
 
@@ -802,11 +842,16 @@ function assertFreshFinalGuardAndPurchaseOrder(scene, protocol) {
   assert(execReachableFromPort(t, write, C.Exec_Gamemode_SetLeaderboardValue.NAME,
     'ExecOut', protocol.reload), 'successful write reaches targeted vehicle reload');
 
-  const coreGrid = protocol.reload.g;
   const finalPlayer = t.one(t.all(C.Exec_PlayerState_GetFromEntity.NAME,
-    (_data, brick) => brick.g === coreGrid), 'fresh final PlayerState lookup').brick;
-  const finalUserId = t.one(t.all(C.Exec_PlayerState_GetUserId.NAME,
-    (_data, brick) => brick.g === coreGrid), 'fresh final user ID lookup').brick;
+    (_data, brick) => t.incoming(brick, C.Exec_PlayerState_GetFromEntity.NAME, 'Exec')
+      .some(edge => component(t.source(edge),
+        C.Exec_Gamemode_GetLeaderboardValue.NAME)?.data.Key === 'Scrap')),
+  'fresh final PlayerState lookup').brick;
+  const finalUserIdEdge = t.one(t.outgoing(finalPlayer,
+    C.Exec_PlayerState_GetFromEntity.NAME, 'PlayerState').filter(edge =>
+    edge.zt === C.Exec_PlayerState_GetUserId.NAME && edge.q === 'PlayerState'),
+  'fresh final user ID lookup');
+  const finalUserId = t.target(finalUserIdEdge);
   const seat = t.one(t.all(C.Seat.NAME), 'mechanic seat').brick;
   assertEdge(t, seat, C.Seat.NAME, 'SittingCharacter', finalPlayer,
     C.Exec_PlayerState_GetFromEntity.NAME, 'Entity',
@@ -863,6 +908,7 @@ function test({
   assertCatalogContract(scene);
   assertQuoteGraph(scene);
   assertInvalidScoreFallback(scene, first);
+  assertSoundWiring(scene);
   const protocol = assertProtocolAndNonLive(scene, first);
   assertFreshFinalGuardAndPurchaseOrder(scene, protocol);
 
