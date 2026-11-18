@@ -75,6 +75,10 @@ Status: `In progress`
   - Adds 35 passive black section/subsection labels with no wires or child links. The public plane separates editable settings, the hidden controller, public outputs, and screen-formatting paths; its two formerly stale formatter hover notes now describe the actual left/session and right/settings inputs.
   - Restores the user's final selection preference: both `> <` arrows remain green while only the selected label/value between them turns orange. The failed affordability block remains red during its three finite blinks.
   - Exact topology/component regression tests, plane-fit/overlap checks, ownership checks, and strict placement validation pass with no invalid bricks, uncertain overlaps, component failures, or warnings. In-game screenshots are still required to tune spacing and confirm the reorganized planes are comfortable to follow at Brickadia's editor zoom.
+  - User layout review rejected the v7 internal presentation: the oversized label slabs, excessive empty space, and long wire arcs made it at least as confusing as the original. Do not use its layout as the pattern for another full-terminal pass; its working behavior remains a reference only.
+- Logic-layout calibration proof: `outputs/five-and-gates-row.brz`.
+  - Deliberately contains only one Gearshark-owned microchip with exactly five unwired AND gates at `X = -96, -48, 0, 48, 96`, identical `Y = 0`, identical `Z = 2`, and identical orientation.
+  - No labels, decorative bricks, nested logic, or extra components are inside the chip. Strict placement and exact-row validation pass; spacing/orientation now require the user's in-game visual approval before any more complex layout work.
 
 Acceptance checks:
 
