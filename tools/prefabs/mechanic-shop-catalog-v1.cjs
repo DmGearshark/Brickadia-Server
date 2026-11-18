@@ -9,10 +9,19 @@ const VEHICLES = [
   ['Truck1', 'FlatbedTruck1|HEAVY TRUCK|Truck1Owned|6|1'],
 ];
 
+// Saved Truck1Engine scores index this array directly on the vehicle.
+const ENGINE_PROFILES = [
+  { X: 250, Y: 1, Z: 1, W: 1 },
+  { X: 300, Y: 1.5, Z: 1, W: 0.8 },
+  { X: 350, Y: 1.5, Z: 1.5, W: 0.7 },
+  { X: 400, Y: 2, Z: 1, W: 0.6 },
+  { X: 225, Y: 5, Z: 1, W: 1.2 },
+];
+
 // Vehicle.Order = CategoryID|DisplayName|LeaderboardKey|PartCount|Stat1..Stat4
 // Stat = Label^Unit^Decimals^Direction. Direction: H higher, L lower, N neutral.
 const CATEGORIES = [
-  ['Truck1.0', 'Engine|ENGINE|Truck1Engine|5|TOP SPEED^^0^H|TORQUE^^2^H|ACCELERATION^^2^H|FUEL USE^^2^L'],
+  ['Truck1.0', 'Engine|ENGINE|Truck1Engine|5|TOP SPEED^^0^H|TORQUE^^1^H|ACCELERATION^^1^L|FUEL USE^/S^1^L'],
   ['Truck1.1', 'FuelTank|FUEL TANK|Truck1Fueltank|3|CAPACITY^^0^H|-|-|-'],
   ['Truck1.2', 'Suspension|SUSPENSION|Truck1Suspension|5|STRENGTH^^0^N|-|-|-'],
   ['Truck1.3', 'WheelSpacing|WHEEL SPACING|Truck1Wheelspacing|5|SPACING^^1^N|-|-|-'],
@@ -22,11 +31,11 @@ const CATEGORIES = [
 
 // Vehicle.Category.Position = Name|SavedValue|Price|Description|Stat1..Stat4
 const PARTS = [
-  ['Truck1.Engine.0', 'Stock Shitter|0|0|The original factory engine.|250|5|0.5|0.1'],
-  ['Truck1.Engine.1', 'RedNeck Engine|1|2500|A homemade alternative assembled for working trucks.|300|4|0.4|0.9'],
-  ['Truck1.Engine.2', 'Backyard Engine|2|5000|A stronger backyard-built engine profile.|350|3|0.3|0.8'],
-  ['Truck1.Engine.3', 'The Slow Turtle Engine|4|10000|An unusual engine profile with very low fuel use.|500|3|0.5|0.05'],
-  ['Truck1.Engine.4', 'A Real Engine|3|15000|A proper balanced engine for regular road use.|300|1|1|0.2'],
+  ['Truck1.Engine.0', 'Stock Shitter|0|0|The original factory engine.|250|1|1|1'],
+  ['Truck1.Engine.1', 'RedNeck Engine|1|2500|A homemade alternative assembled for working trucks.|300|1.5|1|0.8'],
+  ['Truck1.Engine.2', 'Backyard Engine|2|5000|A stronger backyard-built engine profile.|350|1.5|1.5|0.7'],
+  ['Truck1.Engine.3', 'The Slow Turtle Engine|4|10000|A low-speed, high-torque engine for heavy pulling.|225|5|1|1.2'],
+  ['Truck1.Engine.4', 'A Real Engine|3|15000|A proper balanced engine for regular road use.|400|2|1|0.6'],
 
   ['Truck1.FuelTank.0', 'Starter 20000|0|0|The original twenty-thousand-unit fuel tank.|20000|0|0|0'],
   ['Truck1.FuelTank.1', 'Mid 25000|1|5000|A medium tank for longer routes between stops.|25000|0|0|0'],
@@ -158,4 +167,4 @@ function quote({ selectedPrice, installedPrice, scrap, tradeInRate = 0.75,
 
 validate();
 
-module.exports = { VEHICLES, CATEGORIES, PARTS, validate, quote };
+module.exports = { VEHICLES, CATEGORIES, PARTS, ENGINE_PROFILES, validate, quote };

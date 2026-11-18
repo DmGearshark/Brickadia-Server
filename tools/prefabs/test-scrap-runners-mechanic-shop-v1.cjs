@@ -533,6 +533,18 @@ function assertCatalogContract(scene) {
   assert.equal(result.vehicles.size, 1, 'one supported vehicle');
   assert.equal(result.categories.size, 6, 'six Truck1 categories');
   assert.equal(result.parts.size, 28, 'twenty-eight Truck1 parts');
+  const engineCategory = new Map(catalog.CATEGORIES).get('Truck1.0').split('|');
+  assert.equal(engineCategory[6], 'ACCELERATION^^1^L',
+    'lower engine acceleration is displayed as better');
+  assert.equal(engineCategory[7], 'FUEL USE^/S^1^L',
+    'engine fuel use displays per second and lower is better');
+  assert.deepEqual(catalog.ENGINE_PROFILES, [
+    { X: 250, Y: 1, Z: 1, W: 1 },
+    { X: 300, Y: 1.5, Z: 1, W: 0.8 },
+    { X: 350, Y: 1.5, Z: 1.5, W: 0.7 },
+    { X: 400, Y: 2, Z: 1, W: 0.6 },
+    { X: 225, Y: 5, Z: 1, W: 1.2 },
+  ], 'Truck1 engine profiles are indexed by their saved scores');
 
   const t = api(scene);
   const maps = t.all(C.MapVar.NAME).map(row => row.comp.data.Value.$map);

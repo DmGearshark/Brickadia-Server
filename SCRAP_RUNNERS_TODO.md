@@ -195,7 +195,7 @@ Status: `In progress`
 
 - Use one Quaternion array as the authoritative engine-profile source.
 - The saved mechanic-shop value is the profile index used by the dedicated Array Get gate.
-- Quaternion field mapping is X = Top Speed, Y = Torque, Z = Acceleration, W = Eco.
+- Quaternion field mapping is X = Top Speed, Y = Torque, Z = Acceleration, W = Fuel Use per second.
 - Feed the Array Get result directly into Split Quaternion; separate forwarding Vars are not required.
 - Define the exact units, valid ranges, and defaults for all four fields.
 - Apply the selected configuration to every engine property that should change.
@@ -203,17 +203,15 @@ Status: `In progress`
 - Check out-of-bounds/missing profile values and safely fall back to index `0`.
 - Verify first-load propagation; add a one-tick buffer between asynchronous stat reads and dependent execution only if the initial read otherwise uses the previous value.
 
-Current demonstrated profile: Top Speed `300`, Torque `5`, Acceleration `0.5`, Eco `1`.
+Confirmed saved engine profiles and prices:
 
-Confirmed mechanic-shop engine catalogue order and prices:
+- `0` Stock Shitter — free — Top Speed `250`, Torque `1`, Acceleration `1`, Fuel Use `1/S`
+- `1` RedNeck Engine — 2,500 Scrap — Top Speed `300`, Torque `1.5`, Acceleration `1`, Fuel Use `0.8/S`
+- `2` Backyard Engine — 5,000 Scrap — Top Speed `350`, Torque `1.5`, Acceleration `1.5`, Fuel Use `0.7/S`
+- `3` A Real Engine — 15,000 Scrap — Top Speed `400`, Torque `2`, Acceleration `1`, Fuel Use `0.6/S`
+- `4` The Slow Turtle Engine — 10,000 Scrap — Top Speed `225`, Torque `5`, Acceleration `1`, Fuel Use `1.2/S`
 
-- `0` Stock Shitter — free
-- `1` RedNeck Engine — 2,500 Scrap
-- `2` Backyard Engine — 5,000 Scrap
-- `3` A Real Engine — 15,000 Scrap
-- `4` The Slow Turtle Engine — 10,000 Scrap
-
-These are catalogue/profile IDs and prices; the exact Quaternion statistics for profiles `1` through `4` still need to be defined on the truck.
+Lower Acceleration and Fuel Use values are better. Saved profile IDs remain stable even though the terminal displays parts in ascending price order.
 
 ### SR-003 — Fuel tank upgrade
 
@@ -287,11 +285,11 @@ Status: `Needs user verification`
   - `Truck1Owned.Engine.0 = Stock Shitter|Truck1Engine|0|0`
   - `Truck1Owned.Engine.1 = RedNeck Engine|Truck1Engine|1|2500`
   - `Truck1Owned.Engine.2 = Backyard Engine|Truck1Engine|2|5000`
-  - `Truck1Owned.Engine.3 = A Real Engine|Truck1Engine|3|15000`
-  - `Truck1Owned.Engine.4 = The Slow Turtle Engine|Truck1Engine|4|10000`
+  - `Truck1Owned.Engine.3 = The Slow Turtle Engine|Truck1Engine|4|10000`
+  - `Truck1Owned.Engine.4 = A Real Engine|Truck1Engine|3|15000`
 - Populated standalone catalogue map: `outputs/truck1-mechanic-parts-catalog.brz`. It has 28 rows across Engine, FuelTank, Suspension, WheelSpacing, SteerAngle, and SteerTurnSpeed.
 - Confirmed Truck1 leaderboard keys: `Truck1Engine`, `Truck1Fueltank`, `Truck1Suspension`, `Truck1Steerangle`, and `Truck1Steerturnspeed`. The new wheel-spacing key is `Truck1Wheelspacing` and must be created with that exact casing.
-- The mechanic catalog stores menu order, display name, saved selection ID, and price. It does not store the physical engine values; the truck's engine-profile array resolves the saved ID to Top Speed, Torque, Acceleration, and Eco.
+- The mechanic catalog stores menu order, display name, saved selection ID, and price. It does not apply the physical engine values; the truck's engine-profile array resolves the saved ID to Top Speed, Torque, Acceleration, and Fuel Use per second.
 - The existing system handles selection, purchase, and saving the chosen upgrade value.
 - Configure the truck to read its saved upgrade values from that system.
 - Use each saved value as the correct configuration-array index and apply the selected settings to the truck.
@@ -316,6 +314,7 @@ Known verification note: the buffered first-entry zone-binding fix was confirmed
   - Follow-up presentation correction restores the color terminal's proper browse feedback: Keypad on W/S row selection and Keyboard once per A/D tap. A/D is intentionally tap-only with no held repeat because each category and part list is short. Its edge detectors now read the raw physical direction before the post-edge readiness guard, so the data reload cannot turn one held key into repeated false-to-true transitions. The selected row is entirely orange with no left arrow and a blinking right `<`; unselected rows retain the preferred visible `</>` ending. `SYSTEM RESPONSE` and long messages now use separate lines so the left panel cannot clip across the right-side statistics.
   - Category and part navigation is bounded instead of circular: left stops at index zero, right stops at count minus one, and rejected end taps cause no reload or adjustment sound. Catalog positions are price-ascending from left to right; Engine's 10,000 and 15,000 entries were reordered while retaining their original saved leaderboard values. Space purchase activation uses the earlier controls-ready-gated edge path confirmed in-game.
   - Category, installed-part, selected-part/tuning, and initial scan-cursor lookups now each have a one-tick pre-read settle after their retained index changes. This prevents the screen from displaying the prior category or tuning while the hidden index has already advanced; existing post-read waits remain to settle the map outputs themselves.
+  - Engine comparison and runtime data now use the confirmed five-profile set: Stock `250/1/1/1`, RedNeck `300/1.5/1/0.8`, Backyard `350/1.5/1.5/0.7`, A Real `400/2/1/0.6`, and Slow Turtle `225/5/1/1.2` for Top Speed/Torque/Acceleration/Fuel Use per second. Lower Acceleration and Fuel Use are displayed as better. The same exported profile source drives the mechanic catalog tests and Truck1's actual Quaternion runtime array.
   - Dedicated regression suites pass for both prefabs. The consolidated terminal is deterministic at 565 bricks/820 wires with one child chip, five major group labels, 28 labeled subsections, zero WireValue mismatches, and strict placement. Truck1 v13 is deterministic at 317 bricks/272 wires with all 33 BrickHandles, six typed safe-profile selectors, and strict placement.
   - No live wheel-spacing or other mechanical preview is included in this version. Add category-specific preview later only if in-game testing shows it is worth the added restore/session complexity.
   - User verification required: replace Truck1 v12 in the existing spawner with v13, place the mechanic terminal with its bay empty, then verify owner/wrong-owner states, all six category purchases, PAY/FREE/RECEIVE trade-in cases, immediate application, exit/respawn persistence, invalid-score stock fallback, vehicle despawn inside the zone, and the documented two-vehicle first-lock behavior.

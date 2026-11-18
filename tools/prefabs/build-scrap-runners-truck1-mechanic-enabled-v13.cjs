@@ -8,6 +8,7 @@ const { read, write } = require('./reskin-loadboard.cjs');
 const repack = require('./repack-with-donor-metadata.cjs');
 const { C } = require('./loadboard-lib.cjs');
 const bounds = require('./native-brick-half-extents.json');
+const { ENGINE_PROFILES } = require('./mechanic-shop-catalog-v1.cjs');
 
 const INPUT = path.resolve(process.argv[2]
   || path.join(__dirname, '../../outputs/scrap-runners-truck1-color-enabled-v12.brz'));
@@ -210,6 +211,10 @@ function build(input = INPUT) {
     C.ArrayVar.NAME).data.Value = { $elementType: 'i64', $array: [30, 35, 40, 45, 50, 55, 60] };
   component(scene.bricks.find(brick => brick.key === '[13,-1,-1,-1,36]'),
     C.ArrayVar.NAME).data.Value = { $elementType: 'f64', $array: [0.05, 0.1, 0.2] };
+  component(scene.bricks.find(brick => brick.key === '[13,-1,-1,-1,33]'),
+    C.ArrayVar.NAME).data.Value = {
+    $elementType: 'Quat', $array: clone(ENGINE_PROFILES),
+  };
 
   // Each saved leaderboard score is an array index. The terminal only writes
   // valid catalog indices, but legacy or manually edited scores can still be
@@ -224,7 +229,9 @@ function build(input = INPUT) {
     return one(matches.map(edge => ({ brick: bricks.get(edge.z), comp: edge })),
       `mechanical array getter ${index}`).brick;
   });
-  const stockDefaults = [Q(250, 5, 0.5, 0.1), I(20000), I(500), I(30), N(0.05), N(0)];
+  const stockEngine = ENGINE_PROFILES[0];
+  const stockDefaults = [Q(stockEngine.X, stockEngine.Y, stockEngine.Z, stockEngine.W),
+    I(20000), I(500), I(30), N(0.05), N(0)];
   const fallbackLabels = ['Engine', 'Fuel tank', 'Suspension', 'Steer angle',
     'Steer turn speed', 'Wheel spacing'];
   arrayGets.forEach((arrayGet, index) => {

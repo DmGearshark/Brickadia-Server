@@ -9,7 +9,7 @@ const validatePlacement = require('./validate-placement.cjs');
 const testV12 = require('./test-scrap-runners-truck1-color-enabled-v12.cjs');
 const { C } = require('./loadboard-lib.cjs');
 const bounds = require('./native-brick-half-extents.json');
-const { VEHICLES, CATEGORIES, PARTS, validate: validateCatalog } =
+const { VEHICLES, CATEGORIES, PARTS, ENGINE_PROFILES, validate: validateCatalog } =
   require('./mechanic-shop-catalog-v1.cjs');
 
 const OUTPUT = path.join(__dirname,
@@ -166,18 +166,23 @@ function catalogConsistency(t, arrays) {
     assert.equal(array.length, Number(countText), `${categoryId} catalog/array length`);
     const categoryParts = PARTS.filter(([key]) => key.startsWith(`Truck1.${categoryId}.`));
     assert.equal(categoryParts.length, array.length, `${categoryId} part rows`);
-    categoryParts.forEach(([key, partRecord], index) => {
+    const savedValues = [];
+    categoryParts.forEach(([key, partRecord]) => {
       const fields = partRecord.split('|');
-      assert.equal(Number(fields[1]), index, `${key} saved value is stable array index`);
+      const saved = Number(fields[1]);
+      savedValues.push(saved);
       if (categoryId === 'Engine') {
-        const profile = array[index];
+        const profile = array[saved];
         assert.deepEqual(fields.slice(4).map(Number),
           [profile.X, profile.Y, profile.Z, profile.W], `${key} engine quaternion stats`);
       } else {
-        assert.equal(Number(fields[4 + scalarStat.get(categoryId)]), array[index],
+        assert.equal(Number(fields[4 + scalarStat.get(categoryId)]), array[saved],
           `${key} scalar stat matches truck array`);
       }
     });
+    assert.deepEqual(savedValues.slice().sort((a, b) => a - b),
+      Array.from({ length: array.length }, (_value, index) => index),
+    `${categoryId} display rows preserve every saved array index`);
   }
 }
 
@@ -336,7 +341,7 @@ function test({ output = OUTPUT, builder = BUILDER } = {}) {
     'exactly the six mechanical profile Array Gets exist');
   const fallbackSpecs = [
     ['Truck1Engine', 'Engine stock fallback', 'Quat',
-      { X: 250, Y: 5, Z: 0.5, W: 0.1 }, C.Expr_SplitQuaternion.NAME, 'Input', null],
+      ENGINE_PROFILES[0], C.Expr_SplitQuaternion.NAME, 'Input', null],
     ['Truck1Fueltank', 'Fuel tank stock fallback', 'i64', 20000,
       C.MicrochipOutput.NAME, 'RER_Input', 'Output Truck1Fueltank'],
     ['Truck1Suspension', 'Suspension stock fallback', 'i64', 500,
@@ -438,13 +443,7 @@ function test({ output = OUTPUT, builder = BUILDER } = {}) {
     turnSpeed: array('Truck1Steerturnspeed'),
     wheel: array('Truck1Wheelspacing'),
   };
-  assert.deepEqual(arrays.engine, [
-    { X: 250, Y: 5, Z: 0.5, W: 0.1 },
-    { X: 300, Y: 4, Z: 0.4, W: 0.9 },
-    { X: 350, Y: 3, Z: 0.3, W: 0.8 },
-    { X: 300, Y: 1, Z: 1, W: 0.2 },
-    { X: 500, Y: 3, Z: 0.5, W: 0.05 },
-  ], 'engine profiles');
+  assert.deepEqual(arrays.engine, ENGINE_PROFILES, 'engine profiles');
   assert.deepEqual(arrays.fuel, [20000, 25000, 30000], 'fuel profiles');
   assert.deepEqual(arrays.suspension, [500, 1000, 1500, 2000, 2500],
     'suspension profiles');
