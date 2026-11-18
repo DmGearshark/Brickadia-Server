@@ -195,6 +195,7 @@ function test({
   truckInput = DEFAULT_TRUCK_INPUT,
   terminalOutput = DEFAULT_TERMINAL_OUTPUT,
   truckOutput = DEFAULT_TRUCK_OUTPUT,
+  selectionMarkers = 'v9',
 } = {}) {
   const sourceTerminal = read(fs.readFileSync(terminalInput));
   const sourceTruck = read(fs.readFileSync(truckInput));
@@ -215,14 +216,19 @@ function test({
   // Preserve the visible terminal frame, configured sounds, and orange selection treatment.
   const canonicalRoot = scene => scene.bricks.filter(brick => [1, 2].includes(brick.g))
     .map(brick => JSON.stringify([brick.g, brick.data, brick.comps])).sort();
-  assert.deepEqual(canonicalRoot(terminal), canonicalRoot(sourceTerminal), 'Visible terminal geometry changed');
+  const expectedRoot = selectionMarkers === 'v10'
+    ? canonicalRoot(sourceTerminal).map(value => value.replaceAll('> BUY <', 'BUY'))
+    : canonicalRoot(sourceTerminal);
+  assert.deepEqual(canonicalRoot(terminal), expectedRoot, 'Visible terminal geometry changed');
   assert.deepEqual(canonicalComponents(terminal, C.OneShotAudioEmitter.NAME),
     canonicalComponents(sourceTerminal, C.OneShotAudioEmitter.NAME), 'Interactive sounds changed');
   const terminalComponents = terminal.bricks.flatMap(brick => brick.comps);
-  assert.equal(terminalComponents.filter(saved => saved.type === C.Expr_Select.NAME
-    && saved.data.InputB?.value === '<color="ff8700">> ').length, 6, 'Six orange prefixes');
-  assert.equal(terminalComponents.filter(saved => saved.type === C.Expr_Select.NAME
-    && saved.data.InputB?.value === ' <</>').length, 6, 'Six orange suffixes');
+  if (selectionMarkers === 'v9') {
+    assert.equal(terminalComponents.filter(saved => saved.type === C.Expr_Select.NAME
+      && saved.data.InputB?.value === '<color="ff8700">> ').length, 6, 'Six orange prefixes');
+    assert.equal(terminalComponents.filter(saved => saved.type === C.Expr_Select.NAME
+      && saved.data.InputB?.value === ' <</>').length, 6, 'Six orange suffixes');
+  } else assert.equal(selectionMarkers, 'v10', 'Known selection-marker contract');
 
   const zoneEntered = t.row(C.EntityZoneEvent_Entered.NAME, () => true, 'vehicle zone entered');
   const terminalGrid = zoneEntered.brick.g;
