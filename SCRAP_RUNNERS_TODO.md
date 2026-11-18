@@ -76,6 +76,15 @@ Status: `In progress`
   - Restores the user's final selection preference: both `> <` arrows remain green while only the selected label/value between them turns orange. The failed affordability block remains red during its three finite blinks.
   - Exact topology/component regression tests, plane-fit/overlap checks, ownership checks, and strict placement validation pass with no invalid bricks, uncertain overlaps, component failures, or warnings. In-game screenshots are still required to tune spacing and confirm the reorganized planes are comfortable to follow at Brickadia's editor zoom.
   - User layout review rejected the v7 internal presentation: the oversized label slabs, excessive empty space, and long wire arcs made it at least as confusing as the original. Do not use its layout as the pattern for another full-terminal pass; its working behavior remains a reference only.
+- Compact labeled terminal-logic candidate: `outputs/scrap-runners-color-terminal-v8.brz`; continue using `outputs/scrap-runners-truck1-color-enabled-v4.brz` in the existing spawner.
+  - Rebuilds the terminal logic into compact, exact-fit labeled sections with touching, on-grid gate rows while preserving the working terminal behavior.
+  - In-game layout review on 2026-11-17: the user confirmed the internal layout is clean and human-readable.
+- Vehicle-appearance synchronization candidate: `outputs/scrap-runners-color-terminal-v9.brz` paired with `outputs/scrap-runners-truck1-color-enabled-v5.brz`.
+  - The vehicle publishes its saved color and material on its root, allowing zone entry to initialize the terminal from the entering vehicle instead of immediately overwriting it with the terminal's default color.
+  - Material selection is limited to Plastic and Metal. Both color and material preview live on the vehicle, and zone exit reloads both saved values; BUY intentionally remains a color-only purchase in this pass.
+  - The fast repeat clocks are no longer free-running and are enabled only while A or D is held. Successful purchases display `SYSTEM RESPONSE: COLOR APPLIED -🔩100`, using the configurable color price rather than a hardcoded display value.
+  - The terminal and Truck1 outputs pass their paired regression suite, resolve all 33 stored body-brick references, and pass strict placement validation with no invalid bricks, overlaps, components, or warnings.
+  - Needs in-game verification of immediate entry synchronization, Plastic/Metal preview, purchase response, and saved appearance restoration on exit.
 - Logic-layout calibration proof: `outputs/five-and-gates-row.brz`.
   - Deliberately contains only one Gearshark-owned microchip with exactly five unwired AND gates at `X = -96, -48, 0, 48, 96`, identical `Y = 0`, identical `Z = 2`, and identical orientation.
   - No labels, decorative bricks, nested logic, or extra components are inside the chip. Strict placement and exact-row validation pass; spacing/orientation now require the user's in-game visual approval before any more complex layout work.
