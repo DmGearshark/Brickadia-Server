@@ -406,7 +406,7 @@ function build(input = INPUT) {
       { name: 'split', title: 'SEAT INPUT', x: 270, y: 0, width: 100, color: COLOR.input },
       { name: 'select', title: 'ROW SELECTION', x: 380, y: 0, width: 120, color: COLOR.input },
       { name: 'change', title: 'CATEGORY + PART', x: 270, y: -100, width: 140, color: COLOR.input },
-      { name: 'repeat', title: 'TAP + HOLD REPEAT', x: 420, y: -100, width: 130, color: COLOR.input },
+      { name: 'tap', title: 'A/D TAP', x: 420, y: -100, width: 130, color: COLOR.input },
       { name: 'sounds', title: 'BROWSE SOUNDS', x: 270, y: -150, width: 280, color: COLOR.input },
     ]);
   const config = layoutCircuit(build, build.circuit(chips.config.grid, 'mechanic_config'),
@@ -767,17 +767,14 @@ function build(input = INPUT) {
     inputCircuit.cmp('Greater', R(splitter, 'InputUp'), 0.5), controlsReady);
   const upEdge = inputCircuit.n('Expr_EdgeDetectorExec', { Input: upHeld });
   const downEdge = inputCircuit.n('Expr_EdgeDetectorExec', { Input: downHeld });
+  inputCircuit.use('tap');
   const rightEdge = inputCircuit.n('Expr_EdgeDetectorExec', { Input: rightHeld });
   const leftEdge = inputCircuit.n('Expr_EdgeDetectorExec', { Input: leftHeld });
+  inputCircuit.use('split');
   const activateEdge = inputCircuit.n('Expr_EdgeDetectorExec', { Input: activateHeld });
 
-  inputCircuit.use('repeat');
-  const rightClock = inputCircuit.n('Clock', { bEnabled: rightHeld, IntervalSeconds: 0.18 });
-  const leftClock = inputCircuit.n('Clock', { bEnabled: leftHeld, IntervalSeconds: 0.18 });
-  const rightPulse = union(build, inputCircuit,
-    [[rightEdge, 'OnRisingEdge'], [rightClock, 'Pulse']]);
-  const leftPulse = union(build, inputCircuit,
-    [[leftEdge, 'OnRisingEdge'], [leftClock, 'Pulse']]);
+  const rightPulse = [rightEdge, 'OnRisingEdge'];
+  const leftPulse = [leftEdge, 'OnRisingEdge'];
 
   inputCircuit.use('select');
   const previousRow = inputCircuit.math('Add', R(selectedRow), 2);
@@ -804,8 +801,6 @@ function build(input = INPUT) {
     browseSoundData(selectSoundAsset, 0.32, 1.12));
   const tapBrowseSound = inputCircuit.n('OneShotAudioEmitter',
     browseSoundData(tapSoundAsset, 0.26, 1.08));
-  const repeatBrowseSound = inputCircuit.n('OneShotAudioEmitter',
-    browseSoundData(tapSoundAsset, 0.11, 1.45));
   const selectionSoundPulse = union(build, inputCircuit,
     [[setPreviousRow, 'ExecOut'], [setNextRow, 'ExecOut']]);
   build.wire(selectionSoundPulse[0], selectionSoundPulse[1], selectBrowseSound, 'Play');
@@ -816,13 +811,6 @@ function build(input = INPUT) {
   });
   build.wire(tapSoundPulse[0], tapSoundPulse[1], tapSoundAllowed, 'Exec');
   build.wire(tapSoundAllowed, 'ExecOutA', tapBrowseSound, 'Play');
-  const repeatSoundPulse = union(build, inputCircuit,
-    [[rightClock, 'Pulse'], [leftClock, 'Pulse']]);
-  const repeatSoundAllowed = inputCircuit.n('Exec_Branch', {
-    bCond: browseAdjustmentSelected,
-  });
-  build.wire(repeatSoundPulse[0], repeatSoundPulse[1], repeatSoundAllowed, 'Exec');
-  build.wire(repeatSoundAllowed, 'ExecOutA', repeatBrowseSound, 'Play');
 
   inputCircuit.use('change');
   const rightCategory = inputCircuit.n('Exec_Branch', { bCond: categorySelected });
@@ -1081,7 +1069,7 @@ function build(input = INPUT) {
   const quoteBlock = display.fmt('{A}\r\n{B}\r\n{C}\r\n{D}',
     partPriceLine, tradeLine, totalLine, buyLine);
   const rightText = display.fmt(
-    '{A}\r\n\r\n{B}\r\n\r\n{C}\r\n\r\nW/S SELECT\r\nA/D TAP: 1 | HOLD: REPEAT\r\nSPACE ACTIVATE',
+    '{A}\r\n\r\n{B}\r\n\r\n{C}\r\n\r\nW/S SELECT\r\nA/D TAP: 1\r\nSPACE ACTIVATE',
     rightTop, statBlock, quoteBlock);
   build.wire(rightText[0], rightText[1], rightScreen, 'Text');
 

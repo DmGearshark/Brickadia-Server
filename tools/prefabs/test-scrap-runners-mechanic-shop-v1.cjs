@@ -380,7 +380,7 @@ const SECTION_SPECS = {
     ['SEAT INPUT', 270, 0, 100, -100],
     ['ROW SELECTION', 380, 0, 120, -100],
     ['CATEGORY + PART', 270, -100, 140, -150],
-    ['TAP + HOLD REPEAT', 420, -100, 130, -150],
+    ['A/D TAP', 420, -100, 130, -150],
     ['BROWSE SOUNDS', 270, -150, 280, -210],
 
     ['VEHICLES MAP\r\nID = NAME | CLASS | OWNERSHIP | CATEGORY COUNT | REVISION',
@@ -713,11 +713,11 @@ function assertInvalidScoreFallback(scene, buildResult) {
 function assertSoundWiring(scene) {
   const t = api(scene);
   const sounds = t.all(C.OneShotAudioEmitter.NAME);
-  assert.equal(sounds.length, 6, 'terminal has three purchase and three browse sounds');
+  assert.equal(sounds.length, 5, 'terminal has three purchase and two browse sounds');
   const purchase = sounds.filter(row => row.brick.g === 1);
   const browse = sounds.filter(row => row.brick.g !== 1);
   assert.equal(purchase.length, 3, 'frame retains its three configured purchase sounds');
-  assert.equal(browse.length, 3, 'controller adds exactly three browsing sounds');
+  assert.equal(browse.length, 2, 'controller adds exactly two tap-based browsing sounds');
   const groups = Map.groupBy(purchase, row => row.comp.data.AudioDescriptor);
   const success = [...groups.values()].find(rows => rows.length === 2);
   const failureRows = [...groups.values()].find(rows => rows.length === 1);
@@ -752,11 +752,8 @@ function assertSoundWiring(scene) {
   const selectSound = t.one(browse.filter(row => assetName(row) === 'OBA_Keypad'),
     'W/S selection sound');
   const keyboardSounds = browse.filter(row => assetName(row) === 'OBA_Keyboard');
-  assert.equal(keyboardSounds.length, 2, 'tap and repeat use the exact Keyboard asset');
-  const tapSound = t.one(keyboardSounds.filter(row =>
-    Math.abs(row.comp.data.VolumeMultiplier - 0.26) < 1e-5), 'A/D tap sound');
-  const repeatSound = t.one(keyboardSounds.filter(row =>
-    Math.abs(row.comp.data.VolumeMultiplier - 0.11) < 1e-5), 'A/D repeat sound');
+  assert.equal(keyboardSounds.length, 1, 'A/D tap uses one exact Keyboard asset');
+  const tapSound = keyboardSounds[0];
   const assertBrowseSettings = (row, volume, pitch, label) => {
     assert(Math.abs(row.comp.data.VolumeMultiplier - volume) < 1e-5, `${label} volume`);
     assert(Math.abs(row.comp.data.PitchMultiplier - pitch) < 1e-5, `${label} pitch`);
@@ -767,7 +764,6 @@ function assertSoundWiring(scene) {
   };
   assertBrowseSettings(selectSound, 0.32, 1.12, 'W/S select');
   assertBrowseSettings(tapSound, 0.26, 1.08, 'A/D tap');
-  assertBrowseSettings(repeatSound, 0.11, 1.45, 'A/D held repeat');
 
   const prefixes = t.all(C.Expr_Select.NAME, data =>
     data.InputA?.$variant === 'str' && data.InputA.value === ''
@@ -807,12 +803,8 @@ function assertSoundWiring(scene) {
     return branch;
   };
   const tapBranch = branchForSound(tapSound, 'tap');
-  const repeatBranch = branchForSound(repeatSound, 'held repeat');
   const tapGuard = t.source(t.one(t.incoming(tapBranch,
     C.Exec_Branch.NAME, 'bCond'), 'tap row guard'));
-  const repeatGuard = t.source(t.one(t.incoming(repeatBranch,
-    C.Exec_Branch.NAME, 'bCond'), 'repeat row guard'));
-  assert.equal(repeatGuard.key, tapGuard.key, 'tap and repeat share the same row guard');
   assert(component(tapGuard, C.Expr_LogicalOR.NAME),
     'A/D sounds use category-or-part authorization');
   const guardCompares = t.incoming(tapGuard, C.Expr_LogicalOR.NAME)
@@ -835,16 +827,8 @@ function assertSoundWiring(scene) {
       'tap sound is driven by an input edge detector');
     assert.equal(edge.p, 'OnRisingEdge', 'tap sound fires once on press');
   }
-  const repeatExec = t.source(t.one(t.incoming(repeatBranch,
-    C.Exec_Branch.NAME, 'Exec'), 'repeat execution join'));
-  const repeatInputs = t.incoming(repeatExec, C.Exec_Union.NAME);
-  assert.equal(repeatInputs.length, 2, 'left and right held-repeat triggers join');
-  for (const edge of repeatInputs) {
-    const clock = component(t.source(edge), C.Clock.NAME);
-    assert(clock, 'held-repeat sound is driven by a repeat clock');
-    assert.equal(clock.data.IntervalSeconds, 0.18, 'held-repeat sound uses input repeat timing');
-    assert.equal(edge.p, 'Pulse', 'held-repeat sound fires on repeat pulses');
-  }
+  assert.equal(t.all(C.Clock.NAME, data => data.IntervalSeconds === 0.18).length, 0,
+    'A/D has no held-repeat clocks');
 }
 
 function assertSelectionUiAndResponse(scene) {
@@ -945,6 +929,9 @@ function assertSelectionUiAndResponse(scene) {
   assert(formats.includes('{A}CATEGORY: {B}{C}'), 'category row has no left arrow');
   assert(formats.includes('{A}SELECTED: {B}{C}'), 'part row has no left arrow');
   assert(formats.includes('{A}{B}{C}'), 'BUY row has no left arrow');
+  const controlsHelp = formats.find(format => format.includes('W/S SELECT'));
+  assert(controlsHelp?.includes('A/D TAP: 1'), 'screen documents one A/D step per tap');
+  assert(!controlsHelp?.includes('HOLD'), 'screen does not advertise held repeat');
   const leftScreen = t.one(t.all(C.Expr_String_FormatText.NAME,
     data => data.FormatString.startsWith('PROCESS: MECHANIC_SHOP')),
   'left terminal screen formatter').comp.data.FormatString;
@@ -1047,11 +1034,11 @@ function assertProtocolAndNonLive(scene, buildResult) {
       `${setter.id} cannot reach vehicle reload`);
   }
   const soundNodes = build.nodes.filter(node => node.type === C.OneShotAudioEmitter.NAME);
-  assert.equal(soundNodes.length, 6, 'build graph has three purchase and three browse sounds');
+  assert.equal(soundNodes.length, 5, 'build graph has three purchase and two browse sounds');
   const purchaseSounds = soundNodes.filter(node => !node.grid);
   const browseSounds = soundNodes.filter(node => node.grid);
   assert.equal(purchaseSounds.length, 3, 'build graph retains exactly three purchase sounds');
-  assert.equal(browseSounds.length, 3, 'build graph adds exactly three browse sounds');
+  assert.equal(browseSounds.length, 2, 'build graph adds exactly two tap-based browse sounds');
   for (const setter of browseSetters) for (const sound of purchaseSounds)
     assert(!reachable(setter, sound), `${setter.id} cannot play a purchase sound`);
   const selectSound = buildOne(browseSounds.filter(sound =>
@@ -1128,8 +1115,8 @@ function test({
 } = {}) {
   const bytes = fs.readFileSync(output);
   const scene = read(bytes);
-  assert.equal(scene.bricks.length, 564, 'mechanic shop brick count is intentional');
-  assert.equal(scene.edges.length, 823, 'mechanic shop wire count is intentional');
+  assert.equal(scene.bricks.length, 557, 'mechanic shop brick count is intentional');
+  assert.equal(scene.edges.length, 812, 'mechanic shop wire count is intentional');
   const placement = validatePlacement(bytes);
   assert.equal(placement.strictOk, true, 'mechanic shop passes strict placement');
   assert.deepEqual(placement.invalidBricks, [], 'no invalid bricks');
