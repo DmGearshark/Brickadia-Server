@@ -188,9 +188,9 @@ function test({ input = DEFAULT_INPUT, output = DEFAULT_OUTPUT } = {}) {
     const prefix = t.one(t.incoming(item.brick, C.Expr_String_FormatText.NAME, 'InputA'), 'orange row prefix');
     const suffix = t.one(t.incoming(item.brick, C.Expr_String_FormatText.NAME, suffixPort), 'orange row suffix');
     assert.equal(valueOf(t.bricks.get(prefix.a).comps.find(component => component.type === C.Expr_Select.NAME).data.InputB),
-      '> <color="ff8700">');
+      '<color="ff8700">> ');
     assert.equal(valueOf(t.bricks.get(suffix.a).comps.find(component => component.type === C.Expr_Select.NAME).data.InputB),
-      '</> <');
+      ' <</>');
   }
 
   const responseValues = new Map(t.rows.filter(item => item.component.type === C.Exec_Var_Set.NAME)
@@ -258,7 +258,7 @@ function test({ input = DEFAULT_INPUT, output = DEFAULT_OUTPUT } = {}) {
     .some(edge => edge.zt === C.Exec_Union.NAME), 'Same-color response must fire Failed Buy');
 
   const redBlock = t.row(C.Expr_String_FormatText.NAME,
-    data => data.FormatString === '<color="ff3030">PRICE: 🔩{A}</>\r\n> <color="ff3030">BUY</> <',
+    data => data.FormatString === '<color="ff3030">PRICE: 🔩{A}\r\n> BUY <</>',
     'red affordability block');
   const flashSelectEdge = t.one(t.outgoing(redBlock.brick, C.Expr_String_FormatText.NAME, 'Output'), 'red block selector');
   assert.equal(flashSelectEdge.zt, C.Expr_Select.NAME);

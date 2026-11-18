@@ -228,8 +228,8 @@ function build(input = INPUT) {
   component(completeMenu, C.Expr_String_FormatText.NAME).data.FormatString = 'COLOR SETTINGS\r\n\r\n{A}\r\n{B}\r\n{C}\r\n{D}\r\n{E}\r\n\r\n{F}\r\n\r\nW/S SELECT\r\nA/D TAP: 1 | HOLD: REPEAT\r\nC ENTER HEX | SPACE ACTIVATE';
   component(priceAndBuy, C.Expr_String_FormatText.NAME).data.FormatString = 'PRICE: 🔩{A}\r\n{B}';
 
-  // Existing fixed-width row markers now open/close an orange rich-text span.
-  // The arrows stay green and the selected setting/value becomes orange.
+  // Existing fixed-width row markers now open/close an orange rich-text span,
+  // so both arrows and the selected setting/value highlight as one element.
   const settingRows = rows().filter(item => item.savedComponent.type === C.Expr_String_FormatText.NAME
     && /^\{A\}(HUE|SATURATION|BRIGHTNESS|MATERIAL|INTENSITY)/.test(item.savedComponent.data.FormatString))
     .map(item => item.brick);
@@ -240,8 +240,8 @@ function build(input = INPUT) {
     const suffixEdge = one(incoming(formatter, C.Expr_String_FormatText.NAME, suffixPort), 'row suffix selector');
     assert.equal(prefixEdge.at, C.Expr_Select.NAME);
     assert.equal(suffixEdge.at, C.Expr_Select.NAME);
-    component(brickFor(prefixEdge.a), C.Expr_Select.NAME).data.InputB = S('> <color="ff8700">');
-    component(brickFor(suffixEdge.a), C.Expr_Select.NAME).data.InputB = S('</> <');
+    component(brickFor(prefixEdge.a), C.Expr_Select.NAME).data.InputB = S('<color="ff8700">> ');
+    component(brickFor(suffixEdge.a), C.Expr_Select.NAME).data.InputB = S(' <</>');
   }
 
   // Persistent response state. It resets for every seat transition, success is
@@ -387,7 +387,7 @@ function build(input = INPUT) {
 
   const priceSource = one(incoming(priceAndBuy, C.Expr_String_FormatText.NAME, 'InputA'), 'purchase cost source');
   const redPriceAndBuy = gate('Expr_String_FormatText', [0, 1248, 2], {
-    FormatString: '<color="ff3030">PRICE: 🔩{A}</>\r\n> <color="ff3030">BUY</> <',
+    FormatString: '<color="ff3030">PRICE: 🔩{A}\r\n> BUY <</>',
     InputA: I(100), InputB: N(0), InputC: N(0), InputD: N(0), InputE: N(0), InputF: N(0), InputG: N(0),
   }, { name: 'affordability_flash_block', color: [255, 95, 95] });
   const flashedPriceSelect = gate('Expr_Select', [144, 1248, 2], {
