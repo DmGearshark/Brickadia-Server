@@ -14,6 +14,9 @@ const ROW_Y = -5;
 const HEADER_POSITION = Object.freeze([-15, 10, 2]);
 const HEADER_SIZE = Object.freeze([25, 10, 2]);
 const HEADER_TEXT = 'AND GATE ROW\r\nTOUCHING + ON GRID';
+const FONT_ASSETS = Object.freeze([
+  Object.freeze({ type: 'BrickFontDescriptor', name: 'GlacialIndifferencePlus' }),
+]);
 
 function gearsharkOwner() {
   const reader = WorldReader.from(fs.readFileSync(OWNER_SOURCE));
@@ -28,7 +31,7 @@ function gearsharkOwner() {
 }
 
 function build() {
-  const context = new Build('Labeled AND Gate Grid Test');
+  const context = new Build('Labeled AND Gate Grid Test', [...FONT_ASSETS]);
   const owner = gearsharkOwner();
   const ownerIndex = context.w.addOwner(owner);
   const chip = context.w.addMicrochip({
@@ -138,6 +141,7 @@ module.exports.ROW_Y = ROW_Y;
 module.exports.HEADER_POSITION = HEADER_POSITION;
 module.exports.HEADER_SIZE = HEADER_SIZE;
 module.exports.HEADER_TEXT = HEADER_TEXT;
+module.exports.FONT_ASSETS = FONT_ASSETS;
 
 if (require.main === module) {
   const result = build();

@@ -9,6 +9,7 @@ const validate = require('./validate-placement.cjs');
 const { C } = require('./loadboard-lib.cjs');
 const {
   X_POSITIONS, ROW_Y, HEADER_POSITION, HEADER_SIZE, HEADER_TEXT,
+  FONT_ASSETS,
 } = require('./build-labeled-and-gates-grid-test.cjs');
 
 const DEFAULT_OUTPUT = path.join(__dirname, '../../outputs/labeled-and-gates-grid-test.brz');
@@ -21,6 +22,8 @@ function component(brick, type) {
 function test({ output = DEFAULT_OUTPUT } = {}) {
   const bytes = fs.readFileSync(output);
   const scene = read(bytes);
+  assert.deepEqual(scene.r.externalAssets(), [...FONT_ASSETS],
+    'Text display font asset is embedded in the prefab asset table');
   const gates = scene.bricks.filter(brick => component(brick, C.Expr_LogicalAND.NAME))
     .sort((a, b) => a.data.position[0] - b.data.position[0]);
   const headers = scene.bricks.filter(brick => component(brick, C.TextDisplay.NAME));
@@ -46,6 +49,10 @@ function test({ output = DEFAULT_OUTPUT } = {}) {
   assert.deepEqual(header.data.position, [...HEADER_POSITION], 'Header position');
   assert.deepEqual(header.data.size, [...HEADER_SIZE], 'Header half-extents');
   assert.equal(headerComponent.data.Text, HEADER_TEXT, 'Header text');
+  assert.equal(headerComponent.data.Font, 0, 'Header uses the embedded font at asset index zero');
+  assert(headerComponent.data.Font >= 0
+    && headerComponent.data.Font < scene.r.externalAssets().length,
+    'Header font index resolves inside the external asset table');
   assert.equal(headerComponent.data.LineHeight, 5, 'Large readable header text');
   assert.deepEqual(headerComponent.data.Anchor, { X: 0.5, Y: 0.5 }, 'Centered header text');
 
