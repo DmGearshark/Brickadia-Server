@@ -359,15 +359,15 @@ function halfSize(brick) {
 const CHIP_SPEC = {
   label: 'Mechanic Shop Controller', text: 'MECHANIC SHOP\r\nCONTROLLER',
   position: [115, -25, -25],
-  center: { X: 500, Y: -215, Z: 0 }, extent: { X: 510, Y: 265, Z: 2 },
+  center: { X: 500, Y: -240, Z: 0 }, extent: { X: 510, Y: 290, Z: 2 },
 };
 
 const MAJOR_HEADERS = [
   ['VEHICLE + OWNER', 0, 20, 250],
   ['INPUT + SELECTION', 270, 20, 280],
   ['CATALOG CONFIG', 570, 20, 430],
-  ['PURCHASE CORE', 0, -160, 450],
-  ['DISPLAY + SOUND', 470, -160, 390],
+  ['PURCHASE CORE', 0, -210, 450],
+  ['DISPLAY + SOUND', 470, -210, 390],
 ];
 
 const SECTION_SPECS = {
@@ -379,33 +379,35 @@ const SECTION_SPECS = {
 
     ['SEAT INPUT', 270, 0, 100, -100],
     ['ROW SELECTION', 380, 0, 120, -100],
-    ['CATEGORY + PART', 270, -100, 140, -140],
-    ['TAP + HOLD REPEAT', 420, -100, 130, -140],
+    ['CATEGORY + PART', 270, -100, 140, -150],
+    ['TAP + HOLD REPEAT', 420, -100, 130, -150],
+    ['BROWSE SOUNDS', 270, -150, 280, -210],
 
     ['VEHICLES MAP\r\nID = NAME | CLASS | OWNERSHIP | CATEGORY COUNT | REVISION',
       570, 0, 240, -60],
     ['CATEGORIES MAP\r\nTRUCK.ORDER = ID | NAME | SCORE KEY | PART COUNT | 4 STAT SPECS',
       570, -60, 240, -120],
     ['PARTS MAP\r\nTRUCK.CATEGORY.INDEX = NAME | SAVED | PRICE | DESCRIPTION | 4 STATS',
-      570, -120, 240, -160],
+      570, -120, 240, -210],
     ['TRADE-IN RATE 0-1 + RELOAD', 820, 0, 130, -80],
     ['CONFIG NOTES\r\nOWNERSHIP IS RESERVED; RELOAD CHECKS THE ACTIVE RECORD PATH',
-      820, -80, 180, -160],
+      820, -80, 180, -210],
 
-    ['VEHICLE CATALOG', 0, -180, 120, -310],
-    ['CATEGORY LOAD', 130, -180, 130, -310],
-    ['INSTALLED PART LOOKUP', 270, -180, 140, -310],
-    ['PART SELECTION', 0, -310, 140, -460],
-    ['PRICE + TRADE-IN', 150, -310, 130, -460],
-    ['PURCHASE FINAL GUARDS', 290, -310, 150, -460],
-    ['SAVE + VEHICLE RELOAD', 0, -460, 180, -Infinity],
-    ['SYSTEM RESPONSE', 190, -460, 170, -Infinity],
+    ['VEHICLE CATALOG', 0, -230, 120, -360],
+    ['CATEGORY LOAD', 130, -230, 130, -360],
+    ['INSTALLED PART LOOKUP', 270, -230, 140, -360],
+    ['PART SELECTION', 0, -360, 140, -510],
+    ['PRICE + TRADE-IN', 150, -360, 130, -510],
+    ['PURCHASE FINAL GUARDS', 290, -360, 150, -510],
+    ['SAVE + VEHICLE RELOAD', 0, -510, 180, -Infinity],
+    ['SYSTEM RESPONSE', 190, -510, 170, -Infinity],
 
-    ['SESSION SCREEN', 470, -180, 160, -300],
-    ['SELECTION ROWS', 640, -180, 140, -300],
-    ['DESCRIPTION + COMPARISONS', 470, -300, 210, -440],
-    ['UPGRADE SCREEN', 690, -300, 170, -440],
-    ['INDICATOR + SOUNDS', 470, -440, 160, -Infinity],
+    ['SESSION SCREEN', 470, -230, 160, -350],
+    ['SELECTION ROWS', 640, -230, 140, -350],
+    ['SELECTION BLINK', 790, -230, 70, -350],
+    ['DESCRIPTION + COMPARISONS', 470, -350, 210, -490],
+    ['UPGRADE SCREEN', 690, -350, 170, -490],
+    ['INDICATOR + SOUNDS', 470, -490, 160, -Infinity],
   ],
 };
 
@@ -467,6 +469,9 @@ function assertOrganizedChips(scene) {
     'catalog reload follows the shifted config section');
 
   const gridByLabel = new Map([['MECHANIC SHOP CONTROLLER', grid]]);
+  const isFunctionalBrick = brick => brick.data.asset.startsWith('B_1x1_Gate_')
+    || brick.data.asset.startsWith('PB_Gate_')
+    || Boolean(component(brick, C.OneShotAudioEmitter.NAME));
 
   const assigned = new Set();
   for (const [chipLabel, specs] of Object.entries(SECTION_SPECS)) {
@@ -483,8 +488,7 @@ function assertOrganizedChips(scene) {
         `${title} header is passive`);
 
       const gates = scene.bricks.filter(brick => brick.g === grid
-        && (brick.data.asset.startsWith('B_1x1_Gate_')
-          || brick.data.asset.startsWith('PB_Gate_'))
+        && isFunctionalBrick(brick)
         && brick.data.position[1] <= y - 5 && brick.data.position[1] > minY
         && brick.data.position[0] - halfSize(brick)[0] >= x
         && brick.data.position[0] + halfSize(brick)[0] <= x + width);
@@ -508,8 +512,7 @@ function assertOrganizedChips(scene) {
     }
   }
   const allChildGates = scene.bricks.filter(brick => brick.g !== 1
-    && (brick.data.asset.startsWith('B_1x1_Gate_')
-      || brick.data.asset.startsWith('PB_Gate_')));
+    && isFunctionalBrick(brick));
   assert.equal(assigned.size, allChildGates.length,
     'every functional child-grid gate is inside one labeled section');
   return gridByLabel;
@@ -673,7 +676,7 @@ function assertInvalidScoreFallback(scene, buildResult) {
   const readySelect = t.one(t.all(C.Expr_Select.NAME, data =>
     data.InputA?.$variant === 'str' && data.InputA.value === 'READY'
       && data.InputB?.$variant === 'str'
-      && data.InputB.value === 'SAVED PART INVALID - STOCK ACTIVE'),
+      && data.InputB.value === 'SAVED PART INVALID\r\nSTOCK ACTIVE'),
   'invalid-score system-response selector').brick;
   const invalidEdge = t.one(t.incoming(readySelect,
     C.Expr_Select.NAME, 'bSelectB'), 'invalid flag selects the fallback response');
@@ -710,8 +713,12 @@ function assertInvalidScoreFallback(scene, buildResult) {
 function assertSoundWiring(scene) {
   const t = api(scene);
   const sounds = t.all(C.OneShotAudioEmitter.NAME);
-  assert.equal(sounds.length, 3, 'frame retains its three configured purchase sounds');
-  const groups = Map.groupBy(sounds, row => row.comp.data.AudioDescriptor);
+  assert.equal(sounds.length, 6, 'terminal has three purchase and three browse sounds');
+  const purchase = sounds.filter(row => row.brick.g === 1);
+  const browse = sounds.filter(row => row.brick.g !== 1);
+  assert.equal(purchase.length, 3, 'frame retains its three configured purchase sounds');
+  assert.equal(browse.length, 3, 'controller adds exactly three browsing sounds');
+  const groups = Map.groupBy(purchase, row => row.comp.data.AudioDescriptor);
   const success = [...groups.values()].find(rows => rows.length === 2);
   const failureRows = [...groups.values()].find(rows => rows.length === 1);
   assert(success, 'the two cash-register emitters share one descriptor');
@@ -735,6 +742,230 @@ function assertSoundWiring(scene) {
     'failed-purchase reasons join before the beep');
   assert.notEqual(failurePlay.a, successPlay[0].a,
     'failure never reuses the successful-purchase pulse');
+
+  const assets = [...scene.r.externalAssets()];
+  const assetName = row => assets[row.comp.data.AudioDescriptor]?.name;
+  assert.equal(assets.filter(asset => asset.name === 'OBA_Keypad').length, 1,
+    'exact Keypad browsing asset is serialized once');
+  assert.equal(assets.filter(asset => asset.name === 'OBA_Keyboard').length, 1,
+    'exact Keyboard browsing asset is serialized once');
+  const selectSound = t.one(browse.filter(row => assetName(row) === 'OBA_Keypad'),
+    'W/S selection sound');
+  const keyboardSounds = browse.filter(row => assetName(row) === 'OBA_Keyboard');
+  assert.equal(keyboardSounds.length, 2, 'tap and repeat use the exact Keyboard asset');
+  const tapSound = t.one(keyboardSounds.filter(row =>
+    Math.abs(row.comp.data.VolumeMultiplier - 0.26) < 1e-5), 'A/D tap sound');
+  const repeatSound = t.one(keyboardSounds.filter(row =>
+    Math.abs(row.comp.data.VolumeMultiplier - 0.11) < 1e-5), 'A/D repeat sound');
+  const assertBrowseSettings = (row, volume, pitch, label) => {
+    assert(Math.abs(row.comp.data.VolumeMultiplier - volume) < 1e-5, `${label} volume`);
+    assert(Math.abs(row.comp.data.PitchMultiplier - pitch) < 1e-5, `${label} pitch`);
+    assert.equal(row.comp.data.InnerRadius, 30, `${label} inner radius`);
+    assert.equal(row.comp.data.MaxDistance, 250, `${label} max distance`);
+    assert.equal(row.comp.data.bSpatialization, true, `${label} is spatial`);
+    assert.equal(row.comp.data.bEnableRepeat, false, `${label} emitter repeat is disabled`);
+  };
+  assertBrowseSettings(selectSound, 0.32, 1.12, 'W/S select');
+  assertBrowseSettings(tapSound, 0.26, 1.08, 'A/D tap');
+  assertBrowseSettings(repeatSound, 0.11, 1.45, 'A/D held repeat');
+
+  const prefixes = t.all(C.Expr_Select.NAME, data =>
+    data.InputA?.$variant === 'str' && data.InputA.value === ''
+      && data.InputB?.$variant === 'str'
+      && data.InputB.value === '<color="ff8700">');
+  assert.equal(prefixes.length, 3, 'three selected-row prefix formatters');
+  const rowCompares = prefixes.map(row => t.source(t.one(t.incoming(row.brick,
+    C.Expr_Select.NAME, 'bSelectB'), 'selected-row prefix condition')));
+  assert.deepEqual(rowCompares.map(brick =>
+    component(brick, C.Expr_CompareEqual.NAME).data.InputB.value).sort(), [0, 1, 2],
+  'selection rows are category, part, and buy');
+  const selectedRowRefs = rowCompares.map(brick => t.source(t.one(t.incoming(brick,
+    C.Expr_CompareEqual.NAME, 'InputA'), 'selected-row comparison value')).key);
+  assert.equal(new Set(selectedRowRefs).size, 1, 'all row comparisons use selectedRow');
+  const selectedRow = t.bricks.get(selectedRowRefs[0]);
+
+  const selectPlay = t.one(t.incoming(selectSound.brick,
+    C.OneShotAudioEmitter.NAME, 'Play'), 'W/S select sound trigger');
+  const selectUnion = t.source(selectPlay);
+  assert(component(selectUnion, C.Exec_Union.NAME), 'W/S setters join before select sound');
+  const selectInputs = t.incoming(selectUnion, C.Exec_Union.NAME);
+  assert.equal(selectInputs.length, 2, 'both W and S selection setters trigger select sound');
+  for (const edge of selectInputs) {
+    const setter = t.source(edge);
+    assert(component(setter, C.Exec_Var_Set.NAME), 'selection sound follows a row setter');
+    const ref = t.one(t.incoming(setter, C.Exec_Var_Set.NAME, 'VarRef'),
+      'selection sound setter reference');
+    assert.equal(ref.a, selectedRow.key, 'selection sound is driven only by W/S row changes');
+  }
+
+  const branchForSound = (row, label) => {
+    const play = t.one(t.incoming(row.brick, C.OneShotAudioEmitter.NAME, 'Play'),
+      `${label} sound trigger`);
+    const branch = t.source(play);
+    assert(component(branch, C.Exec_Branch.NAME), `${label} uses a guarded branch`);
+    assert.equal(play.p, 'ExecOutA', `${label} plays only on the accepted branch`);
+    return branch;
+  };
+  const tapBranch = branchForSound(tapSound, 'tap');
+  const repeatBranch = branchForSound(repeatSound, 'held repeat');
+  const tapGuard = t.source(t.one(t.incoming(tapBranch,
+    C.Exec_Branch.NAME, 'bCond'), 'tap row guard'));
+  const repeatGuard = t.source(t.one(t.incoming(repeatBranch,
+    C.Exec_Branch.NAME, 'bCond'), 'repeat row guard'));
+  assert.equal(repeatGuard.key, tapGuard.key, 'tap and repeat share the same row guard');
+  assert(component(tapGuard, C.Expr_LogicalOR.NAME),
+    'A/D sounds use category-or-part authorization');
+  const guardCompares = t.incoming(tapGuard, C.Expr_LogicalOR.NAME)
+    .map(edge => t.source(edge));
+  assert.equal(guardCompares.length, 2, 'A/D sounds have exactly two allowed rows');
+  assert.deepEqual(guardCompares.map(brick =>
+    component(brick, C.Expr_CompareEqual.NAME).data.InputB.value).sort(), [0, 1],
+  'A/D sounds allow category and part but never BUY');
+  for (const compare of guardCompares)
+    assert.equal(t.one(t.incoming(compare, C.Expr_CompareEqual.NAME, 'InputA'),
+      'A/D sound selected-row comparison').a, selectedRow.key,
+    'A/D sound authorization uses selectedRow');
+
+  const tapExec = t.source(t.one(t.incoming(tapBranch,
+    C.Exec_Branch.NAME, 'Exec'), 'tap execution join'));
+  const tapInputs = t.incoming(tapExec, C.Exec_Union.NAME);
+  assert.equal(tapInputs.length, 2, 'left and right tap triggers join');
+  for (const edge of tapInputs) {
+    assert(component(t.source(edge), C.Expr_EdgeDetectorExec.NAME),
+      'tap sound is driven by an input edge detector');
+    assert.equal(edge.p, 'OnRisingEdge', 'tap sound fires once on press');
+  }
+  const repeatExec = t.source(t.one(t.incoming(repeatBranch,
+    C.Exec_Branch.NAME, 'Exec'), 'repeat execution join'));
+  const repeatInputs = t.incoming(repeatExec, C.Exec_Union.NAME);
+  assert.equal(repeatInputs.length, 2, 'left and right held-repeat triggers join');
+  for (const edge of repeatInputs) {
+    const clock = component(t.source(edge), C.Clock.NAME);
+    assert(clock, 'held-repeat sound is driven by a repeat clock');
+    assert.equal(clock.data.IntervalSeconds, 0.18, 'held-repeat sound uses input repeat timing');
+    assert.equal(edge.p, 'Pulse', 'held-repeat sound fires on repeat pulses');
+  }
+}
+
+function assertSelectionUiAndResponse(scene) {
+  const t = api(scene);
+  const prefixes = t.all(C.Expr_Select.NAME, data =>
+    data.InputA?.$variant === 'str' && data.InputA.value === ''
+      && data.InputB?.$variant === 'str'
+      && data.InputB.value === '<color="ff8700">');
+  const suffixes = t.all(C.Expr_Select.NAME, data =>
+    data.InputA?.$variant === 'str' && data.InputA.value === '  </>'
+      && data.InputB?.$variant === 'str' && data.InputB.value === ' <</>');
+  assert.equal(prefixes.length, 3, 'category, part, and buy use the exact orange prefix');
+  assert.equal(suffixes.length, 3, 'category, part, and buy use exact trailing symbols');
+
+  const rowConditions = [];
+  for (const prefix of prefixes) {
+    const condition = t.source(t.one(t.incoming(prefix.brick,
+      C.Expr_Select.NAME, 'bSelectB'), 'prefix selection condition'));
+    rowConditions.push(condition);
+    const output = t.one(t.outgoing(prefix.brick,
+      C.Expr_Select.NAME, 'Output'), 'prefix formatter output');
+    assert.equal(output.zt, C.Expr_String_FormatText.NAME,
+      'orange prefix feeds a row formatter');
+    assert.equal(output.q, 'InputA', 'orange prefix begins its selected row');
+  }
+  assert.deepEqual(rowConditions.map(brick =>
+    component(brick, C.Expr_CompareEqual.NAME).data.InputB.value).sort(), [0, 1, 2],
+  'all three selectable rows have an orange selected state');
+
+  let activeBlink;
+  for (const suffix of suffixes) {
+    const suffixCondition = t.source(t.one(t.incoming(suffix.brick,
+      C.Expr_Select.NAME, 'bSelectB'), 'suffix blink condition'));
+    assert(component(suffixCondition, C.Expr_LogicalAND.NAME),
+      'each trailing selector requires row selection and active blink');
+    assert(rowConditions.some(row => dataDependsOn(t, suffixCondition, row)),
+      'each trailing selector depends on its selected row');
+    const candidate = t.source(t.one(t.incoming(suffixCondition,
+      C.Expr_LogicalAND.NAME, 'bInputB'), 'active blink input'));
+    activeBlink ||= candidate;
+    assert.equal(candidate.key, activeBlink.key, 'all three rows share one blink state');
+    const output = t.one(t.outgoing(suffix.brick,
+      C.Expr_Select.NAME, 'Output'), 'suffix formatter output');
+    assert.equal(output.zt, C.Expr_String_FormatText.NAME,
+      'trailing symbols feed a row formatter');
+    assert.equal(output.q, 'InputC', 'trailing symbols finish their selected row');
+  }
+  assert(component(activeBlink, C.Expr_LogicalAND.NAME),
+    'visible blink is gated by authorization and blink state');
+
+  const blinkClock = t.one(t.all(C.Clock.NAME,
+    data => data.IntervalSeconds === 0.25), 'quarter-second selection blink').brick;
+  const clockEnable = t.one(t.incoming(blinkClock,
+    C.Clock.NAME, 'bEnabled'), 'blink authorization');
+  const controlsReady = t.source(clockEnable);
+  assert(component(controlsReady, C.Expr_LogicalAND.NAME),
+    'blink clock is enabled only by controlsReady authorization');
+  assert(dataDependsOn(t, activeBlink, controlsReady),
+    'visible blink is blanked immediately outside controlsReady');
+  const readyEdge = t.one(t.all(C.Expr_EdgeDetectorExec.NAME, (_data, brick) => {
+    const input = t.incoming(brick, C.Expr_EdgeDetectorExec.NAME, 'Input')[0];
+    return input && input.a === clockEnable.a && input.at === clockEnable.at
+      && input.p === clockEnable.p;
+  }), 'controls-ready edge detector').brick;
+
+  const toggleSetter = t.target(t.one(t.outgoing(blinkClock,
+    C.Clock.NAME, 'Pulse'), 'blink toggle pulse'));
+  assert(component(toggleSetter, C.Exec_Var_Set.NAME), 'blink pulse toggles a Bool variable');
+  const blinkVar = t.source(t.one(t.incoming(toggleSetter,
+    C.Exec_Var_Set.NAME, 'VarRef'), 'blink state reference'));
+  assert.equal(component(blinkVar, C.Var.NAME).data.Value.$variant, 'Bool',
+    'blink state is retained as a Bool');
+  const blinkNot = t.source(t.one(t.incoming(toggleSetter,
+    C.Exec_Var_Set.NAME, 'Value'), 'inverted blink value'));
+  assert(component(blinkNot, C.Expr_LogicalNOT.NAME), 'each pulse inverts blink state');
+  assert.equal(t.one(t.incoming(blinkNot, C.Expr_LogicalNOT.NAME, 'bInput'),
+    'blink inversion source').a, blinkVar.key, 'blink state feeds its own inversion');
+  assert(dataDependsOn(t, activeBlink, blinkVar), 'visible blink uses retained blink state');
+
+  const rising = t.one(t.outgoing(readyEdge,
+    C.Expr_EdgeDetectorExec.NAME, 'OnRisingEdge'), 'blink activation reset');
+  const falling = t.one(t.outgoing(readyEdge,
+    C.Expr_EdgeDetectorExec.NAME, 'OnFallingEdge'), 'blink deactivation reset');
+  assert.equal(falling.z, rising.z, 'ready and not-ready edges share the reset path');
+  const resetJoin = t.target(rising);
+  assert(component(resetJoin, C.Exec_Union.NAME), 'blink edges join before state reset');
+  const resetSetter = t.target(t.one(t.outgoing(resetJoin,
+    C.Exec_Union.NAME, 'ExecOut'), 'blink reset setter'));
+  assert(component(resetSetter, C.Exec_Var_Set.NAME), 'authorization edges reset blink state');
+  assert.equal(component(resetSetter, C.Exec_Var_Set.NAME).data.Value.value, false,
+    'blink resets to off');
+  assert.equal(t.one(t.incoming(resetSetter, C.Exec_Var_Set.NAME, 'VarRef'),
+    'blink reset state reference').a, blinkVar.key,
+  'authorization reset clears the same retained blink state');
+
+  const formats = t.all(C.Expr_String_FormatText.NAME)
+    .map(row => row.comp.data.FormatString);
+  assert(formats.includes('{A}CATEGORY: {B}{C}'), 'category row has no left arrow');
+  assert(formats.includes('{A}SELECTED: {B}{C}'), 'part row has no left arrow');
+  assert(formats.includes('{A}{B}{C}'), 'BUY row has no left arrow');
+  const leftScreen = t.one(t.all(C.Expr_String_FormatText.NAME,
+    data => data.FormatString.startsWith('PROCESS: MECHANIC_SHOP')),
+  'left terminal screen formatter').comp.data.FormatString;
+  assert(leftScreen.includes('SYSTEM RESPONSE:\r\n{D}'),
+    'system response value starts on its own line');
+  assert(!leftScreen.includes('SYSTEM RESPONSE: {D}'),
+    'system response is not crowded onto its label line');
+
+  const strings = [];
+  for (const row of t.rows) for (const value of Object.values(row.comp.data)) {
+    if (typeof value === 'string') strings.push(value);
+    else if (value?.$variant === 'str') strings.push(value.value);
+  }
+  for (const response of [
+    'VEHICLE NOT\r\nSUPPORTED',
+    'CATALOG ERROR:\r\nCATEGORY NOT FOUND',
+    'SAVED PART INVALID\r\nSTOCK ACTIVE',
+    'CATALOG ERROR:\r\nPART NOT FOUND',
+    'INSUFFICIENT SCRAP\r\nNEED 🔩{A}',
+    'PART INSTALLED\r\nNO SCRAP COST',
+  ]) assert(strings.includes(response), `long response is split: ${JSON.stringify(response)}`);
 }
 
 function assertProtocolAndNonLive(scene, buildResult) {
@@ -816,9 +1047,20 @@ function assertProtocolAndNonLive(scene, buildResult) {
       `${setter.id} cannot reach vehicle reload`);
   }
   const soundNodes = build.nodes.filter(node => node.type === C.OneShotAudioEmitter.NAME);
-  assert.equal(soundNodes.length, 3, 'build graph retains exactly three purchase sounds');
-  for (const setter of browseSetters) for (const sound of soundNodes)
+  assert.equal(soundNodes.length, 6, 'build graph has three purchase and three browse sounds');
+  const purchaseSounds = soundNodes.filter(node => !node.grid);
+  const browseSounds = soundNodes.filter(node => node.grid);
+  assert.equal(purchaseSounds.length, 3, 'build graph retains exactly three purchase sounds');
+  assert.equal(browseSounds.length, 3, 'build graph adds exactly three browse sounds');
+  for (const setter of browseSetters) for (const sound of purchaseSounds)
     assert(!reachable(setter, sound), `${setter.id} cannot play a purchase sound`);
+  const selectSound = buildOne(browseSounds.filter(sound =>
+    sound.data.AudioDescriptor === 4), 'build W/S selection sound');
+  const rowSetters = settersFor(build, buildResult.nodes.selectedRow).filter(setter =>
+    setter.id.startsWith('mechanic_input_'));
+  assert.equal(rowSetters.length, 2, 'W and S each update the selected row');
+  for (const setter of rowSetters)
+    assert(reachable(setter, selectSound), `${setter.id} plays the W/S selection sound`);
   return { t, request, reply, reload };
 }
 
@@ -886,6 +1128,8 @@ function test({
 } = {}) {
   const bytes = fs.readFileSync(output);
   const scene = read(bytes);
+  assert.equal(scene.bricks.length, 564, 'mechanic shop brick count is intentional');
+  assert.equal(scene.edges.length, 823, 'mechanic shop wire count is intentional');
   const placement = validatePlacement(bytes);
   assert.equal(placement.strictOk, true, 'mechanic shop passes strict placement');
   assert.deepEqual(placement.invalidBricks, [], 'no invalid bricks');
@@ -909,6 +1153,7 @@ function test({
   assertQuoteGraph(scene);
   assertInvalidScoreFallback(scene, first);
   assertSoundWiring(scene);
+  assertSelectionUiAndResponse(scene);
   const protocol = assertProtocolAndNonLive(scene, first);
   assertFreshFinalGuardAndPurchaseOrder(scene, protocol);
 

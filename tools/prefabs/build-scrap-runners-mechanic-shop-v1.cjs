@@ -319,7 +319,18 @@ function build(input = INPUT) {
   validate();
   const donor = fs.readFileSync(input);
   const frame = source(input);
-  const build = new Build('Scrap Runners - Mechanic Shop v1', frame.assets);
+  const assets = clone(frame.assets);
+  const ensureAsset = (type, name) => {
+    let index = assets.findIndex(asset => asset.type === type && asset.name === name);
+    if (index < 0) {
+      index = assets.length;
+      assets.push({ type, name });
+    }
+    return index;
+  };
+  const selectSoundAsset = ensureAsset('BrickOneShotAudioDescriptor', 'OBA_Keypad');
+  const tapSoundAsset = ensureAsset('BrickOneShotAudioDescriptor', 'OBA_Keyboard');
+  const build = new Build('Scrap Runners - Mechanic Shop v1', assets);
   build.w.addOwner(owner(frame.r));
 
   const frameItems = clone(frame.bricks);
@@ -376,8 +387,8 @@ function build(input = INPUT) {
   const controller = addLabeledMicrochip(build, titleTemplate, {
     position: [115, -25, -25], color: COLOR.config,
     text: 'MECHANIC SHOP\r\nCONTROLLER', prompt: 'Mechanic Shop Controller',
-    planeCenter: { X: 500, Y: -215, Z: 0 },
-    planeExtent: { X: 510, Y: 265, Z: 2 },
+    planeCenter: { X: 500, Y: -240, Z: 0 },
+    planeExtent: { X: 510, Y: 290, Z: 2 },
   });
   const chips = {
     session: controller, input: controller, config: controller,
@@ -396,6 +407,7 @@ function build(input = INPUT) {
       { name: 'select', title: 'ROW SELECTION', x: 380, y: 0, width: 120, color: COLOR.input },
       { name: 'change', title: 'CATEGORY + PART', x: 270, y: -100, width: 140, color: COLOR.input },
       { name: 'repeat', title: 'TAP + HOLD REPEAT', x: 420, y: -100, width: 130, color: COLOR.input },
+      { name: 'sounds', title: 'BROWSE SOUNDS', x: 270, y: -150, width: 280, color: COLOR.input },
     ]);
   const config = layoutCircuit(build, build.circuit(chips.config.grid, 'mechanic_config'),
     titleTemplate, [
@@ -407,30 +419,31 @@ function build(input = INPUT) {
     ]);
   const core = layoutCircuit(build, build.circuit(chips.core.grid, 'mechanic_core'),
     titleTemplate, [
-      { name: 'vehicle', title: 'VEHICLE CATALOG', x: 0, y: -180, width: 120, color: COLOR.core },
-      { name: 'category', title: 'CATEGORY LOAD', x: 130, y: -180, width: 130, color: COLOR.core },
-      { name: 'scan', title: 'INSTALLED PART LOOKUP', x: 270, y: -180, width: 140, color: COLOR.core },
-      { name: 'part', title: 'PART SELECTION', x: 0, y: -310, width: 140, color: COLOR.core },
-      { name: 'quote', title: 'PRICE + TRADE-IN', x: 150, y: -310, width: 130, color: COLOR.core },
-      { name: 'purchase', title: 'PURCHASE FINAL GUARDS', x: 290, y: -310, width: 150, color: COLOR.core },
-      { name: 'commit', title: 'SAVE + VEHICLE RELOAD', x: 0, y: -460, width: 180, color: COLOR.core },
-      { name: 'response', title: 'SYSTEM RESPONSE', x: 190, y: -460, width: 170, color: COLOR.core },
+      { name: 'vehicle', title: 'VEHICLE CATALOG', x: 0, y: -230, width: 120, color: COLOR.core },
+      { name: 'category', title: 'CATEGORY LOAD', x: 130, y: -230, width: 130, color: COLOR.core },
+      { name: 'scan', title: 'INSTALLED PART LOOKUP', x: 270, y: -230, width: 140, color: COLOR.core },
+      { name: 'part', title: 'PART SELECTION', x: 0, y: -360, width: 140, color: COLOR.core },
+      { name: 'quote', title: 'PRICE + TRADE-IN', x: 150, y: -360, width: 130, color: COLOR.core },
+      { name: 'purchase', title: 'PURCHASE FINAL GUARDS', x: 290, y: -360, width: 150, color: COLOR.core },
+      { name: 'commit', title: 'SAVE + VEHICLE RELOAD', x: 0, y: -510, width: 180, color: COLOR.core },
+      { name: 'response', title: 'SYSTEM RESPONSE', x: 190, y: -510, width: 170, color: COLOR.core },
     ]);
   const display = layoutCircuit(build, build.circuit(chips.display.grid, 'mechanic_display'),
     titleTemplate, [
-      { name: 'left', title: 'SESSION SCREEN', x: 470, y: -180, width: 160, color: COLOR.display },
-      { name: 'rows', title: 'SELECTION ROWS', x: 640, y: -180, width: 140, color: COLOR.display },
-      { name: 'stats', title: 'DESCRIPTION + COMPARISONS', x: 470, y: -300, width: 210, color: COLOR.display },
-      { name: 'right', title: 'UPGRADE SCREEN', x: 690, y: -300, width: 170, color: COLOR.display },
-      { name: 'indicator', title: 'INDICATOR + SOUNDS', x: 470, y: -440, width: 160, color: COLOR.display },
+      { name: 'left', title: 'SESSION SCREEN', x: 470, y: -230, width: 160, color: COLOR.display },
+      { name: 'rows', title: 'SELECTION ROWS', x: 640, y: -230, width: 140, color: COLOR.display },
+      { name: 'blink', title: 'SELECTION BLINK', x: 790, y: -230, width: 70, color: COLOR.display },
+      { name: 'stats', title: 'DESCRIPTION + COMPARISONS', x: 470, y: -350, width: 210, color: COLOR.display },
+      { name: 'right', title: 'UPGRADE SCREEN', x: 690, y: -350, width: 170, color: COLOR.display },
+      { name: 'indicator', title: 'INDICATOR + SOUNDS', x: 470, y: -490, width: 160, color: COLOR.display },
     ]);
 
   for (const spec of [
     { title: 'VEHICLE + OWNER', x: 0, y: 20, width: 250, color: COLOR.session },
     { title: 'INPUT + SELECTION', x: 270, y: 20, width: 280, color: COLOR.input },
     { title: 'CATALOG CONFIG', x: 570, y: 20, width: 430, color: COLOR.config },
-    { title: 'PURCHASE CORE', x: 0, y: -160, width: 450, color: COLOR.core },
-    { title: 'DISPLAY + SOUND', x: 470, y: -160, width: 390, color: COLOR.display },
+    { title: 'PURCHASE CORE', x: 0, y: -210, width: 450, color: COLOR.core },
+    { title: 'DISPLAY + SOUND', x: 470, y: -210, width: 390, color: COLOR.display },
   ]) addHeader(build, controller.grid, titleTemplate, spec);
 
   // ---- Shared session state -------------------------------------------------
@@ -600,7 +613,7 @@ function build(input = INPUT) {
   build.wire(vehicleWait, 'Output', vehicleBranch, 'Exec');
   const clearUnsupportedCatalog = core.set(catalogReady, false);
   build.wire(vehicleBranch, 'ExecOutB', clearUnsupportedCatalog, 'Exec');
-  const unsupportedResponse = core.set(response, 'VEHICLE NOT SUPPORTED');
+  const unsupportedResponse = core.set(response, 'VEHICLE NOT\r\nSUPPORTED');
   build.wire(clearUnsupportedCatalog, 'ExecOut', unsupportedResponse, 'Exec');
   const commitCatalogReady = core.set(catalogReady, true);
   build.wire(vehicleBranch, 'ExecOutA', commitCatalogReady, 'Exec');
@@ -627,7 +640,7 @@ function build(input = INPUT) {
   build.wire(categoryTail[0], categoryTail[1], categoryWait, 'Input');
   const categoryFound = core.n('Exec_Branch', { bCond: R(categoryGet, 'bFound') });
   build.wire(categoryWait, 'Output', categoryFound, 'Exec');
-  const categoryError = core.set(response, 'CATALOG ERROR: CATEGORY NOT FOUND');
+  const categoryError = core.set(response, 'CATALOG ERROR:\r\nCATEGORY NOT FOUND');
   build.wire(categoryFound, 'ExecOutB', categoryError, 'Exec');
   const installedScoreGet = core.n('Exec_Gamemode_GetLeaderboardValue', {
     Key: categoryLeaderboardKey, PlayerState: R(playerState),
@@ -709,10 +722,10 @@ function build(input = INPUT) {
   const partsBranch = core.n('Exec_Branch', { bCond: bothPartsFound });
   build.wire(partLoadWait, 'Output', partsBranch, 'Exec');
   const readyResponseText = core.sel(R(installedInvalid), 'READY',
-    'SAVED PART INVALID - STOCK ACTIVE');
+    'SAVED PART INVALID\r\nSTOCK ACTIVE');
   let readyTail = chain(build, [partsBranch, 'ExecOutA'], core.set(dataReady, true));
   readyTail = chain(build, readyTail, core.set(response, readyResponseText));
-  const partError = core.set(response, 'CATALOG ERROR: PART NOT FOUND');
+  const partError = core.set(response, 'CATALOG ERROR:\r\nPART NOT FOUND');
   build.wire(partsBranch, 'ExecOutB', partError, 'Exec');
   const installedFields = split(core, R(installedRecord), 8);
   const selectedFields = split(core, R(selectedPartGet, 'Value'), 8);
@@ -779,6 +792,39 @@ function build(input = INPUT) {
   inputCircuit.use('change');
   const categorySelected = inputCircuit.cmp('Equal', R(selectedRow), 0);
   const partSelected = inputCircuit.cmp('Equal', R(selectedRow), 1);
+  const browseAdjustmentSelected = inputCircuit.or(categorySelected, partSelected);
+
+  inputCircuit.use('sounds');
+  const browseSoundData = (AudioDescriptor, VolumeMultiplier, PitchMultiplier) => ({
+    AudioDescriptor, VolumeMultiplier, PitchMultiplier,
+    InnerRadius: 30, MaxDistance: 250, bSpatialization: true,
+    bEnableRepeat: false, RepeatTime: 1, RepeatVariance: 0, RepeatCount: 1,
+  });
+  const selectBrowseSound = inputCircuit.n('OneShotAudioEmitter',
+    browseSoundData(selectSoundAsset, 0.32, 1.12));
+  const tapBrowseSound = inputCircuit.n('OneShotAudioEmitter',
+    browseSoundData(tapSoundAsset, 0.26, 1.08));
+  const repeatBrowseSound = inputCircuit.n('OneShotAudioEmitter',
+    browseSoundData(tapSoundAsset, 0.11, 1.45));
+  const selectionSoundPulse = union(build, inputCircuit,
+    [[setPreviousRow, 'ExecOut'], [setNextRow, 'ExecOut']]);
+  build.wire(selectionSoundPulse[0], selectionSoundPulse[1], selectBrowseSound, 'Play');
+  const tapSoundPulse = union(build, inputCircuit,
+    [[rightEdge, 'OnRisingEdge'], [leftEdge, 'OnRisingEdge']]);
+  const tapSoundAllowed = inputCircuit.n('Exec_Branch', {
+    bCond: browseAdjustmentSelected,
+  });
+  build.wire(tapSoundPulse[0], tapSoundPulse[1], tapSoundAllowed, 'Exec');
+  build.wire(tapSoundAllowed, 'ExecOutA', tapBrowseSound, 'Play');
+  const repeatSoundPulse = union(build, inputCircuit,
+    [[rightClock, 'Pulse'], [leftClock, 'Pulse']]);
+  const repeatSoundAllowed = inputCircuit.n('Exec_Branch', {
+    bCond: browseAdjustmentSelected,
+  });
+  build.wire(repeatSoundPulse[0], repeatSoundPulse[1], repeatSoundAllowed, 'Exec');
+  build.wire(repeatSoundAllowed, 'ExecOutA', repeatBrowseSound, 'Play');
+
+  inputCircuit.use('change');
   const rightCategory = inputCircuit.n('Exec_Branch', { bCond: categorySelected });
   const rightPart = inputCircuit.n('Exec_Branch', { bCond: partSelected });
   build.wire(rightPulse[0], rightPulse[1], rightCategory, 'Exec');
@@ -821,7 +867,7 @@ function build(input = INPUT) {
   build.wire(changedPartWait, 'Output', changedPartFound, 'Exec');
   let changedReady = chain(build, [changedPartFound, 'ExecOutA'], core.set(dataReady, true));
   changedReady = chain(build, changedReady, core.set(response, readyResponseText));
-  const changedPartError = core.set(response, 'CATALOG ERROR: PART NOT FOUND');
+  const changedPartError = core.set(response, 'CATALOG ERROR:\r\nPART NOT FOUND');
   build.wire(changedPartFound, 'ExecOutB', changedPartError, 'Exec');
   // ---- Purchase: fresh reads, final guards, score/Scrap write ---------------
   core.use('purchase');
@@ -895,7 +941,7 @@ function build(input = INPUT) {
   const fundsBranch = core.n('Exec_Branch', { bCond: canAfford });
   build.wire(finalGuardBranch, 'ExecOutA', fundsBranch, 'Exec');
   const missingFunds = core.math('Subtract', R(txnNet), R(freshScrap, 'Value'));
-  const insufficientText = core.fmt('INSUFFICIENT SCRAP - NEED 🔩{A}', missingFunds);
+  const insufficientText = core.fmt('INSUFFICIENT SCRAP\r\nNEED 🔩{A}', missingFunds);
   const insufficientResponse = core.set(response, insufficientText);
   build.wire(fundsBranch, 'ExecOutB', insufficientResponse, 'Exec');
   const unlockInsufficient = core.set(busy, false);
@@ -943,7 +989,7 @@ function build(input = INPUT) {
   const txnPositive = core.cmp('Greater', R(txnNet), 0);
   const txnNegative = core.cmp('Less', R(txnNet), 0);
   const nonPositiveText = core.sel(txnNegative,
-    'PART INSTALLED - NO SCRAP COST', receivedText);
+    'PART INSTALLED\r\nNO SCRAP COST', receivedText);
   const successText = core.sel(txnPositive, nonPositiveText, paidText);
   commitTail = chain(build, commitTail, core.set(response, successText));
   for (const successSound of successSounds)
@@ -951,22 +997,44 @@ function build(input = INPUT) {
   commitTail = chain(build, commitTail, core.set(busy, false));
 
   // ---- Display formatting ---------------------------------------------------
+  display.use('blink');
+  const selectionBlink = display.v(false);
+  const nextBlink = display.not(R(selectionBlink));
+  const blinkClock = display.n('Clock', {
+    bEnabled: controlsReady, bPulseOn: false,
+    OnTimeSeconds: 1, OffTimeSeconds: 1, IntervalSeconds: 0.25,
+  });
+  const toggleBlink = display.set(selectionBlink, nextBlink);
+  build.wire(blinkClock, 'Pulse', toggleBlink, 'Exec');
+  const readyEdge = display.n('Expr_EdgeDetectorExec', {
+    Input: controlsReady, bSeeded: true,
+  });
+  const resetBlinkPulse = union(build, display,
+    [[readyEdge, 'OnRisingEdge'], [readyEdge, 'OnFallingEdge']]);
+  const resetBlink = display.set(selectionBlink, false);
+  build.wire(resetBlinkPulse[0], resetBlinkPulse[1], resetBlink, 'Exec');
+  const activeBlink = display.and(controlsReady, R(selectionBlink));
+
   display.use('rows');
   const row0 = display.cmp('Equal', R(selectedRow), 0);
   const row1 = display.cmp('Equal', R(selectedRow), 1);
   const row2 = display.cmp('Equal', R(selectedRow), 2);
-  const orangePrefix = '<color="ff8700">> ';
+  const orangePrefix = '<color="ff8700">';
   const categoryPrefix = display.sel(row0, '', orangePrefix);
   const selectedPrefix = display.sel(row1, '', orangePrefix);
   const buyPrefix = display.sel(row2, '', orangePrefix);
-  const suffix = ' <</>';
+  const rowSuffix = selected => display.sel(display.and(selected, activeBlink),
+    '  </>', ' <</>');
+  const categorySuffix = rowSuffix(row0);
+  const selectedSuffix = rowSuffix(row1);
+  const buySuffix = rowSuffix(row2);
   const categoryLine = display.fmt('{A}CATEGORY: {B}{C}',
-    categoryPrefix, categoryDisplay, suffix);
+    categoryPrefix, categoryDisplay, categorySuffix);
   const selectedLine = display.fmt('{A}SELECTED: {B}{C}',
-    selectedPrefix, selectedName, suffix);
+    selectedPrefix, selectedName, selectedSuffix);
   const installedLine = display.fmt('INSTALLED: {A}', installedName);
   const buyLabel = display.sel(alreadyInstalled, 'BUY', 'INSTALLED');
-  const buyLine = display.fmt('{A}{B}{C}', buyPrefix, buyLabel, suffix);
+  const buyLine = display.fmt('{A}{B}{C}', buyPrefix, buyLabel, buySuffix);
 
   display.use('stats');
   function comparisonLine(index) {
@@ -1025,7 +1093,7 @@ function build(input = INPUT) {
   const vehicleBlock = display.fmt('VEHICLE: {A}\r\nCLASS: {B}',
     vehicleDisplay, vehicleClass);
   const leftText = display.fmt(
-    'PROCESS: MECHANIC_SHOP\r\nSTATUS: {A}\r\n\r\n{B}\r\n\r\n{C}\r\n\r\nSYSTEM RESPONSE: {D}',
+    'PROCESS: MECHANIC_SHOP\r\nSTATUS: {A}\r\n\r\n{B}\r\n\r\n{C}\r\n\r\nSYSTEM RESPONSE:\r\n{D}',
     status, userBlock, vehicleBlock, R(response));
   build.wire(leftText[0], leftText[1], leftScreen, 'Text');
 
@@ -1041,7 +1109,7 @@ function build(input = INPUT) {
     'Vehicle-zone and owner-authorized mechanic shop. Browsing is screen-only; successful purchases save the exact configured score, adjust Scrap with a 75% trade-in, and reload the locked vehicle.');
   const bytes = repack(raw, donor, {
     name: 'Scrap Runners - Mechanic Shop v1',
-    description: 'Clean single-controller mechanic terminal using the supplied Gearshark frame, non-live selection, data-driven Truck1 catalog, owner authorization, trade-ins, comparisons, corrected purchase sounds, and targeted post-purchase reload.',
+    description: 'Clean single-controller mechanic terminal using the supplied Gearshark frame, non-live selection, data-driven Truck1 catalog, owner authorization, trade-ins, comparisons, color-terminal-style browsing sounds and row selection, corrected purchase sounds, and targeted post-purchase reload.',
   });
   return {
     bytes,
