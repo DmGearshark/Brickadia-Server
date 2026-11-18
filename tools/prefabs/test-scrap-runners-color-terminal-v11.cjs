@@ -101,6 +101,7 @@ function execReachable(scene, start, target, limit = 4000) {
 function isExecPort(t, brick, type, port) {
   const saved = component(brick, type);
   if (saved?.data?.[port]?.$variant === 'WireGraphExec') return true;
+  if (type === C.BufferTicks.NAME && ['Input', 'Output'].includes(port)) return true;
   if (/^(?:Exec|Pulse|Expired|OnRisingEdge|OnFallingEdge|bPulseOnChange)/.test(port)) return true;
   // Microchip executable ports are identified by their saved callable variant.
   if (/^RER_/.test(port)) {
@@ -208,8 +209,30 @@ function assertRequestEntitySource(t, entered, request) {
     assert.equal(target.edge.p, 'Entity', 'Request targets the literal entered entity');
     return target.brick;
   }
+  if (target.comp?.type === C.Exec_ArrayVar_Get.NAME) {
+    assert.equal(target.edge.p, 'Value', 'Request targets the retained vehicle array value');
+    assert.equal(echoed.edge.p, 'Value', 'Request echoes the retained vehicle array value');
+    assert.equal(valueOf(target.comp.data.Index), 0,
+      'Request reads the current vehicle from array index zero');
+    const array = sourceOf(t, target.brick, C.Exec_ArrayVar_Get.NAME,
+      'ArrayVarRef', 'appearance request vehicle array');
+    assert.equal(array.comp?.type, C.ArrayVar.NAME,
+      'Delayed request reads the terminal vehicle Array Var');
+    const inserts = t.outgoing(array.brick, C.ArrayVar.NAME, 'ArrayVarRef')
+      .filter(edge => edge.zt === C.Exec_ArrayVar_Insert.NAME)
+      .map(edge => t.target(edge))
+      .filter(insert => t.incoming(insert, C.Exec_ArrayVar_Insert.NAME, 'Value')
+        .some(edge => edge.a === entered.key && edge.p === 'Entity'));
+    assert.equal(inserts.length, 1,
+      'Vehicle array is populated from the literal ZoneEntered.Entity');
+    assert(execReachable(t.scene, entered, inserts[0]),
+      'ZoneEntered execution inserts the current vehicle');
+    assert(execReachable(t.scene, inserts[0], target.brick),
+      'Vehicle insertion completes before the delayed request reads index zero');
+    return target.brick;
+  }
   assert.equal(target.comp?.type, C.Var.NAME,
-    'Request target is either ZoneEntered.Entity or the stored vehicle Var');
+    'Request target is ZoneEntered.Entity, the stored vehicle Var, or its retained array value');
   const setters = t.outgoing(target.brick, C.Var.NAME, 'VarRef')
     .filter(edge => edge.zt === C.Exec_Var_Set.NAME)
     .map(edge => t.target(edge))
