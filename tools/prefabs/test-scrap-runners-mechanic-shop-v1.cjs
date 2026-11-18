@@ -807,9 +807,17 @@ function assertSoundWiring(scene) {
     C.Exec_Branch.NAME, 'bCond'), 'tap row guard'));
   assert(component(tapGuard, C.Expr_LogicalOR.NAME),
     'A/D sounds use category-or-part authorization');
-  const guardCompares = t.incoming(tapGuard, C.Expr_LogicalOR.NAME)
+  const guardConditions = t.incoming(tapGuard, C.Expr_LogicalOR.NAME)
     .map(edge => t.source(edge));
-  assert.equal(guardCompares.length, 2, 'A/D sounds have exactly two allowed rows');
+  assert.equal(guardConditions.length, 2, 'A/D sounds have exactly two allowed rows');
+  for (const condition of guardConditions)
+    assert(component(condition, C.Expr_LogicalAND.NAME),
+      'each A/D row is authorized only after the physical tap edge');
+  const guardInputs = guardConditions.map(condition =>
+    t.incoming(condition, C.Expr_LogicalAND.NAME).map(edge => t.source(edge)));
+  const guardCompares = guardInputs.map(inputs => inputs.find(brick =>
+    component(brick, C.Expr_CompareEqual.NAME)));
+  assert(guardCompares.every(Boolean), 'each A/D guard includes a selected-row comparison');
   assert.deepEqual(guardCompares.map(brick =>
     component(brick, C.Expr_CompareEqual.NAME).data.InputB.value).sort(), [0, 1],
   'A/D sounds allow category and part but never BUY');
@@ -817,16 +825,49 @@ function assertSoundWiring(scene) {
     assert.equal(t.one(t.incoming(compare, C.Expr_CompareEqual.NAME, 'InputA'),
       'A/D sound selected-row comparison').a, selectedRow.key,
     'A/D sound authorization uses selectedRow');
+  const readinessGuards = guardInputs.map((inputs, index) => inputs.find(brick =>
+    brick.key !== guardCompares[index].key));
+  assert(readinessGuards.every(Boolean), 'each A/D row guard includes controlsReady');
+  assert.equal(new Set(readinessGuards.map(brick => brick.key)).size, 1,
+    'category and part taps share one controlsReady guard');
+  assert(component(readinessGuards[0], C.Expr_LogicalAND.NAME),
+    'A/D readiness is applied after edge detection');
 
   const tapExec = t.source(t.one(t.incoming(tapBranch,
     C.Exec_Branch.NAME, 'Exec'), 'tap execution join'));
   const tapInputs = t.incoming(tapExec, C.Exec_Union.NAME);
   assert.equal(tapInputs.length, 2, 'left and right tap triggers join');
   for (const edge of tapInputs) {
-    assert(component(t.source(edge), C.Expr_EdgeDetectorExec.NAME),
+    const detector = t.source(edge);
+    assert(component(detector, C.Expr_EdgeDetectorExec.NAME),
       'tap sound is driven by an input edge detector');
     assert.equal(edge.p, 'OnRisingEdge', 'tap sound fires once on press');
+    const rawInput = t.source(t.one(t.incoming(detector,
+      C.Expr_EdgeDetectorExec.NAME, 'Input'), 'raw A/D detector input'));
+    const compareType = component(rawInput, C.Expr_CompareGreater.NAME)
+      ? C.Expr_CompareGreater.NAME : C.Expr_CompareLess.NAME;
+    assert(component(rawInput, compareType),
+      'A/D edge detector reads the raw direction comparison directly');
+    const splitterEdge = t.one(t.incoming(rawInput, compareType, 'InputA'),
+      'raw A/D comparison source');
+    const splitter = t.source(splitterEdge);
+    assert(component(splitter, C.InputSplitter.NAME),
+      'A/D edge detection is independent of dataReady and controlsReady');
+    assert.equal(splitterEdge.p, 'InputRight', 'A/D edge reads the physical direction axis');
   }
+  const spaceCompareEdge = t.one(t.scene.edges.filter(edge => edge.p === 'InputUp'
+    && edge.at === C.InputSplitter.NAME && edge.q === 'InputA'
+    && edge.zt === C.Expr_CompareGreater.NAME), 'raw Space comparison');
+  const spaceCompare = t.target(spaceCompareEdge);
+  const spaceDetectorEdge = t.one(t.outgoing(spaceCompare,
+    C.Expr_CompareGreater.NAME, 'bOutput').filter(edge => edge.q === 'Input'
+      && component(t.target(edge), C.Expr_EdgeDetectorExec.NAME)),
+  'raw Space edge detector');
+  const spaceDetector = t.target(spaceDetectorEdge);
+  const buyStartEdge = t.one(t.outgoing(spaceDetector,
+    C.Expr_EdgeDetectorExec.NAME, 'OnRisingEdge'), 'single Space activation pulse');
+  assert(component(t.target(buyStartEdge), C.Exec_Branch.NAME),
+    'purchase authorization is applied after the raw Space edge');
   assert.equal(t.all(C.Clock.NAME, data => data.IntervalSeconds === 0.18).length, 0,
     'A/D has no held-repeat clocks');
 }
@@ -1115,8 +1156,8 @@ function test({
 } = {}) {
   const bytes = fs.readFileSync(output);
   const scene = read(bytes);
-  assert.equal(scene.bricks.length, 557, 'mechanic shop brick count is intentional');
-  assert.equal(scene.edges.length, 812, 'mechanic shop wire count is intentional');
+  assert.equal(scene.bricks.length, 556, 'mechanic shop brick count is intentional');
+  assert.equal(scene.edges.length, 810, 'mechanic shop wire count is intentional');
   const placement = validatePlacement(bytes);
   assert.equal(placement.strictOk, true, 'mechanic shop passes strict placement');
   assert.deepEqual(placement.invalidBricks, [], 'no invalid bricks');

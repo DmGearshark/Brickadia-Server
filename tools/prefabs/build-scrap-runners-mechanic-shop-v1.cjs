@@ -757,14 +757,11 @@ function build(input = INPUT) {
   const splitter = inputCircuit.n('InputSplitter', { Character: R(seat, 'SittingCharacter') });
   const forwardUp = inputCircuit.cmp('Greater', R(splitter, 'InputForward'), 0.5);
   const forwardDown = inputCircuit.cmp('Less', R(splitter, 'InputForward'), -0.5);
-  const rightHeld = inputCircuit.and(
-    inputCircuit.cmp('Greater', R(splitter, 'InputRight'), 0.5), controlsReady);
-  const leftHeld = inputCircuit.and(
-    inputCircuit.cmp('Less', R(splitter, 'InputRight'), -0.5), controlsReady);
+  const rightHeld = inputCircuit.cmp('Greater', R(splitter, 'InputRight'), 0.5);
+  const leftHeld = inputCircuit.cmp('Less', R(splitter, 'InputRight'), -0.5);
   const upHeld = inputCircuit.and(forwardUp, authorized, notBusy);
   const downHeld = inputCircuit.and(forwardDown, authorized, notBusy);
-  const activateHeld = inputCircuit.and(
-    inputCircuit.cmp('Greater', R(splitter, 'InputUp'), 0.5), controlsReady);
+  const activateHeld = inputCircuit.cmp('Greater', R(splitter, 'InputUp'), 0.5);
   const upEdge = inputCircuit.n('Expr_EdgeDetectorExec', { Input: upHeld });
   const downEdge = inputCircuit.n('Expr_EdgeDetectorExec', { Input: downHeld });
   inputCircuit.use('tap');
@@ -787,8 +784,10 @@ function build(input = INPUT) {
   build.wire(downEdge, 'OnRisingEdge', setNextRow, 'Exec');
 
   inputCircuit.use('change');
-  const categorySelected = inputCircuit.cmp('Equal', R(selectedRow), 0);
-  const partSelected = inputCircuit.cmp('Equal', R(selectedRow), 1);
+  const categorySelected = inputCircuit.and(
+    inputCircuit.cmp('Equal', R(selectedRow), 0), controlsReady);
+  const partSelected = inputCircuit.and(
+    inputCircuit.cmp('Equal', R(selectedRow), 1), controlsReady);
   const browseAdjustmentSelected = inputCircuit.or(categorySelected, partSelected);
 
   inputCircuit.use('sounds');
