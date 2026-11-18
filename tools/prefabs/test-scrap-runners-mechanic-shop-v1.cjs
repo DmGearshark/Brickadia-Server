@@ -1073,6 +1073,52 @@ function assertBoundedNavigation(buildResult) {
     'left navigation stops at the first entry');
 }
 
+function assertPreReadSettling(buildResult) {
+  const { build, nodes } = buildResult;
+  const buffers = [
+    ['category', nodes.categoryLookupSettle],
+    ['scan reset', nodes.scanResetSettle],
+    ['installed part', nodes.installedPartSettle],
+    ['selected part', nodes.selectedPartSettle],
+  ];
+  for (const [label, buffer] of buffers) {
+    assert.equal(buffer.type, C.BufferTicks.NAME, `${label} uses a pre-read buffer`);
+    assert.equal(buffer.data.TicksToWait, 1, `${label} waits exactly one tick`);
+  }
+
+  const categoryReadSource = buildIncoming(build, nodes.categoryGet, 'Exec',
+    'category read execution').a;
+  assert.equal(categoryReadSource.type, C.Exec_Var_Set.NAME,
+    'category load first clears dataReady');
+  assert.equal(buildIncoming(build, categoryReadSource, 'Exec',
+    'category pre-read settlement').a, nodes.categoryLookupSettle,
+  'category lookup waits after every reset or accepted navigation change');
+  for (const setter of settersFor(build, nodes.categoryIndex))
+    assert(buildExecReachableFromPort(build, setter, 'ExecOut',
+      nodes.categoryLookupSettle), `${setter.id} settles before category lookup`);
+
+  assert.equal(buildIncoming(build, nodes.scanResetSettle, 'Input',
+    'scan reset settlement input').a, nodes.resetScan,
+  'installed-score scan cursor reset settles before its first lookup');
+  assert(buildExecReachableFromPort(build, nodes.scanResetSettle, 'Output', nodes.scanGet),
+    'settled scan cursor reaches the first part scan');
+
+  assert.equal(buildIncoming(build, nodes.installedPartGet, 'Exec',
+    'installed part read execution').a, nodes.installedPartSettle,
+  'installed-part lookup reads only after its index settles');
+  const installedReadSetters = settersFor(build, nodes.installedIndex).filter(setter =>
+    buildExecReachableFromPort(build, setter, 'ExecOut', nodes.installedPartSettle));
+  assert.equal(installedReadSetters.length, 2,
+    'scan success and invalid-score fallback both settle before installed-part lookup');
+
+  assert.equal(buildIncoming(build, nodes.selectedPartGet, 'Exec',
+    'selected part read execution').a, nodes.selectedPartSettle,
+  'selected tuning lookup reads only after its index settles');
+  for (const setter of settersFor(build, nodes.selectedIndex))
+    assert(buildExecReachableFromPort(build, setter, 'ExecOut',
+      nodes.selectedPartSettle), `${setter.id} settles before selected-part lookup`);
+}
+
 function assertProtocolAndNonLive(scene, buildResult) {
   const t = api(scene);
   const request = t.one(t.all(C.Exec_SendCustomEventGlobal.NAME,
@@ -1233,8 +1279,8 @@ function test({
 } = {}) {
   const bytes = fs.readFileSync(output);
   const scene = read(bytes);
-  assert.equal(scene.bricks.length, 561, 'mechanic shop brick count is intentional');
-  assert.equal(scene.edges.length, 816, 'mechanic shop wire count is intentional');
+  assert.equal(scene.bricks.length, 565, 'mechanic shop brick count is intentional');
+  assert.equal(scene.edges.length, 820, 'mechanic shop wire count is intentional');
   const placement = validatePlacement(bytes);
   assert.equal(placement.strictOk, true, 'mechanic shop passes strict placement');
   assert.deepEqual(placement.invalidBricks, [], 'no invalid bricks');
@@ -1260,6 +1306,7 @@ function test({
   assertSoundWiring(scene);
   assertSelectionUiAndResponse(scene);
   assertBoundedNavigation(first);
+  assertPreReadSettling(first);
   const protocol = assertProtocolAndNonLive(scene, first);
   assertFreshFinalGuardAndPurchaseOrder(scene, protocol);
 

@@ -634,7 +634,12 @@ function build(input = INPUT) {
   const categoryLoadInput = core.n('Exec_Union');
   build.wire(resetCategory, 'ExecOut', categoryLoadPrimary, 'ExecA');
   build.wire(categoryLoadPrimary, 'ExecOut', categoryLoadInput, 'ExecA');
-  let categoryTail = chain(build, [categoryLoadInput, 'ExecOut'], core.set(dataReady, false));
+  const categoryLookupSettle = core.n('BufferTicks', {
+    TicksToWait: 1, ZeroTicksToWait: 0,
+  });
+  build.wire(categoryLoadInput, 'ExecOut', categoryLookupSettle, 'Input');
+  let categoryTail = chain(build, [categoryLookupSettle, 'Output'],
+    core.set(dataReady, false));
   categoryTail = chain(build, categoryTail, categoryGet);
   const categoryWait = core.n('BufferTicks', { TicksToWait: 1, ZeroTicksToWait: 0 });
   build.wire(categoryTail[0], categoryTail[1], categoryWait, 'Input');
@@ -656,7 +661,11 @@ function build(input = INPUT) {
     MapVarRef: R(partsMap, 'MapVarRef'), Key: scanKey,
   });
   const scanExec = core.n('Exec_Union');
-  build.wire(resetScan, 'ExecOut', scanExec, 'ExecA');
+  const scanResetSettle = core.n('BufferTicks', {
+    TicksToWait: 1, ZeroTicksToWait: 0,
+  });
+  build.wire(resetScan, 'ExecOut', scanResetSettle, 'Input');
+  build.wire(scanResetSettle, 'Output', scanExec, 'ExecA');
   build.wire(scanExec, 'ExecOut', scanGet, 'Exec');
   const scanFields = split(core, R(scanGet, 'Value'), 8);
   const scanSaved = core.num(scanFields[1]);
@@ -707,11 +716,20 @@ function build(input = INPUT) {
     MapVarRef: R(partsMap, 'MapVarRef'), Key: selectedKey,
   });
   const selectedPartExec = core.n('Exec_Union');
-  build.wire(selectedPartExec, 'ExecOut', selectedPartGet, 'Exec');
+  const selectedPartSettle = core.n('BufferTicks', {
+    TicksToWait: 1, ZeroTicksToWait: 0,
+  });
+  build.wire(selectedPartExec, 'ExecOut', selectedPartSettle, 'Input');
+  build.wire(selectedPartSettle, 'Output', selectedPartGet, 'Exec');
   const installedPartExec = core.n('Exec_Union');
   build.wire(foundTail[0], foundTail[1], installedPartExec, 'ExecA');
   build.wire(fallbackTail[0], fallbackTail[1], installedPartExec, 'ExecB');
-  foundTail = chain(build, [installedPartExec, 'ExecOut'], installedPartGet);
+  const installedPartSettle = core.n('BufferTicks', {
+    TicksToWait: 1, ZeroTicksToWait: 0,
+  });
+  build.wire(installedPartExec, 'ExecOut', installedPartSettle, 'Input');
+  build.wire(installedPartSettle, 'Output', installedPartGet, 'Exec');
+  foundTail = [installedPartGet, 'ExecOut'];
   foundTail = chain(build, foundTail,
     core.set(installedRecord, R(installedPartGet, 'Value')));
   foundTail = chain(build, foundTail, selectedPartExec, 'ExecA');
@@ -1112,7 +1130,9 @@ function build(input = INPUT) {
       seatedUserName, scrap, busy, dataReady, response, vehiclesMap, categoriesMap,
       partsMap, tradeInRate, categoryIndex, selectedIndex, installedIndex,
       installedSaved, installedInvalid, selectedRow, request, reply, reload,
-      writeUpgrade, adjustScrap,
+      writeUpgrade, adjustScrap, categoryGet, categoryLookupSettle, resetScan,
+      scanGet, scanResetSettle, installedPartGet, installedPartSettle,
+      selectedPartGet, selectedPartSettle,
     },
   };
 }
