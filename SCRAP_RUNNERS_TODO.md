@@ -1,6 +1,6 @@
 # Scrap Runners Roadmap
 
-Last updated: 2026-11-17
+Last updated: 2026-11-18
 
 This is the persistent source of truth for Scrap Runners work. Chat memory is not authoritative.
 
@@ -156,6 +156,15 @@ Status: `In progress`
   - Active entry and exit clear the old seated session. If an old appearance sync overlaps a new vehicle, releasing the sync lock retries the owner request instead of freezing black. The new touching/on-grid logic lanes include fixed `VEHICLE BAY LOCK`, `OWNER REPLY`, `OWNER AUTHORIZATION`, `SESSION + INDICATOR`, and `PURCHASE OWNER GUARDS` section cards.
   - Full inherited v13-v18, Truck1 v9-v10, owner-isolation, handoff-race, deterministic-build, and strict-placement regressions pass. The terminal has 727 bricks/1,027 wires; Truck1 v10 has 274 bricks/211 wires, all 33 stored body references, and unchanged physical vehicle geometry.
   - Status: `Needs user verification`. Test: owner gets green/full operation; wrong player gets red with no active screen or controls; no player/no vehicle stays black; a second vehicle cannot steal or clear the first vehicle's session; the active vehicle restores on exit; the ignored vehicle becomes eligible only after exiting/re-entering; color and Plastic/Metal still persist after exit and respawn.
+  - Material intensity persistence remains out of scope and still restores the established raw `128` (50%) value.
+- Stable-owner-ID and stale-bay recovery candidate: `outputs/scrap-runners-color-terminal-v20.brz`, paired with `outputs/scrap-runners-truck1-color-enabled-v11.brz`.
+  - The uploaded `truck and terminal diag.brz` captured the terminal's active-vehicle array as a one-element `[null]` slot. Terminal v19 accepted a new entry only when index `0` was out of bounds, so deleting, replacing, or despawning the active truck inside the zone could leave a dead weak-object slot that permanently ignored every later vehicle and kept the terminal black.
+  - Terminal v20 treats either an out-of-bounds slot or a null/dead slot as an empty bay, clears that stale array state, and then runs the normal first-vehicle entry path. A live non-null first vehicle remains an absolute lock; additional live vehicles are still ignored until it leaves.
+  - Ownership now crosses the vehicle/terminal protocol as a stable user-ID string instead of relying on Character/PlayerState object identity. Truck1 v11 preserves v10's resolved Owner PlayerState and its existing leaderboard consumers, derives and retains `Owner User ID`, and publishes that string on `SR.Appearance.Reply.Data6`.
+  - Terminal v20 compares the active vehicle owner ID with the seated user's ID during startup, before purchase reads, and again immediately before mutation. The existing PlayerState equality and appearance/session nonce checks remain in the final transaction guard, so a seat or vehicle handoff cannot charge a different player mid-purchase.
+  - The indicator contract remains black for no live/known owner or no seated user, green for the confirmed owner, and red for a confirmed different user. Screens, controls, previews, leaderboard reads/writes, and Scrap debit remain authorization-only.
+  - Full inherited v13-v19, Truck1 v9-v11, stale-slot truth-table, stable-ID protocol, transaction-continuity, deterministic-build, and strict-placement regressions pass. The terminal has 732 bricks/1,036 wires; Truck1 v11 has 278 bricks/217 wires and all 33 stored body references.
+  - Status: `Needs user verification`. Replace both old prefabs: install Truck1 v11 in the existing spawner, place terminal v20 with the bay empty, claim/spawn the truck outside the zone, then drive it across the zone boundary. Verify owner green/full operation, wrong player red/no operation, vehicle exit/respawn persistence, and replacement/despawn-in-zone recovery. A truck already overlapping a newly placed zone must still exit and re-enter because Brickadia's zone-enter event is edge-triggered.
   - Material intensity persistence remains out of scope and still restores the established raw `128` (50%) value.
 - Logic-layout calibration proof: `outputs/five-and-gates-row.brz`.
   - Deliberately contains only one Gearshark-owned microchip with exactly five unwired AND gates at `X = -96, -48, 0, 48, 96`, identical `Y = 0`, identical `Z = 2`, and identical orientation.
