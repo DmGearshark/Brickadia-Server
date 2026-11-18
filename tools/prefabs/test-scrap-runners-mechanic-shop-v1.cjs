@@ -553,6 +553,10 @@ function assertCatalogContract(scene) {
     data.parts[0][1] = fields.join('|');
   }, /nonnegative price/);
   expectCatalogFailure(data => {
+    const fields = data.parts[2][1].split('|'); fields[2] = '1';
+    data.parts[2][1] = fields.join('|');
+  }, /prices increase from left to right/);
+  expectCatalogFailure(data => {
     const fields = data.categories[0][1].split('|');
     const spec = fields[4].split('^'); spec[3] = 'X'; fields[4] = spec.join('^');
     data.categories[0][1] = fields.join('|');
@@ -601,11 +605,18 @@ function assertCatalogContract(scene) {
     const [categoryId, , , countText] = record.split('|');
     const vehicleId = categoryKey.split('.')[0];
     const count = Number(countText);
+    const savedValues = [];
+    const prices = [];
     for (let index = 0; index < count; index++) {
       const fields = parts.get(`${vehicleId}.${categoryId}.${index}`).split('|');
-      assert.equal(Number(fields[1]), index,
-        `${vehicleId}.${categoryId}.${index} saved value is its valid array index`);
+      savedValues.push(Number(fields[1]));
+      prices.push(Number(fields[2]));
     }
+    assert.deepEqual(savedValues.slice().sort((a, b) => a - b),
+      Array.from({ length: count }, (_value, index) => index),
+    `${vehicleId}.${categoryId} saved values remain a complete vehicle-array index set`);
+    assert.deepEqual(prices, prices.slice().sort((a, b) => a - b),
+      `${vehicleId}.${categoryId} is ordered cheapest-to-most-expensive`);
   }
 }
 
@@ -794,80 +805,83 @@ function assertSoundWiring(scene) {
     assert.equal(ref.a, selectedRow.key, 'selection sound is driven only by W/S row changes');
   }
 
-  const branchForSound = (row, label) => {
-    const play = t.one(t.incoming(row.brick, C.OneShotAudioEmitter.NAME, 'Play'),
-      `${label} sound trigger`);
-    const branch = t.source(play);
-    assert(component(branch, C.Exec_Branch.NAME), `${label} uses a guarded branch`);
-    assert.equal(play.p, 'ExecOutA', `${label} plays only on the accepted branch`);
-    return branch;
-  };
-  const tapBranch = branchForSound(tapSound, 'tap');
-  const tapGuard = t.source(t.one(t.incoming(tapBranch,
-    C.Exec_Branch.NAME, 'bCond'), 'tap row guard'));
-  assert(component(tapGuard, C.Expr_LogicalOR.NAME),
-    'A/D sounds use category-or-part authorization');
-  const guardConditions = t.incoming(tapGuard, C.Expr_LogicalOR.NAME)
-    .map(edge => t.source(edge));
-  assert.equal(guardConditions.length, 2, 'A/D sounds have exactly two allowed rows');
-  for (const condition of guardConditions)
-    assert(component(condition, C.Expr_LogicalAND.NAME),
-      'each A/D row is authorized only after the physical tap edge');
-  const guardInputs = guardConditions.map(condition =>
-    t.incoming(condition, C.Expr_LogicalAND.NAME).map(edge => t.source(edge)));
-  const guardCompares = guardInputs.map(inputs => inputs.find(brick =>
-    component(brick, C.Expr_CompareEqual.NAME)));
-  assert(guardCompares.every(Boolean), 'each A/D guard includes a selected-row comparison');
-  assert.deepEqual(guardCompares.map(brick =>
-    component(brick, C.Expr_CompareEqual.NAME).data.InputB.value).sort(), [0, 1],
-  'A/D sounds allow category and part but never BUY');
-  for (const compare of guardCompares)
-    assert.equal(t.one(t.incoming(compare, C.Expr_CompareEqual.NAME, 'InputA'),
-      'A/D sound selected-row comparison').a, selectedRow.key,
-    'A/D sound authorization uses selectedRow');
-  const readinessGuards = guardInputs.map((inputs, index) => inputs.find(brick =>
-    brick.key !== guardCompares[index].key));
-  assert(readinessGuards.every(Boolean), 'each A/D row guard includes controlsReady');
-  assert.equal(new Set(readinessGuards.map(brick => brick.key)).size, 1,
-    'category and part taps share one controlsReady guard');
-  assert(component(readinessGuards[0], C.Expr_LogicalAND.NAME),
-    'A/D readiness is applied after edge detection');
-
-  const tapExec = t.source(t.one(t.incoming(tapBranch,
-    C.Exec_Branch.NAME, 'Exec'), 'tap execution join'));
-  const tapInputs = t.incoming(tapExec, C.Exec_Union.NAME);
-  assert.equal(tapInputs.length, 2, 'left and right tap triggers join');
+  const tapPlay = t.one(t.incoming(tapSound.brick,
+    C.OneShotAudioEmitter.NAME, 'Play'), 'A/D tap sound trigger');
+  const tapUnion = t.source(tapPlay);
+  assert(component(tapUnion, C.Exec_Union.NAME),
+    'successful bounded changes join before the A/D sound');
+  const unionLeaves = union => t.incoming(union, C.Exec_Union.NAME)
+    .flatMap(edge => {
+      const source = t.source(edge);
+      return component(source, C.Exec_Union.NAME) ? unionLeaves(source) : [edge];
+    });
+  const tapInputs = unionLeaves(tapUnion);
+  assert.equal(tapInputs.length, 4,
+    'category left/right and part left/right each feed the A/D sound');
+  const tapVariables = [];
   for (const edge of tapInputs) {
-    const detector = t.source(edge);
-    assert(component(detector, C.Expr_EdgeDetectorExec.NAME),
-      'tap sound is driven by an input edge detector');
-    assert.equal(edge.p, 'OnRisingEdge', 'tap sound fires once on press');
-    const rawInput = t.source(t.one(t.incoming(detector,
-      C.Expr_EdgeDetectorExec.NAME, 'Input'), 'raw A/D detector input'));
-    const compareType = component(rawInput, C.Expr_CompareGreater.NAME)
-      ? C.Expr_CompareGreater.NAME : C.Expr_CompareLess.NAME;
-    assert(component(rawInput, compareType),
-      'A/D edge detector reads the raw direction comparison directly');
-    const splitterEdge = t.one(t.incoming(rawInput, compareType, 'InputA'),
-      'raw A/D comparison source');
-    const splitter = t.source(splitterEdge);
-    assert(component(splitter, C.InputSplitter.NAME),
-      'A/D edge detection is independent of dataReady and controlsReady');
-    assert.equal(splitterEdge.p, 'InputRight', 'A/D edge reads the physical direction axis');
+    const setter = t.source(edge);
+    assert(component(setter, C.Exec_Var_Set.NAME),
+      'A/D sound follows a successful bounded setter');
+    assert.equal(edge.p, 'ExecOut', 'A/D sound cannot play for a rejected boundary tap');
+    tapVariables.push(t.one(t.incoming(setter, C.Exec_Var_Set.NAME, 'VarRef'),
+      'A/D sound setter variable').a);
+  }
+  assert.deepEqual([...Map.groupBy(tapVariables, value => value).values()]
+    .map(values => values.length).sort(), [2, 2],
+  'A/D sound follows two category and two part setters');
+
+  const directionInputs = t.scene.edges.filter(edge => edge.at === C.InputSplitter.NAME
+    && edge.p === 'InputRight' && edge.q === 'InputA'
+    && [C.Expr_CompareGreater.NAME, C.Expr_CompareLess.NAME].includes(edge.zt));
+  assert.equal(directionInputs.length, 2, 'A and D each have one raw direction comparison');
+  for (const directionInput of directionInputs) {
+    const rawInput = t.target(directionInput);
+    const compareType = directionInput.zt;
+    const detectorEdge = t.one(t.outgoing(rawInput, compareType, 'bOutput').filter(edge =>
+      edge.q === 'Input' && component(t.target(edge), C.Expr_EdgeDetectorExec.NAME)),
+    'raw A/D detector input');
+    const detector = t.target(detectorEdge);
+    const categoryBranchEdge = t.one(t.outgoing(detector,
+      C.Expr_EdgeDetectorExec.NAME, 'OnRisingEdge'), 'single A/D tap pulse');
+    const categoryBranch = t.target(categoryBranchEdge);
+    assert(component(categoryBranch, C.Exec_Branch.NAME),
+      'raw A/D tap enters a bounded category branch');
+    const partBranchEdge = t.one(t.outgoing(categoryBranch,
+      C.Exec_Branch.NAME, 'ExecOutB'), 'category rejection falls through to part');
+    const partBranch = t.target(partBranchEdge);
+    assert(component(partBranch, C.Exec_Branch.NAME),
+      'raw A/D tap then enters a bounded part branch');
+    const expectedBound = compareType === C.Expr_CompareGreater.NAME
+      ? C.Expr_CompareLess.NAME : C.Expr_CompareGreater.NAME;
+    for (const [branch, label] of [[categoryBranch, 'category'], [partBranch, 'part']]) {
+      const guard = t.source(t.one(t.incoming(branch,
+        C.Exec_Branch.NAME, 'bCond'), `${label} boundary guard`));
+      assert(component(guard, C.Expr_LogicalAND.NAME),
+        `${label} navigation retains post-edge readiness authorization`);
+      assert(t.incoming(guard, C.Expr_LogicalAND.NAME).some(edge =>
+        component(t.source(edge), expectedBound)),
+      `${label} navigation stops at its ${expectedBound === C.Expr_CompareLess.NAME
+        ? 'right' : 'left'} boundary`);
+    }
   }
   const spaceCompareEdge = t.one(t.scene.edges.filter(edge => edge.p === 'InputUp'
     && edge.at === C.InputSplitter.NAME && edge.q === 'InputA'
     && edge.zt === C.Expr_CompareGreater.NAME), 'raw Space comparison');
   const spaceCompare = t.target(spaceCompareEdge);
-  const spaceDetectorEdge = t.one(t.outgoing(spaceCompare,
-    C.Expr_CompareGreater.NAME, 'bOutput').filter(edge => edge.q === 'Input'
+  const spaceGateEdge = t.one(t.outgoing(spaceCompare,
+    C.Expr_CompareGreater.NAME, 'bOutput').filter(edge =>
+      component(t.target(edge), C.Expr_LogicalAND.NAME)), 'Space readiness gate');
+  const spaceGate = t.target(spaceGateEdge);
+  const spaceDetectorEdge = t.one(t.outgoing(spaceGate,
+    C.Expr_LogicalAND.NAME, 'bOutput').filter(edge => edge.q === 'Input'
       && component(t.target(edge), C.Expr_EdgeDetectorExec.NAME)),
-  'raw Space edge detector');
+  'gated Space edge detector');
   const spaceDetector = t.target(spaceDetectorEdge);
   const buyStartEdge = t.one(t.outgoing(spaceDetector,
     C.Expr_EdgeDetectorExec.NAME, 'OnRisingEdge'), 'single Space activation pulse');
   assert(component(t.target(buyStartEdge), C.Exec_Branch.NAME),
-    'purchase authorization is applied after the raw Space edge');
+    'working gated Space path reaches purchase authorization');
   assert.equal(t.all(C.Clock.NAME, data => data.IntervalSeconds === 0.18).length, 0,
     'A/D has no held-repeat clocks');
 }
@@ -994,6 +1008,69 @@ function assertSelectionUiAndResponse(scene) {
     'INSUFFICIENT SCRAP\r\nNEED 🔩{A}',
     'PART INSTALLED\r\nNO SCRAP COST',
   ]) assert(strings.includes(response), `long response is split: ${JSON.stringify(response)}`);
+}
+
+function assertBoundedNavigation(buildResult) {
+  const { build, nodes } = buildResult;
+  for (const [label, variable] of [
+    ['category', nodes.categoryIndex],
+    ['part', nodes.selectedIndex],
+  ]) {
+    const setters = settersFor(build, variable).filter(setter =>
+      setter.id.startsWith('mechanic_input_'));
+    assert.equal(setters.length, 2, `${label} has one left and one right setter`);
+    const moves = setters.map(setter => ({
+      setter,
+      value: setterValueSource(build, setter, `${label} movement value`),
+    }));
+    const next = buildOne(moves.filter(move => move.value.type === C.Expr_MathAdd.NAME),
+      `${label} right movement`);
+    const previous = buildOne(moves.filter(move =>
+      move.value.type === C.Expr_MathSubtract.NAME), `${label} left movement`);
+    for (const [move, boundType, direction] of [
+      [next, C.Expr_CompareLess.NAME, 'right'],
+      [previous, C.Expr_CompareGreater.NAME, 'left'],
+    ]) {
+      assert.equal(move.value.data.InputB.value, 1,
+        `${label} ${direction} changes exactly one position`);
+      assert.equal(buildIncoming(build, move.value, 'InputA',
+        `${label} ${direction} current index`).a, variable,
+      `${label} ${direction} starts from the retained index`);
+      const exec = buildIncoming(build, move.setter, 'Exec',
+        `${label} ${direction} accepted execution`);
+      assert.equal(exec.p, 'ExecOutA', `${label} ${direction} runs only when accepted`);
+      assert.equal(exec.a.type, C.Exec_Branch.NAME,
+        `${label} ${direction} uses a boundary branch`);
+      const guard = buildIncoming(build, exec.a, 'bCond',
+        `${label} ${direction} boundary guard`).a;
+      assert.equal(guard.type, C.Expr_LogicalAND.NAME,
+        `${label} ${direction} keeps readiness and boundary authorization`);
+      const bound = buildOne(build.edges.filter(edge => edge.z === guard
+        && edge.a.type === boundType).map(edge => edge.a),
+      `${label} ${direction} bound comparison`);
+      assert.equal(buildIncoming(build, bound, 'InputA',
+        `${label} ${direction} compared index`).a, variable,
+      `${label} ${direction} bound checks the retained index`);
+      if (direction === 'left') {
+        assert.equal(bound.data.InputB.value, 0, `${label} left stops at zero`);
+      } else {
+        const last = buildIncoming(build, bound, 'InputB',
+          `${label} right last index`).a;
+        assert.equal(last.type, C.Expr_MathSubtract.NAME,
+          `${label} right maximum is count minus one`);
+        assert.equal(last.data.InputB.value, 1,
+          `${label} right maximum subtracts exactly one`);
+      }
+    }
+  }
+
+  const step = (index, count, direction) => direction > 0
+    ? (index < count - 1 ? index + 1 : index)
+    : (index > 0 ? index - 1 : index);
+  assert.deepEqual([step(0, 3, 1), step(1, 3, 1), step(2, 3, 1)], [1, 2, 2],
+    'right navigation stops at the final entry');
+  assert.deepEqual([step(2, 3, -1), step(1, 3, -1), step(0, 3, -1)], [1, 0, 0],
+    'left navigation stops at the first entry');
 }
 
 function assertProtocolAndNonLive(scene, buildResult) {
@@ -1156,8 +1233,8 @@ function test({
 } = {}) {
   const bytes = fs.readFileSync(output);
   const scene = read(bytes);
-  assert.equal(scene.bricks.length, 556, 'mechanic shop brick count is intentional');
-  assert.equal(scene.edges.length, 810, 'mechanic shop wire count is intentional');
+  assert.equal(scene.bricks.length, 561, 'mechanic shop brick count is intentional');
+  assert.equal(scene.edges.length, 816, 'mechanic shop wire count is intentional');
   const placement = validatePlacement(bytes);
   assert.equal(placement.strictOk, true, 'mechanic shop passes strict placement');
   assert.deepEqual(placement.invalidBricks, [], 'no invalid bricks');
@@ -1182,6 +1259,7 @@ function test({
   assertInvalidScoreFallback(scene, first);
   assertSoundWiring(scene);
   assertSelectionUiAndResponse(scene);
+  assertBoundedNavigation(first);
   const protocol = assertProtocolAndNonLive(scene, first);
   assertFreshFinalGuardAndPurchaseOrder(scene, protocol);
 

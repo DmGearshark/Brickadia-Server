@@ -761,7 +761,8 @@ function build(input = INPUT) {
   const leftHeld = inputCircuit.cmp('Less', R(splitter, 'InputRight'), -0.5);
   const upHeld = inputCircuit.and(forwardUp, authorized, notBusy);
   const downHeld = inputCircuit.and(forwardDown, authorized, notBusy);
-  const activateHeld = inputCircuit.cmp('Greater', R(splitter, 'InputUp'), 0.5);
+  const activateHeld = inputCircuit.and(
+    inputCircuit.cmp('Greater', R(splitter, 'InputUp'), 0.5), controlsReady);
   const upEdge = inputCircuit.n('Expr_EdgeDetectorExec', { Input: upHeld });
   const downEdge = inputCircuit.n('Expr_EdgeDetectorExec', { Input: downHeld });
   inputCircuit.use('tap');
@@ -788,7 +789,16 @@ function build(input = INPUT) {
     inputCircuit.cmp('Equal', R(selectedRow), 0), controlsReady);
   const partSelected = inputCircuit.and(
     inputCircuit.cmp('Equal', R(selectedRow), 1), controlsReady);
-  const browseAdjustmentSelected = inputCircuit.or(categorySelected, partSelected);
+  const lastCategoryIndex = inputCircuit.math('Subtract', vehicleCategoryCount, 1);
+  const lastPartIndex = inputCircuit.math('Subtract', categoryPartCount, 1);
+  const rightCategoryAllowed = inputCircuit.and(categorySelected,
+    inputCircuit.cmp('Less', R(categoryIndex), lastCategoryIndex));
+  const leftCategoryAllowed = inputCircuit.and(categorySelected,
+    inputCircuit.cmp('Greater', R(categoryIndex), 0));
+  const rightPartAllowed = inputCircuit.and(partSelected,
+    inputCircuit.cmp('Less', R(selectedIndex), lastPartIndex));
+  const leftPartAllowed = inputCircuit.and(partSelected,
+    inputCircuit.cmp('Greater', R(selectedIndex), 0));
 
   inputCircuit.use('sounds');
   const browseSoundData = (AudioDescriptor, VolumeMultiplier, PitchMultiplier) => ({
@@ -803,29 +813,19 @@ function build(input = INPUT) {
   const selectionSoundPulse = union(build, inputCircuit,
     [[setPreviousRow, 'ExecOut'], [setNextRow, 'ExecOut']]);
   build.wire(selectionSoundPulse[0], selectionSoundPulse[1], selectBrowseSound, 'Play');
-  const tapSoundPulse = union(build, inputCircuit,
-    [[rightEdge, 'OnRisingEdge'], [leftEdge, 'OnRisingEdge']]);
-  const tapSoundAllowed = inputCircuit.n('Exec_Branch', {
-    bCond: browseAdjustmentSelected,
-  });
-  build.wire(tapSoundPulse[0], tapSoundPulse[1], tapSoundAllowed, 'Exec');
-  build.wire(tapSoundAllowed, 'ExecOutA', tapBrowseSound, 'Play');
 
   inputCircuit.use('change');
-  const rightCategory = inputCircuit.n('Exec_Branch', { bCond: categorySelected });
-  const rightPart = inputCircuit.n('Exec_Branch', { bCond: partSelected });
+  const rightCategory = inputCircuit.n('Exec_Branch', { bCond: rightCategoryAllowed });
+  const rightPart = inputCircuit.n('Exec_Branch', { bCond: rightPartAllowed });
   build.wire(rightPulse[0], rightPulse[1], rightCategory, 'Exec');
   build.wire(rightCategory, 'ExecOutB', rightPart, 'Exec');
-  const leftCategory = inputCircuit.n('Exec_Branch', { bCond: categorySelected });
-  const leftPart = inputCircuit.n('Exec_Branch', { bCond: partSelected });
+  const leftCategory = inputCircuit.n('Exec_Branch', { bCond: leftCategoryAllowed });
+  const leftPart = inputCircuit.n('Exec_Branch', { bCond: leftPartAllowed });
   build.wire(leftPulse[0], leftPulse[1], leftCategory, 'Exec');
   build.wire(leftCategory, 'ExecOutB', leftPart, 'Exec');
 
-  const nextCategory = inputCircuit.math('Modulo',
-    inputCircuit.math('Add', R(categoryIndex), 1), vehicleCategoryCount);
-  const previousCategory = inputCircuit.math('Modulo',
-    inputCircuit.math('Add', R(categoryIndex),
-      inputCircuit.math('Subtract', vehicleCategoryCount, 1)), vehicleCategoryCount);
+  const nextCategory = inputCircuit.math('Add', R(categoryIndex), 1);
+  const previousCategory = inputCircuit.math('Subtract', R(categoryIndex), 1);
   const setNextCategory = inputCircuit.set(categoryIndex, nextCategory);
   const setPreviousCategory = inputCircuit.set(categoryIndex, previousCategory);
   build.wire(rightCategory, 'ExecOutA', setNextCategory, 'Exec');
@@ -834,15 +834,19 @@ function build(input = INPUT) {
     [[setNextCategory, 'ExecOut'], [setPreviousCategory, 'ExecOut']]);
   build.wire(categoryChanged[0], categoryChanged[1], categoryLoadInput, 'ExecB');
 
-  const nextPart = inputCircuit.math('Modulo',
-    inputCircuit.math('Add', R(selectedIndex), 1), categoryPartCount);
-  const previousPart = inputCircuit.math('Modulo',
-    inputCircuit.math('Add', R(selectedIndex),
-      inputCircuit.math('Subtract', categoryPartCount, 1)), categoryPartCount);
+  const nextPart = inputCircuit.math('Add', R(selectedIndex), 1);
+  const previousPart = inputCircuit.math('Subtract', R(selectedIndex), 1);
   const setNextPart = inputCircuit.set(selectedIndex, nextPart);
   const setPreviousPart = inputCircuit.set(selectedIndex, previousPart);
   build.wire(rightPart, 'ExecOutA', setNextPart, 'Exec');
   build.wire(leftPart, 'ExecOutA', setPreviousPart, 'Exec');
+  inputCircuit.use('sounds');
+  const tapSoundPulse = union(build, inputCircuit, [
+    [setNextCategory, 'ExecOut'], [setPreviousCategory, 'ExecOut'],
+    [setNextPart, 'ExecOut'], [setPreviousPart, 'ExecOut'],
+  ]);
+  build.wire(tapSoundPulse[0], tapSoundPulse[1], tapBrowseSound, 'Play');
+  inputCircuit.use('change');
   const partChanged = union(build, inputCircuit,
     [[setNextPart, 'ExecOut'], [setPreviousPart, 'ExecOut']]);
   let partChangeTail = chain(build, partChanged, core.set(dataReady, false));

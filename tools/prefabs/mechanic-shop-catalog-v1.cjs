@@ -25,8 +25,8 @@ const PARTS = [
   ['Truck1.Engine.0', 'Stock Shitter|0|0|The original factory engine.|250|5|0.5|0.1'],
   ['Truck1.Engine.1', 'RedNeck Engine|1|2500|A homemade alternative assembled for working trucks.|300|4|0.4|0.9'],
   ['Truck1.Engine.2', 'Backyard Engine|2|5000|A stronger backyard-built engine profile.|350|3|0.3|0.8'],
-  ['Truck1.Engine.3', 'A Real Engine|3|15000|A proper balanced engine for regular road use.|300|1|1|0.2'],
-  ['Truck1.Engine.4', 'The Slow Turtle Engine|4|10000|An unusual engine profile with very low fuel use.|500|3|0.5|0.05'],
+  ['Truck1.Engine.3', 'The Slow Turtle Engine|4|10000|An unusual engine profile with very low fuel use.|500|3|0.5|0.05'],
+  ['Truck1.Engine.4', 'A Real Engine|3|15000|A proper balanced engine for regular road use.|300|1|1|0.2'],
 
   ['Truck1.FuelTank.0', 'Starter 20000|0|0|The original twenty-thousand-unit fuel tank.|20000|0|0|0'],
   ['Truck1.FuelTank.1', 'Mid 25000|1|5000|A medium tank for longer routes between stops.|25000|0|0|0'],
@@ -114,6 +114,7 @@ function validate({ vehicles = VEHICLES, categories = CATEGORIES, parts = PARTS 
       }
 
       const saved = new Set();
+      let previousPrice = -Infinity;
       for (let position = 0; position < partCount; position++) {
         const partKey = `${vehicleId}.${categoryId}.${position}`;
         assert(partMap.has(partKey), `missing part ${partKey}`);
@@ -129,6 +130,8 @@ function validate({ vehicles = VEHICLES, categories = CATEGORIES, parts = PARTS 
         assert(!saved.has(savedValue), `${partKey}: duplicate saved value`);
         saved.add(savedValue);
         assert(Number.isInteger(price) && price >= 0, `${partKey}: nonnegative price`);
+        assert(price >= previousPrice, `${partKey}: prices increase from left to right`);
+        previousPrice = price;
         assert.equal(stats.length, 4, `${partKey}: four stat values`);
         stats.forEach((stat, statIndex) => assert(Number.isFinite(Number(stat)),
           `${partKey}: finite stat ${statIndex}`));
