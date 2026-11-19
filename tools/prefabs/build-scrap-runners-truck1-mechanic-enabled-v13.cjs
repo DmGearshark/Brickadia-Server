@@ -180,6 +180,23 @@ function build(input = INPUT) {
       z: target.key, zt: targetType, q: targetPort,
     });
   };
+  const removeBrick = (brick, label) => {
+    assert(brick && bricks.has(brick.key), `Missing ${label}`);
+    scene.edges = scene.edges.filter(edge => edge.a !== brick.key && edge.z !== brick.key);
+    scene.links = scene.links.filter(link => link.key !== brick.key);
+    scene.bricks = scene.bricks.filter(saved => saved !== brick);
+    bricks.delete(brick.key);
+  };
+  const replaceGate = (brick, oldType, kind, data, label) => {
+    const definition = C[kind];
+    assert(definition, kind);
+    const index = brick.comps.findIndex(saved => saved.type === oldType);
+    assert(index >= 0, `Missing ${label} ${oldType}`);
+    brick.comps[index] = { type: definition.NAME, data: clone(data) };
+    brick.data.asset = definition.BRICK;
+    brick.data.size = definition.BRICK.startsWith('PB_Gate_') ? [10, 5, 2] : [0, 0, 0];
+    return brick;
+  };
 
   const mechanicalKeys = ['Truck1Engine', 'Truck1Fueltank', 'Truck1Suspension',
     'Truck1Steerangle', 'Truck1Steerturnspeed', 'Truck1WheelDistance'];
@@ -215,6 +232,198 @@ function build(input = INPUT) {
     C.ArrayVar.NAME).data.Value = {
     $elementType: 'Quat', $array: clone(ENGINE_PROFILES),
   };
+
+  // The inherited dashboard sampled speed with a 0.01-second, self-restarting
+  // Stopwatch. A seat-gated 0.1-second Clock is visually just as responsive,
+  // removes the explicit loop/pause inverter, and performs about 90% fewer
+  // entity-speed queries while occupied.
+  const driveGrid = vehicleGridSource.g;
+  const speedStopwatch = scene.bricks.find(brick => brick.key === '[12,-1,-1,-1,4]');
+  const speedPauseNot = scene.bricks.find(brick => brick.key === '[12,-1,-1,-1,27]');
+  const occupiedInput = scene.bricks.find(brick => brick.key === '[12,-1,-1,-1,14]');
+  const speedGetter = scene.bricks.find(brick => brick.key === '[12,-1,-1,-1,3]');
+  assert([speedStopwatch, speedPauseNot, occupiedInput, speedGetter]
+    .every(brick => brick?.g === driveGrid), 'dashboard speed gates share the drive controller');
+  scene.edges = scene.edges.filter(edge => edge.a !== speedStopwatch.key
+    && edge.z !== speedStopwatch.key);
+  replaceGate(speedStopwatch, C.Stopwatch.NAME, 'Clock', {
+    bEnabled: false,
+    bPulseOn: false,
+    OnTimeSeconds: 1,
+    OffTimeSeconds: 1,
+    IntervalSeconds: 0.1,
+  }, 'dashboard speed clock');
+  add(occupiedInput, C.MicrochipInput.NAME, 'RER_Output', speedStopwatch,
+    C.Clock.NAME, 'bEnabled');
+  add(speedStopwatch, C.Clock.NAME, 'Pulse', speedGetter,
+    C.Exec_Entity_GetSpeed.NAME, 'Exec');
+  removeBrick(speedPauseNot, 'dashboard Stopwatch pause inverter');
+
+  // Both Read Brick Grid gates were in the same controller and therefore
+  // resolved the same vehicle. Reuse the already-shared source for speed.
+  const duplicateVehicleGrid = scene.bricks.find(brick => brick.key === '[12,-1,-1,-1,6]');
+  assert(duplicateVehicleGrid?.g === driveGrid, 'duplicate vehicle-grid reader');
+  removeInput(speedGetter, C.Exec_Entity_GetSpeed.NAME, 'Entity');
+  add(vehicleGridSource, C.ReadBrickGrid.NAME, 'BrickGrid', speedGetter,
+    C.Exec_Entity_GetSpeed.NAME, 'Entity');
+  removeBrick(duplicateVehicleGrid, 'duplicate vehicle-grid reader');
+
+  // The switch rerouter only fanned one signal to the freeze setter and its
+  // inverter. Direct fan-out is smaller and has identical behavior.
+  const freezeInput = scene.bricks.find(brick => brick.key === '[12,-1,-1,-1,13]');
+  const freezeRerouter = scene.bricks.find(brick => brick.key === '[12,-1,-1,-1,10]');
+  const freezeSetter = scene.bricks.find(brick => brick.key === '[12,-1,-1,-1,1]');
+  const freezeNot = scene.bricks.find(brick => brick.key === '[12,-1,-1,-1,26]');
+  assert([freezeInput, freezeRerouter, freezeSetter, freezeNot]
+    .every(brick => brick?.g === driveGrid), 'freeze-control gates share the drive controller');
+  removeInput(freezeSetter, C.Exec_Entity_SetFrozen.NAME, 'Exec');
+  removeInput(freezeNot, C.Expr_LogicalNOT.NAME, 'bInput');
+  removeBrick(freezeRerouter, 'freeze-control rerouter');
+  add(freezeInput, C.MicrochipInput.NAME, 'RER_Output', freezeSetter,
+    C.Exec_Entity_SetFrozen.NAME, 'Exec');
+  add(freezeInput, C.MicrochipInput.NAME, 'RER_Output', freezeNot,
+    C.Expr_LogicalNOT.NAME, 'bInput');
+
+  // The current color terminal stopped reading these two vehicle custom
+  // properties when it moved to the targeted appearance request/reply
+  // protocol. Remove the now-unobserved publication path and its grid input.
+  const legacyProperties = all(C.Exec_Entity_SetCustomProperty.NAME,
+    data => ['CurrentColorScore', 'CurrentMaterialEnum'].includes(data.Key));
+  assert.equal(legacyProperties.length, 2, 'two obsolete appearance properties');
+  const appearanceGrid = legacyProperties[0].brick.g;
+  assert(legacyProperties.every(row => row.brick.g === appearanceGrid),
+    'obsolete appearance properties share the appearance controller');
+  const materialProperty = legacyProperties.find(row =>
+    row.comp.data.Key === 'CurrentMaterialEnum').brick;
+  const materialMultiplierEdge = one(incoming(materialProperty,
+    C.Exec_Entity_SetCustomProperty.NAME, 'Value'), 'material property multiplier');
+  const materialMultiplier = bricks.get(materialMultiplierEdge.a);
+  const appearanceVehicleInput = one(all(C.MicrochipInput.NAME,
+    (data, brick) => brick.g === appearanceGrid && data.PortLabel === 'Vehicle Grid'),
+  'obsolete appearance vehicle-grid input').brick;
+  for (const { brick } of legacyProperties) removeBrick(brick, 'obsolete appearance property');
+  removeBrick(materialMultiplier, 'obsolete material property multiplier');
+  removeBrick(appearanceVehicleInput, 'obsolete appearance vehicle-grid input');
+
+  // Collapse the saved-color max/min pair into Brickadia's native clamp.
+  const colorMax = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,39]');
+  const colorMin = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,38]');
+  const savedColorInput = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,43]');
+  const redDivide = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,40]');
+  const greenDivide = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,41]');
+  const blueModulo = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,37]');
+  assert([colorMax, colorMin, savedColorInput, redDivide, greenDivide, blueModulo]
+    .every(brick => brick?.g === appearanceGrid), 'saved-color decoder gates');
+  scene.edges = scene.edges.filter(edge => edge.a !== colorMax.key && edge.z !== colorMax.key);
+  replaceGate(colorMax, C.Expr_MathMax.NAME, 'Expr_MathClamp', {
+    Input: I(0), Min: I(0), Max: I(16777215),
+  }, 'saved-color clamp');
+  removeBrick(colorMin, 'redundant saved-color minimum');
+  add(savedColorInput, C.MicrochipInput.NAME, 'RER_Output', colorMax,
+    C.Expr_MathClamp.NAME, 'Input');
+  for (const target of [redDivide, greenDivide, blueModulo]) add(colorMax,
+    C.Expr_MathClamp.NAME, 'Output', target,
+    target.comps.some(saved => saved.type === C.Expr_MathDivide.NAME)
+      ? C.Expr_MathDivide.NAME
+      : C.Expr_MathModulo.NAME,
+    'InputA');
+
+  // Decode Plastic/Metal with one typed Select and one setter per path rather
+  // than a branch plus duplicate setters.
+  const materialVar = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,20]');
+  const savedMaterialCompare = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,21]');
+  const savedMaterialSelect = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,28]');
+  const savedMaterialSetter = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,22]');
+  const redundantSavedMaterialSetter = scene.bricks.find(brick =>
+    brick.key === '[16,-1,-1,-1,23]');
+  const previewMaterialCompare = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,24]');
+  const previewMaterialSelect = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,25]');
+  const previewMaterialSetter = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,27]');
+  const redundantPreviewMaterialSetter = scene.bricks.find(brick =>
+    brick.key === '[16,-1,-1,-1,26]');
+  const plastic = { $variant: 'dynamic_enum', value: { $enum: 'EBrickMaterial', value: 0 } };
+  const metal = { $variant: 'dynamic_enum', value: { $enum: 'EBrickMaterial', value: 4 } };
+  for (const [select, oldType, label] of [
+    [savedMaterialSelect, C.Exec_Branch.NAME, 'saved material select'],
+    [previewMaterialSelect, C.Exec_Branch.NAME, 'preview material select'],
+  ]) {
+    scene.edges = scene.edges.filter(edge => edge.a !== select.key && edge.z !== select.key);
+    replaceGate(select, oldType, 'Expr_Select', {
+      bSelectB: false, InputA: clone(plastic), InputB: clone(metal),
+    }, label);
+    const interact = select.comps.find(saved => saved.type === C.Interact.NAME);
+    if (interact) {
+      interact.data.Message = label;
+      interact.data.PromptCustomLabel = label;
+    }
+  }
+  for (const setter of [savedMaterialSetter, previewMaterialSetter])
+    scene.edges = scene.edges.filter(edge => edge.a !== setter.key && edge.z !== setter.key);
+  removeBrick(redundantSavedMaterialSetter, 'redundant saved material setter');
+  removeBrick(redundantPreviewMaterialSetter, 'redundant preview material setter');
+  add(savedMaterialCompare, C.Expr_CompareEqual.NAME, 'bOutput', savedMaterialSelect,
+    C.Expr_Select.NAME, 'bSelectB');
+  add(previewMaterialCompare, C.Expr_CompareEqual.NAME, 'bOutput', previewMaterialSelect,
+    C.Expr_Select.NAME, 'bSelectB');
+  for (const [select, setter] of [[savedMaterialSelect, savedMaterialSetter],
+    [previewMaterialSelect, previewMaterialSetter]]) {
+    add(materialVar, C.Var.NAME, 'VarRef', setter, C.Exec_Var_Set.NAME, 'VarRef');
+    add(select, C.Expr_Select.NAME, 'Output', setter, C.Exec_Var_Set.NAME, 'Value');
+  }
+
+  // Each appearance transaction now has one explicit execution chain. The
+  // two completed chains converge once, settle for one tick, and invoke the
+  // existing 31-handle callable exactly once. This replaces three independent
+  // change-detector pulses plus a fourth explicit preview pulse.
+  const appearanceLoad = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,5]');
+  const interfaceEvent = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,0]');
+  const restoreEvent = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,3]');
+  const savedColorGetter = one(all(C.Exec_Gamemode_GetLeaderboardValue.NAME,
+    data => data.Key === 'Truck1Color'), 'saved color getter').brick;
+  const savedMaterialGetter = one(all(C.Exec_Gamemode_GetLeaderboardValue.NAME,
+    data => data.Key === 'Truck1Material'), 'saved material getter').brick;
+  const savedColorSetter = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,33]');
+  const previewColorSetter = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,34]');
+  const previewIntensitySetter = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,52]');
+  const savedIntensitySetter = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,53]');
+  const finalRefresh = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,56]');
+  const applyBuffer = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,50]');
+  const colorChange = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,32]');
+  const materialChange = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,48]');
+  const intensityChange = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,54]');
+  const colorMaterialRefresh = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,49]');
+  const allValueRefresh = scene.bricks.find(brick => brick.key === '[16,-1,-1,-1,55]');
+  assert([appearanceLoad, interfaceEvent, restoreEvent, savedColorSetter,
+    previewColorSetter, previewIntensitySetter, savedIntensitySetter, finalRefresh,
+    applyBuffer, colorChange, materialChange, intensityChange, colorMaterialRefresh,
+    allValueRefresh].every(brick => brick?.g === appearanceGrid),
+  'appearance refresh gates share the appearance controller');
+  for (const brick of [colorChange, materialChange, intensityChange,
+    colorMaterialRefresh, allValueRefresh]) removeBrick(brick, 'duplicate appearance refresh');
+  scene.edges = scene.edges.filter(edge => edge.a !== finalRefresh.key
+    && edge.z !== finalRefresh.key);
+  const finalRefreshInteract = component(finalRefresh, C.Interact.NAME);
+  finalRefreshInteract.data.Message = 'Saved or preview appearance complete';
+  finalRefreshInteract.data.PromptCustomLabel = 'Saved or preview appearance complete';
+  removeInput(savedMaterialGetter, C.Exec_Gamemode_GetLeaderboardValue.NAME, 'Exec');
+  removeInput(savedIntensitySetter, C.Exec_Var_Set.NAME, 'Exec');
+  removeInput(previewIntensitySetter, C.Exec_Var_Set.NAME, 'Exec');
+  add(savedColorSetter, C.Exec_Var_Set.NAME, 'ExecOut', savedMaterialGetter,
+    C.Exec_Gamemode_GetLeaderboardValue.NAME, 'Exec');
+  add(savedMaterialGetter, C.Exec_Gamemode_GetLeaderboardValue.NAME, 'ExecOut',
+    savedMaterialSetter, C.Exec_Var_Set.NAME, 'Exec');
+  add(savedMaterialSetter, C.Exec_Var_Set.NAME, 'ExecOut', savedIntensitySetter,
+    C.Exec_Var_Set.NAME, 'Exec');
+  add(savedIntensitySetter, C.Exec_Var_Set.NAME, 'ExecOut', finalRefresh,
+    C.Exec_Union.NAME, 'ExecA');
+  add(previewColorSetter, C.Exec_Var_Set.NAME, 'ExecOut', previewMaterialSetter,
+    C.Exec_Var_Set.NAME, 'Exec');
+  add(previewMaterialSetter, C.Exec_Var_Set.NAME, 'ExecOut', previewIntensitySetter,
+    C.Exec_Var_Set.NAME, 'Exec');
+  add(previewIntensitySetter, C.Exec_Var_Set.NAME, 'ExecOut', finalRefresh,
+    C.Exec_Union.NAME, 'ExecB');
+  add(finalRefresh, C.Exec_Union.NAME, 'ExecOut', applyBuffer,
+    C.BufferTicks.NAME, 'Input');
 
   // Each saved leaderboard score is an array index. The terminal only writes
   // valid catalog indices, but legacy or manually edited scores can still be

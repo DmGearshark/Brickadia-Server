@@ -71,6 +71,8 @@ function isExecPort(t, brick, type, port) {
   if (type === C.BufferTicks.NAME && (port === 'Input' || port === 'Output')) return true;
   if (type === C.QueueTicks.NAME && (port === 'ExecIn' || port === 'ExecOut')) return true;
   if (type === C.Clock.NAME && port === 'Pulse') return true;
+  if (type === C.FunctionCall.NAME && (port === 'Exec' || port === 'Completed')) return true;
+  if (type === C.CallableEntry_Function.NAME && port === 'Body') return true;
   if (type === C.Expr_EdgeDetectorExec.NAME
     && (port === 'OnRisingEdge' || port === 'OnFallingEdge')) return true;
   if (type === C.Event_CustomGlobal.NAME && port === 'ExecOut') return true;
@@ -141,6 +143,8 @@ function isBuildExecPort(node, port) {
   if (node.type === C.BufferTicks.NAME && (port === 'Input' || port === 'Output')) return true;
   if (node.type === C.QueueTicks.NAME && (port === 'ExecIn' || port === 'ExecOut')) return true;
   if (node.type === C.Clock.NAME && port === 'Pulse') return true;
+  if (node.type === C.FunctionCall.NAME && (port === 'Exec' || port === 'Completed')) return true;
+  if (node.type === C.CallableEntry_Function.NAME && port === 'Body') return true;
   if (node.type === C.Expr_EdgeDetectorExec.NAME
     && (port === 'OnRisingEdge' || port === 'OnFallingEdge')) return true;
   if (node.type === C.Event_CustomGlobal.NAME && port === 'ExecOut') return true;
@@ -187,13 +191,66 @@ function buildDataDependsOn(build, target, source, targetPort) {
   return false;
 }
 
+function buildExecCycles(build) {
+  const adjacency = new Map(build.nodes.map(node => [node, []]));
+  for (const edge of build.edges) {
+    if (isBuildExecPort(edge.a, edge.p) && isBuildExecPort(edge.z, edge.q))
+      adjacency.get(edge.a)?.push(edge.z);
+  }
+  let nextIndex = 0;
+  const indexes = new Map();
+  const lowLinks = new Map();
+  const stack = [];
+  const onStack = new Set();
+  const components = [];
+  const visit = node => {
+    indexes.set(node, nextIndex);
+    lowLinks.set(node, nextIndex++);
+    stack.push(node);
+    onStack.add(node);
+    for (const target of adjacency.get(node) || []) {
+      if (!indexes.has(target)) {
+        visit(target);
+        lowLinks.set(node, Math.min(lowLinks.get(node), lowLinks.get(target)));
+      } else if (onStack.has(target)) {
+        lowLinks.set(node, Math.min(lowLinks.get(node), indexes.get(target)));
+      }
+    }
+    if (lowLinks.get(node) !== indexes.get(node)) return;
+    const component = [];
+    let member;
+    do {
+      member = stack.pop();
+      onStack.delete(member);
+      component.push(member);
+    } while (member !== node);
+    components.push(component);
+  };
+  for (const node of build.nodes) if (!indexes.has(node)) visit(node);
+  return components.filter(component => component.length > 1
+    || (adjacency.get(component[0]) || []).includes(component[0]));
+}
+
 function settersFor(build, variable) {
   return build.edges.filter(edge => edge.a === variable && edge.p === 'VarRef'
     && edge.z.type === C.Exec_Var_Set.NAME).map(edge => edge.z);
 }
 
+function incrementersFor(build, variable) {
+  return build.edges.filter(edge => edge.a === variable && edge.p === 'VarRef'
+    && edge.z.type === C.Exec_Var_Increment.NAME).map(edge => edge.z);
+}
+
 function setterValueSource(build, setter, label) {
   return buildIncoming(build, setter, 'Value', label).a;
+}
+
+function buildNode(value) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function buildPort(value) {
+  return Array.isArray(value) ? value[1] : undefined;
 }
 
 function assertWireIntegrity(scene) {
@@ -415,9 +472,10 @@ function assertOrganizedChips(scene) {
   const t = api(scene);
   const entities = new Map([...scene.r.entities()].map(entity =>
     [entity.persistentIndex, entity]));
-  assert.equal(scene.links.length, 1, 'exactly one outer mechanic controller');
-  assert.equal(new Set(scene.links.map(link => link.grid)).size, 1,
-    'one consolidated child grid');
+  assert.equal(scene.links.length, 2,
+    'one outer mechanic controller plus one reusable stat Function');
+  assert.equal(new Set(scene.links.map(link => link.grid)).size, 2,
+    'controller and callable use separate child grids');
   const spec = CHIP_SPEC;
   const row = t.one(t.all(C.Interact.NAME,
     (data, brick) => brick.g === 1 && data.PromptCustomLabel === spec.label),
@@ -468,9 +526,30 @@ function assertOrganizedChips(scene) {
   assert.deepEqual(reload.data.position, [885, -35, 2],
     'catalog reload follows the shifted config section');
 
-  const gridByLabel = new Map([['MECHANIC SHOP CONTROLLER', grid]]);
+  const statDefinition = t.one(t.all(C.Microchip_FunctionDefinition.NAME),
+    'stat comparison FunctionDefinition').brick;
+  assert.equal(statDefinition.g, grid,
+    'stat FunctionDefinition shell remains organized on the controller plane');
+  const statLinks = scene.links.filter(link => link.key === statDefinition.key);
+  assert.equal(statLinks.length, 1, 'stat FunctionDefinition has one callable grid');
+  const statGrid = statLinks[0].grid;
+  const statEntity = entities.get(statGrid);
+  assert(statEntity, 'stat callable-grid entity exists');
+  assert.equal(statEntity.typeName, 'Entity_MicrochipDynamicBrickGrid',
+    'stat Function uses a callable microchip grid');
+  assert.equal(statEntity.data.bCollapsed, true, 'stat Function starts collapsed');
+  assert.deepEqual(statEntity.data.PlaneCenter, { X: 70, Y: -15, Z: 0 },
+    'stat Function has its fitted plane center');
+  assert.deepEqual(statEntity.data.PlaneExtent, { X: 70, Y: 25, Z: 2 },
+    'stat Function has its fitted plane extent');
+
+  const gridByLabel = new Map([
+    ['MECHANIC SHOP CONTROLLER', grid],
+    ['STAT COMPARISON FUNCTION', statGrid],
+  ]);
   const isFunctionalBrick = brick => brick.data.asset.startsWith('B_1x1_Gate_')
     || brick.data.asset.startsWith('PB_Gate_')
+    || Boolean(component(brick, C.Microchip_FunctionDefinition.NAME))
     || Boolean(component(brick, C.OneShotAudioEmitter.NAME));
 
   const assigned = new Set();
@@ -511,10 +590,10 @@ function assertOrganizedChips(scene) {
       }
     }
   }
-  const allChildGates = scene.bricks.filter(brick => brick.g !== 1
+  const allChildGates = scene.bricks.filter(brick => brick.g === grid
     && isFunctionalBrick(brick));
   assert.equal(assigned.size, allChildGates.length,
-    'every functional child-grid gate is inside one labeled section');
+    'every controller-plane functional gate is inside one labeled section');
   return gridByLabel;
 }
 
@@ -708,8 +787,8 @@ function assertInvalidScoreFallback(scene, buildResult) {
     'installed-invalid state is retained as a Bool');
   const responseTargets = t.outgoing(readySelect, C.Expr_Select.NAME, 'Output')
     .filter(edge => edge.zt === C.Exec_Var_Set.NAME && edge.q === 'Value');
-  assert.equal(responseTargets.length, 2,
-    'normal category load and part browse share the fallback-aware response');
+  assert.equal(responseTargets.length, 1,
+    'all fresh-record loads share one fallback-aware response finalizer');
 
   const build = buildResult.build;
   const invalidState = buildResult.nodes.installedInvalid;
@@ -725,6 +804,8 @@ function assertInvalidScoreFallback(scene, buildResult) {
 
   const dataReadyTrue = settersFor(build, buildResult.nodes.dataReady).filter(setter =>
     setter.data.Value?.$variant === 'Bool' && setter.data.Value.value === true);
+  assert.equal(dataReadyTrue.length, 1,
+    'one fresh-record finalizer publishes dataReady');
   assert(dataReadyTrue.some(setter => buildExecReachableFromPort(build,
     setTrue[0], 'ExecOut', setter)),
   'invalid scan falls through stock record loading and restores browsing');
@@ -832,16 +913,20 @@ function assertSoundWiring(scene) {
     'category left/right and part left/right each feed the A/D sound');
   const tapVariables = [];
   for (const edge of tapInputs) {
-    const setter = t.source(edge);
-    assert(component(setter, C.Exec_Var_Set.NAME),
-      'A/D sound follows a successful bounded setter');
+    const increment = t.source(edge);
+    assert(component(increment, C.Exec_Var_Increment.NAME),
+      'A/D sound follows a successful bounded increment');
     assert.equal(edge.p, 'ExecOut', 'A/D sound cannot play for a rejected boundary tap');
-    tapVariables.push(t.one(t.incoming(setter, C.Exec_Var_Set.NAME, 'VarRef'),
-      'A/D sound setter variable').a);
+    const incrementUnions = t.outgoing(increment, C.Exec_Var_Increment.NAME, 'ExecOut')
+      .filter(candidate => component(t.target(candidate), C.Exec_Union.NAME));
+    assert.equal(incrementUnions.length, 1,
+      'each accepted A/D movement enters one shared axis merge');
+    tapVariables.push(t.one(t.incoming(increment, C.Exec_Var_Increment.NAME, 'VarRef'),
+      'A/D sound increment variable').a);
   }
   assert.deepEqual([...Map.groupBy(tapVariables, value => value).values()]
     .map(values => values.length).sort(), [2, 2],
-  'A/D sound follows two category and two part setters');
+  'A/D sound follows two category and two part increments');
 
   const directionInputs = t.scene.edges.filter(edge => edge.at === C.InputSplitter.NAME
     && edge.p === 'InputRight' && edge.q === 'InputA'
@@ -975,16 +1060,14 @@ function assertSelectionUiAndResponse(scene) {
     'blink inversion source').a, blinkVar.key, 'blink state feeds its own inversion');
   assert(dataDependsOn(t, activeBlink, blinkVar), 'visible blink uses retained blink state');
 
-  const rising = t.one(t.outgoing(readyEdge,
-    C.Expr_EdgeDetectorExec.NAME, 'OnRisingEdge'), 'blink activation reset');
+  assert.equal(t.outgoing(readyEdge,
+    C.Expr_EdgeDetectorExec.NAME, 'OnRisingEdge').length, 0,
+  'blink activation does not perform a redundant reset');
   const falling = t.one(t.outgoing(readyEdge,
     C.Expr_EdgeDetectorExec.NAME, 'OnFallingEdge'), 'blink deactivation reset');
-  assert.equal(falling.z, rising.z, 'ready and not-ready edges share the reset path');
-  const resetJoin = t.target(rising);
-  assert(component(resetJoin, C.Exec_Union.NAME), 'blink edges join before state reset');
-  const resetSetter = t.target(t.one(t.outgoing(resetJoin,
-    C.Exec_Union.NAME, 'ExecOut'), 'blink reset setter'));
-  assert(component(resetSetter, C.Exec_Var_Set.NAME), 'authorization edges reset blink state');
+  const resetSetter = t.target(falling);
+  assert(component(resetSetter, C.Exec_Var_Set.NAME),
+    'controls-ready falling edge directly resets blink state');
   assert.equal(component(resetSetter, C.Exec_Var_Set.NAME).data.Value.value, false,
     'blink resets to off');
   assert.equal(t.one(t.incoming(resetSetter, C.Exec_Var_Set.NAME, 'VarRef'),
@@ -1013,6 +1096,7 @@ function assertSelectionUiAndResponse(scene) {
     else if (value?.$variant === 'str') strings.push(value.value);
   }
   for (const response of [
+    'VEHICLE CONNECTION\r\nTIMEOUT',
     'VEHICLE NOT\r\nSUPPORTED',
     'CATALOG ERROR:\r\nCATEGORY NOT FOUND',
     'SAVED PART INVALID\r\nSTOCK ACTIVE',
@@ -1028,27 +1112,21 @@ function assertBoundedNavigation(buildResult) {
     ['category', nodes.categoryIndex],
     ['part', nodes.selectedIndex],
   ]) {
-    const setters = settersFor(build, variable).filter(setter =>
-      setter.id.startsWith('mechanic_input_'));
-    assert.equal(setters.length, 2, `${label} has one left and one right setter`);
-    const moves = setters.map(setter => ({
-      setter,
-      value: setterValueSource(build, setter, `${label} movement value`),
-    }));
-    const next = buildOne(moves.filter(move => move.value.type === C.Expr_MathAdd.NAME),
-      `${label} right movement`);
-    const previous = buildOne(moves.filter(move =>
-      move.value.type === C.Expr_MathSubtract.NAME), `${label} left movement`);
+    const increments = incrementersFor(build, variable).filter(increment =>
+      increment.id.startsWith('mechanic_input_'));
+    assert.equal(increments.length, 2,
+      `${label} has one native increment for each direction`);
+    const next = buildOne(increments.filter(increment => increment.data.Value.value === 1),
+      `${label} right increment`);
+    const previous = buildOne(increments.filter(increment => increment.data.Value.value === -1),
+      `${label} left increment`);
     for (const [move, boundType, direction] of [
       [next, C.Expr_CompareLess.NAME, 'right'],
       [previous, C.Expr_CompareGreater.NAME, 'left'],
     ]) {
-      assert.equal(move.value.data.InputB.value, 1,
-        `${label} ${direction} changes exactly one position`);
-      assert.equal(buildIncoming(build, move.value, 'InputA',
-        `${label} ${direction} current index`).a, variable,
-      `${label} ${direction} starts from the retained index`);
-      const exec = buildIncoming(build, move.setter, 'Exec',
+      assert.equal(Math.abs(move.data.Value.value), 1,
+        `${label} ${direction} changes exactly one position natively`);
+      const exec = buildIncoming(build, move, 'Exec',
         `${label} ${direction} accepted execution`);
       assert.equal(exec.p, 'ExecOutA', `${label} ${direction} runs only when accepted`);
       assert.equal(exec.a.type, C.Exec_Branch.NAME,
@@ -1074,6 +1152,9 @@ function assertBoundedNavigation(buildResult) {
           `${label} right maximum subtracts exactly one`);
       }
     }
+    assert.equal(settersFor(build, variable).filter(setter =>
+      setter.id.startsWith('mechanic_input_')).length, 0,
+    `${label} movement no longer uses Add/Subtract plus a setter`);
   }
 
   const step = (index, count, direction) => direction > 0
@@ -1105,9 +1186,10 @@ function assertPreReadSettling(buildResult) {
   assert.equal(buildIncoming(build, categoryReadSource, 'Exec',
     'category pre-read settlement').a, nodes.categoryLookupSettle,
   'category lookup waits after every reset or accepted navigation change');
-  for (const setter of settersFor(build, nodes.categoryIndex))
-    assert(buildExecReachableFromPort(build, setter, 'ExecOut',
-      nodes.categoryLookupSettle), `${setter.id} settles before category lookup`);
+  for (const writer of [...settersFor(build, nodes.categoryIndex),
+    ...incrementersFor(build, nodes.categoryIndex)])
+    assert(buildExecReachableFromPort(build, writer, 'ExecOut',
+      nodes.categoryLookupSettle), `${writer.id} settles before category lookup`);
 
   assert.equal(buildIncoming(build, nodes.scanResetSettle, 'Input',
     'scan reset settlement input').a, nodes.resetScan,
@@ -1126,9 +1208,260 @@ function assertPreReadSettling(buildResult) {
   assert.equal(buildIncoming(build, nodes.selectedPartGet, 'Exec',
     'selected part read execution').a, nodes.selectedPartSettle,
   'selected tuning lookup reads only after its index settles');
-  for (const setter of settersFor(build, nodes.selectedIndex))
-    assert(buildExecReachableFromPort(build, setter, 'ExecOut',
-      nodes.selectedPartSettle), `${setter.id} settles before selected-part lookup`);
+  for (const writer of [...settersFor(build, nodes.selectedIndex),
+    ...incrementersFor(build, nodes.selectedIndex)])
+    assert(buildExecReachableFromPort(build, writer, 'ExecOut',
+      nodes.selectedPartSettle), `${writer.id} settles before selected-part lookup`);
+}
+
+function assertSessionResetAndRuntime(scene, buildResult) {
+  const t = api(scene);
+  const { build, nodes } = buildResult;
+
+  const rowSetters = settersFor(build, nodes.selectedRow);
+  assert.equal(rowSetters.length, 3,
+    'selectedRow has two browse writers plus one new-session reset');
+  assert(rowSetters.includes(nodes.resetSelectedRow),
+    'the exported new-session row reset writes selectedRow');
+  assert.equal(nodes.resetSelectedRow.data.Value.value, 0,
+    'every newly authorized session starts on Category');
+  const resetExec = buildIncoming(build, nodes.resetSelectedRow, 'Exec',
+    'new-session selected-row reset');
+  assert.equal(resetExec.a, nodes.ownerAuthorizedEdge,
+    'owner authorization transition owns the row reset');
+  assert.equal(resetExec.p, 'OnRisingEdge',
+    'row reset runs once at the start of each authorized session');
+  const authorizedInput = buildIncoming(build, nodes.ownerAuthorizedEdge, 'Input',
+    'owner-authorized edge input');
+  assert.equal(authorizedInput.a, nodes.ownerAuthorized[0],
+    'session reset observes the factored owner-authorized signal');
+  assert.equal(authorizedInput.p, nodes.ownerAuthorized[1],
+    'session reset uses the owner-authorized Bool output');
+
+  for (const [label, edge, branch, setter, rawType] of [
+    ['W', nodes.upEdge, nodes.previousRowAllowed, nodes.setPreviousRow,
+      C.Expr_CompareGreater.NAME],
+    ['S', nodes.downEdge, nodes.nextRowAllowed, nodes.setNextRow,
+      C.Expr_CompareLess.NAME],
+  ]) {
+    const raw = buildIncoming(build, edge, 'Input', `${label} raw edge input`).a;
+    assert.equal(raw.type, rawType,
+      `${label} edge detector observes raw seat input before readiness`);
+    assert.equal(buildIncoming(build, branch, 'Exec', `${label} readiness branch`).a, edge,
+      `${label} raw rising edge reaches its readiness branch`);
+    assert.equal(buildIncoming(build, branch, 'Exec',
+      `${label} readiness branch`).p, 'OnRisingEdge',
+    `${label} changes only on a physical rising edge`);
+    const guard = buildIncoming(build, branch, 'bCond', `${label} browseReady guard`);
+    assert.equal(guard.a, nodes.browseReady[0],
+      `${label} branch shares browseReady after edge detection`);
+    assert.equal(guard.p, nodes.browseReady[1],
+      `${label} branch uses the shared browseReady output`);
+    const accepted = buildIncoming(build, setter, 'Exec', `${label} accepted row writer`);
+    assert.equal(accepted.a, branch, `${label} row writer follows its readiness branch`);
+    assert.equal(accepted.p, 'ExecOutA', `${label} rejected readiness cannot move the row`);
+  }
+  assert(!buildExecReachableFromPort(build, nodes.resetSelectedRow, 'ExecOut',
+    nodes.writeUpgrade), 'session row reset cannot synthesize a purchase');
+
+  const clocks = t.all(C.Clock.NAME);
+  assert.equal(clocks.length, 2, 'terminal has only bounded retry and gated blink clocks');
+  assert.deepEqual(clocks.map(row => row.comp.data.IntervalSeconds).sort(), [0.25, 0.75],
+    'the only clocks are the quarter-second blink and 0.75-second request retry');
+  for (const clock of clocks)
+    assert.equal(t.incoming(clock.brick, C.Clock.NAME, 'bEnabled').length, 1,
+      'every Clock has a dynamic enable and is never always-running');
+  assert.equal(t.rows.filter(row => /Stopwatch/.test(row.comp.type)).length, 0,
+    'terminal has no self-restarting Stopwatch loop');
+
+  assert.equal(nodes.requestAttempts.type, C.Var.NAME, 'request attempts are retained');
+  assert.equal(nodes.requestAttempts.data.Value.value, 0, 'request attempts start at zero');
+  const attemptResets = settersFor(build, nodes.requestAttempts);
+  assert.equal(attemptResets.length, 2, 'vehicle entry and exit both clear retry state');
+  assert(attemptResets.every(setter => setter.data.Value.value === 0),
+    'all request-attempt resets write zero');
+  assert.equal(nodes.countRequest.type, C.Exec_Var_Increment.NAME,
+    'each request uses one native attempt increment');
+  assert.equal(nodes.countRequest.data.Value.value, 1,
+    'each request consumes exactly one retry attempt');
+  assert.equal(buildIncoming(build, nodes.countRequest, 'VarRef',
+    'request attempt increment target').a, nodes.requestAttempts,
+  'request sender increments the retained attempt counter');
+  const limit = nodes.belowRetryLimit[0];
+  assert.equal(limit.type, C.Expr_CompareLess.NAME, 'retry cap uses attempts < limit');
+  assert.equal(limit.data.InputB.value, 8, 'request retry cap is exactly eight sends');
+  assert.equal(buildIncoming(build, limit, 'InputA', 'retry attempt comparison').a,
+    nodes.requestAttempts, 'retry cap compares the retained attempt count');
+  assert.equal(buildIncoming(build, nodes.retryLimitReached[0], 'bInput',
+    'shared retry-limit inverse').a, limit,
+  'timeout reuses the inverse of attempts < 8');
+  const retryEnable = buildIncoming(build, nodes.requestRetry, 'bEnabled',
+    'request retry Clock enable').a;
+  assert(buildDataDependsOn(build, retryEnable, nodes.requestAttempts),
+    'request retry Clock is disabled by the bounded attempt count');
+  assert(buildDataDependsOn(build, retryEnable, nodes.protocolReady),
+    'request retry Clock stops after a valid reply');
+  assert(buildDataDependsOn(build, retryEnable, nodes.activeVehicle),
+    'request retry Clock stops after the active vehicle leaves');
+  assert.equal(buildIncoming(build, nodes.request, 'ExecIn', 'counted request execution').a,
+    nodes.countRequest, 'every request is counted before it is sent');
+  assert.equal(buildIncoming(build, nodes.timeoutBranch, 'Exec',
+    'post-request timeout check').a, nodes.request,
+  'timeout is checked only after an attempted request');
+  assert.equal(buildIncoming(build, nodes.timeoutBranch, 'bCond',
+    'timeout condition').a, nodes.retryExhausted[0],
+  'timeout uses the bounded pending-request condition');
+  assert.equal(nodes.timeoutResponse.data.Value.value, 'VEHICLE CONNECTION\r\nTIMEOUT',
+    'retry exhaustion publishes a clear terminal response');
+  assert.equal(buildIncoming(build, nodes.timeoutResponse, 'Exec',
+    'timeout response execution').a, nodes.timeoutBranch,
+  'only the accepted timeout branch publishes the timeout response');
+
+  const cycles = buildExecCycles(build);
+  assert.equal(cycles.length, 1,
+    'the installed-score lookup is the terminal\'s only execution cycle');
+  const scanCycle = new Set(cycles[0]);
+  for (const node of [nodes.scanExec, nodes.scanGet, nodes.continueScan,
+    nodes.scanLoopWait])
+    assert(scanCycle.has(node), 'the sole execution cycle is the bounded saved-part scan');
+  assert.equal(nodes.scanLoopWait.data.TicksToWait, 1,
+    'each bounded scan iteration yields for one propagation tick');
+  assert(cycles[0].some(node => node.type === C.Exec_Var_Increment.NAME
+    && buildIncoming(build, node, 'VarRef', 'scan cursor increment').a === nodes.scanCursor),
+  'the bounded cycle advances the scan cursor on every failed lookup');
+}
+
+function assertOptimizedRefreshAndFunction(scene, buildResult) {
+  const t = api(scene);
+  const { build, nodes } = buildResult;
+  assert.equal(t.all(C.Rerouter.NAME).length, 0,
+    'legacy screen-enable rerouter is absent');
+  assert.equal(t.all(C.Exec_MapVar_Get.NAME).length, 5,
+    'catalog uses only vehicle, category, scan, installed, and selected lookups');
+
+  const statDefinition = t.one(t.all(C.Microchip_FunctionDefinition.NAME),
+    'stat Function definition').brick;
+  const statLink = t.one(scene.links.filter(link => link.key === statDefinition.key),
+    'stat Function callable link');
+  const statGrid = statLink.grid;
+  const calls = t.all(C.FunctionCall.NAME);
+  assert.equal(calls.length, 4, 'one stat FunctionCall is retained per comparison row');
+  const inputs = t.all(C.FunctionInput.NAME, (_data, brick) => brick.g === statGrid);
+  const outputs = t.all(C.FunctionOutput.NAME, (_data, brick) => brick.g === statGrid);
+  const entries = t.all(C.CallableEntry_Function.NAME, (_data, brick) => brick.g === statGrid);
+  assert.equal(inputs.length, 1, 'stat Function has one packed input');
+  assert.equal(outputs.length, 1, 'stat Function has one formatted output');
+  assert.equal(entries.length, 1, 'stat Function has one callable entry');
+  assert.equal(inputs[0].comp.data.PortLabel, 'Packed stat', 'packed input is labeled');
+  assert.equal(outputs[0].comp.data.PortLabel, 'Line', 'single output is labeled');
+  assert.equal(valueFamily(inputs[0].comp.data.DefaultValue), 'string',
+    'stat Function input is explicitly string-typed');
+  assert.equal(valueFamily(outputs[0].comp.data.DefaultValue), 'string',
+    'stat Function output is explicitly string-typed');
+  const body = t.one(t.outgoing(entries[0].brick, C.CallableEntry_Function.NAME, 'Body'),
+    'pure Function no-op body');
+  assert(component(t.target(body), C.Exec_Union.NAME),
+    'pure Function terminates through a real no-op execution path');
+  const forbiddenCallableTypes = new Set([
+    C.Var.NAME, C.MapVar.NAME, C.Clock.NAME, C.BufferTicks.NAME, C.QueueTicks.NAME,
+    C.Exec_MapVar_Get.NAME, C.Exec_Gamemode_GetLeaderboardValue.NAME,
+    C.Exec_Gamemode_SetLeaderboardValue.NAME,
+    C.Exec_Gamemode_IncrementLeaderboardValue.NAME, C.Event_CustomGlobal.NAME,
+    C.Exec_SendCustomEventGlobal.NAME, C.OneShotAudioEmitter.NAME, C.Interact.NAME,
+    C.TextDisplay.NAME,
+  ]);
+  assert.equal(t.rows.filter(row => row.brick.g === statGrid
+    && forbiddenCallableTypes.has(row.comp.type)).length, 0,
+  'stat Function is pure and contains no state, waits, authority calls, or UI side effects');
+  assert.equal(t.all(C.Expr_String_FormatText.NAME,
+    (data, brick) => data.FormatString === '{A}: {B}{C} → {D}{E}{F}</>'
+      && brick.g === statGrid).length, 1,
+  'the repeated comparison formatter exists once inside the Function');
+  assert.equal(t.all(C.Exec_Union.NAME).filter(row =>
+    t.incoming(row.brick, C.Exec_Union.NAME).length === 1).length, 1,
+  'the callable no-op is the only intentional single-input Union');
+
+  for (const [index, callRow] of calls.entries()) {
+    const data = callRow.comp.data;
+    assert.deepEqual(data.InputSources, [1, 0, 0, 0, 0, 0, 0, 0],
+      `stat call ${index} uses only packed Input0`);
+    assert.equal(valueFamily(data.Input0), 'string', `stat call ${index} input is string`);
+    assert.equal(valueFamily(data.Output0), 'string', `stat call ${index} output is string`);
+    const definition = t.one(t.incoming(callRow.brick, C.FunctionCall.NAME, 'Definition'),
+      `stat call ${index} definition`);
+    assert.equal(definition.a, statDefinition.key,
+      `stat call ${index} shares the one definition`);
+    const packed = t.source(t.one(t.incoming(callRow.brick,
+      C.FunctionCall.NAME, 'Input0'), `stat call ${index} packed input`));
+    assert.equal(component(packed, C.Expr_String_FormatText.NAME).data.FormatString,
+      '{A}|{B}|{C}', `stat call ${index} packs spec, installed, and selected text`);
+  }
+
+  assert.equal(nodes.statCalls.length, 4, 'builder exports all four stat calls');
+  assert.equal(buildIncoming(build, nodes.statCalls[0], 'Exec',
+    'first stat call trigger').a, nodes.statRefresh[0],
+  'fresh-record sources share the first stat call trigger');
+  for (let index = 1; index < nodes.statCalls.length; index++) {
+    const edge = buildIncoming(build, nodes.statCalls[index], 'Exec',
+      `stat call ${index} execution`);
+    assert.equal(edge.a, nodes.statCalls[index - 1],
+      `stat call ${index} follows the previous call`);
+    assert.equal(edge.p, 'Completed',
+      `stat call ${index} waits for the previous output`);
+  }
+  const finalCall = buildIncoming(build, nodes.finalizeRefresh, 'Exec',
+    'stat refresh finalizer');
+  assert.equal(finalCall.a, nodes.statCalls.at(-1),
+    'refresh finalization follows the fourth stat output');
+  assert.equal(finalCall.p, 'Completed',
+    'refresh finalization waits for all four FunctionCalls');
+
+  assert.equal(buildIncoming(build, nodes.readyRefreshMode, 'Exec',
+    'ordinary stat refresh mode').a, nodes.partsBranch,
+  'ordinary refresh begins only after the fresh part-record wait and found check');
+  assert.equal(buildIncoming(build, nodes.readyRefreshMode, 'Exec',
+    'ordinary stat refresh mode').p, 'ExecOutA',
+  'missing part records never call the stat Function');
+  assert.equal(buildIncoming(build, nodes.purchaseRefreshMode, 'Exec',
+    'purchase stat refresh mode').a, nodes.refreshInstalledWait,
+  'purchase refresh begins only after installedRecord propagation');
+  assert.equal(nodes.refreshInstalledWait.data.TicksToWait, 1,
+    'purchase retains one propagation tick before stat calls');
+  assert.equal(buildIncoming(build, nodes.partLoadWait, 'Input',
+    'single selected-record finalizer').a, nodes.selectedPartGet,
+  'selected part lookup has one shared fresh-record finalizer');
+  assert.equal(build.edges.filter(edge => edge.a === nodes.selectedPartGet
+    && edge.p === 'ExecOut').length, 1,
+  'selected part lookup has no duplicate changed-part finalize path');
+
+  const installedRecordSetters = settersFor(build, nodes.installedRecord);
+  assert.equal(installedRecordSetters.length, 2,
+    'installedRecord has one load writer and one post-purchase writer');
+  const recordSources = installedRecordSetters.map(setter =>
+    buildIncoming(build, setter, 'Value', 'installedRecord source').a);
+  assert(recordSources.includes(nodes.installedPartGet),
+    'normal load stores the installed part lookup record');
+  assert(recordSources.includes(nodes.selectedPartGet),
+    'purchase reuses the already-fresh selected part record');
+  const purchaseRecordSetter = installedRecordSetters.find(setter =>
+    buildIncoming(build, setter, 'Value', 'post-purchase record source').a
+      === nodes.selectedPartGet);
+  assert.equal(buildIncoming(build, nodes.refreshInstalledWait, 'Input',
+    'post-purchase propagation wait').a, purchaseRecordSetter,
+  'the selected record write feeds the retained propagation tick');
+
+  const negatedInput = buildIncoming(build, nodes.txnNetNegated, 'Input',
+    'shared transaction negation');
+  assert.equal(negatedInput.a, nodes.txnNet,
+    'the shared negation reads the retained transaction net');
+  const negatedUses = build.edges.filter(edge => edge.a === nodes.txnNetNegated
+    && edge.p === 'Output');
+  assert.equal(negatedUses.length, 2,
+    'one transaction negation feeds both Scrap mutation and received text');
+  assert(negatedUses.some(edge => edge.z === nodes.adjustScrap && edge.q === 'Value'),
+    'shared negation supplies the Scrap delta');
+  assert(negatedUses.some(edge => edge.z.type === C.Expr_String_FormatText.NAME),
+    'shared negation supplies the positive received response');
 }
 
 function assertProtocolAndNonLive(scene, buildResult) {
@@ -1194,20 +1527,22 @@ function assertProtocolAndNonLive(scene, buildResult) {
     }
     return false;
   };
-  const browseVars = [buildResult.nodes.categoryIndex,
-    buildResult.nodes.selectedIndex, buildResult.nodes.selectedRow];
-  const browseSetters = browseVars.flatMap(variable => build.edges.filter(edge =>
-    edge.a === variable && edge.p === 'VarRef'
-      && edge.z.type === C.Exec_Var_Set.NAME && edge.z.id.startsWith('mechanic_input_'))
-    .map(edge => edge.z));
-  assert.equal(browseSetters.length, 6, 'two screen-only setters for each browse axis');
-  for (const setter of browseSetters) {
-    assert(!reachable(setter, buildResult.nodes.writeUpgrade),
-      `${setter.id} cannot reach the upgrade write`);
-    assert(!reachable(setter, buildResult.nodes.adjustScrap),
-      `${setter.id} cannot reach the Scrap mutation`);
-    assert(!reachable(setter, buildResult.nodes.reload),
-      `${setter.id} cannot reach vehicle reload`);
+  const rowSetters = settersFor(build, buildResult.nodes.selectedRow).filter(setter =>
+    setter.id.startsWith('mechanic_input_'));
+  const indexIncrements = [buildResult.nodes.categoryIndex, buildResult.nodes.selectedIndex]
+    .flatMap(variable => incrementersFor(build, variable))
+    .filter(increment => increment.id.startsWith('mechanic_input_'));
+  const browseActions = [...rowSetters, ...indexIncrements];
+  assert.equal(rowSetters.length, 2, 'W and S each update the selected row');
+  assert.equal(indexIncrements.length, 4,
+    'A and D use four bounded category/part increments');
+  for (const action of browseActions) {
+    assert(!reachable(action, buildResult.nodes.writeUpgrade),
+      `${action.id} cannot reach the upgrade write`);
+    assert(!reachable(action, buildResult.nodes.adjustScrap),
+      `${action.id} cannot reach the Scrap mutation`);
+    assert(!reachable(action, buildResult.nodes.reload),
+      `${action.id} cannot reach vehicle reload`);
   }
   const soundNodes = build.nodes.filter(node => node.type === C.OneShotAudioEmitter.NAME);
   assert.equal(soundNodes.length, 5, 'build graph has three purchase and two browse sounds');
@@ -1215,13 +1550,10 @@ function assertProtocolAndNonLive(scene, buildResult) {
   const browseSounds = soundNodes.filter(node => node.grid);
   assert.equal(purchaseSounds.length, 3, 'build graph retains exactly three purchase sounds');
   assert.equal(browseSounds.length, 2, 'build graph adds exactly two tap-based browse sounds');
-  for (const setter of browseSetters) for (const sound of purchaseSounds)
-    assert(!reachable(setter, sound), `${setter.id} cannot play a purchase sound`);
+  for (const action of browseActions) for (const sound of purchaseSounds)
+    assert(!reachable(action, sound), `${action.id} cannot play a purchase sound`);
   const selectSound = buildOne(browseSounds.filter(sound =>
     sound.data.AudioDescriptor === 4), 'build W/S selection sound');
-  const rowSetters = settersFor(build, buildResult.nodes.selectedRow).filter(setter =>
-    setter.id.startsWith('mechanic_input_'));
-  assert.equal(rowSetters.length, 2, 'W and S each update the selected row');
   for (const setter of rowSetters)
     assert(reachable(setter, selectSound), `${setter.id} plays the W/S selection sound`);
   return { t, request, reply, reload };
@@ -1291,8 +1623,8 @@ function test({
 } = {}) {
   const bytes = fs.readFileSync(output);
   const scene = read(bytes);
-  assert.equal(scene.bricks.length, 565, 'mechanic shop brick count is intentional');
-  assert.equal(scene.edges.length, 820, 'mechanic shop wire count is intentional');
+  assert.equal(scene.bricks.length, 510, 'optimized mechanic shop brick count is intentional');
+  assert.equal(scene.edges.length, 724, 'optimized mechanic shop wire count is intentional');
   const placement = validatePlacement(bytes);
   assert.equal(placement.strictOk, true, 'mechanic shop passes strict placement');
   assert.deepEqual(placement.invalidBricks, [], 'no invalid bricks');
@@ -1319,6 +1651,8 @@ function test({
   assertSelectionUiAndResponse(scene);
   assertBoundedNavigation(first);
   assertPreReadSettling(first);
+  assertSessionResetAndRuntime(scene, first);
+  assertOptimizedRefreshAndFunction(scene, first);
   const protocol = assertProtocolAndNonLive(scene, first);
   assertFreshFinalGuardAndPurchaseOrder(scene, protocol);
 

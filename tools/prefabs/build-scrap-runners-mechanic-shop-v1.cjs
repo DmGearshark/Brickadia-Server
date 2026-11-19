@@ -333,7 +333,8 @@ function build(input = INPUT) {
   const build = new Build('Scrap Runners - Mechanic Shop v1', assets);
   build.w.addOwner(owner(frame.r));
 
-  const frameItems = clone(frame.bricks);
+  const frameItems = clone(frame.bricks).filter(item =>
+    !item.comps.some(saved => saved.type === C.Rerouter.NAME));
   for (const item of frameItems) for (const saved of item.comps) {
     if (saved.type === C.Seat.NAME) saved.data.PromptCustomLabel = 'Open Mechanic Shop';
     if (saved.type === C.AttachedZone.NAME) {
@@ -364,7 +365,6 @@ function build(input = INPUT) {
   const rightScreen = screens.find(node => /^UPGRADE/.test(node.data.Text));
   const leftScreen = screens.find(node => /^PROCESS/.test(node.data.Text));
   const indicator = findFrame(C.TextDisplay.NAME, data => data.Text === '■', 'indicator');
-  const displayEnable = findFrame(C.Rerouter.NAME, () => true, 'screen enable rerouter');
   const sounds = frameNodes.filter(node => node.type === C.OneShotAudioEmitter.NAME);
   assert.equal(sounds.length, 3, 'three sound emitters');
   const soundGroups = new Map();
@@ -450,6 +450,7 @@ function build(input = INPUT) {
   session.use('state');
   const activeVehicle = session.v(O(null));
   const vehicleNonce = session.v(0);
+  const requestAttempts = session.v(0);
   const vehicleType = session.v('');
   const profileRevision = session.v(0);
   const ownerId = session.v('');
@@ -465,13 +466,13 @@ function build(input = INPUT) {
 
   const ownerMatches = session.cmp('Equal', R(seatedUserId), R(ownerId));
   const vehiclePresent = session.cmp('NotEqual', R(activeVehicle), O(null));
-  const ownerAuthorized = session.and(R(protocolReady), R(seat, 'bIsOccupied'), ownerMatches,
-    vehiclePresent);
+  const ownerSession = session.and(R(protocolReady), R(seat, 'bIsOccupied'), vehiclePresent);
+  const ownerAuthorized = session.and(ownerSession, ownerMatches);
   const authorized = session.and(ownerAuthorized, R(catalogReady));
-  const wrongOwner = session.and(R(protocolReady), R(seat, 'bIsOccupied'),
-    session.not(ownerMatches), vehiclePresent);
+  const wrongOwner = session.and(ownerSession, session.not(ownerMatches));
   const notBusy = session.not(R(busy));
-  const controlsReady = session.and(authorized, R(dataReady), notBusy);
+  const browseReady = session.and(authorized, notBusy);
+  const controlsReady = session.and(browseReady, R(dataReady));
 
   // ---- Vehicle bay lock and request/reply ----------------------------------
   session.use('bay');
@@ -488,6 +489,7 @@ function build(input = INPUT) {
   entryTail = chain(build, entryTail, session.set(ownerId, ''));
   entryTail = chain(build, entryTail, session.set(vehicleType, ''));
   entryTail = chain(build, entryTail, session.set(activeVehicle, R(entered, 'Entity')));
+  entryTail = chain(build, entryTail, session.set(requestAttempts, 0));
   const bumpEntryNonce = session.n('Exec_Var_Increment', { VarRef: R(vehicleNonce, 'VarRef'), Value: 1 });
   entryTail = chain(build, entryTail, bumpEntryNonce);
   entryTail = chain(build, entryTail, session.set(response, 'CONNECTING TO VEHICLE'));
@@ -501,6 +503,7 @@ function build(input = INPUT) {
   exitTail = chain(build, exitTail, session.set(ownerId, ''));
   exitTail = chain(build, exitTail, session.set(vehicleType, ''));
   exitTail = chain(build, exitTail, session.set(activeVehicle, O(null)));
+  exitTail = chain(build, exitTail, session.set(requestAttempts, 0));
   const bumpExitNonce = session.n('Exec_Var_Increment', { VarRef: R(vehicleNonce, 'VarRef'), Value: 1 });
   exitTail = chain(build, exitTail, bumpExitNonce);
   exitTail = chain(build, exitTail, session.set(response, 'NO VEHICLE IN BAY'));
@@ -510,11 +513,23 @@ function build(input = INPUT) {
     R(activeVehicle));
   const requestWait = session.n('BufferTicks', { TicksToWait: 1, ZeroTicksToWait: 0 });
   build.wire(entryTail[0], entryTail[1], requestWait, 'Input');
-  const requestPending = session.and(vehiclePresent, session.not(R(protocolReady)));
+  const awaitingReply = session.not(R(protocolReady));
+  const belowRetryLimit = session.cmp('Less', R(requestAttempts), 8);
+  const requestPending = session.and(vehiclePresent, awaitingReply, belowRetryLimit);
   const requestRetry = session.n('Clock', { bEnabled: requestPending, IntervalSeconds: 0.75 });
   const requestPulse = union(build, session,
     [[requestWait, 'Output'], [requestRetry, 'Pulse']]);
-  build.wire(requestPulse[0], requestPulse[1], request, 'ExecIn');
+  const countRequest = session.n('Exec_Var_Increment', {
+    VarRef: R(requestAttempts, 'VarRef'), Value: 1,
+  });
+  build.wire(requestPulse[0], requestPulse[1], countRequest, 'Exec');
+  build.wire(countRequest, 'ExecOut', request, 'ExecIn');
+  const retryLimitReached = session.not(belowRetryLimit);
+  const retryExhausted = session.and(vehiclePresent, awaitingReply, retryLimitReached);
+  const timeoutBranch = session.n('Exec_Branch', { bCond: retryExhausted });
+  build.wire(request, 'ExecOut', timeoutBranch, 'Exec');
+  const timeoutResponse = session.set(response, 'VEHICLE CONNECTION\r\nTIMEOUT');
+  build.wire(timeoutBranch, 'ExecOutA', timeoutResponse, 'Exec');
   const reply = session.event('SR.Mechanic.Reply', [O(null), N(0), S(''), N(0), N(0), S('')]);
   const replyQueue = session.n('QueueTicks', {
     TicksToWait: 1,
@@ -589,6 +604,8 @@ function build(input = INPUT) {
   const installedInvalid = core.v(false);
   const scanCursor = core.v(0);
   const selectedRow = core.v(0);
+  const resetSelectedRow = core.set(selectedRow, 0);
+  build.wire(ownerAuthorizedEdge, 'OnRisingEdge', resetSelectedRow, 'Exec');
   const vehicleGet = core.n('Exec_MapVar_Get', {
     MapVarRef: R(vehiclesMap, 'MapVarRef'), Key: R(vehicleType),
   });
@@ -630,10 +647,8 @@ function build(input = INPUT) {
   const categoryDisplay = categoryFields[1];
   const categoryLeaderboardKey = categoryFields[2];
   const categoryPartCount = core.num(categoryFields[3]);
-  const categoryLoadPrimary = core.n('Exec_Union');
   const categoryLoadInput = core.n('Exec_Union');
-  build.wire(resetCategory, 'ExecOut', categoryLoadPrimary, 'ExecA');
-  build.wire(categoryLoadPrimary, 'ExecOut', categoryLoadInput, 'ExecA');
+  build.wire(resetCategory, 'ExecOut', categoryLoadInput, 'ExecA');
   const categoryLookupSettle = core.n('BufferTicks', {
     TicksToWait: 1, ZeroTicksToWait: 0,
   });
@@ -667,7 +682,7 @@ function build(input = INPUT) {
   build.wire(resetScan, 'ExecOut', scanResetSettle, 'Input');
   build.wire(scanResetSettle, 'Output', scanExec, 'ExecA');
   build.wire(scanExec, 'ExecOut', scanGet, 'Exec');
-  const scanFields = split(core, R(scanGet, 'Value'), 8);
+  const scanFields = split(core, R(scanGet, 'Value'), 3);
   const scanSaved = core.num(scanFields[1]);
   const scanMatches = core.and(R(scanGet, 'bFound'),
     core.cmp('Equal', scanSaved, R(installedScoreGet, 'Value')));
@@ -741,8 +756,7 @@ function build(input = INPUT) {
   build.wire(partLoadWait, 'Output', partsBranch, 'Exec');
   const readyResponseText = core.sel(R(installedInvalid), 'READY',
     'SAVED PART INVALID\r\nSTOCK ACTIVE');
-  let readyTail = chain(build, [partsBranch, 'ExecOutA'], core.set(dataReady, true));
-  readyTail = chain(build, readyTail, core.set(response, readyResponseText));
+  const purchaseRefresh = core.v(false);
   const partError = core.set(response, 'CATALOG ERROR:\r\nPART NOT FOUND');
   build.wire(partsBranch, 'ExecOutB', partError, 'Exec');
   const installedFields = split(core, R(installedRecord), 8);
@@ -777,12 +791,12 @@ function build(input = INPUT) {
   const forwardDown = inputCircuit.cmp('Less', R(splitter, 'InputForward'), -0.5);
   const rightHeld = inputCircuit.cmp('Greater', R(splitter, 'InputRight'), 0.5);
   const leftHeld = inputCircuit.cmp('Less', R(splitter, 'InputRight'), -0.5);
-  const upHeld = inputCircuit.and(forwardUp, authorized, notBusy);
-  const downHeld = inputCircuit.and(forwardDown, authorized, notBusy);
+  // Keep the in-game-confirmed activation path: readiness is part of the edge
+  // input, while the final buy branch independently rechecks controlsReady.
   const activateHeld = inputCircuit.and(
     inputCircuit.cmp('Greater', R(splitter, 'InputUp'), 0.5), controlsReady);
-  const upEdge = inputCircuit.n('Expr_EdgeDetectorExec', { Input: upHeld });
-  const downEdge = inputCircuit.n('Expr_EdgeDetectorExec', { Input: downHeld });
+  const upEdge = inputCircuit.n('Expr_EdgeDetectorExec', { Input: forwardUp });
+  const downEdge = inputCircuit.n('Expr_EdgeDetectorExec', { Input: forwardDown });
   inputCircuit.use('tap');
   const rightEdge = inputCircuit.n('Expr_EdgeDetectorExec', { Input: rightHeld });
   const leftEdge = inputCircuit.n('Expr_EdgeDetectorExec', { Input: leftHeld });
@@ -796,11 +810,15 @@ function build(input = INPUT) {
   const previousRow = inputCircuit.math('Add', R(selectedRow), 2);
   const previousWrapped = inputCircuit.math('Modulo', previousRow, 3);
   const setPreviousRow = inputCircuit.set(selectedRow, previousWrapped);
-  build.wire(upEdge, 'OnRisingEdge', setPreviousRow, 'Exec');
+  const previousRowAllowed = inputCircuit.n('Exec_Branch', { bCond: browseReady });
+  build.wire(upEdge, 'OnRisingEdge', previousRowAllowed, 'Exec');
+  build.wire(previousRowAllowed, 'ExecOutA', setPreviousRow, 'Exec');
   const nextRow = inputCircuit.math('Add', R(selectedRow), 1);
   const nextWrapped = inputCircuit.math('Modulo', nextRow, 3);
   const setNextRow = inputCircuit.set(selectedRow, nextWrapped);
-  build.wire(downEdge, 'OnRisingEdge', setNextRow, 'Exec');
+  const nextRowAllowed = inputCircuit.n('Exec_Branch', { bCond: browseReady });
+  build.wire(downEdge, 'OnRisingEdge', nextRowAllowed, 'Exec');
+  build.wire(nextRowAllowed, 'ExecOutA', setNextRow, 'Exec');
 
   inputCircuit.use('change');
   const categorySelected = inputCircuit.and(
@@ -842,46 +860,39 @@ function build(input = INPUT) {
   build.wire(leftPulse[0], leftPulse[1], leftCategory, 'Exec');
   build.wire(leftCategory, 'ExecOutB', leftPart, 'Exec');
 
-  const nextCategory = inputCircuit.math('Add', R(categoryIndex), 1);
-  const previousCategory = inputCircuit.math('Subtract', R(categoryIndex), 1);
-  const setNextCategory = inputCircuit.set(categoryIndex, nextCategory);
-  const setPreviousCategory = inputCircuit.set(categoryIndex, previousCategory);
+  const setNextCategory = inputCircuit.n('Exec_Var_Increment', {
+    VarRef: R(categoryIndex, 'VarRef'), Value: 1,
+  });
+  const setPreviousCategory = inputCircuit.n('Exec_Var_Increment', {
+    VarRef: R(categoryIndex, 'VarRef'), Value: -1,
+  });
   build.wire(rightCategory, 'ExecOutA', setNextCategory, 'Exec');
   build.wire(leftCategory, 'ExecOutA', setPreviousCategory, 'Exec');
   const categoryChanged = union(build, inputCircuit,
     [[setNextCategory, 'ExecOut'], [setPreviousCategory, 'ExecOut']]);
   build.wire(categoryChanged[0], categoryChanged[1], categoryLoadInput, 'ExecB');
 
-  const nextPart = inputCircuit.math('Add', R(selectedIndex), 1);
-  const previousPart = inputCircuit.math('Subtract', R(selectedIndex), 1);
-  const setNextPart = inputCircuit.set(selectedIndex, nextPart);
-  const setPreviousPart = inputCircuit.set(selectedIndex, previousPart);
+  const setNextPart = inputCircuit.n('Exec_Var_Increment', {
+    VarRef: R(selectedIndex, 'VarRef'), Value: 1,
+  });
+  const setPreviousPart = inputCircuit.n('Exec_Var_Increment', {
+    VarRef: R(selectedIndex, 'VarRef'), Value: -1,
+  });
   build.wire(rightPart, 'ExecOutA', setNextPart, 'Exec');
   build.wire(leftPart, 'ExecOutA', setPreviousPart, 'Exec');
-  inputCircuit.use('sounds');
-  const tapSoundPulse = union(build, inputCircuit, [
-    [setNextCategory, 'ExecOut'], [setPreviousCategory, 'ExecOut'],
-    [setNextPart, 'ExecOut'], [setPreviousPart, 'ExecOut'],
-  ]);
-  build.wire(tapSoundPulse[0], tapSoundPulse[1], tapBrowseSound, 'Play');
-  inputCircuit.use('change');
   const partChanged = union(build, inputCircuit,
     [[setNextPart, 'ExecOut'], [setPreviousPart, 'ExecOut']]);
+  inputCircuit.use('sounds');
+  const tapSoundPulse = union(build, inputCircuit,
+    [categoryChanged, partChanged]);
+  build.wire(tapSoundPulse[0], tapSoundPulse[1], tapBrowseSound, 'Play');
+  inputCircuit.use('change');
   let partChangeTail = chain(build, partChanged, core.set(dataReady, false));
   partChangeTail = chain(build, partChangeTail, selectedPartExec, 'ExecB');
-  partChangeTail = [selectedPartGet, 'ExecOut'];
-  const changedPartWait = inputCircuit.n('BufferTicks', { TicksToWait: 1, ZeroTicksToWait: 0 });
-  build.wire(partChangeTail[0], partChangeTail[1], changedPartWait, 'Input');
-  const changedPartFound = inputCircuit.n('Exec_Branch', { bCond: R(selectedPartGet, 'bFound') });
-  build.wire(changedPartWait, 'Output', changedPartFound, 'Exec');
-  let changedReady = chain(build, [changedPartFound, 'ExecOutA'], core.set(dataReady, true));
-  changedReady = chain(build, changedReady, core.set(response, readyResponseText));
-  const changedPartError = core.set(response, 'CATALOG ERROR:\r\nPART NOT FOUND');
-  build.wire(changedPartFound, 'ExecOutB', changedPartError, 'Exec');
   // ---- Purchase: fresh reads, final guards, score/Scrap write ---------------
   core.use('purchase');
   const buyRow = core.cmp('Equal', R(selectedRow), 2);
-  const buyStartAllowed = core.and(authorized, R(dataReady), notBusy, buyRow);
+  const buyStartAllowed = core.and(controlsReady, buyRow);
   const buyStart = core.n('Exec_Branch', { bCond: buyStartAllowed });
   build.wire(activateEdge, 'OnRisingEdge', buyStart, 'Exec');
   const installedBranch = core.n('Exec_Branch', { bCond: alreadyInstalled });
@@ -965,7 +976,8 @@ function build(input = INPUT) {
     Key: R(txnKey), Value: R(txnSaved), PlayerState: R(txnPlayerState),
   });
   build.wire(fundsBranch, 'ExecOutA', writeUpgrade, 'Exec');
-  const scrapDelta = R(core.n('Expr_MathNegate', { Input: R(txnNet) }), 'Output');
+  const txnNetNegated = core.n('Expr_MathNegate', { Input: R(txnNet) });
+  const scrapDelta = R(txnNetNegated, 'Output');
   const adjustScrap = core.n('Exec_Gamemode_IncrementLeaderboardValue', {
     Key: 'Scrap', Value: scrapDelta, PlayerState: R(txnPlayerState),
   });
@@ -982,28 +994,19 @@ function build(input = INPUT) {
   commitTail = chain(build, commitTail, core.set(installedSaved, R(txnSaved)));
   commitTail = chain(build, commitTail, core.set(installedIndex, R(selectedIndex)));
   commitTail = chain(build, commitTail, core.set(installedInvalid, false));
-  const postInstalledGet = core.n('Exec_MapVar_Get', {
-    MapVarRef: R(partsMap, 'MapVarRef'), Key: installedKey,
-  });
-  commitTail = chain(build, commitTail, postInstalledGet);
   commitTail = chain(build, commitTail,
-    core.set(installedRecord, R(postInstalledGet, 'Value')));
+    core.set(installedRecord, R(selectedPartGet, 'Value')));
   const refreshInstalledWait = core.n('BufferTicks', { TicksToWait: 1, ZeroTicksToWait: 0 });
   build.wire(commitTail[0], commitTail[1], refreshInstalledWait, 'Input');
-  commitTail = [refreshInstalledWait, 'Output'];
   core.use('response');
   const paidText = core.fmt('PART INSTALLED -🔩{A}', R(txnNet));
   const receivedText = core.fmt('PART INSTALLED +🔩{A}',
-    R(core.n('Expr_MathNegate', { Input: R(txnNet) }), 'Output'));
+    R(txnNetNegated, 'Output'));
   const txnPositive = core.cmp('Greater', R(txnNet), 0);
   const txnNegative = core.cmp('Less', R(txnNet), 0);
   const nonPositiveText = core.sel(txnNegative,
     'PART INSTALLED\r\nNO SCRAP COST', receivedText);
   const successText = core.sel(txnPositive, nonPositiveText, paidText);
-  commitTail = chain(build, commitTail, core.set(response, successText));
-  for (const successSound of successSounds)
-    build.wire(commitTail[0], commitTail[1], successSound, 'Play');
-  commitTail = chain(build, commitTail, core.set(busy, false));
 
   // ---- Display formatting ---------------------------------------------------
   display.use('blink');
@@ -1018,10 +1021,8 @@ function build(input = INPUT) {
   const readyEdge = display.n('Expr_EdgeDetectorExec', {
     Input: controlsReady, bSeeded: true,
   });
-  const resetBlinkPulse = union(build, display,
-    [[readyEdge, 'OnRisingEdge'], [readyEdge, 'OnFallingEdge']]);
   const resetBlink = display.set(selectionBlink, false);
-  build.wire(resetBlinkPulse[0], resetBlinkPulse[1], resetBlink, 'Exec');
+  build.wire(readyEdge, 'OnFallingEdge', resetBlink, 'Exec');
   const activeBlink = display.and(controlsReady, R(selectionBlink));
 
   display.use('rows');
@@ -1046,30 +1047,99 @@ function build(input = INPUT) {
   const buyLine = display.fmt('{A}{B}{C}', buyPrefix, buyLabel, buySuffix);
 
   display.use('stats');
-  function comparisonLine(index) {
-    const spec = split(display, categoryFields[4 + index], 4, '^');
-    const label = spec[0];
-    const unit = spec[1];
-    const direction = spec[3];
-    const installedText = installedFields[4 + index];
-    const selectedText = selectedFields[4 + index];
-    const installedNumber = display.num(installedText);
-    const selectedNumber = display.num(selectedText);
-    const greater = display.cmp('Greater', selectedNumber, installedNumber);
-    const less = display.cmp('Less', selectedNumber, installedNumber);
-    const higher = display.cmp('Equal', direction, 'H');
-    const lower = display.cmp('Equal', direction, 'L');
-    const beneficial = display.or(display.and(higher, greater), display.and(lower, less));
-    const detrimental = display.or(display.and(higher, less), display.and(lower, greater));
-    const badOrNeutral = display.sel(detrimental,
-      '<color="ffb347">', '<color="ff5a5a">');
-    const color = display.sel(beneficial, badOrNeutral, '<color="6dff6d">');
-    const line = display.fmt('{A}: {B}{C} → {D}{E}{F}</>',
-      label, installedText, unit, color, selectedText, unit);
-    const used = display.cmp('NotEqual', label, '-');
-    return display.sel(used, '', line);
-  }
-  const statLines = [0, 1, 2, 3].map(comparisonLine);
+  const statDefinition = display.n('Microchip_FunctionDefinition');
+  const statGrid = build.w.addBrickGrid({
+    type: 'Entity_MicrochipDynamicBrickGrid',
+    location: { X: 0, Y: 0, Z: 40 },
+    data: {
+      bCollapsed: true,
+      bLegacyIOSlotOrder: false,
+      PlaneCenter: { X: 70, Y: -15, Z: 0 },
+      PlaneExtent: { X: 70, Y: 25, Z: 2 },
+    },
+  });
+  build.w.registerMicrochipLink(statDefinition.handle, statGrid);
+  const statFunction = build.circuit(statGrid, 'mechanic_stat_line');
+  installTypedBindings(statFunction);
+  const rawStatNode = statFunction.n.bind(statFunction);
+  let statEdge = 0;
+  let statRow = 0;
+  statFunction.n = (kind, data = {}, position, grid = statFunction.grid) => {
+    if (!position && grid === statFunction.grid) {
+      const width = halfWidth(kind) * 2;
+      if (statEdge > 0 && statEdge + width > 140) {
+        statEdge = 0;
+        statRow++;
+      }
+      position = [statEdge + width / 2, -5 - statRow * 10, 2];
+      statEdge += width;
+    }
+    return rawStatNode(kind, data, position, grid);
+  };
+  const statEntry = statFunction.n('CallableEntry_Function');
+  const statNoOp = statFunction.n('Exec_Union');
+  build.wire(statEntry, 'Body', statNoOp, 'ExecA');
+  const statInput = statFunction.n('FunctionInput', {
+    PortLabel: 'Packed stat', PortOrder: 1, DefaultValue: S(''), Value: S(''),
+  });
+  const packedFields = split(statFunction, R(statInput), 3);
+  const spec = split(statFunction, packedFields[0], 4, '^');
+  const label = spec[0];
+  const unit = spec[1];
+  const direction = spec[3];
+  const installedText = packedFields[1];
+  const selectedText = packedFields[2];
+  const installedNumber = statFunction.num(installedText);
+  const selectedNumber = statFunction.num(selectedText);
+  const greater = statFunction.cmp('Greater', selectedNumber, installedNumber);
+  const less = statFunction.cmp('Less', selectedNumber, installedNumber);
+  const higher = statFunction.cmp('Equal', direction, 'H');
+  const lower = statFunction.cmp('Equal', direction, 'L');
+  const beneficial = statFunction.or(
+    statFunction.and(higher, greater), statFunction.and(lower, less));
+  const detrimental = statFunction.or(
+    statFunction.and(higher, less), statFunction.and(lower, greater));
+  const badOrNeutral = statFunction.sel(detrimental,
+    '<color="ffb347">', '<color="ff5a5a">');
+  const color = statFunction.sel(beneficial, badOrNeutral, '<color="6dff6d">');
+  const rawStatLine = statFunction.fmt('{A}: {B}{C} → {D}{E}{F}</>',
+    label, installedText, unit, color, selectedText, unit);
+  const used = statFunction.cmp('NotEqual', label, '-');
+  const statLine = statFunction.sel(used, '', rawStatLine);
+  const statOutput = statFunction.n('FunctionOutput', {
+    PortLabel: 'Line', PortOrder: 1, DefaultValue: S(''), Value: statLine,
+  });
+  const statCalls = [0, 1, 2, 3].map(index => {
+    const packed = display.fmt('{A}|{B}|{C}',
+      categoryFields[4 + index], installedFields[4 + index], selectedFields[4 + index]);
+    const call = display.n('FunctionCall', {
+      Definition: R(statDefinition, 'Definition'),
+      Input0: S(''), Output0: S(''),
+      InputSources: [1, 0, 0, 0, 0, 0, 0, 0],
+    });
+    display.bind(call, 'Input0', packed);
+    return call;
+  });
+  const readyRefreshMode = core.set(purchaseRefresh, false);
+  build.wire(partsBranch, 'ExecOutA', readyRefreshMode, 'Exec');
+  const purchaseRefreshMode = core.set(purchaseRefresh, true);
+  build.wire(refreshInstalledWait, 'Output', purchaseRefreshMode, 'Exec');
+  const statRefresh = union(build, display,
+    [[readyRefreshMode, 'ExecOut'], [purchaseRefreshMode, 'ExecOut']]);
+  build.wire(statRefresh[0], statRefresh[1], statCalls[0], 'Exec');
+  for (let index = 1; index < statCalls.length; index++)
+    build.wire(statCalls[index - 1], 'Completed', statCalls[index], 'Exec');
+  const finalizeRefresh = core.n('Exec_Branch', { bCond: R(purchaseRefresh) });
+  build.wire(statCalls.at(-1), 'Completed', finalizeRefresh, 'Exec');
+  let readyTail = chain(build, [finalizeRefresh, 'ExecOutB'], core.set(dataReady, true));
+  readyTail = chain(build, readyTail, core.set(response, readyResponseText));
+  const successResponse = core.set(response, successText);
+  build.wire(finalizeRefresh, 'ExecOutA', successResponse, 'Exec');
+  for (const successSound of successSounds)
+    build.wire(successResponse, 'ExecOut', successSound, 'Play');
+  const unlockSuccess = core.set(busy, false);
+  build.wire(successResponse, 'ExecOut', unlockSuccess, 'Exec');
+  const statLines = statCalls.map(call => R(call, 'Output0'));
 
   display.use('right');
   const rawPartPriceLine = display.fmt('PART PRICE: 🔩{A}', selectedPrice);
@@ -1107,9 +1177,8 @@ function build(input = INPUT) {
   build.wire(leftText[0], leftText[1], leftScreen, 'Text');
 
   display.use('indicator');
-  build.wire(authorized[0], authorized[1], displayEnable, 'RER_Input');
   build.wire(ownerAuthorized[0], ownerAuthorized[1], leftScreen, 'bEnabled');
-  build.wire(displayEnable, 'RER_Output', rightScreen, 'bEnabled');
+  build.wire(authorized[0], authorized[1], rightScreen, 'bEnabled');
   const wrongColor = display.sel(wrongOwner, LC(0, 0, 0), LC(1, 0, 0));
   const indicatorColor = display.sel(authorized, wrongColor, LC(0, 1, 0));
   build.wire(indicatorColor[0], indicatorColor[1], indicator, 'Color');
@@ -1126,13 +1195,27 @@ function build(input = INPUT) {
     catalog: { VEHICLES, CATEGORIES, PARTS },
     nodes: {
       seat, zone, leftScreen, rightScreen, indicator, activeVehicle, vehicleNonce,
-      vehicleType, profileRevision, ownerId, protocolReady, playerState, seatedUserId,
-      seatedUserName, scrap, busy, dataReady, response, vehiclesMap, categoriesMap,
+      requestAttempts, vehicleType, profileRevision, ownerId, protocolReady,
+      playerState, seatedUserId, seatedUserName, scrap, busy, dataReady, catalogReady,
+      response,
+      ownerSession, ownerAuthorized, wrongOwner, browseReady, controlsReady,
+      awaitingReply, belowRetryLimit, retryLimitReached, requestRetry, countRequest,
+      requestWait, retryExhausted, timeoutBranch,
+      timeoutResponse,
+      vehiclesMap, categoriesMap,
       partsMap, tradeInRate, categoryIndex, selectedIndex, installedIndex,
-      installedSaved, installedInvalid, selectedRow, request, reply, reload,
+      installedSaved, installedInvalid, installedRecord, scanCursor, selectedRow,
+      resetSelectedRow, ownerAuthorizedEdge,
+      request, reply, reload,
       writeUpgrade, adjustScrap, categoryGet, categoryLookupSettle, resetScan,
-      scanGet, scanResetSettle, installedPartGet, installedPartSettle,
-      selectedPartGet, selectedPartSettle,
+      scanExec, scanGet, scanResetSettle, continueScan, scanLoopWait,
+      installedPartGet, installedPartSettle,
+      selectedPartGet, selectedPartSettle, partLoadWait, partsBranch,
+      upEdge, downEdge, previousRowAllowed, nextRowAllowed, setPreviousRow,
+      setNextRow, activateEdge, categoryChanged, partChanged, tapSoundPulse,
+      buyStartAllowed, txnNet, txnNetNegated, refreshInstalledWait, purchaseRefresh,
+      readyRefreshMode, purchaseRefreshMode, statDefinition, statGrid, statEntry,
+      statInput, statOutput, statCalls, statRefresh, finalizeRefresh,
     },
   };
 }

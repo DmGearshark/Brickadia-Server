@@ -68,6 +68,25 @@ function execReachable(scene, start, startPort, goal) {
   return false;
 }
 
+function isExecEdge(edge) {
+  if (['ExecOut', 'ExecOutA', 'ExecOutB', 'Completed', 'Pulse',
+    'OnChanged', 'OnRisingEdge', 'OnFallingEdge', 'bPulseOnChange'].includes(edge.p))
+    return true;
+  return edge.p === 'Output' && edge.at === C.BufferTicks.NAME;
+}
+
+function countExecPaths(scene, start, startPort, goal) {
+  const first = scene.edges.filter(edge => edge.a === start.key && edge.p === startPort);
+  const visit = (key, active) => {
+    if (key === goal.key) return 1;
+    assert(!active.has(key), `unexpected execution cycle through ${key}`);
+    const nextActive = new Set(active).add(key);
+    return scene.edges.filter(edge => edge.a === key && isExecEdge(edge))
+      .reduce((sum, edge) => sum + visit(edge.z, nextActive), 0);
+  };
+  return first.reduce((sum, edge) => sum + visit(edge.z, new Set([start.key])), 0);
+}
+
 function dataDependsOn(scene, target, source, targetPort) {
   const queue = scene.edges.filter(edge => edge.z === target.key
     && (!targetPort || edge.q === targetPort)).map(edge => edge.a);
@@ -193,8 +212,8 @@ function test({ output = OUTPUT, builder = BUILDER } = {}) {
   const t = api(scene);
   const placement = validatePlacement(bytes);
   assert(placement.strictOk, 'Truck1 v13 passes strict placement');
-  assert.equal(scene.bricks.length, 317, 'v13 expected brick count');
-  assert.equal(scene.edges.length, 272, 'v13 expected wire count');
+  assert.equal(scene.bricks.length, 302, 'optimized v13 expected brick count');
+  assert.equal(scene.edges.length, 248, 'optimized v13 expected wire count');
   const storedHandles = assertStoredHandles(scene);
 
   const mechanicShell = t.one(t.all(C.TextDisplay.NAME,
@@ -210,6 +229,9 @@ function test({ output = OUTPUT, builder = BUILDER } = {}) {
   const mechanicLink = scene.links.filter(link => link.key === mechanicShell.key);
   assert.equal(mechanicLink.length, 1, 'mechanic shell has one child link');
   const mechanicGrid = mechanicLink[0].grid;
+  const appearanceLink = scene.links.filter(link => link.key === appearanceShell.key);
+  assert.equal(appearanceLink.length, 1, 'appearance shell has one child link');
+  const appearanceGrid = appearanceLink[0].grid;
   assert.deepEqual([appearanceShell, ownerShell, mechanicShell].map(brick =>
     brick.data.position), [[35, 5, 2], [45, 5, 2], [55, 5, 2]],
   'three controller shells form one touching on-grid row');
@@ -426,6 +448,148 @@ function test({ output = OUTPUT, builder = BUILDER } = {}) {
   const ownerResolver = t.label('Resolve spawning Character to Owner PlayerState');
   assert(!execReachable(scene, reloadBranch, 'ExecOutA', ownerResolver),
     'mechanic reload never restarts owner resolution');
+
+  // The only inherited continuous loop was a 0.01-second dashboard-speed
+  // Stopwatch. The optimized truck uses one occupancy-gated 0.1-second Clock
+  // and the same vehicle-grid source already used by the mechanic protocol.
+  assert.equal(t.all(C.Stopwatch.NAME).length, 0,
+    'optimized Truck1 has no self-restarting Stopwatch');
+  const speedGetter = t.one(t.all(C.Exec_Entity_GetSpeed.NAME), 'dashboard speed getter');
+  const speedPulse = t.incoming(speedGetter, C.Exec_Entity_GetSpeed.NAME, 'Exec');
+  assert.equal(speedPulse.length, 1, 'dashboard speed getter has one pulse source');
+  const speedClock = t.bricks.get(speedPulse[0].a);
+  const speedClockData = component(speedClock, C.Clock.NAME).data;
+  assert(speedClockData, 'dashboard speed source is a Clock');
+  assert.equal(speedPulse[0].p, 'Pulse', 'Clock pulse samples dashboard speed');
+  assert.equal(speedClockData.IntervalSeconds, 0.1,
+    'dashboard speed samples at ten hertz');
+  const clockEnable = t.incoming(speedClock, C.Clock.NAME, 'bEnabled');
+  assert.equal(clockEnable.length, 1, 'speed Clock has one enabled source');
+  const occupiedInput = t.bricks.get(clockEnable[0].a);
+  assert(component(occupiedInput, C.MicrochipInput.NAME),
+    'speed Clock is enabled through a controller input');
+  const occupiedDriver = t.incoming(occupiedInput, C.MicrochipInput.NAME, 'RER_Input');
+  assert.equal(occupiedDriver.length, 1, 'occupied input has one physical source');
+  assert.equal(occupiedDriver[0].p, 'bIsOccupied',
+    'seat occupancy directly enables the speed Clock');
+  assert(component(t.bricks.get(occupiedDriver[0].a), C.Seat.NAME),
+    'speed Clock occupancy comes from the physical seat');
+  assert(!scene.edges.some(edge => edge.a === speedClock.key && edge.z === speedClock.key),
+    'speed Clock has no self-loop');
+  const speedEntity = t.incoming(speedGetter, C.Exec_Entity_GetSpeed.NAME, 'Entity');
+  assert.equal(speedEntity.length, 1, 'speed getter has one vehicle source');
+  assert.equal(speedEntity[0].a, vehicleGrid.key,
+    'speed and mechanic protocols reuse one Read Brick Grid');
+  assert.equal(t.all(C.ReadBrickGrid.NAME,
+    (_data, brick) => brick.g === speedGetter.g).length, 1,
+  'drive controller contains one vehicle-grid reader');
+  assert.equal(t.all(C.Rerouter.NAME,
+    (_data, brick) => brick.g === speedGetter.g).length, 0,
+  'drive controller has no pure forwarding rerouter');
+
+  // Current color terminals use the request/reply protocol, so the legacy
+  // custom-property publication path and its vehicle-grid port are gone.
+  assert.equal(t.all(C.Exec_Entity_SetCustomProperty.NAME,
+    data => ['CurrentColorScore', 'CurrentMaterialEnum'].includes(data.Key)).length, 0,
+  'obsolete appearance custom properties are not published');
+  assert.equal(t.all(C.MicrochipInput.NAME,
+    (data, brick) => brick.g === appearanceGrid && data.PortLabel === 'Vehicle Grid').length, 0,
+  'appearance controller has no unused vehicle-grid input');
+
+  const colorClamps = t.all(C.Expr_MathClamp.NAME,
+    (_data, brick) => brick.g === appearanceGrid);
+  assert.equal(colorClamps.length, 1, 'saved RGB score uses one native clamp');
+  const colorClamp = colorClamps[0].brick;
+  const colorClampData = colorClamps[0].comp.data;
+  assert.equal(variant(colorClampData, 'Min', 'i64', 'saved color clamp'), 0,
+    'saved color clamp minimum');
+  assert.equal(variant(colorClampData, 'Max', 'i64', 'saved color clamp'), 16777215,
+    'saved color clamp maximum');
+  assert.equal(t.outgoing(colorClamp, C.Expr_MathClamp.NAME, 'Output').length, 3,
+    'one clamped RGB score feeds all three byte decoders');
+  assert.equal(t.all(C.Expr_MathMin.NAME,
+    (_data, brick) => brick.g === appearanceGrid).length, 0,
+  'appearance controller has no redundant color minimum');
+  assert.equal(t.all(C.Expr_MathMax.NAME,
+    (_data, brick) => brick.g === appearanceGrid).length, 0,
+  'appearance controller has no redundant color maximum');
+
+  const materialSelects = t.all(C.Expr_Select.NAME, (data, brick) =>
+    brick.g === appearanceGrid
+      && data.InputA?.$variant === 'dynamic_enum'
+      && data.InputB?.$variant === 'dynamic_enum'
+      && data.InputA.value?.value === 0
+      && data.InputB.value?.value === 4);
+  assert.equal(materialSelects.length, 2,
+    'saved and preview material each use one typed Select');
+  for (const { brick: select } of materialSelects) {
+    const condition = t.incoming(select, C.Expr_Select.NAME, 'bSelectB');
+    const value = t.outgoing(select, C.Expr_Select.NAME, 'Output');
+    assert.equal(condition.length, 1, 'material Select has one comparison condition');
+    assert(component(t.bricks.get(condition[0].a), C.Expr_CompareEqual.NAME),
+      'material Select condition is an equality comparison');
+    assert.equal(value.length, 1, 'material Select has one retained setter');
+    assert.equal(value[0].zt, C.Exec_Var_Set.NAME, 'material Select drives a Var setter');
+    assert.equal(value[0].q, 'Value', 'material Select drives the setter value');
+  }
+  assert.equal(t.all(C.Exec_Branch.NAME,
+    (_data, brick) => brick.g === appearanceGrid).length, 0,
+  'appearance material decoding has no duplicate setter branches');
+
+  // One event/load now produces exactly one callable body pass. The callable
+  // contains 31 handles and three property setters: 93 writes per pass.
+  assert.equal(t.all(C.Expr_ChangeDetector.NAME,
+    (_data, brick) => brick.g === appearanceGrid).length, 0,
+  'appearance controller has no duplicate change-detector refreshes');
+  const bodyLoop = t.one(t.all(C.Microchip_ForEachArray.NAME,
+    (_data, brick) => brick.g === appearanceGrid), 'appearance body loop');
+  const bodyArrayEdge = t.incoming(bodyLoop, C.Microchip_ForEachArray.NAME, 'ArrayVarRef');
+  assert.equal(bodyArrayEdge.length, 1, 'body loop has one BrickHandle array');
+  const bodyArray = t.bricks.get(bodyArrayEdge[0].a);
+  const handles = component(bodyArray, C.ArrayVar.NAME).data.Value.$array;
+  assert.equal(handles.length, 31, 'appearance body loop has thirty-one handles');
+  const bodyLink = scene.links.filter(link => link.key === bodyLoop.key);
+  assert.equal(bodyLink.length, 1, 'appearance body loop has one callable body');
+  const bodySetters = t.all(C.Exec_SetBrickProperty.NAME,
+    (_data, brick) => brick.g === bodyLink[0].grid);
+  assert.equal(bodySetters.length, 3,
+    'appearance callable writes color, material, and intensity once per handle');
+  assert.deepEqual(bodySetters.map(row => row.comp.data.Property).sort((a, b) => a - b),
+    [1, 2, 3], 'appearance callable property set is unchanged');
+  assert.equal(handles.length * bodySetters.length, 93,
+    'one appearance body pass performs exactly ninety-three property writes');
+  const bodyExec = t.incoming(bodyLoop, C.Microchip_ForEachArray.NAME, 'Exec');
+  assert.equal(bodyExec.length, 1, 'appearance body loop has one buffered trigger');
+  const bodyBuffer = t.bricks.get(bodyExec[0].a);
+  assert.equal(component(bodyBuffer, C.BufferTicks.NAME).data.TicksToWait, 1,
+    'appearance variables settle one tick before the body pass');
+  const bodyBufferExec = t.incoming(bodyBuffer, C.BufferTicks.NAME, 'Input');
+  assert.equal(bodyBufferExec.length, 1, 'body settle buffer has one convergence source');
+  const bodyUnion = t.bricks.get(bodyBufferExec[0].a);
+  assert(component(bodyUnion, C.Exec_Union.NAME),
+    'saved and preview chains converge through one union');
+  const bodyUnionInputs = t.incoming(bodyUnion, C.Exec_Union.NAME);
+  assert.equal(bodyUnionInputs.length, 2, 'body union has one saved and one preview tail');
+  assert(bodyUnionInputs.every(edge => component(t.bricks.get(edge.a), C.Exec_Var_Set.NAME)),
+    'both body-union inputs come from completed intensity setters');
+
+  const interfaceEvent = t.one(t.all(C.Event_CustomGlobal.NAME,
+    (data, brick) => brick.g === appearanceGrid
+      && data.EventName === 'Interface with Vehicle'), 'appearance preview event');
+  const restoreEvent = t.one(t.all(C.Event_CustomGlobal.NAME,
+    (data, brick) => brick.g === appearanceGrid
+      && data.EventName === 'Restore Truck1Color'), 'appearance restore event');
+  const appearanceRequest = t.one(t.all(C.Event_CustomGlobal.NAME,
+    (data, brick) => brick.g === appearanceGrid
+      && data.EventName === 'SR.Appearance.Request'), 'appearance request event');
+  assert.equal(countExecPaths(scene, interfaceEvent, 'ExecOut', bodyLoop), 1,
+    'one preview event reaches exactly one body pass');
+  assert.equal(countExecPaths(scene, restoreEvent, 'ExecOut', bodyLoop), 1,
+    'one restore event reaches exactly one body pass');
+  assert.equal(countExecPaths(scene, updateCar, 'ExecOut', bodyLoop), 1,
+    'one spawn event reaches exactly one body pass');
+  assert.equal(countExecPaths(scene, appearanceRequest, 'ExecOut', bodyLoop), 0,
+    'read-only appearance requests never rewrite body bricks');
 
   const arraysByKey = new Map(t.all(C.ArrayVar.NAME,
     (_data, brick) => brick.g === board).map(({ brick, comp }) => [brick.key, comp.data.Value.$array]));
