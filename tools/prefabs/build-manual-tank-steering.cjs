@@ -159,6 +159,9 @@ function build(input = INPUT) {
       ManualInput_Pitch: 0,
       ManualInput_Roll: 0,
       bManualInput_Brake: false,
+      DriveAcceleratingPowerMultiplier: 0.5,
+      DriveBrakingPowerMultiplier: 1.5,
+      WheelFrictionMultiplier: 0.8,
       bTankSteering: false,
       bAutodiscoverWheels: false,
       bAutodiscoverThrusters: false,
@@ -269,59 +272,147 @@ function build(input = INPUT) {
     });
   }
 
-  panel([-15, 55, 2], [40, 5, 2], 'MANUAL WASD TANK MIXER',
+  panel([-30, 85, 2], [50, 5, 2], 'MANUAL WASD TANK MIXER + PIVOT ASSIST',
     {R: 110, G: 210, B: 255, A: 255});
-  const character = gate('MicrochipInput', [-35, 35, 2], {
+  const character = gate('MicrochipInput', [-75, 65, 2], {
     PortLabel: 'Driver Character', PortOrder: 1,
     CallableDefault: N(0), CallableMirror: N(0),
   }, COLORS.input, 'DRIVER');
-  const splitter = gate('InputSplitter', [-25, 35, 2], {},
+  const splitter = gate('InputSplitter', [-65, 65, 2], {},
     COLORS.input, 'WASD');
-  const forwardAbs = gate('Expr_MathAbs', [-35, 15, 2], {
+  const leftSpeedInput = gate('MicrochipInput', [-45, 65, 2], {
+    PortLabel: 'Left Engine Speed', PortOrder: 2,
+    CallableDefault: N(0), CallableMirror: N(0),
+  }, COLORS.input, 'LEFT\nSPEED');
+  const rightSpeedInput = gate('MicrochipInput', [-35, 65, 2], {
+    PortLabel: 'Right Engine Speed', PortOrder: 3,
+    CallableDefault: N(0), CallableMirror: N(0),
+  }, COLORS.input, 'RIGHT\nSPEED');
+
+  const forwardAbs = gate('Expr_MathAbs', [-75, 45, 2], {
     Input: N(0),
   }, COLORS.scale, '|FORWARD|');
-  const halfForward = gate('Expr_MathMultiply', [-25, 15, 2], {
-    InputA: N(0), InputB: N(0.5),
-  }, COLORS.scale, '× 0.5');
-  const turnScale = gate('Expr_MathSubtract', [-15, 15, 2], {
-    InputA: N(1), InputB: N(0),
-  }, COLORS.scale, 'TURN\nSCALE');
-  const turnTerm = gate('Expr_MathMultiply', [-5, 15, 2], {
-    InputA: N(0), InputB: N(1),
-  }, COLORS.scale, 'STEER\nTERM');
+  const steerAbs = gate('Expr_MathAbs', [-65, 45, 2], {
+    Input: N(0),
+  }, COLORS.scale, '|STEER|');
+  const movingSteer = gate('Expr_MathMultiply', [-55, 45, 2], {
+    InputA: N(0), InputB: N(0),
+  }, COLORS.scale, '|F| × |R|');
+  const inputPivot = gate('Expr_MathSubtract', [-45, 45, 2], {
+    InputA: N(0), InputB: N(0),
+  }, COLORS.scale, 'INPUT\nPIVOT');
 
-  const leftMix = gate('Expr_MathAdd', [-15, -5, 2], {
+  const leftSpeedAbs = gate('Expr_MathAbs', [-75, 25, 2], {
+    Input: N(0),
+  }, COLORS.scale, '|LEFT\nSPEED|');
+  const rightSpeedAbs = gate('Expr_MathAbs', [-65, 25, 2], {
+    Input: N(0),
+  }, COLORS.scale, '|RIGHT\nSPEED|');
+  const maxSpeed = gate('Expr_MathMax', [-55, 25, 2], {
+    InputA: N(0), InputB: N(0),
+  }, COLORS.scale, 'MAX\nSPEED');
+  const speedScale = gate('Expr_MathDivide', [-45, 25, 2], {
+    InputA: N(0), InputB: N(10),
+  }, COLORS.scale, 'SPEED\n÷ 10');
+  const speedFactor = gate('Expr_MathClamp', [-35, 25, 2], {
+    Input: N(0), Min: N(0), Max: N(1),
+  }, COLORS.scale, 'MOVING\n0..1');
+  const movingPivot = gate('Expr_MathMultiply', [-25, 25, 2], {
+    InputA: N(0), InputB: N(0),
+  }, COLORS.scale, 'PIVOT ×\nMOVING');
+  const stoppedPivot = gate('Expr_MathSubtract', [-15, 25, 2], {
+    InputA: N(0), InputB: N(0),
+  }, COLORS.scale, 'STOPPED\nPIVOT');
+  const pivotWeight = gate('Expr_MathClamp', [-5, 25, 2], {
+    Input: N(0), Min: N(0), Max: N(1),
+  }, COLORS.scale, 'PIVOT\n0..1');
+
+  const halfSteer = gate('Expr_MathMultiply', [-75, 5, 2], {
+    InputA: N(0), InputB: N(0.5),
+  }, COLORS.scale, 'STEER\n× 0.5');
+  const pivotExtra = gate('Expr_MathMultiply', [-65, 5, 2], {
+    InputA: N(0), InputB: N(0),
+  }, COLORS.scale, 'PIVOT\nEXTRA');
+  const turnTerm = gate('Expr_MathAdd', [-55, 5, 2], {
+    InputA: N(0), InputB: N(0),
+  }, COLORS.scale, 'FINAL\nSTEER');
+
+  const leftMix = gate('Expr_MathAdd', [-75, -15, 2], {
     InputA: N(0), InputB: N(0),
   }, COLORS.left, 'LEFT\nMIX');
-  const leftClamp = gate('Expr_MathClamp', [-5, -5, 2], {
+  const leftClamp = gate('Expr_MathClamp', [-65, -15, 2], {
     Input: N(0), Min: N(-1), Max: N(1),
   }, COLORS.left, 'LEFT\n[-1,1]');
-  const leftOutput = gate('MicrochipOutput', [5, -5, 2], {
+  const leftOutput = gate('MicrochipOutput', [-55, -15, 2], {
     PortLabel: 'Left Track Drive', PortOrder: 1,
     CallableDefault: N(0), CallableResult: N(0),
   }, COLORS.output, 'LEFT\nDRIVE');
 
-  const rightMix = gate('Expr_MathSubtract', [-15, -25, 2], {
+  const rightMix = gate('Expr_MathSubtract', [-75, -35, 2], {
     InputA: N(0), InputB: N(0),
   }, COLORS.right, 'RIGHT\nMIX');
-  const rightClamp = gate('Expr_MathClamp', [-5, -25, 2], {
+  const rightClamp = gate('Expr_MathClamp', [-65, -35, 2], {
     Input: N(0), Min: N(-1), Max: N(1),
   }, COLORS.right, 'RIGHT\n[-1,1]');
-  const rightOutput = gate('MicrochipOutput', [5, -25, 2], {
+  const rightOutput = gate('MicrochipOutput', [-55, -35, 2], {
     PortLabel: 'Right Track Drive', PortOrder: 2,
     CallableDefault: N(0), CallableResult: N(0),
   }, COLORS.output, 'RIGHT\nDRIVE');
-  panel([-15, -45, 2], [40, 5, 2],
-    'W/S MOVE  •  A/D STEER  •  A OR D PIVOTS IN PLACE',
+
+  const pivotBoost = gate('Expr_MathMultiply', [-75, -55, 2], {
+    InputA: N(0), InputB: N(1.5),
+  }, COLORS.left, 'PIVOT\nBOOST');
+  const acceleration = gate('Expr_MathAdd', [-65, -55, 2], {
+    InputA: N(0.5), InputB: N(0),
+  }, COLORS.left, 'ACCEL\n0.5..2');
+  const accelerationOutput = gate('MicrochipOutput', [-55, -55, 2], {
+    PortLabel: 'Track Acceleration Power', PortOrder: 3,
+    CallableDefault: N(0.5), CallableResult: N(0.5),
+  }, COLORS.output, 'TRACK\nPOWER');
+
+  const pivotFrictionDrop = gate('Expr_MathMultiply', [-75, -75, 2], {
+    InputA: N(0), InputB: N(0.45),
+  }, COLORS.right, 'PIVOT\nGRIP DROP');
+  const friction = gate('Expr_MathSubtract', [-65, -75, 2], {
+    InputA: N(0.8), InputB: N(0),
+  }, COLORS.right, 'FRICTION\n0.8..0.35');
+  const frictionOutput = gate('MicrochipOutput', [-55, -75, 2], {
+    PortLabel: 'Track Wheel Friction', PortOrder: 4,
+    CallableDefault: N(0.8), CallableResult: N(0.8),
+  }, COLORS.output, 'TRACK\nFRICTION');
+
+  panel([-30, -95, 2], [50, 5, 2],
+    'W/S MOVE  •  W+A/D = 0.5 INSIDE TRACK  •  STOPPED A/D = FULL PIVOT',
     {R: 255, G: 190, B: 80, A: 255});
 
   wire(seat, 'SittingCharacter', character, 'RER_Input');
+  wire(leftEngine, 'Speed', leftSpeedInput, 'RER_Input');
+  wire(rightEngine, 'Speed', rightSpeedInput, 'RER_Input');
   wire(character, 'RER_Output', splitter, 'Character');
   wire(splitter, 'InputForward', forwardAbs, 'Input');
-  wire(forwardAbs, 'Output', halfForward, 'InputA');
-  wire(halfForward, 'Output', turnScale, 'InputB');
-  wire(splitter, 'InputRight', turnTerm, 'InputA');
-  wire(turnScale, 'Output', turnTerm, 'InputB');
+  wire(splitter, 'InputRight', steerAbs, 'Input');
+  wire(forwardAbs, 'Output', movingSteer, 'InputA');
+  wire(steerAbs, 'Output', movingSteer, 'InputB');
+  wire(steerAbs, 'Output', inputPivot, 'InputA');
+  wire(movingSteer, 'Output', inputPivot, 'InputB');
+
+  wire(leftSpeedInput, 'RER_Output', leftSpeedAbs, 'Input');
+  wire(rightSpeedInput, 'RER_Output', rightSpeedAbs, 'Input');
+  wire(leftSpeedAbs, 'Output', maxSpeed, 'InputA');
+  wire(rightSpeedAbs, 'Output', maxSpeed, 'InputB');
+  wire(maxSpeed, 'Output', speedScale, 'InputA');
+  wire(speedScale, 'Output', speedFactor, 'Input');
+  wire(inputPivot, 'Output', movingPivot, 'InputA');
+  wire(speedFactor, 'Output', movingPivot, 'InputB');
+  wire(inputPivot, 'Output', stoppedPivot, 'InputA');
+  wire(movingPivot, 'Output', stoppedPivot, 'InputB');
+  wire(stoppedPivot, 'Output', pivotWeight, 'Input');
+
+  wire(splitter, 'InputRight', halfSteer, 'InputA');
+  wire(halfSteer, 'Output', pivotExtra, 'InputA');
+  wire(pivotWeight, 'Output', pivotExtra, 'InputB');
+  wire(halfSteer, 'Output', turnTerm, 'InputA');
+  wire(pivotExtra, 'Output', turnTerm, 'InputB');
   wire(splitter, 'InputForward', leftMix, 'InputA');
   wire(turnTerm, 'Output', leftMix, 'InputB');
   wire(leftMix, 'Output', leftClamp, 'Input');
@@ -333,11 +424,24 @@ function build(input = INPUT) {
   wire(leftOutput, 'RER_Output', leftEngine, 'ManualInput_Drive');
   wire(rightOutput, 'RER_Output', rightEngine, 'ManualInput_Drive');
 
+  wire(pivotWeight, 'Output', pivotBoost, 'InputA');
+  wire(pivotBoost, 'Output', acceleration, 'InputB');
+  wire(acceleration, 'Output', accelerationOutput, 'RER_Input');
+  wire(accelerationOutput, 'RER_Output', leftEngine,
+    'DriveAcceleratingPowerMultiplier');
+  wire(accelerationOutput, 'RER_Output', rightEngine,
+    'DriveAcceleratingPowerMultiplier');
+  wire(pivotWeight, 'Output', pivotFrictionDrop, 'InputA');
+  wire(pivotFrictionDrop, 'Output', friction, 'InputB');
+  wire(friction, 'Output', frictionOutput, 'RER_Input');
+  wire(frictionOutput, 'RER_Output', leftEngine, 'WheelFrictionMultiplier');
+  wire(frictionOutput, 'RER_Output', rightEngine, 'WheelFrictionMultiplier');
+
   fitMicrochip(scene, logicGrid);
 
   const metadata = {
     name: 'Manual WASD Tank Steering',
-    description: 'Two-engine analog tank mixer: W/S drive, A/D pivot at rest, and moving turns slow the inside track to 0.5. Built-in tank steering and actuator autodiscovery remain disabled.',
+    description: 'Two-engine manual tank mixer with stopped-pivot torque and grip assistance. W/S drive, W+A/D slows the inside track to 0.5, coasting steer stays controlled, and stopped A/D counter-rotates at full input. Built-in tank steering remains disabled.',
     owner: selectedOwner(scene),
   };
   const generated = write(scene, {
@@ -359,9 +463,14 @@ function build(input = INPUT) {
     created,
     nodes: {
       seat, leftEngine, rightEngine, character, splitter,
-      forwardAbs, halfForward, turnScale, turnTerm,
+      leftSpeedInput, rightSpeedInput, forwardAbs, steerAbs,
+      movingSteer, inputPivot, leftSpeedAbs, rightSpeedAbs,
+      maxSpeed, speedScale, speedFactor, movingPivot, stoppedPivot,
+      pivotWeight, halfSteer, pivotExtra, turnTerm,
       leftMix, leftClamp, leftOutput,
       rightMix, rightClamp, rightOutput,
+      pivotBoost, acceleration, accelerationOutput,
+      pivotFrictionDrop, friction, frictionOutput,
     },
     placement,
     summary: {
