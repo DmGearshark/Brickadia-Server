@@ -315,22 +315,25 @@ function build(input = INPUT) {
   wire(hoverSwitch, 'bEnabled', gyro, 'bEnabled');
   for (const thruster of thrusters) wire(hoverSwitch, 'bEnabled', thruster, 'bEnabled');
 
-  // Movement uses six independent procedural-brick thrusters. Unlike the
-  // native B_2x2_Thruster lift asset, the working hover donor proves that a
-  // Thruster component on PB_DefaultBrick pushes along host-local +X. The two
-  // drive pods apply force at the center of mass. Each opposed turn pair uses
-  // AtThruster so lateral forces cancel while their yaw torques add together.
-  const forwardDrive = addThrusterPod('forward', [-60, 5, 0], 4, 0,
+  // The first in-game movement test proved that direction 4 makes a Thruster
+  // component on PB_DefaultBrick act vertically: W/S bounced and the offset
+  // A/D pairs rolled the frame. Directions 0/1 put the drive pair on the X
+  // axis, while 2/3 put the steering pairs on Y. Thrusters push opposite the
+  // native asset's visual nozzle but follow a procedural host's face normal;
+  // those two host types therefore cannot share orientation assumptions.
+  // Drive applies at center of mass. Opposed AtThruster steering forces cancel
+  // lateral translation and add into a pure yaw moment.
+  const forwardDrive = addThrusterPod('forward', [-57, 5, 0], 0, 0,
     0, 15000, COLORS.drivePod);
-  const reverseDrive = addThrusterPod('reverse', [40, 5, 0], 4, 2,
+  const reverseDrive = addThrusterPod('reverse', [37, 5, 0], 1, 0,
     0, 15000, COLORS.drivePod);
-  const leftFront = addThrusterPod('left-front', [40, -15, 0], 4, 1,
+  const leftFront = addThrusterPod('left-front', [40, -15, 0], 2, 0,
     1, 5000, COLORS.turnPod);
-  const leftRear = addThrusterPod('left-rear', [-60, -15, 0], 4, 3,
+  const leftRear = addThrusterPod('left-rear', [-60, -15, 0], 3, 0,
     1, 5000, COLORS.turnPod);
-  const rightFront = addThrusterPod('right-front', [40, 25, 0], 4, 3,
+  const rightFront = addThrusterPod('right-front', [40, 25, 0], 3, 0,
     1, 5000, COLORS.turnPod);
-  const rightRear = addThrusterPod('right-rear', [-60, 25, 0], 4, 1,
+  const rightRear = addThrusterPod('right-rear', [-60, 25, 0], 2, 0,
     1, 5000, COLORS.turnPod);
   const movementThrusters = [
     forwardDrive, reverseDrive,

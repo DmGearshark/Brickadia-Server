@@ -147,17 +147,18 @@ const at = position => one(movementThrusters.filter(row =>
   row.brick.data.position.every((value, axis) => value === position[axis])),
 `movement thruster at ${position.join(',')}`);
 const movementLayout = [
-  {position: [-60, 5, 0], direction: 4, rotation: 0, forceApplication: 0, force: 15000},
-  {position: [40, 5, 0], direction: 4, rotation: 2, forceApplication: 0, force: 15000},
-  {position: [40, -15, 0], direction: 4, rotation: 1, forceApplication: 1, force: 5000},
-  {position: [-60, -15, 0], direction: 4, rotation: 3, forceApplication: 1, force: 5000},
-  {position: [40, 25, 0], direction: 4, rotation: 3, forceApplication: 1, force: 5000},
-  {position: [-60, 25, 0], direction: 4, rotation: 1, forceApplication: 1, force: 5000},
+  {position: [-57, 5, 0], direction: 0, rotation: 0, forceApplication: 0, force: 15000},
+  {position: [37, 5, 0], direction: 1, rotation: 0, forceApplication: 0, force: 15000},
+  {position: [40, -15, 0], direction: 2, rotation: 0, forceApplication: 1, force: 5000},
+  {position: [-60, -15, 0], direction: 3, rotation: 0, forceApplication: 1, force: 5000},
+  {position: [40, 25, 0], direction: 3, rotation: 0, forceApplication: 1, force: 5000},
+  {position: [-60, 25, 0], direction: 2, rotation: 0, forceApplication: 1, force: 5000},
 ];
 for (const expected of movementLayout) {
   const row = at(expected.position);
   assert.equal(row.brick.data.direction, expected.direction);
   assert.equal(row.brick.data.rotation, expected.rotation);
+  assert.deepEqual(row.brick.data.size, [5, 5, 2]);
   assert.equal(row.component.data.ForceApplication, expected.forceApplication);
   assert.equal(row.component.data.Force, expected.force);
 }
