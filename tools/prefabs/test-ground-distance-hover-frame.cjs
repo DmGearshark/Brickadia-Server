@@ -35,9 +35,13 @@ assert.equal([...saved.r.entities()].length, 2,
 const engine = one(all(C.WheelEngine.NAME), 'vehicle engine');
 const seat = one(all(C.Seat.NAME), 'seat');
 const thrusters = all(C.Thruster.NAME);
+const liftThrusters = thrusters.filter(row => row.brick.data.asset === C.Thruster.BRICK);
+const movementThrusters = thrusters.filter(row => row.brick.data.asset === 'PB_DefaultBrick');
 const gyro = one(all(C.Gyroscope.NAME), 'gyro');
 const hoverSwitch = one(all(C.AnimatedSwitch.NAME), 'hover switch');
-assert.equal(thrusters.length, 2, 'Two lift thrusters');
+assert.equal(thrusters.length, 8, 'Two lift thrusters plus six movement thrusters');
+assert.equal(liftThrusters.length, 2, 'Two native lift thrusters');
+assert.equal(movementThrusters.length, 6, 'Six procedural movement thrusters');
 assert.equal(engine.component.data.bEnabled, false, 'Engine is not lift authority');
 assert.equal(engine.component.data.bAutodiscoverThrusters, false);
 assert.equal(engine.component.data.bAutodiscoverGyroscopes, false);
@@ -51,10 +55,12 @@ assert.equal(saved.edges.filter(edge => edge.a === seat.brick.key
   && edge.q === 'Character').length, 1,
 'Retain the seat/engine route for later movement work');
 
-for (const thruster of thrusters) {
-  assert.equal(thruster.brick.data.direction, 0, 'Proven upward force orientation');
-  assert.equal(thruster.brick.data.rotation, 0, 'Proven upward force rotation');
-  assert.equal(thruster.component.data.Force, 10000);
+for (const thruster of liftThrusters) {
+  assert.equal(thruster.brick.data.direction, 5,
+    'User-confirmed downward native-thruster direction');
+  assert.equal(thruster.brick.data.rotation, 1,
+    'User-confirmed downward native-thruster rotation');
+  assert.equal(thruster.component.data.Force, 50000);
   assert.equal(thruster.component.data.ForceApplication, 0);
   assert.equal(thruster.component.data.bDiscoverable, false);
   assert.equal(incoming(thruster, 'Throttle').length, 1,
@@ -64,6 +70,18 @@ for (const thruster of thrusters) {
   assert.equal(incoming(thruster, 'bEnabled').length, 1,
     'Top switch controls lift enable');
 }
+for (const thruster of movementThrusters) {
+  assert.equal(thruster.component.data.bDiscoverable, false);
+  assert.equal(thruster.component.data.bSpawnLight, false);
+  assert.equal(incoming(thruster, 'Throttle').length, 1,
+    'Every movement thruster has one direct seat-input throttle driver');
+  assert.equal(incoming(thruster, 'Force').length, 1,
+    'Every movement thruster has one editable force driver');
+  assert.equal(incoming(thruster, 'Control_DriveAndSteer').length, 0,
+    'Vehicle Engine may not command movement thrusters');
+  assert.equal(incoming(thruster, 'bEnabled').length, 1,
+    'Top switch controls movement enable');
+}
 assert.equal(gyro.component.data.Strength, 50);
 assert.equal(gyro.component.data.Damping, 1);
 assert.deepEqual(gyro.component.data.TargetAxis, {X: 0, Y: 0, Z: 1});
@@ -71,8 +89,8 @@ assert.equal(incoming(gyro, 'Control_DriveAndSteer').length, 0,
   'Standalone gyro has no engine bus');
 assert.equal(incoming(gyro, 'bEnabled').length, 1,
   'Top switch controls gyro enable');
-assert.equal(outgoing(hoverSwitch, 'bEnabled').length, 3,
-  'Switch enables two thrusters and one gyro');
+assert.equal(outgoing(hoverSwitch, 'bEnabled').length, 9,
+  'Switch enables eight thrusters and one gyro');
 
 const clock = one(all(C.Clock.NAME), '100 Hz clock');
 const sweep = one(all(C.Exec_Sweep.NAME), 'downward sweep');
@@ -85,10 +103,14 @@ const add = one(all(C.Expr_MathAdd.NAME), 'P plus D');
 const getter = one(all(C.Exec_Var_Get.NAME), 'previous distance getter');
 const setter = one(all(C.Exec_Var_Set.NAME), 'previous distance setter');
 const throttle = one(all(C.Rerouter.NAME), 'throttle rerouter');
-assert.equal(vars.length, 3, 'Update rate, setpoint, and previous distance');
+const splitter = one(all(C.InputSplitter.NAME), 'seat input splitter');
+const negates = all(C.Expr_MathNegate.NAME);
+assert.equal(vars.length, 5,
+  'Update rate, setpoint, previous distance, drive force, and turn force');
 assert.equal(remaps.length, 2, 'Proportional and damping remaps');
-assert.equal(clamps.length, 3, 'P, D, and final throttle clamps');
+assert.equal(clamps.length, 7, 'Three hover clamps plus four movement clamps');
 assert.equal(subtracts.length, 2, 'Height error and distance delta');
+assert.equal(negates.length, 2, 'Reverse and left input inversion');
 assert.equal(clock.component.data.IntervalSeconds, 0.01);
 assert.deepEqual(sweep.component.data.Direction, {X: 0, Y: 0, Z: -1});
 assert.equal(sweep.component.data.Distance, 100);
@@ -117,6 +139,35 @@ assert.equal(incoming(add, 'InputB').length, 1);
 assert.equal(outgoing(throttle, 'RER_Output').filter(edge =>
   edge.zt === C.Thruster.NAME && edge.q === 'Throttle').length, 2,
 'Final throttle fans out to both thrusters');
+assert.equal(incoming(splitter, 'Character').length, 1,
+  'The pilot seat owns the movement input splitter');
+assert.equal(sourceRow(incoming(splitter, 'Character')[0]).component.type, C.Seat.NAME);
+
+const at = position => one(movementThrusters.filter(row =>
+  row.brick.data.position.every((value, axis) => value === position[axis])),
+`movement thruster at ${position.join(',')}`);
+const movementLayout = [
+  {position: [-60, 5, 0], direction: 4, rotation: 0, forceApplication: 0, force: 15000},
+  {position: [40, 5, 0], direction: 4, rotation: 2, forceApplication: 0, force: 15000},
+  {position: [40, -15, 0], direction: 4, rotation: 1, forceApplication: 1, force: 5000},
+  {position: [-60, -15, 0], direction: 4, rotation: 3, forceApplication: 1, force: 5000},
+  {position: [40, 25, 0], direction: 4, rotation: 3, forceApplication: 1, force: 5000},
+  {position: [-60, 25, 0], direction: 4, rotation: 1, forceApplication: 1, force: 5000},
+];
+for (const expected of movementLayout) {
+  const row = at(expected.position);
+  assert.equal(row.brick.data.direction, expected.direction);
+  assert.equal(row.brick.data.rotation, expected.rotation);
+  assert.equal(row.component.data.ForceApplication, expected.forceApplication);
+  assert.equal(row.component.data.Force, expected.force);
+}
+const variableValues = vars.map(row => row.component.data.Value?.value);
+assert(variableValues.includes(15000), 'Editable DRIVE FORCE value');
+assert(variableValues.includes(5000), 'Editable TURN FORCE value');
+assert.equal(outgoing(splitter, 'InputForward').length, 2,
+  'Forward input feeds forward and inverted reverse paths');
+assert.equal(outgoing(splitter, 'InputRight').length, 2,
+  'Right input feeds right and inverted left paths');
 
 const targets = new Set();
 for (const edge of saved.edges) {
@@ -143,7 +194,9 @@ console.log(JSON.stringify({
   bricks: saved.bricks.length,
   wires: saved.edges.length,
   controllerGates: result.summary.controllerGates,
-  forcePerThruster: thrusters[0].component.data.Force,
+  liftForcePerThruster: liftThrusters[0].component.data.Force,
+  driveForce: 15000,
+  turnForce: 5000,
   updateRate: clock.component.data.IntervalSeconds,
   setpoint: vars.map(row => row.component.data.Value?.value)
     .find(value => value === 40),

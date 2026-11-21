@@ -13,7 +13,7 @@ const {C, N} = require('./loadboard-lib.cjs');
 
 const INPUT = process.argv[2] ? path.resolve(process.argv[2]) : null;
 const OUTPUT = path.resolve(process.argv[3]
-  || path.join(__dirname, '../../outputs/hover-frame-ground-distance-controller.brz'));
+  || path.join(__dirname, '../../outputs/hover-frame-wasd-ground-controller.brz'));
 
 const COLORS = {
   sensing: [70, 150, 220],
@@ -21,6 +21,10 @@ const COLORS = {
   proportional: [75, 185, 105],
   damping: [175, 105, 220],
   output: [230, 85, 115],
+  movement: [55, 175, 215],
+  movementState: [235, 145, 45],
+  drivePod: [45, 125, 175],
+  turnPod: [225, 120, 45],
   label: [18, 24, 32],
   gyro: [165, 95, 220],
   switch: [235, 145, 45],
@@ -115,16 +119,17 @@ function build(input = INPUT) {
     type: C.Thruster.NAME,
   }));
 
-  // The supplied in-game reference proves that the force axis for a working
-  // lift thruster is direction 0 / rotation 0. The original pair was 5 / 1,
-  // which maps that same force axis sideways. Each thruster supplies half of a
-  // roughly 2g total lift budget for CustomMass 10.
+  // Keep the native B_2x2_Thruster orientation from the supplied frame. The
+  // user verified in game that 5 / 1 points this native asset downward and
+  // that the frame needs 50,000 force per lift thruster. A Thruster component
+  // attached to a procedural brick has a different canonical axis, so the
+  // donor module's host-brick orientation must not be copied onto this asset.
   for (const row of thrusterRows) {
-    Object.assign(row.brick.data, {direction: 0, rotation: 0});
+    Object.assign(row.brick.data, {direction: 5, rotation: 1});
     Object.assign(row.component.data, {
       bEnabled: true,
       bDiscoverable: false,
-      Force: 10000,
+      Force: 50000,
       ForceApplication: 0,
       Throttle: 0,
       Pitch: 0,
@@ -149,7 +154,7 @@ function build(input = INPUT) {
   assert.equal(oldBusEdges.length, 2, 'Expected two original engine-to-thruster wires');
   const oldBusSet = new Set(oldBusEdges);
   scene.edges = scene.edges.filter(edge => !oldBusSet.has(edge));
-  seatRow.component.data.PromptCustomLabel = 'Sit in Hover Test Frame';
+  seatRow.component.data.PromptCustomLabel = 'Pilot Hover Frame — W/S Drive, A/D Turn';
 
   let serial = 0;
   const created = [];
@@ -230,6 +235,41 @@ function build(input = INPUT) {
     created.push(node);
     return node;
   }
+  function addThrusterPod(role, position, direction, rotation,
+    forceApplication, force, color) {
+    const component = {
+      type: C.Thruster.NAME,
+      data: {
+        bEnabled: true,
+        bDiscoverable: false,
+        Force: force,
+        ForceApplication: forceApplication,
+        Throttle: 0,
+        Control_DriveAndSteer: {},
+        Pitch: 0,
+        Yaw: 0,
+        bSpawnLight: false,
+      },
+    };
+    const brick = {
+      key: `ground-hover:${String(serial++).padStart(2, '0')}:pod:${role}`,
+      g: mainGrid,
+      data: brickData('PB_DefaultBrick', position, color, {
+        size: [5, 5, 2], direction, rotation, materialIntensity: 2,
+      }),
+      comps: [component],
+    };
+    scene.bricks.push(brick);
+    const node = {
+      key: brick.key,
+      type: C.Thruster.NAME,
+      kind: `MovementThruster:${role}`,
+      role,
+      brick,
+    };
+    created.push(node);
+    return node;
+  }
   function addText(position, size, text, textColor) {
     const brick = {
       key: `ground-hover:${String(serial++).padStart(2, '0')}:Text`,
@@ -274,6 +314,31 @@ function build(input = INPUT) {
   }, COLORS.switch);
   wire(hoverSwitch, 'bEnabled', gyro, 'bEnabled');
   for (const thruster of thrusters) wire(hoverSwitch, 'bEnabled', thruster, 'bEnabled');
+
+  // Movement uses six independent procedural-brick thrusters. Unlike the
+  // native B_2x2_Thruster lift asset, the working hover donor proves that a
+  // Thruster component on PB_DefaultBrick pushes along host-local +X. The two
+  // drive pods apply force at the center of mass. Each opposed turn pair uses
+  // AtThruster so lateral forces cancel while their yaw torques add together.
+  const forwardDrive = addThrusterPod('forward', [-60, 5, 0], 4, 0,
+    0, 15000, COLORS.drivePod);
+  const reverseDrive = addThrusterPod('reverse', [40, 5, 0], 4, 2,
+    0, 15000, COLORS.drivePod);
+  const leftFront = addThrusterPod('left-front', [40, -15, 0], 4, 1,
+    1, 5000, COLORS.turnPod);
+  const leftRear = addThrusterPod('left-rear', [-60, -15, 0], 4, 3,
+    1, 5000, COLORS.turnPod);
+  const rightFront = addThrusterPod('right-front', [40, 25, 0], 4, 3,
+    1, 5000, COLORS.turnPod);
+  const rightRear = addThrusterPod('right-rear', [-60, 25, 0], 4, 1,
+    1, 5000, COLORS.turnPod);
+  const movementThrusters = [
+    forwardDrive, reverseDrive,
+    leftFront, leftRear, rightFront, rightRear,
+  ];
+  for (const thruster of movementThrusters) {
+    wire(hoverSwitch, 'bEnabled', thruster, 'bEnabled');
+  }
 
   addText([0, 85, 2], [55, 10, 2],
     'GROUND-DISTANCE HOVER CONTROLLER', {R: 110, G: 210, B: 255, A: 255});
@@ -398,12 +463,65 @@ function build(input = INPUT) {
   wire(finalClamp, 'Output', throttle, 'RER_Input');
   for (const thruster of thrusters) wire(throttle, 'RER_Output', thruster, 'Throttle');
 
-  addText([0, -35, 2], [65, 10, 2],
-    'PROVEN LOOP FROM BASIC HOVER MODULE\nTop switch enables lift. HEIGHT 40 = four studs from the sweep origin.',
+  addText([0, -55, 2], [55, 5, 2], 'SEAT-CONTROLLED MOVEMENT');
+  const splitter = addComponent('InputSplitter', chipGrid, [-33, -70, 2], {},
+    COLORS.movement, {label: 'SEAT\nINPUT'});
+  const forwardThrottle = addComponent('Expr_MathClamp', chipGrid, [-22, -70, 2], {
+    Input: N(0), Min: N(0), Max: N(1),
+  }, COLORS.movement, {label: 'W\nFORWARD'});
+  const reverseNegate = addComponent('Expr_MathNegate', chipGrid, [-11, -70, 2], {
+    Input: N(0),
+  }, COLORS.movement);
+  const reverseThrottle = addComponent('Expr_MathClamp', chipGrid, [0, -70, 2], {
+    Input: N(0), Min: N(0), Max: N(1),
+  }, COLORS.movement, {label: 'S\nREVERSE'});
+  const rightThrottle = addComponent('Expr_MathClamp', chipGrid, [11, -70, 2], {
+    Input: N(0), Min: N(0), Max: N(1),
+  }, COLORS.movement, {label: 'D\nRIGHT'});
+  const leftNegate = addComponent('Expr_MathNegate', chipGrid, [22, -70, 2], {
+    Input: N(0),
+  }, COLORS.movement);
+  const leftThrottle = addComponent('Expr_MathClamp', chipGrid, [33, -70, 2], {
+    Input: N(0), Min: N(0), Max: N(1),
+  }, COLORS.movement, {label: 'A\nLEFT'});
+  const driveForce = addComponent('Var', chipGrid, [-15, -85, 2], {
+    Value: N(15000),
+  }, COLORS.movementState, {label: 'DRIVE\nFORCE'});
+  const turnForce = addComponent('Var', chipGrid, [-5, -85, 2], {
+    Value: N(5000),
+  }, COLORS.movementState, {label: 'TURN\nFORCE'});
+  addText([21, -85, 2], [20, 5, 2], 'W/S DRIVE  |  A/D TURN',
+    {R: 110, G: 210, B: 255, A: 255});
+
+  wire(seat, 'SittingCharacter', splitter, 'Character');
+  wire(splitter, 'InputForward', forwardThrottle, 'Input');
+  wire(splitter, 'InputForward', reverseNegate, 'Input');
+  wire(reverseNegate, 'Output', reverseThrottle, 'Input');
+  wire(splitter, 'InputRight', rightThrottle, 'Input');
+  wire(splitter, 'InputRight', leftNegate, 'Input');
+  wire(leftNegate, 'Output', leftThrottle, 'Input');
+  wire(forwardThrottle, 'Output', forwardDrive, 'Throttle');
+  wire(reverseThrottle, 'Output', reverseDrive, 'Throttle');
+  for (const thruster of [rightFront, rightRear]) {
+    wire(rightThrottle, 'Output', thruster, 'Throttle');
+  }
+  for (const thruster of [leftFront, leftRear]) {
+    wire(leftThrottle, 'Output', thruster, 'Throttle');
+  }
+  for (const thruster of [forwardDrive, reverseDrive]) {
+    wire(driveForce, 'Value', thruster, 'Force');
+  }
+  for (const thruster of [leftFront, leftRear, rightFront, rightRear]) {
+    wire(turnForce, 'Value', thruster, 'Force');
+  }
+
+  addText([0, -110, 2], [65, 10, 2],
+    'PROVEN HEIGHT LOOP + ISOLATED WASD THRUST\nTop switch enables all systems. HEIGHT 40 = four studs from the sweep origin.',
     {R: 255, G: 190, B: 80, A: 255});
 
-  // The seat-to-engine character route is intentionally retained even though
-  // the engine is disabled during this stationary hover proof.
+  // Preserve the donor's seat-to-engine character route for future expansion.
+  // The engine remains disabled; this version reads WASD through the isolated
+  // InputSplitter path and never lets the engine compete with direct thrust.
   assert(scene.edges.some(edge => edge.a === seat.key && edge.at === seat.type
     && edge.p === 'SittingCharacter' && edge.z === engine.key
     && edge.zt === engine.type && edge.q === 'Character'),
@@ -411,8 +529,8 @@ function build(input = INPUT) {
   fitMicrochip(scene, chipGrid);
 
   const metadata = {
-    name: 'Hover Frame - Ground Distance Controller',
-    description: 'Stationary hover test using the proven 100 Hz downward sweep, height-error lift, upward-velocity damping, two upward thrusters, and a standalone gyroscope.',
+    name: 'Hover Frame - Ground Distance WASD Controller',
+    description: 'Seat-controlled W/S drive and A/D balanced turning around the proven 100 Hz ground-distance hover controller. Lift and movement use isolated thrusters.',
     owner: selectedOwner(scene),
   };
   const generated = write(scene, {
@@ -435,11 +553,15 @@ function build(input = INPUT) {
     chipGrid,
     created,
     nodes: {
-      engine, seat, thrusters, gyro, hoverSwitch,
+      engine, seat, thrusters, movementThrusters,
+      forwardDrive, reverseDrive, leftFront, leftRear, rightFront, rightRear,
+      gyro, hoverSwitch,
       updateRate, setpoint, previousDistance, clock, sweep,
       previousGet, previousSet, heightError, proportional,
       proportionalClamp, distanceDelta, velocity, damping,
       dampingClamp, combine, finalClamp, throttle,
+      splitter, forwardThrottle, reverseNegate, reverseThrottle,
+      rightThrottle, leftNegate, leftThrottle, driveForce, turnForce,
     },
     donorPlacement,
     placement,
