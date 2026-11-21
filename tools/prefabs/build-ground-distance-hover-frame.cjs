@@ -318,14 +318,15 @@ function build(input = INPUT) {
   // The first in-game movement test proved that direction 4 makes a Thruster
   // component on PB_DefaultBrick act vertically: W/S bounced and the offset
   // A/D pairs rolled the frame. Directions 0/1 put the drive pair on the X
-  // axis, while 2/3 put the steering pairs on Y. Thrusters push opposite the
-  // native asset's visual nozzle but follow a procedural host's face normal;
-  // those two host types therefore cannot share orientation assumptions.
+  // axis, while 2/3 put the steering pairs on Y. A second in-game test proved
+  // that procedural thrusters push opposite their host normal: direction 1 is
+  // physical +X (forward here), while direction 0 is physical -X (reverse).
+  // Native and procedural hosts therefore cannot share orientation rules.
   // Drive applies at center of mass. Opposed AtThruster steering forces cancel
   // lateral translation and add into a pure yaw moment.
-  const forwardDrive = addThrusterPod('forward', [-57, 5, 0], 0, 0,
+  const forwardDrive = addThrusterPod('forward', [-57, 5, 0], 1, 0,
     0, 15000, COLORS.drivePod);
-  const reverseDrive = addThrusterPod('reverse', [37, 5, 0], 1, 0,
+  const reverseDrive = addThrusterPod('reverse', [37, 5, 0], 0, 0,
     0, 15000, COLORS.drivePod);
   const leftFront = addThrusterPod('left-front', [40, -15, 0], 2, 0,
     1, 5000, COLORS.turnPod);
@@ -518,8 +519,91 @@ function build(input = INPUT) {
     wire(turnForce, 'Value', thruster, 'Force');
   }
 
-  addText([0, -110, 2], [65, 10, 2],
-    'PROVEN HEIGHT LOOP + ISOLATED WASD THRUST\nTop switch enables all systems. HEIGHT 40 = four studs from the sweep origin.',
+  // Neutral-only horizontal damping. ReadBrickGrid must live on the chassis,
+  // not inside the linked controller, so Entity resolves to the moving frame.
+  // At 100 Hz this adds -2% of the current world-X/Y velocity per sample while
+  // preserving Z exactly. It therefore stops drift without competing with the
+  // independently proven height controller.
+  const chassisGrid = addComponent('ReadBrickGrid', mainGrid, [-10, 25, 8], {},
+    COLORS.movementState, {
+      visibility: false,
+      collision: {
+        player: false,
+        weapon: false,
+        interaction: false,
+        tool: true,
+        physics: false,
+      },
+    });
+
+  addText([0, -105, 2], [55, 5, 2], 'NEUTRAL HORIZONTAL DAMPING',
+    {R: 255, G: 190, B: 80, A: 255});
+  const velocityGet = addComponent('Exec_Entity_GetLinearVelocity', chipGrid,
+    [-40, -120, 2], {
+      LinearVelocity: {X: 0, Y: 0, Z: 0},
+    }, COLORS.movementState, {label: 'GRID\nVELOCITY'});
+  const velocitySplit = addComponent('Expr_SplitVector', chipGrid,
+    [-30, -120, 2], {
+      Input: {X: 0, Y: 0, Z: 0},
+    }, COLORS.movementState, {label: 'SPLIT\nXYZ'});
+  const horizontalVector = addComponent('Expr_MakeVector', chipGrid,
+    [-20, -120, 2], {
+      X: 0,
+      Y: 0,
+      Z: 0,
+    }, COLORS.movementState, {label: 'XY\nONLY'});
+  const counterVelocity = addComponent('Expr_VecScale', chipGrid,
+    [-10, -120, 2], {
+      Input: {X: 0, Y: 0, Z: 0},
+      Scalar: -0.02,
+    }, COLORS.movementState, {label: 'COUNTER\nVELOCITY'});
+  const velocityAdd = addComponent('Exec_Entity_AddVelocity', chipGrid,
+    [0, -120, 2], {
+      Vector: {X: 0, Y: 0, Z: 0},
+      Rotation: {X: 0, Y: 0, Z: 0},
+    }, COLORS.movementState, {label: 'APPLY\nDRAG'});
+  const dragGain = addComponent('Var', chipGrid, [10, -120, 2], {
+    Value: N(-0.02),
+  }, COLORS.movementState, {label: 'DRAG\nGAIN'});
+
+  const inputMagnitude = addComponent('Expr_MathAbs', chipGrid,
+    [-40, -135, 2], {
+      Input: N(0),
+    }, COLORS.movement, {label: 'W/S\nABS'});
+  const inputNeutral = addComponent('Expr_CompareLess', chipGrid,
+    [-30, -135, 2], {
+      InputA: N(0),
+      InputB: N(0.05),
+    }, COLORS.movement, {label: 'NEUTRAL\n< 0.05'});
+  const dampingAllowed = addComponent('Expr_LogicalAND', chipGrid,
+    [-20, -135, 2], {
+      bInputA: false,
+      bInputB: false,
+    }, COLORS.movement, {label: 'HOVER +\nNEUTRAL'});
+  const dampingBranch = addComponent('Exec_Branch', chipGrid,
+    [-10, -135, 2], {
+      bCond: false,
+    }, COLORS.movement, {label: 'DAMPING\nGUARD'});
+
+  wire(clock, 'Pulse', velocityGet, 'Exec');
+  wire(chassisGrid, 'BrickGrid', velocityGet, 'Entity');
+  wire(velocityGet, 'LinearVelocity', velocitySplit, 'Input');
+  wire(velocitySplit, 'X', horizontalVector, 'X');
+  wire(velocitySplit, 'Y', horizontalVector, 'Y');
+  wire(horizontalVector, 'Output', counterVelocity, 'Input');
+  wire(dragGain, 'Value', counterVelocity, 'Scalar');
+  wire(counterVelocity, 'Output', velocityAdd, 'Vector');
+  wire(chassisGrid, 'BrickGrid', velocityAdd, 'Entity');
+  wire(velocityGet, 'ExecOut', dampingBranch, 'Exec');
+  wire(splitter, 'InputForward', inputMagnitude, 'Input');
+  wire(inputMagnitude, 'Output', inputNeutral, 'InputA');
+  wire(inputNeutral, 'bOutput', dampingAllowed, 'bInputA');
+  wire(hoverSwitch, 'bEnabled', dampingAllowed, 'bInputB');
+  wire(dampingAllowed, 'bOutput', dampingBranch, 'bCond');
+  wire(dampingBranch, 'ExecOutA', velocityAdd, 'Exec');
+
+  addText([0, -155, 2], [65, 10, 2],
+    'PROVEN HEIGHT LOOP + ISOLATED WASD THRUST + NEUTRAL XY DRAG\nTop switch enables all systems. HEIGHT 40 = four studs from the sweep origin.',
     {R: 255, G: 190, B: 80, A: 255});
 
   // Preserve the donor's seat-to-engine character route for future expansion.
@@ -533,7 +617,7 @@ function build(input = INPUT) {
 
   const metadata = {
     name: 'Hover Frame - Ground Distance WASD Controller',
-    description: 'Seat-controlled W/S drive and A/D balanced turning around the proven 100 Hz ground-distance hover controller. Lift and movement use isolated thrusters.',
+    description: 'Seat-controlled W/S drive, A/D balanced turning, and neutral-only horizontal drag around the proven 100 Hz ground-distance hover controller. Lift and movement remain isolated.',
     owner: selectedOwner(scene),
   };
   const generated = write(scene, {
@@ -565,6 +649,9 @@ function build(input = INPUT) {
       dampingClamp, combine, finalClamp, throttle,
       splitter, forwardThrottle, reverseNegate, reverseThrottle,
       rightThrottle, leftNegate, leftThrottle, driveForce, turnForce,
+      chassisGrid, velocityGet, velocitySplit, horizontalVector,
+      counterVelocity, velocityAdd, dragGain, inputMagnitude, inputNeutral,
+      dampingAllowed, dampingBranch,
     },
     donorPlacement,
     placement,

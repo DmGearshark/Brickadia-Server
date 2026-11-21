@@ -25,6 +25,12 @@ const outgoing = (source, port) => saved.edges.filter(edge =>
 const sourceRow = edge => one(saved.bricks.filter(brick => brick.key === edge.a)
   .flatMap(brick => brick.comps.filter(component => component.type === edge.at)
     .map(component => ({brick, component}))), `${edge.at}.${edge.p} source`);
+const wireCount = (source, sourcePort, target, targetPort) => saved.edges.filter(edge =>
+  edge.a === source.brick.key && edge.at === source.component.type
+  && edge.p === sourcePort && edge.z === target.brick.key
+  && edge.zt === target.component.type && edge.q === targetPort).length;
+const assertWire = (source, sourcePort, target, targetPort, label) => assert.equal(
+  wireCount(source, sourcePort, target, targetPort), 1, label);
 
 assert(result.placement.strictOk, 'Output must pass strict placement validation');
 assert.equal(saved.links.length, 1, 'Preserve one linked microchip');
@@ -89,8 +95,8 @@ assert.equal(incoming(gyro, 'Control_DriveAndSteer').length, 0,
   'Standalone gyro has no engine bus');
 assert.equal(incoming(gyro, 'bEnabled').length, 1,
   'Top switch controls gyro enable');
-assert.equal(outgoing(hoverSwitch, 'bEnabled').length, 9,
-  'Switch enables eight thrusters and one gyro');
+assert.equal(outgoing(hoverSwitch, 'bEnabled').length, 10,
+  'Switch enables eight thrusters, one gyro, and the neutral-damping guard');
 
 const clock = one(all(C.Clock.NAME), '100 Hz clock');
 const sweep = one(all(C.Exec_Sweep.NAME), 'downward sweep');
@@ -105,13 +111,32 @@ const setter = one(all(C.Exec_Var_Set.NAME), 'previous distance setter');
 const throttle = one(all(C.Rerouter.NAME), 'throttle rerouter');
 const splitter = one(all(C.InputSplitter.NAME), 'seat input splitter');
 const negates = all(C.Expr_MathNegate.NAME);
-assert.equal(vars.length, 5,
-  'Update rate, setpoint, previous distance, drive force, and turn force');
+const chassisGrid = one(all(C.ReadBrickGrid.NAME), 'chassis grid reader');
+const velocityGet = one(all(C.Exec_Entity_GetLinearVelocity.NAME),
+  'horizontal damping velocity getter');
+const velocitySplit = one(all(C.Expr_SplitVector.NAME),
+  'horizontal damping velocity split');
+const horizontalVector = one(all(C.Expr_MakeVector.NAME),
+  'horizontal-only vector');
+const counterVelocity = one(all(C.Expr_VecScale.NAME),
+  'counter-velocity scale');
+const velocityAdd = one(all(C.Exec_Entity_AddVelocity.NAME),
+  'counter-velocity application');
+const inputMagnitude = one(all(C.Expr_MathAbs.NAME), 'forward-input magnitude');
+const inputNeutral = one(all(C.Expr_CompareLess.NAME), 'forward-input deadzone');
+const dampingAllowed = one(all(C.Expr_LogicalAND.NAME), 'neutral damping enable');
+const dampingBranch = one(all(C.Exec_Branch.NAME), 'neutral damping branch');
+const dragGain = one(vars.filter(row => row.component.data.Value?.value === -0.02),
+  'editable drag gain');
+assert.equal(vars.length, 6,
+  'Update rate, setpoint, previous distance, drive force, turn force, and drag gain');
 assert.equal(remaps.length, 2, 'Proportional and damping remaps');
 assert.equal(clamps.length, 7, 'Three hover clamps plus four movement clamps');
 assert.equal(subtracts.length, 2, 'Height error and distance delta');
 assert.equal(negates.length, 2, 'Reverse and left input inversion');
 assert.equal(clock.component.data.IntervalSeconds, 0.01);
+assert.equal(all(C.Clock.NAME).length, 1,
+  'Horizontal damping reuses the 100 Hz sample clock');
 assert.deepEqual(sweep.component.data.Direction, {X: 0, Y: 0, Z: -1});
 assert.equal(sweep.component.data.Distance, 100);
 assert.equal(sweep.component.data.Radius, 0);
@@ -123,6 +148,8 @@ assert.equal(sweep.component.data.bDetectMap, true);
 assert.equal(incoming(sweep, 'Exec').length, 1);
 assert.equal(sourceRow(incoming(sweep, 'Exec')[0]).component.type, C.Clock.NAME,
   'Clock pulses the sweep');
+assert.equal(outgoing(clock, 'Pulse').length, 2,
+  'The 100 Hz clock samples ground distance and horizontal velocity');
 assert.equal(incoming(getter, 'Exec').length, 1);
 assert.equal(sourceRow(incoming(getter, 'Exec')[0]).component.type, C.Exec_Sweep.NAME,
   'Sweep completes before previous-distance get');
@@ -143,12 +170,67 @@ assert.equal(incoming(splitter, 'Character').length, 1,
   'The pilot seat owns the movement input splitter');
 assert.equal(sourceRow(incoming(splitter, 'Character')[0]).component.type, C.Seat.NAME);
 
+assert.deepEqual(chassisGrid.brick.data.position, [-10, 25, 8]);
+assert.equal(chassisGrid.brick.g, engine.brick.g,
+  'ReadBrickGrid must live on the moving chassis, not the linked chip');
+assert.equal(chassisGrid.brick.data.visibility, false);
+assert.equal(chassisGrid.brick.data.collision.physics, false);
+assert.equal(velocityGet.brick.g, clock.brick.g,
+  'Damping gates remain organized inside the controller chip');
+assert.deepEqual(velocityGet.component.data.LinearVelocity, {X: 0, Y: 0, Z: 0});
+assert.deepEqual(horizontalVector.component.data, {X: 0, Y: 0, Z: 0});
+assert.deepEqual(counterVelocity.component.data.Input, {X: 0, Y: 0, Z: 0});
+assert.equal(counterVelocity.component.data.Scalar, -0.02);
+assert.deepEqual(velocityAdd.component.data.Vector, {X: 0, Y: 0, Z: 0});
+assert.deepEqual(velocityAdd.component.data.Rotation, {X: 0, Y: 0, Z: 0});
+assert.equal(inputNeutral.component.data.InputB.value, 0.05);
+assert.equal(dragGain.component.data.Value.value, -0.02);
+
+assertWire(clock, 'Pulse', velocityGet, 'Exec',
+  '100 Hz clock executes the velocity getter');
+assertWire(chassisGrid, 'BrickGrid', velocityGet, 'Entity',
+  'Reader supplies the chassis to the velocity getter');
+assertWire(velocityGet, 'LinearVelocity', velocitySplit, 'Input',
+  'World velocity is split into axes');
+assertWire(velocitySplit, 'X', horizontalVector, 'X',
+  'World X enters the horizontal vector');
+assertWire(velocitySplit, 'Y', horizontalVector, 'Y',
+  'World Y enters the horizontal vector');
+assert.equal(incoming(horizontalVector, 'Z').length, 0,
+  'Horizontal damping hard-codes Z to zero');
+assertWire(horizontalVector, 'Output', counterVelocity, 'Input',
+  'Horizontal velocity enters the counter-velocity scale');
+assertWire(dragGain, 'Value', counterVelocity, 'Scalar',
+  'Editable -0.02 gain controls the counter velocity');
+assertWire(counterVelocity, 'Output', velocityAdd, 'Vector',
+  'Scaled XY counter velocity is the only linear delta');
+assertWire(chassisGrid, 'BrickGrid', velocityAdd, 'Entity',
+  'Reader supplies the chassis to AddVelocity');
+assertWire(velocityGet, 'ExecOut', dampingBranch, 'Exec',
+  'Fresh velocity reaches the damping guard before application');
+assertWire(splitter, 'InputForward', inputMagnitude, 'Input',
+  'W/S input feeds the neutral deadzone');
+assertWire(inputMagnitude, 'Output', inputNeutral, 'InputA',
+  'Absolute W/S input is compared to the deadzone');
+assertWire(inputNeutral, 'bOutput', dampingAllowed, 'bInputA',
+  'Neutral input is the first damping requirement');
+assertWire(hoverSwitch, 'bEnabled', dampingAllowed, 'bInputB',
+  'Hover enable is the second damping requirement');
+assertWire(dampingAllowed, 'bOutput', dampingBranch, 'bCond',
+  'Only enabled plus neutral selects the true branch');
+assertWire(dampingBranch, 'ExecOutA', velocityAdd, 'Exec',
+  'True branch applies the counter velocity');
+assert.equal(outgoing(dampingBranch, 'ExecOutB').length, 0,
+  'Non-neutral or disabled hover performs no damping write');
+assert.equal(incoming(velocityAdd, 'Rotation').length, 0,
+  'Horizontal damping never changes angular velocity');
+
 const at = position => one(movementThrusters.filter(row =>
   row.brick.data.position.every((value, axis) => value === position[axis])),
 `movement thruster at ${position.join(',')}`);
 const movementLayout = [
-  {position: [-57, 5, 0], direction: 0, rotation: 0, forceApplication: 0, force: 15000},
-  {position: [37, 5, 0], direction: 1, rotation: 0, forceApplication: 0, force: 15000},
+  {position: [-57, 5, 0], direction: 1, rotation: 0, forceApplication: 0, force: 15000},
+  {position: [37, 5, 0], direction: 0, rotation: 0, forceApplication: 0, force: 15000},
   {position: [40, -15, 0], direction: 2, rotation: 0, forceApplication: 1, force: 5000},
   {position: [-60, -15, 0], direction: 3, rotation: 0, forceApplication: 1, force: 5000},
   {position: [40, 25, 0], direction: 3, rotation: 0, forceApplication: 1, force: 5000},
@@ -165,8 +247,9 @@ for (const expected of movementLayout) {
 const variableValues = vars.map(row => row.component.data.Value?.value);
 assert(variableValues.includes(15000), 'Editable DRIVE FORCE value');
 assert(variableValues.includes(5000), 'Editable TURN FORCE value');
-assert.equal(outgoing(splitter, 'InputForward').length, 2,
-  'Forward input feeds forward and inverted reverse paths');
+assert(variableValues.includes(-0.02), 'Editable HORIZONTAL DRAG value');
+assert.equal(outgoing(splitter, 'InputForward').length, 3,
+  'Forward input feeds forward, inverted reverse, and neutral-damping paths');
 assert.equal(outgoing(splitter, 'InputRight').length, 2,
   'Right input feeds right and inverted left paths');
 
@@ -198,6 +281,7 @@ console.log(JSON.stringify({
   liftForcePerThruster: liftThrusters[0].component.data.Force,
   driveForce: 15000,
   turnForce: 5000,
+  horizontalDragPerTick: dragGain.component.data.Value.value,
   updateRate: clock.component.data.IntervalSeconds,
   setpoint: vars.map(row => row.component.data.Value?.value)
     .find(value => value === 40),
